@@ -1,0 +1,22 @@
+About LiteSQL 
+-------------
+
+LiteSQL is a C++ library that provides an easy interface to sqlite3 database 
+engine, light level of object persistence, object relation support, class-based
+API for generating queries and iterator-like cursors.
+
+See HTML documentation for details docs/html/index.html.
+
+Project home page: http://litesql.sourceforge.net
+
+Installation
+------------
+Create Makefiles with cmake 
+
+cmake .
+
+Then compile and install
+
+make install
+
+By Tero Laitinen <tero.laitinen@iki.fi>
