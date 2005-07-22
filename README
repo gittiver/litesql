@@ -1,4 +1,4 @@
-LiteSQL - C++ Object Relational Persistence Framework
+LiteSQL - C++ Object-Relational Persistence Framework
 -----------------------------------------------------
 LiteSQL is a C++ library that integrates C++ objects tightly to relational
 database and thus provides an object persistence layer. LiteSQL supports
