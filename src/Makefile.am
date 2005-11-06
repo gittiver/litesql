@@ -5,4 +5,8 @@ litesql_gen_LDADD=liblitesql.la
 example_LDADD=liblitesql.la
 lib_LTLIBRARIES=liblitesql.la
 liblitesql_la_SOURCES=database.cpp expr.cpp selectquery.cpp persistent.cpp split.cpp string.cpp backend.cpp updatequery.cpp field.cpp datasource.cpp sqlite3.cpp postgresql.cpp mysql.cpp
+liblitesql_la_LDFLAGS = -version-info 0:3:0
+
+include_HEADERS=litesql.hpp
+SUBDIRS=litesql
 
