@@ -19,8 +19,7 @@ AC_HEADER_TIME
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 
-AC_CHECK_FUNCS([gettimeofday memset strchr strdup strrchr strstr strtol])
-
+AC_CHECK_FUNCS([gettimeofday memset strchr strdup strrchr strstr strtol atoll])
 AC_CHECK_LIB([sqlite3], [sqlite3_open])
 AC_CHECK_LIB([pq], [PQconnectdb])
 AC_CHECK_LIB([mysqlclient], [mysql_real_connect])
