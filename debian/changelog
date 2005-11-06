@@ -1,0 +1,6 @@
+liblitesql (0.3.0) unstable; urgency=low
+
+  * Initial release Closes: #nnnn  (nnnn is the bug number of your ITP)
+
+ -- Tero Laitinen <tero.laitinen@iki.fi>  Sun,  6 Nov 2005 15:23:49 +0200
+

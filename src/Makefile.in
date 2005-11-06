@@ -85,7 +85,8 @@ RC = @RC@
 STRIP = @STRIP@
 VERSION = @VERSION@
 
-bin_PROGRAMS = example litesql-gen
+bin_PROGRAMS = litesql-gen
+noinst_PROGRAMS = example
 example_SOURCES = example.cpp exampledatabase.cpp exampledatabase.hpp
 litesql_gen_SOURCES = litesql-gen.cpp litesql-gen-actions.cpp xmlobjects.cpp md5.cpp litesql-gen-cpp.cpp
 litesql_gen_LDADD = liblitesql.la
@@ -110,17 +111,18 @@ liblitesql_la_LIBADD =
 liblitesql_la_OBJECTS =  database.lo expr.lo selectquery.lo \
 persistent.lo split.lo string.lo backend.lo updatequery.lo field.lo \
 datasource.lo sqlite3.lo postgresql.lo mysql.lo
-bin_PROGRAMS =  example$(EXEEXT) litesql-gen$(EXEEXT)
-PROGRAMS =  $(bin_PROGRAMS)
+bin_PROGRAMS =  litesql-gen$(EXEEXT)
+noinst_PROGRAMS =  example$(EXEEXT)
+PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
-example_OBJECTS =  example.$(OBJEXT) exampledatabase.$(OBJEXT)
-example_DEPENDENCIES =  liblitesql.la
-example_LDFLAGS = 
 litesql_gen_OBJECTS =  litesql-gen.$(OBJEXT) \
 litesql-gen-actions.$(OBJEXT) xmlobjects.$(OBJEXT) md5.$(OBJEXT) \
 litesql-gen-cpp.$(OBJEXT)
 litesql_gen_DEPENDENCIES =  liblitesql.la
 litesql_gen_LDFLAGS = 
+example_OBJECTS =  example.$(OBJEXT) exampledatabase.$(OBJEXT)
+example_DEPENDENCIES =  liblitesql.la
+example_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -146,8 +148,8 @@ DEP_FILES =  .deps/backend.P .deps/database.P .deps/datasource.P \
 .deps/md5.P .deps/mysql.P .deps/persistent.P .deps/postgresql.P \
 .deps/selectquery.P .deps/split.P .deps/sqlite3.P .deps/string.P \
 .deps/updatequery.P .deps/xmlobjects.P
-SOURCES = $(liblitesql_la_SOURCES) $(example_SOURCES) $(litesql_gen_SOURCES)
-OBJECTS = $(liblitesql_la_OBJECTS) $(example_OBJECTS) $(litesql_gen_OBJECTS)
+SOURCES = $(liblitesql_la_SOURCES) $(litesql_gen_SOURCES) $(example_SOURCES)
+OBJECTS = $(liblitesql_la_OBJECTS) $(litesql_gen_OBJECTS) $(example_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -251,13 +253,22 @@ uninstall-binPROGRAMS:
 	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
 
-example$(EXEEXT): $(example_OBJECTS) $(example_DEPENDENCIES)
-	@rm -f example$(EXEEXT)
-	$(CXXLINK) $(example_LDFLAGS) $(example_OBJECTS) $(example_LDADD) $(LIBS)
+mostlyclean-noinstPROGRAMS:
+
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+
+distclean-noinstPROGRAMS:
+
+maintainer-clean-noinstPROGRAMS:
 
 litesql-gen$(EXEEXT): $(litesql_gen_OBJECTS) $(litesql_gen_DEPENDENCIES)
 	@rm -f litesql-gen$(EXEEXT)
 	$(CXXLINK) $(litesql_gen_LDFLAGS) $(litesql_gen_OBJECTS) $(litesql_gen_LDADD) $(LIBS)
+
+example$(EXEEXT): $(example_OBJECTS) $(example_DEPENDENCIES)
+	@rm -f example$(EXEEXT)
+	$(CXXLINK) $(example_LDFLAGS) $(example_OBJECTS) $(example_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 .cpp.obj:
@@ -491,18 +502,20 @@ distclean-generic:
 maintainer-clean-generic:
 mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-binPROGRAMS \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+		mostlyclean-noinstPROGRAMS mostlyclean-tags \
+		mostlyclean-depend mostlyclean-generic
 
 mostlyclean: mostlyclean-recursive
 
 clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool \
-		clean-binPROGRAMS clean-tags clean-depend clean-generic \
-		mostlyclean-am
+		clean-binPROGRAMS clean-noinstPROGRAMS clean-tags \
+		clean-depend clean-generic mostlyclean-am
 
 clean: clean-recursive
 
 distclean-am:  distclean-libLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-binPROGRAMS distclean-tags \
+		distclean-libtool distclean-binPROGRAMS \
+		distclean-noinstPROGRAMS distclean-tags \
 		distclean-depend distclean-generic clean-am
 	-rm -f libtool
 
@@ -510,7 +523,8 @@ distclean: distclean-recursive
 
 maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-binPROGRAMS maintainer-clean-tags \
+		maintainer-clean-binPROGRAMS \
+		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
 		maintainer-clean-depend maintainer-clean-generic \
 		distclean-am
 	@echo "This command is intended for maintainers to use;"
@@ -525,8 +539,10 @@ distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
 clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
-install-binPROGRAMS uninstall-includeHEADERS install-includeHEADERS \
-install-data-recursive uninstall-data-recursive install-exec-recursive \
+install-binPROGRAMS mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
+clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
+uninstall-includeHEADERS install-includeHEADERS install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
 uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
 all-recursive check-recursive installcheck-recursive info-recursive \
 dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \

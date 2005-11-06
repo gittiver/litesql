@@ -1,4 +1,5 @@
-bin_PROGRAMS=example litesql-gen
+bin_PROGRAMS=litesql-gen
+noinst_PROGRAMS=example
 example_SOURCES=example.cpp exampledatabase.cpp exampledatabase.hpp
 litesql_gen_SOURCES=litesql-gen.cpp litesql-gen-actions.cpp xmlobjects.cpp md5.cpp litesql-gen-cpp.cpp
 litesql_gen_LDADD=liblitesql.la
