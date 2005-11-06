@@ -23,7 +23,7 @@ AC_CHECK_FUNCS([gettimeofday memset strchr strdup strrchr strstr strtol strtof s
 AC_CHECK_LIB([sqlite3], [sqlite3_open])
 AC_CHECK_LIB([pq], [PQconnectdb])
 AC_CHECK_LIB([mysqlclient], [mysql_real_connect])
-AH_TEMPLATE(HAVE_POSTGRESQL8, [postgresql 8.0 header is in different location])
+AH_TEMPLATE(HAVE_POSTGRESQL8, [Define if you have PostgreSQL 8.0 (header file in different location)])
 AC_CHECK_HEADER([postgresql/8.0/libpq-fe.h], [AC_DEFINE(HAVE_POSTGRESQL8)])
 
 AC_PROG_LIBTOOL
