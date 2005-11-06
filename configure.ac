@@ -1,10 +1,9 @@
 AC_INIT(src/litesql.hpp)
 AM_INIT_AUTOMAKE(litesql,0.3)
-AM_CONFIG_HEADER(src/config.h)
+AM_CONFIG_HEADER(config.h)
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
-AC_PROG_RANLIB
 
 # Checks for header files.
 AC_HEADER_STDC
