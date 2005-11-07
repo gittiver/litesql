@@ -28,7 +28,7 @@
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
 
-/* postgresql 8.0 header is in different location */
+/* Define if you have PostgreSQL 8.0 (header file in different location) */
 #undef HAVE_POSTGRESQL8
 
 /* Define to 1 if your system has a GNU libc compatible `realloc' function,
