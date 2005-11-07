@@ -1,0 +1,53 @@
+<!ELEMENT database (object|relation)+>
+<!ATTLIST database
+          name ID #REQUIRED
+          version CDATA #IMPLIED
+          namespace NMTOKEN #IMPLIED
+		  include CDATA #IMPLIED>
+
+<!ELEMENT object ((field)*,(method)*)>
+<!ATTLIST object
+          name ID #REQUIRED
+          inherits NMTOKEN #IMPLIED>
+
+<!ELEMENT type (value)*>
+<!ATTLIST type
+          name NMTOKEN #REQUIRED
+		  type (integer|string|float|time|date|datetime) #REQUIRED
+		  default CDATA #IMPLIED
+		  min CDATA #IMPLIED
+		  max CDATA #IMPLIED>
+
+<!ELEMENT field (value)*>
+<!ATTLIST field 
+          name NMTOKEN #REQUIRED
+          type (integer|string|float|time|date|datetime) #REQUIRED
+          default CDATA #IMPLIED
+          indexed (true|false) "false">
+
+<!ELEMENT value EMPTY>
+<!ATTLIST value
+          name NMTOKEN #REQUIRED
+          value CDATA #REQUIRED>
+
+<!ELEMENT method (param)*>
+<!ATTLIST method 
+          name NMTOKEN #REQUIRED
+          returntype CDATA 'void'>
+
+<!ELEMENT param EMPTY>
+<!ATTLIST param
+          name NMTOKEN #REQUIRED
+          type CDATA #REQUIRED>
+          
+<!ELEMENT relation ((relate)*,(field)*)>
+<!ATTLIST relation
+          name NMTOKEN #IMPLIED
+          id NMTOKEN #IMPLIED
+          unidir (true|false) "false">
+          
+<!ELEMENT relate EMPTY>
+<!ATTLIST relate
+          limit (one|many) "many"
+          object IDREF #REQUIRED
+          handle NMTOKEN #IMPLIED>
