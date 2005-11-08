@@ -1,0 +1,118 @@
+CREATE TABLE schema (name TEXT,type TEXT,sql TEXT);
+DELETE FROM schema WHERE name='schema' and type='table';
+INSERT INTO schema 
+VALUES ('schema','table','CREATE TABLE schema (name TEXT,type TEXT,sql TEXT)');
+CREATE TABLE Person_ (id_ INTEGER PRIMARY KEY, type_ TEXT,
+                      name_ TEXT, age_ INTEGER, sex_ INTEGER);
+DELETE FROM schema WHERE name='Person_' and type='table';
+INSERT INTO schema 
+VALUES ('Person_','table','CREATE TABLE Person_ '
+'(id_ INTEGER PRIMARY KEY,type_ TEXT,name_ TEXT,age_ INTEGER,sex_ INTEGER)');
+CREATE TABLE Person_Person_1 (Person1 INTEGER UNIQUE,Person2 INTEGER);
+DELETE FROM schema WHERE name='Person_Person_1' and type='table';
+INSERT INTO schema 
+VALUES ('Person_Person_1','table',
+'CREATE TABLE Person_Person_1 (Person1 INTEGER UNIQUE,Person2 INTEGER)');
+CREATE INDEX idx_Person_Person_1_Person1 ON Person_Person_1 (Person1);
+DELETE FROM schema WHERE name='idx_Person_Person_1_Person1' and type='index';
+INSERT INTO schema VALUES ('idx_Person_Person_1_Person1','index',
+'CREATE INDEX idx_Person_Person_1_Person1 ON Person_Person_1 (Person1)');
+CREATE INDEX idx_Person_Person_1_Person2 ON Person_Person_1 (Person2);
+DELETE FROM schema WHERE name='idx_Person_Person_1_Person2' and type='index';
+INSERT INTO schema VALUES ('idx_Person_Person_1_Person2','index',
+'CREATE INDEX idx_Person_Person_1_Person2 ON Person_Person_1 (Person2)');
+CREATE INDEX _ab3059b02a0e07ba8cd9ba77a8a366 
+ON Person_Person_1 (Person1,Person2);
+DELETE FROM schema 
+WHERE name='_ab3059b02a0e07ba8cd9ba77a8a366' and type='index';
+INSERT INTO schema 
+VALUES ('_ab3059b02a0e07ba8cd9ba77a8a366','index',
+'CREATE INDEX _ab3059b02a0e07ba8cd9ba77a8a366 '
+'ON Person_Person_1 (Person1,Person2)');
+CREATE TABLE Person_Person_2 (Person1 INTEGER UNIQUE,Person2 INTEGER);
+DELETE FROM schema WHERE name='Person_Person_2' and type='table';
+INSERT INTO schema VALUES ('Person_Person_2','table',
+'CREATE TABLE Person_Person_2 (Person1 INTEGER UNIQUE,Person2 INTEGER)');
+CREATE INDEX idx_Person_Person_2_Person1 ON Person_Person_2 (Person1);
+DELETE FROM schema WHERE name='idx_Person_Person_2_Person1' and type='index';
+INSERT INTO schema VALUES ('idx_Person_Person_2_Person1','index',
+'CREATE INDEX idx_Person_Person_2_Person1 ON Person_Person_2 (Person1)');
+CREATE INDEX idx_Person_Person_2_Person2 ON Person_Person_2 (Person2);
+DELETE FROM schema WHERE name='idx_Person_Person_2_Person2' and type='index';
+INSERT INTO schema VALUES ('idx_Person_Person_2_Person2','index',
+'CREATE INDEX idx_Person_Person_2_Person2 ON Person_Person_2 (Person2)');
+CREATE INDEX _2253ebb01328039614dbe66fa9939b ON Person_Person_2 
+(Person1,Person2);
+DELETE FROM schema 
+WHERE name='_2253ebb01328039614dbe66fa9939b' and type='index';
+INSERT INTO schema VALUES ('_2253ebb01328039614dbe66fa9939b','index',
+'CREATE INDEX _2253ebb01328039614dbe66fa9939b ON Person_Person_2 '
+'(Person1,Person2)');
+CREATE TABLE Person_Person_3 (Person1 INTEGER,Person2 INTEGER);
+DELETE FROM schema WHERE name='Person_Person_3' and type='table';
+INSERT INTO schema VALUES ('Person_Person_3','table',
+'CREATE TABLE Person_Person_3 (Person1 INTEGER,Person2 INTEGER)');
+CREATE INDEX idx_Person_Person_3_Person1 ON Person_Person_3 (Person1);
+DELETE FROM schema WHERE name='idx_Person_Person_3_Person1' and type='index';
+INSERT INTO schema VALUES ('idx_Person_Person_3_Person1','index',
+'CREATE INDEX idx_Person_Person_3_Person1 ON Person_Person_3 (Person1)');
+CREATE INDEX idx_Person_Person_3_Person2 ON Person_Person_3 (Person2);
+DELETE FROM schema WHERE name='idx_Person_Person_3_Person2' and type='index';
+INSERT INTO schema VALUES ('idx_Person_Person_3_Person2','index',
+'CREATE INDEX idx_Person_Person_3_Person2 ON Person_Person_3 (Person2)');
+CREATE INDEX _93931ba08649c11aa1713a821aff22 
+ON Person_Person_3 (Person1,Person2);
+DELETE FROM schema WHERE name='_93931ba08649c11aa1713a821aff22' 
+and type='index';
+INSERT INTO schema VALUES ('_93931ba08649c11aa1713a821aff22','index',
+'CREATE INDEX _93931ba08649c11aa1713a821aff22 ON '
+'Person_Person_3 (Person1,Person2)');
+CREATE TABLE Person_Person_4 (Person1 INTEGER,Person2 INTEGER);
+DELETE FROM schema WHERE name='Person_Person_4' and type='table';
+INSERT INTO schema VALUES ('Person_Person_4','table',
+'CREATE TABLE Person_Person_4 (Person1 INTEGER,Person2 INTEGER)');
+CREATE INDEX idx_Person_Person_4_Person1 ON Person_Person_4 (Person1);
+DELETE FROM schema WHERE name='idx_Person_Person_4_Person1' and type='index';
+INSERT INTO schema VALUES ('idx_Person_Person_4_Person1','index',
+'CREATE INDEX idx_Person_Person_4_Person1 ON Person_Person_4 (Person1)');
+CREATE INDEX idx_Person_Person_4_Person2 ON Person_Person_4 (Person2);
+DELETE FROM schema WHERE name='idx_Person_Person_4_Person2' and type='index';
+INSERT INTO schema VALUES ('idx_Person_Person_4_Person2','index',
+'CREATE INDEX idx_Person_Person_4_Person2 ON Person_Person_4 (Person2)');
+CREATE INDEX _5679e84d382c8c609eef5875af3fca ON Person_Person_4 
+(Person1,Person2);
+DELETE FROM schema WHERE name='_5679e84d382c8c609eef5875af3fca' 
+and type='index';
+INSERT INTO schema VALUES ('_5679e84d382c8c609eef5875af3fca','index',
+'CREATE INDEX _5679e84d382c8c609eef5875af3fca ON Person_Person_4 '
+'(Person1,Person2)');
+INSERT INTO Person_ (id_,type_,name_,age_,sex_) VALUES (NULL,'Person','Jeff','32','0');
+INSERT INTO Person_ (id_,type_,name_,age_,sex_) VALUES (NULL,'Person','Jill','33','1');
+INSERT INTO Person_ (id_,type_,name_,age_,sex_) VALUES (NULL,'Person','Jack','15','0');
+INSERT INTO Person_ (id_,type_,name_,age_,sex_) VALUES (NULL,'Person','Jess','15','1');
+INSERT INTO Person_Person_4 (Person1,Person2) VALUES ('1','3');
+INSERT INTO Person_Person_4 (Person1,Person2) VALUES ('2','3');
+INSERT INTO Person_Person_4 (Person1,Person2) VALUES ('2','4');
+INSERT INTO Person_Person_2 (Person1,Person2) VALUES ('3','1');
+INSERT INTO Person_Person_1 (Person1,Person2) VALUES ('3','2');
+INSERT INTO Person_Person_1 (Person1,Person2) VALUES ('2','2');
+INSERT INTO Person_Person_3 (Person1,Person2) VALUES ('3','2');
+INSERT INTO Person_Person_3 (Person1,Person2) VALUES ('2','3');
+SELECT Person_.id_,Person_.type_,Person_.name_,Person_.age_,Person_.sex_ 
+FROM Person_ ORDER BY Person_.age_;
+SELECT Person_.id_,Person_.type_,Person_.name_,Person_.age_,Person_.sex_ 
+FROM Person_ 
+WHERE Person_.id_ in 
+    (SELECT Person_.id_ FROM Person_ 
+        WHERE Person_.id_ in (SELECT Person2 FROM Person_Person_4 
+            WHERE Person_Person_4.Person1 = '1') 
+    INTERSECT 
+    SELECT Person_.id_ FROM Person_ 
+        WHERE Person_.id_ in (SELECT Person2 FROM Person_Person_4 
+            WHERE Person_Person_4.Person1 = '2'));
+DROP TABLE schema;
+DROP TABLE Person_;
+DROP TABLE Person_Person_1;
+DROP TABLE Person_Person_2;
+DROP TABLE Person_Person_3;
+DROP TABLE Person_Person_4;

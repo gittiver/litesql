@@ -1,0 +1,31 @@
+/* LiteSQL - Documentation - Changes
+ * 
+ * By Tero Laitinen 
+ * 
+ * See LICENSE for copyright information. */
+
+/* \file changes.txt
+    Manual */
+/** \page changes Changes
+\section vercvs CVS Version
+- anonymous enums removed from enumerated field values (in generated code), compiles now with g++-4.0
+- Relation::Row-class added, represents rows of relation table
+- Relation::getRows-method added, used to access relation rows
+- concurrency problem with SQLite3-backend.execute fixed
+- few VC++ - compilation issues fixed 
+- Python code generator replaced with C++ - code generator
+- RelationHandle::getRows-method added, used to access relation rows linked to particular object
+- configure-script added (uses autoconf and automake)
+- scons dependencies removed
+- Python dependencies removed
+- debian packaging headers added
+\section ver0_2 Version 0.2
+- macro hacks removed, XML database definition file and code generator is used now on
+- support for n-ary relations (relations that link three or more objects)
+- support for relation attributes (ordered relations are now possible)
+- set operations: intersect, union_, except
+- small changes under the hood
+- DataSource-class
+\section ver0_1 Version 0.1
+- initial version
+*/
