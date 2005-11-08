@@ -1,4 +1,4 @@
-#include "compatibility.hpp"
+#include "../library/compatibility.hpp"
 #include "xmlobjects.hpp"
 namespace xml {
 string safe(const char * s) {

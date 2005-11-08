@@ -1,5 +1,5 @@
 AC_PREREQ(2.50)
-AC_INIT(src/database.cpp)
+AC_INIT(src/library/database.cpp)
 AM_INIT_AUTOMAKE(litesql,0.3)
 AM_CONFIG_HEADER(config.h)
 AC_PROG_CC
@@ -28,5 +28,6 @@ AH_TEMPLATE(HAVE_POSTGRESQL8, [Define if you have PostgreSQL 8.0 (header file in
 AC_CHECK_HEADER([postgresql/8.0/libpq-fe.h], [AC_DEFINE(HAVE_POSTGRESQL8)])
 
 AC_PROG_LIBTOOL
-AC_OUTPUT(Makefile include/Makefile include/litesql/Makefile src/Makefile) 
+AC_OUTPUT(Makefile include/Makefile include/litesql/Makefile src/Makefile 
+          src/library/Makefile src/generator/Makefile src/tests/Makefile src/examples/Makefile) 
 

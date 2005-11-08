@@ -86,23 +86,25 @@ STRIP = @STRIP@
 VERSION = @VERSION@
 
 AM_CXXFLAGS = -I../../include
-lib_LTLIBRARIES = liblitesql.la
-liblitesql_la_SOURCES = database.cpp expr.cpp selectquery.cpp persistent.cpp split.cpp string.cpp backend.cpp updatequery.cpp field.cpp datasource.cpp sqlite3.cpp postgresql.cpp mysql.cpp compatibility.cpp
-liblitesql_la_LDFLAGS = -version-info 0:3:0
+bin_PROGRAMS = litesql-gen
+litesql_gen_SOURCES = litesql-gen.cpp litesql-gen-actions.cpp xmlobjects.cpp md5.cpp litesql-gen-cpp.cpp
+litesql_gen_LDADD = ../library/liblitesql.la
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-LTLIBRARIES =  $(lib_LTLIBRARIES)
+bin_PROGRAMS =  litesql-gen$(EXEEXT)
+PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-liblitesql_la_LIBADD = 
-liblitesql_la_OBJECTS =  database.lo expr.lo selectquery.lo \
-persistent.lo split.lo string.lo backend.lo updatequery.lo field.lo \
-datasource.lo sqlite3.lo postgresql.lo mysql.lo compatibility.lo
+litesql_gen_OBJECTS =  litesql-gen.$(OBJEXT) \
+litesql-gen-actions.$(OBJEXT) xmlobjects.$(OBJEXT) md5.$(OBJEXT) \
+litesql-gen-cpp.$(OBJEXT)
+litesql_gen_DEPENDENCIES =  ../library/liblitesql.la
+litesql_gen_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -115,47 +117,45 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/backend.P .deps/compatibility.P .deps/database.P \
-.deps/datasource.P .deps/expr.P .deps/field.P .deps/mysql.P \
-.deps/persistent.P .deps/postgresql.P .deps/selectquery.P .deps/split.P \
-.deps/sqlite3.P .deps/string.P .deps/updatequery.P
-SOURCES = $(liblitesql_la_SOURCES)
-OBJECTS = $(liblitesql_la_OBJECTS)
+DEP_FILES =  .deps/litesql-gen-actions.P .deps/litesql-gen-cpp.P \
+.deps/litesql-gen.P .deps/md5.P .deps/xmlobjects.P
+SOURCES = $(litesql_gen_SOURCES)
+OBJECTS = $(litesql_gen_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .cpp .lo .o .obj .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.ac $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu src/library/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu src/generator/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLTLIBRARIES:
+mostlyclean-binPROGRAMS:
 
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
-distclean-libLTLIBRARIES:
+distclean-binPROGRAMS:
 
-maintainer-clean-libLTLIBRARIES:
+maintainer-clean-binPROGRAMS:
 
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	  else :; fi; \
 	done
 
-uninstall-libLTLIBRARIES:
+uninstall-binPROGRAMS:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
 
 # FIXME: We should only use cygpath when building on Windows,
@@ -196,8 +196,9 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-liblitesql.la: $(liblitesql_la_OBJECTS) $(liblitesql_la_DEPENDENCIES)
-	$(CXXLINK) -rpath $(libdir) $(liblitesql_la_LDFLAGS) $(liblitesql_la_OBJECTS) $(liblitesql_la_LIBADD) $(LIBS)
+litesql-gen$(EXEEXT): $(litesql_gen_OBJECTS) $(litesql_gen_DEPENDENCIES)
+	@rm -f litesql-gen$(EXEEXT)
+	$(CXXLINK) $(litesql_gen_LDFLAGS) $(litesql_gen_OBJECTS) $(litesql_gen_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 .cpp.obj:
@@ -236,14 +237,14 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = src/library
+subdir = src/generator
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu src/library/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu src/generator/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -313,7 +314,7 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-libLTLIBRARIES
+install-exec-am: install-binPROGRAMS
 install-exec: install-exec-am
 
 install-data-am:
@@ -322,14 +323,14 @@ install-data: install-data-am
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES
+uninstall-am: uninstall-binPROGRAMS
 uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(PROGRAMS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir)
+	$(mkinstalldirs)  $(DESTDIR)$(bindir)
 
 
 mostlyclean-generic:
@@ -341,25 +342,25 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
+clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
 		clean-depend clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-libLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-tags distclean-depend \
-		distclean-generic clean-am
+distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
+		distclean-tags distclean-depend distclean-generic \
+		clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-depend \
 		maintainer-clean-generic distclean-am
@@ -368,19 +369,19 @@ maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
-clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
-uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir mostlyclean-depend \
-distclean-depend clean-depend maintainer-clean-depend info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
+maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir \
+mostlyclean-depend distclean-depend clean-depend \
+maintainer-clean-depend info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

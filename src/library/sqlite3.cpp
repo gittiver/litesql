@@ -139,10 +139,17 @@ Backend::Result* SQLite3::execute(string query) const {
     Result * r = new Result;
     char * errMsg;
     int status;
-    if ((status = sqlite3_exec(db, query.c_str(), callback, r, &errMsg))
-        != SQLITE_OK) {
-        throwError(status);
-    }
+    do {
+        status = sqlite3_exec(db, query.c_str(), callback, r, &errMsg);
+        switch(status) {         
+            case SQLITE_BUSY: 
+            case SQLITE_LOCKED: 
+                usleep(250000); 
+                break; 
+            case SQLITE_OK: break;
+            default: throwError(status); 
+        }
+    } while (status != SQLITE_OK); 
     return r;    
 }
 Backend::Cursor* SQLite3::cursor(string query) const {
