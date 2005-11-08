@@ -766,7 +766,9 @@ Records getSchema(const vector<xml::Object>& objects,
         for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
             const xml::Relate& relate = rel.related[i2];
             string extra;
-            if (rel.related.size() == 2) { 
+            if (relate.isUnique())
+                    extra = " + " + quote(" UNIQUE");
+            else if (rel.related.size() == 2) { 
                 if (i2 == 0 && rel.related[1].hasLimit())
                     extra = " + " + quote(" UNIQUE");
                 if (i2 == 1 && rel.related[0].hasLimit())

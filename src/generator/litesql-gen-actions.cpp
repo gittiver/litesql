@@ -189,7 +189,7 @@ void STag_relate(void)
 #line 83 "litesql-gen.xml"
 
 if (rel)
-    rel->related.push_back(xml::Relate(A_relate_object, A_relate_limit, xml::safe(A_relate_handle)));
+    rel->related.push_back(xml::Relate(A_relate_object, A_relate_limit, A_relate_unique, xml::safe(A_relate_handle)));
 
 } /* STag_relate */
 

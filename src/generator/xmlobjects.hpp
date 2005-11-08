@@ -6,6 +6,8 @@
 #include <map>
 #include "litesql-gen.hpp"
 #include "litesql/split.hpp"
+#include "litesql/string.hpp"
+extern int yylineno;
 namespace xml {
 using namespace std;
 using namespace litesql;
@@ -88,12 +90,21 @@ public:
     string getMethodName;
     int paramPos;
     AT_relate_limit limit;
+    AT_relate_unique unique;
     string handle;
-    Relate(string on, AT_relate_limit l, string h) 
-        : objectName(on), limit(l), handle(h) {}
+    Relate(string on, AT_relate_limit l, AT_relate_unique u, string h) 
+        : objectName(on), limit(l), unique(u), handle(h) {
+        if (hasLimit() && isUnique())
+            throw logic_error("both limit and unique specified in relate: line " + 
+                              toString(yylineno));
+    }
     bool hasLimit() const {
         return limit == A_relate_limit_one;
     }
+    bool isUnique() const {
+        return unique == A_relate_unique_true;
+    }
+
 };
 class Relation {
 public:

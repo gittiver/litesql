@@ -82,7 +82,7 @@ if (mtd)
 ]]></start>
 <start tag="relate"><![CDATA[
 if (rel)
-    rel->related.push_back(xml::Relate({object}, {limit}, xml::safe({handle})));
+    rel->related.push_back(xml::Relate({object}, {limit}, {unique}, xml::safe({handle})));
 ]]></start>
 <end tag="database"><![CDATA[
 try {

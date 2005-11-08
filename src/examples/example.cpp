@@ -18,6 +18,10 @@ int main(int argc, char **argv) {
         ExampleDatabase db("sqlite3", "database=example.db");
         // create tables, sequences and indexes
         db.create();
+        char buf[100];
+        gets(buf);
+        db.query("select * from Person_");
+
         // create couple of Person-objects
         Person jeff(db);
         jeff.name = "Jeff";
@@ -38,7 +42,6 @@ int main(int argc, char **argv) {
         jess.name = "Jess";
         jess.sex = Person::Sex::Female;
         jess.update();
-        
         // build up relationships between Persons
         jeff.children().link(jack);
         jill.children().link(jack);

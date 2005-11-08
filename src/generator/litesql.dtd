@@ -48,6 +48,7 @@
           
 <!ELEMENT relate EMPTY>
 <!ATTLIST relate
+          unique (true|false) "false"
           limit (one|many) "many"
           object IDREF #REQUIRED
           handle NMTOKEN #IMPLIED>
