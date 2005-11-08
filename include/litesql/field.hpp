@@ -144,7 +144,7 @@ string operator+(Field<T> f, string a) {
 }
 template <class T>
 ostream & operator << (ostream & os, const Field<T> & f) {
-    return os << toString(f);
+    return os << f.value();
 }
 
 }
