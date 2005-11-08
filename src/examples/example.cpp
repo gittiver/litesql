@@ -18,9 +18,6 @@ int main(int argc, char **argv) {
         ExampleDatabase db("sqlite3", "database=example.db");
         // create tables, sequences and indexes
         db.create();
-        char buf[100];
-        gets(buf);
-        db.query("select * from Person_");
 
         // create couple of Person-objects
         Person jeff(db);
