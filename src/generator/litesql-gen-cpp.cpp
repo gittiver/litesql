@@ -561,11 +561,11 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
     for (size_t i = 0; i < r.fields.size(); i++) {
         xml::Field& fld = r.fields[i];
         
-        link.body("fields.push_back(" + fld.name + ".name());");
+        link.body("fields.push_back(" + fld.name + "_.name());");
         if (fld.getCPPType() != "std::string")
-            link.body("values.push_back(toString(" + fld.name + "_));");
+            link.body("values.push_back(toString(" + fld.name + "));");
         else
-            link.body("values.push_back(" + fld.name + "_);");
+            link.body("values.push_back(" + fld.name + ");");
     }
     link.body("db.insert(table, values, fields);");
     if (r.isUnidir()==false && r.related.size() == 2 && r.sameTypes() == 2) {
@@ -579,11 +579,11 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
         for (size_t i = 0; i < r.fields.size(); i++) {
             xml::Field& fld = r.fields[i];
         
-            link.body("fields.push_back(" + fld.name + ".name());");
+            link.body("fields.push_back(" + fld.name + "_.name());");
             if (fld.getCPPType() != "std::string")
-                link.body("values.push_back(toString(" + fld.name + "_));");
+                link.body("values.push_back(toString(" + fld.name + "));");
             else
-                link.body("values.push_back(" + fld.name + "_);");
+                link.body("values.push_back(" + fld.name + ");");
         }
         link.body("db.insert(table, values, fields);");
     }
@@ -597,7 +597,7 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
     }
     for (size_t i = 0; i < r.fields.size(); i++) {
         xml::Field& fld = r.fields[i];
-        unlinks.push_back("(" + fld.name + " == " + fld.name + "_)");
+        unlinks.push_back("(" + fld.name + "_ == " + fld.name + ")");
     }
     
     unlink.body("db.delete_(table, (" + unlinks.join(" && ") + "));");
@@ -610,7 +610,7 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
         }
         for (size_t i = 0; i < r.fields.size(); i++) {
             xml::Field& fld = r.fields[i];
-            unlinks.push_back("(" + fld.name + " == " + fld.name + "_)");
+            unlinks.push_back("(" + fld.name + "_ == " + fld.name + ")");
         }
         unlink.body("db.delete_(table, (" + unlinks.join(" && ") + "));");
     }
@@ -640,9 +640,9 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
     }
     for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
         xml::Field& fld = r.fields[i2];
-        link.param(Variable(fld.name + "_", fld.getCPPType(), 
+        link.param(Variable(fld.name, fld.getCPPType(), 
                             fld.getQuotedDefaultValue()));
-        unlink.param(Variable(fld.name + "_",  fld.getCPPType()));
+        unlink.param(Variable(fld.name,  fld.getCPPType()));
     }
     cl.method(link).method(unlink).method(del).method(getRows);
     if (r.sameTypes() == 1) {
@@ -786,8 +786,8 @@ Records getSchema(const vector<xml::Object>& objects,
         for (size_t i2 = 0; i2 < rel.fields.size(); i2++) {
             const xml::Field& fld = rel.fields[i2];
             fields.push_back(rel.getName() + "::" + fld.name 
-                             + ".name() + \" \" + " + 
-                             rel.getName() + "::" + fld.name + ".type()");
+                             + "_.name() + \" \" + " + 
+                             rel.getName() + "::" + fld.name + "_.type()");
         }
         rec.clear();
         rec.push_back(rel.getName() + "::table");
