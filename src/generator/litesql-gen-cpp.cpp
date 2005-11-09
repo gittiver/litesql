@@ -97,6 +97,7 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
     
     Method cons1(o.name); // Object(const Database &)
     string consParams = o.inherits + "(db)";
+    string cons2Params = o.inherits + "(db, rec)";
     if (o.fields.size() > 0) {
         Split fieldInst;
         for (size_t i = 0; i < o.fields.size(); i++) {
@@ -104,6 +105,8 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
             fieldInst.push_back(f.name + brackets(f.name + "_"));
         }
         consParams += ", " + fieldInst.join(", ");
+        cons2Params += ", " + fieldInst.join(", ");
+
     }
 
     cons1.param(Variable("db", "const litesql::Database&"))
@@ -114,12 +117,16 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
     Method cons2(o.name); // Object(const Database &, const Record& row
     cons2.param(Variable("db", "const litesql::Database&"))
         .param(Variable("rec", "const litesql::Record&"))
-        .constructor(consParams);
+        .constructor(cons2Params);
     if (hasDefaults) 
         cons2.body("defaults();");
     if (o.fields.size() > 0) {
-        cons2.body("switch(rec.size()) {");
         int last = o.getLastFieldOffset();
+        cons2.body("size_t size = "
+                   "(rec.size() > " + toString(last) + ")"
+                   " ? " + toString(last) + " : rec.size();")
+            .body("switch(size) {");
+
         for(int i = o.fields.size() - 1; i >= 0; i--) {
             int p = last - o.fields.size() + i;
             cons2.body("case " + toString(p+1) + ": " 
@@ -509,7 +516,8 @@ void writeStaticRelData(Class& cl, xml::Relation& r) {
     }
     for (int i = r.related.size()-1; i >= 0; i--) {
         xml::Relate& rel = r.related[i];
-        string fname = decapitalize(rel.objectName);
+        string fname = rel.fieldTypeName;
+        fname = fname.substr(0, fname.size()-1);
         Variable fld(fname, "litesql::Field<int>");
         rowcl.variable(fld);
         rowcons.body("case " + toString(fieldNum) + ":")
@@ -830,18 +838,21 @@ void writeCPPClasses(FILE* hpp, FILE* cpp,
         cl.write(hpp, cpp);
         gen::Method strMtd("operator<<", "std::ostream &");
         strMtd.param(Variable("os", "std::ostream&"))
-            .param(Variable("o", o.name))
-            .body("os << \"-------------------------------------\""
-                    "<< std::endl;");
+            .param(Variable("o", o.name));
+/* TODO:        if (o.parentObject)
+           strMtd.body("os << (const " + o.inherits + "&) o;"); */
+        vector<xml::Field> flds;
+        o.getAllFields(flds);
 
-        for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
-            xml::Field& fld = o.fields[i2];
+        strMtd.body("os << \"-------------------------------------\" << std::endl;");
+        for (size_t i2 = 0; i2 < flds.size(); i2++) {
+            xml::Field& fld = flds[i2];
             strMtd.body("os << o." + fld.name + ".name() << \" = \" << o." 
                         + fld.name + " << std::endl;");
         }
-        strMtd.body("os << \"-------------------------------------\""
-                    "<< std::endl;")
-              .body("return os;");
+        strMtd.body("os << \"-------------------------------------\" << std::endl;");
+        strMtd.body("return os;");
+        
         strMtd.write(hpp, cpp, "", 0);
     }
 
