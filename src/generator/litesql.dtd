@@ -5,7 +5,7 @@
           namespace NMTOKEN #IMPLIED
 		  include CDATA #IMPLIED>
 
-<!ELEMENT object ((field)*,(method)*)>
+<!ELEMENT object ((field)*,(method)*,(index)*)>
 <!ATTLIST object
           name ID #REQUIRED
           inherits NMTOKEN #IMPLIED>
@@ -25,7 +25,7 @@
           default CDATA #IMPLIED
           indexed (true|false) "false">
 
-<!ELEMENT index (indexfield)+>
+<!ELEMENT index (indexfield, (indexfield)+)>
 <!ATTLIST index 
           unique (true|false) "false">
 <!ELEMENT indexfield EMPTY>
@@ -47,7 +47,7 @@
           name NMTOKEN #REQUIRED
           type CDATA #REQUIRED>
           
-<!ELEMENT relation ((relate)*,(field)*)>
+<!ELEMENT relation ((relate)*,(field)*,(index)*)>
 <!ATTLIST relation
           name NMTOKEN #IMPLIED
           id NMTOKEN #IMPLIED
