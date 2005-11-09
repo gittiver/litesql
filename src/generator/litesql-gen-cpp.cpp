@@ -243,6 +243,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
                 hcl.method(getTpl);                
                 for (size_t i2 = 0; i2 < handle.destObjects.size(); i2++) {
                     xml::Object* dest = handle.destObjects[i2].first;
+                    xml::Relate* relate = handle.destObjects[i2].second;
                     Method get("get", 
                                "litesql::DataSource<" + dest->name + ">");
                     get.templateSpec("").param(exprParam);
@@ -253,13 +254,14 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
                     params.push_back("(" + rel->getName() + "::" + handle.relate->fieldTypeName + " == owner->id)"
                                      + extraExpr);
                     params.push_back("expr");
-                    get.body("return " + rel->getName() + "::" + handle.relate->getMethodName
+                    get.body("return " + rel->getName() + "::" + relate->getMethodName
                               + brackets(params.join(", ")) + ";");
                     hcl.method(get); 
                 }    
             } else {
                 for (size_t i2 = 0; i2 < handle.destObjects.size(); i2++) {
                     xml::Object* dest = handle.destObjects[i2].first;
+                    xml::Relate* relate = handle.destObjects[i2].second;
                     string num = toString(i2 + 1);
                     Method get("get" + dest->name + num, 
                                "litesql::DataSource<" + dest->name + ">");
@@ -271,7 +273,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
                     params.push_back("(" + rel->getName() + "::" + handle.relate->fieldTypeName + " == owner->id)"
                                      + extraExpr);
                     params.push_back("expr");
-                    get.body("return " + rel->getName() + "::" + handle.relate->getMethodName
+                    get.body("return " + rel->getName() + "::" + relate->getMethodName
                               + brackets(params.join(", ")) + ";");
                     hcl.method(get);
                 }
