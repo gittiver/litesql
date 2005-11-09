@@ -217,17 +217,17 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
             xml::Object* dest = handle.destObjects[0].first;
             xml::Relate* relate = handle.destObjects[0].second;
             Method get("get", "litesql::DataSource<" + dest->name + ">");
-
+            get.param(exprParam);
             if (!rel->fields.empty()) 
                 get.param(srcExprParam);
             
             params.clear();
             params.push_back("owner->getDatabase()");
+            params.push_back("expr");
             params.push_back("(" + rel->getName() + "::" + handle.relate->fieldTypeName + " == owner->id)"
                              + extraExpr);
             
-            params.push_back("expr");
-            get.param(exprParam)
+            get
                 .body("return " + rel->getName() + "::" + relate->getMethodName
                       + brackets(params.join(", ")) + ";");
             
@@ -250,9 +250,9 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
                         get.param(srcExprParam);
                     params.clear();
                     params.push_back("owner->getDatabase()");
+                    params.push_back("expr");
                     params.push_back("(" + rel->getName() + "::" + handle.relate->fieldTypeName + " == owner->id)"
                                      + extraExpr);
-                    params.push_back("expr");
                     get.body("return " + rel->getName() + "::" + relate->getMethodName
                               + brackets(params.join(", ")) + ";");
                     hcl.method(get); 
@@ -269,9 +269,9 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
                         get.param(srcExprParam);
                     params.clear();
                     params.push_back("owner->getDatabase()");
+                    params.push_back("expr");
                     params.push_back("(" + rel->getName() + "::" + handle.relate->fieldTypeName + " == owner->id)"
                                      + extraExpr);
-                    params.push_back("expr");
                     get.body("return " + rel->getName() + "::" + relate->getMethodName
                               + brackets(params.join(", ")) + ";");
                     hcl.method(get);
@@ -647,7 +647,7 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
     if (r.sameTypes() == 1) {
         Method getTpl("get", "litesql::DataSource<T>");
         getTpl.static_().template_("class T").defineOnly()
-            .param(dbparam).param(srcExpr).param(destExpr);
+            .param(dbparam).param(destExpr).param(srcExpr);
         cl.method(getTpl);
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
             xml::Relate& rel = r.related[i2];
@@ -655,7 +655,7 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
                        + rel.objectName + ">");
             rel.getMethodName = "get<" + rel.objectName + ">";
             get.static_().templateSpec("")
-                .param(dbparam).param(srcExpr).param(destExpr)
+                .param(dbparam).param(destExpr).param(srcExpr)
                 .body("SelectQuery sel;")
                 .body("sel.source(table);")
                 .body("sel.result(" + rel.fieldTypeName + ".fullName());")
@@ -681,7 +681,7 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
                         + rel.objectName + ">");
 
             get.static_()
-                .param(dbparam).param(srcExpr).param(destExpr)
+                .param(dbparam).param(destExpr).param(srcExpr)
                 .body("SelectQuery sel;")
                 .body("sel.source(table);")
                 .body("sel.result(" + rel.fieldTypeName + ".fullName());")
