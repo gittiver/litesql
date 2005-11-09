@@ -25,6 +25,7 @@
           default CDATA #IMPLIED
           indexed (true|false) "false">
 
+<!ELEMENT index 
 <!ELEMENT value EMPTY>
 <!ATTLIST value
           name NMTOKEN #REQUIRED

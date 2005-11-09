@@ -748,6 +748,23 @@ Records getSchema(const vector<xml::Object>& objects,
         rec.push_back(quote("CREATE TABLE ") + " + " + obj.name + "::table__"
                       + " + \" (\" + " + fields.join(" + \",\" + ") + " + \")\"");
         recs.push_back(rec);
+        for (size_t i2 = obj.parentObject ? 1 : 2; 
+             i2 < obj.fields.size(); i2++) {
+            const xml::Field& fld = obj.fields[i2];
+            if (fld.isIndexed()) {
+                rec.clear();
+                string iname = makeTableName(obj.getTable() + "_" + fld.name + "_idx");
+                rec.push_back(quote(iname));
+                rec.push_back(quote("index"));
+                rec.push_back(quote("CREATE INDEX " + iname + " ON ") + " + " + obj.name + "::table__"
+                                + " + \" (\" + " 
+                                + obj.name + "::" + fld.name + "_.name()"
+                                + " + \")\"");
+                recs.push_back(rec);
+            }
+        }
+
+        
         if (!obj.parentObject) {
             rec.clear();
             rec.push_back(obj.name + "::sequence__");
@@ -761,7 +778,7 @@ Records getSchema(const vector<xml::Object>& objects,
         
     for (size_t i = 0; i < relations.size(); i++) { 
         const xml::Relation& rel = relations[i];
-        Split fields;
+        Split fields, indexFields;
         for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
             const xml::Relate& relate = rel.related[i2];
             string extra;
@@ -779,8 +796,10 @@ Records getSchema(const vector<xml::Object>& objects,
                              + relate.fieldTypeName + ".name() + \" \" + "
                                    + rel.getName() + "::" + relate.fieldTypeName + ".type()" 
                              + extra);
+            indexFields.push_back(rel.getName() + "::" + relate.fieldTypeName + ".name()");
 
         }
+       
         for (size_t i2 = 0; i2 < rel.fields.size(); i2++) {
             const xml::Field& fld = rel.fields[i2];
             fields.push_back(rel.getName() + "::" + fld.name 
@@ -794,6 +813,44 @@ Records getSchema(const vector<xml::Object>& objects,
                       + " + \" (\" + " 
                       + fields.join("+ \",\" + ") + " + \")\"");
         recs.push_back(rec);
+        if (rel.related.size() > 0) {
+            string iname = makeTableName(rel.getTable() + "_all_idx");
+            rec.clear();
+            rec.push_back(quote(iname));
+            rec.push_back(quote("index"));
+            rec.push_back(quote("CREATE INDEX " + iname + " ON ") + " + " + rel.getName() + "::table"
+                            + " + \" (\" + " 
+                            + indexFields.join(" + \",\" + ")
+                            + " + \")\"");
+            recs.push_back(rec);
+        }
+        for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
+            const xml::Relate& relate = rel.related[i2];
+            rec.clear();
+            string iname = makeTableName(rel.getTable() + "_" + relate.fieldTypeName + "_idx");
+            rec.push_back(quote(iname));
+            rec.push_back(quote("index"));
+            rec.push_back(quote("CREATE INDEX " + iname + " ON ") + " + " + rel.getName() + "::table"
+                            + " + \" (\" + " 
+                            + rel.getName() + "::" + relate.fieldTypeName + ".name()"
+                            + " + \")\"");
+            recs.push_back(rec);
+        }
+        for (size_t i2 = 0; i2 < rel.fields.size(); i2++) {
+            const xml::Field& fld = rel.fields[i2];
+       
+            if (fld.isIndexed()) {
+                rec.clear();
+                string iname = makeTableName(rel.getTable() + "_" + fld.name + "_idx");
+                rec.push_back(quote(iname));
+                rec.push_back(quote("index"));
+                rec.push_back(quote("CREATE INDEX " + iname + " ON ") + " + " + rel.getName() + "::table"
+                                + " + \" (\" + " 
+                                + rel.getName() + "::" + fld.name + "_.name()"
+                                + " + \")\"");
+                recs.push_back(rec);
+            }
+        }
     }
     return recs;
 }
