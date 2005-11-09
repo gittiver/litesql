@@ -210,16 +210,12 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
 
 
         hcl.method(cons).method(link).method(unlink).method(del);
-        string extraExpr;
-        if (!rel->fields.empty())
-            extraExpr = " && srcExpr";
+        string extraExpr = " && srcExpr";
         if (handle.destObjects.size() == 1) {
             xml::Object* dest = handle.destObjects[0].first;
             xml::Relate* relate = handle.destObjects[0].second;
             Method get("get", "litesql::DataSource<" + dest->name + ">");
-            get.param(exprParam);
-            if (!rel->fields.empty()) 
-                get.param(srcExprParam);
+            get.param(exprParam).param(srcExprParam);
             
             params.clear();
             params.push_back("owner->getDatabase()");
@@ -236,18 +232,14 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
             if (rel->sameTypes() <= 2) {
                 Method getTpl("get", "litesql::DataSource<T>");
                 getTpl.template_("class T").defineOnly()
-                    .param(exprParam);
-                if (!rel->fields.empty()) 
-                    getTpl.param(srcExprParam);
+                    .param(exprParam).param(srcExprParam);
                 hcl.method(getTpl);                
                 for (size_t i2 = 0; i2 < handle.destObjects.size(); i2++) {
                     xml::Object* dest = handle.destObjects[i2].first;
                     xml::Relate* relate = handle.destObjects[i2].second;
                     Method get("get", 
                                "litesql::DataSource<" + dest->name + ">");
-                    get.templateSpec("").param(exprParam);
-                    if (!rel->fields.empty()) 
-                        get.param(srcExprParam);
+                    get.templateSpec("").param(exprParam).param(srcExprParam);
                     params.clear();
                     params.push_back("owner->getDatabase()");
                     params.push_back("expr");
@@ -264,9 +256,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
                     string num = toString(i2 + 1);
                     Method get("get" + dest->name + num, 
                                "litesql::DataSource<" + dest->name + ">");
-                    get.param(exprParam);
-                    if (!rel->fields.empty()) 
-                        get.param(srcExprParam);
+                    get.param(exprParam).param(srcExprParam);
                     params.clear();
                     params.push_back("owner->getDatabase()");
                     params.push_back("expr");
