@@ -509,13 +509,14 @@ void writeStaticRelData(Class& cl, xml::Relation& r) {
     }
     for (int i = r.related.size()-1; i >= 0; i--) {
         xml::Relate& rel = r.related[i];
-        Variable fld(rel.fieldTypeName, "litesql::Field<int>");
+        string fname = decapitalize(rel.objectName);
+        Variable fld(fname, "litesql::Field<int>");
         rowcl.variable(fld);
         rowcons.body("case " + toString(fieldNum) + ":")
-            .body("    " + rel.fieldTypeName + " = rec[" 
+            .body("    " + fname + " = rec[" 
                   + toString(fieldNum-1) + "];"); 
 
-        consParams.push_back(rel.fieldTypeName 
+        consParams.push_back(fname 
                              + "(" + r.getName() 
                              + "::" + rel.fieldTypeName +")");
         fieldNum--;
