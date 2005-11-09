@@ -813,7 +813,7 @@ Records getSchema(const vector<xml::Object>& objects,
                       + " + \" (\" + " 
                       + fields.join("+ \",\" + ") + " + \")\"");
         recs.push_back(rec);
-        if (rel.related.size() > 0) {
+        if (rel.related.size() > 1) {
             string iname = makeTableName(rel.getTable() + "_all_idx");
             rec.clear();
             rec.push_back(quote(iname));
