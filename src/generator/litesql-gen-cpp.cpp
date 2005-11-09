@@ -481,7 +481,7 @@ void writeStaticRelData(Class& cl, xml::Relation& r) {
             num = toString(i2 + 1);        
         r.related[i2].fieldTypeName = decapitalize(r.related[i2].objectName)
             + num;
-        Variable ftype(r.related[i2].fieldTypeName,
+        Variable ftype(r.related[i2].fieldTypeName + "_",
                        "const litesql::FieldType",
                        quote(r.related[i2].objectName 
                              + toString(i2 + 1))
