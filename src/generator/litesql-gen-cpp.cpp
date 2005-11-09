@@ -157,8 +157,9 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
     assign.body(o.inherits + "::operator=(obj);");
     assign.body("return *this;");
     
-
-    cl.method(cons1).method(cons2).method(cons3).method(assign);
+    Method dest("~" + o.name);
+    dest.virtual_();
+    cl.method(cons1).method(cons2).method(cons3).method(dest).method(assign);
     
 }
 void writeObjRelationHandles(Class& cl, xml::Object& o) {
