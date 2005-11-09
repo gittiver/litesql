@@ -479,9 +479,9 @@ void writeStaticRelData(Class& cl, xml::Relation& r) {
         string num;
         if (same)
             num = toString(i2 + 1);        
-        r.related[i2].fieldTypeName = decapitalize(r.related[i2].objectName)
+        r.related[i2].fieldTypeName = decapitalize(r.related[i2].objectName) 
             + num;
-        Variable ftype(r.related[i2].fieldTypeName + "_",
+        Variable ftype(r.related[i2].fieldTypeName,
                        "const litesql::FieldType",
                        quote(r.related[i2].objectName 
                              + toString(i2 + 1))
@@ -494,7 +494,7 @@ void writeStaticRelData(Class& cl, xml::Relation& r) {
         string data = quote(fld.name + "_") + "," +
                       quote(fld.getSQLType()) + "," +
                       "table";
-        Variable ftype(fld.name, "const litesql::FieldType", data);
+        Variable ftype(fld.name + "_", "const litesql::FieldType", data);
         ftype.static_();
         cl.variable(ftype);
     }
@@ -514,7 +514,7 @@ void writeStaticRelData(Class& cl, xml::Relation& r) {
         rowcons.body("case " + toString(fieldNum) + ":")
             .body("    " + fld.name + " = rec[" + toString(fieldNum-1) + "];");
         consParams.push_back(fld.name +
-                             "(" + r.getName() + "::" + fld.name +")");
+                             "(" + r.getName() + "::" + fld.name +"_)");
         fieldNum--;
         
     }
@@ -626,7 +626,7 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
     }
     for (size_t i = 0; i < r.fields.size(); i++) {
         xml::Field& fld = r.fields[i];
-        getRows.body("sel.result(" + fld.name + ".fullName());");
+        getRows.body("sel.result(" + fld.name + "_.fullName());");
     }
     getRows.body("sel.source(table);")
         .body("sel.where(expr);")
@@ -704,8 +704,7 @@ void makeRelationHandles(map<string, xml::Object*>& objMap,
             xml::Relate& relate = rel.related[i2];
             if (objMap.find(relate.objectName) 
                 == objMap.end()) 
-                throw invalid_argument("undefined object : "
-                                       + relate.objectName);
+                throw Except("undefined object : "                                      + relate.objectName);
         }
         for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
             xml::Relate& relate = rel.related[i2];
