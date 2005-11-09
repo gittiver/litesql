@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <algorithm>
 #include <map>
 #include "litesql-gen.hpp"
 #include "litesql/split.hpp"
@@ -104,6 +105,9 @@ public:
     bool isUnique() const {
         return unique == A_relate_unique_true;
     }
+    bool operator < (const Relate& r) const {
+        return objectName < r.objectName;
+    }
 
 };
 class Relation {
@@ -150,6 +154,7 @@ public:
         for (size_t i = 0; i < related.size(); i++)
             res.push_back(related[i].objectName);
         res.push_back(id);
+
         return res.join("_");
     }
 };

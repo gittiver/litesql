@@ -821,6 +821,7 @@ void writeCPPClasses(FILE* hpp, FILE* cpp,
         fprintf(hpp, "class %s;\n", objects[i].name.c_str());
     for (size_t i = 0; i < relations.size(); i++) {
         xml::Relation & o = relations[i];
+        sort(o.related.begin(), o.related.end());
         Class cl(o.getName());
         writeStaticRelData(cl, o);
         writeRelMethods(cl, o);
