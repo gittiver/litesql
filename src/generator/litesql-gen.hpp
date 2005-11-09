@@ -1,5 +1,5 @@
 /* XML processor/application API for litesql.dtd.
- * Generated 2005/11/06 03:05:02.
+ * Generated 2005/11/09 07:49:26.
  *
  * This program was generated with the FleXML XML processor generator.
  * FleXML is Copyright © 1999-2005 Kristoffer Rose.  All rights reserved.
@@ -75,8 +75,6 @@ typedef const char* AT_relation_id;
 typedef const char* AT_value_name;
 #define AU_value_name NULL
 typedef enum { AU_relate_limit, A_relate_limit_one,A_relate_limit_many } AT_relate_limit;
-typedef enum { AU_relate_unique, A_relate_unique_false,A_relate_unique_true } AT_relate_unique;
-
 typedef const char* AT_object_name;
 #define AU_object_name NULL
 typedef const char* AT_relate_object;
@@ -86,6 +84,7 @@ typedef const char* AT_database_include;
 typedef enum { AU_field_indexed, A_field_indexed_true,A_field_indexed_false } AT_field_indexed;
 typedef const char* AT_field_name;
 #define AU_field_name NULL
+typedef enum { AU_relate_unique, A_relate_unique_true,A_relate_unique_false } AT_relate_unique;
 typedef const char* AT_value_value;
 #define AU_value_value NULL
 typedef const char* AT_database_name;
@@ -126,12 +125,12 @@ extern AT_type_name A_type_name;
 extern AT_relation_id A_relation_id;
 extern AT_value_name A_value_name;
 extern AT_relate_limit A_relate_limit;
-extern AT_relate_unique A_relate_unique;
 extern AT_object_name A_object_name;
 extern AT_relate_object A_relate_object;
 extern AT_database_include A_database_include;
 extern AT_field_indexed A_field_indexed;
 extern AT_field_name A_field_name;
+extern AT_relate_unique A_relate_unique;
 extern AT_value_value A_value_value;
 extern AT_database_name A_database_name;
 extern AT_object_inherits A_object_inherits;
@@ -159,5 +158,4 @@ extern int yylex(void);
 
 /* Flexml error handling function (useful only when -q flag passed to flexml) */
 const char * parse_err_msg(void);
-extern int yylineno;
 #endif
