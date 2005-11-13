@@ -7,6 +7,9 @@
 #ifndef __litesql_field_hpp
 #define __litesql_field_hpp
 #include <iostream>
+#include <vector>
+#include <utility>
+#include <string>
 /** \file field.hpp
     contains FieldType- and Field-classes */
 namespace litesql {
@@ -19,16 +22,20 @@ class SelectQuery;
 
 class FieldType {
     string _name, _type, _table;
+    typedef vector< pair<string, string> > Values;
+    Values _values;
 public:
 
     FieldType(const string& n, 
               const string& t, 
-              const string& tbl) 
-        : _name(n), _type(t), _table(tbl) {}
+              const string& tbl,
+              const Values& vals = Values())
+        : _name(n), _type(t), _table(tbl), _values(vals) {}
     string fullName() const { return  table() + "." + name(); }
     string name() const { return _name; }
     string type() const { return _type; }
     string table() const { return _table; }
+    vector< pair<string, string> > values() { return _values; }
     /** syntactic sugar to Expr-API, Object::field_.in(set) */
     In in(const string& set) const;
     /** syntactic sugar to Expr-API, Object::field_.in(sel) */

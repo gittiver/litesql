@@ -1,5 +1,5 @@
 /* XML processor/application API for litesql.dtd.
- * Generated 2005/11/09 07:49:26.
+ * Generated 2005/11/13 13:39:40.
  *
  * This program was generated with the FleXML XML processor generator.
  * FleXML is Copyright © 1999-2005 Kristoffer Rose.  All rights reserved.
@@ -52,10 +52,12 @@ extern void STag_database(void);
 extern void ETag_database(void);
 extern void STag_object(void);
 extern void ETag_object(void);
-extern void STag_type(void);
-extern void ETag_type(void);
 extern void STag_field(void);
 extern void ETag_field(void);
+extern void STag_index(void);
+extern void ETag_index(void);
+extern void STag_indexfield(void);
+extern void ETag_indexfield(void);
 extern void STag_value(void);
 extern void ETag_value(void);
 extern void STag_method(void);
@@ -68,8 +70,8 @@ extern void STag_relate(void);
 extern void ETag_relate(void);
 
 /* XML application data. */
-typedef const char* AT_type_name;
-#define AU_type_name NULL
+typedef const char* AT_indexfield_name;
+#define AU_indexfield_name NULL
 typedef const char* AT_relation_id;
 #define AU_relation_id NULL
 typedef const char* AT_value_name;
@@ -91,8 +93,6 @@ typedef const char* AT_database_name;
 #define AU_database_name NULL
 typedef const char* AT_object_inherits;
 #define AU_object_inherits NULL
-typedef const char* AT_type_max;
-#define AU_type_max NULL
 typedef const char* AT_database_namespace;
 #define AU_database_namespace NULL
 typedef enum { AU_relation_unidir, A_relation_unidir_true,A_relation_unidir_false } AT_relation_unidir;
@@ -100,14 +100,10 @@ typedef const char* AT_database_version;
 #define AU_database_version NULL
 typedef const char* AT_param_name;
 #define AU_param_name NULL
+typedef enum { AU_index_unique, A_index_unique_true,A_index_unique_false } AT_index_unique;
 typedef const char* AT_method_name;
 #define AU_method_name NULL
-typedef const char* AT_type_default;
-#define AU_type_default NULL
-typedef enum { AU_type_type, A_type_type_integer,A_type_type_string,A_type_type_float,A_type_type_time,A_type_type_date,A_type_type_datetime } AT_type_type;
-typedef const char* AT_type_min;
-#define AU_type_min NULL
-typedef enum { AU_field_type, A_field_type_integer,A_field_type_string,A_field_type_float,A_field_type_time,A_field_type_date,A_field_type_datetime } AT_field_type;
+typedef enum { AU_field_type, A_field_type_boolean,A_field_type_integer,A_field_type_string,A_field_type_float,A_field_type_time,A_field_type_date,A_field_type_datetime } AT_field_type;
 typedef const char* AT_field_default;
 #define AU_field_default NULL
 typedef const char* AT_method_returntype;
@@ -118,10 +114,11 @@ typedef const char* AT_param_type;
 #define AU_param_type NULL
 typedef const char* AT_relate_handle;
 #define AU_relate_handle NULL
+typedef enum { AU_field_unique, A_field_unique_true,A_field_unique_false } AT_field_unique;
 
 /* FleXML-provided data. */
 extern const char* pcdata;
-extern AT_type_name A_type_name;
+extern AT_indexfield_name A_indexfield_name;
 extern AT_relation_id A_relation_id;
 extern AT_value_name A_value_name;
 extern AT_relate_limit A_relate_limit;
@@ -134,21 +131,19 @@ extern AT_relate_unique A_relate_unique;
 extern AT_value_value A_value_value;
 extern AT_database_name A_database_name;
 extern AT_object_inherits A_object_inherits;
-extern AT_type_max A_type_max;
 extern AT_database_namespace A_database_namespace;
 extern AT_relation_unidir A_relation_unidir;
 extern AT_database_version A_database_version;
 extern AT_param_name A_param_name;
+extern AT_index_unique A_index_unique;
 extern AT_method_name A_method_name;
-extern AT_type_default A_type_default;
-extern AT_type_type A_type_type;
-extern AT_type_min A_type_min;
 extern AT_field_type A_field_type;
 extern AT_field_default A_field_default;
 extern AT_method_returntype A_method_returntype;
 extern AT_relation_name A_relation_name;
 extern AT_param_type A_param_type;
 extern AT_relate_handle A_relate_handle;
+extern AT_field_unique A_field_unique;
 
 /* XML application utilities. */
 extern int element_context(int);

@@ -3,8 +3,7 @@
 #include <cstdio>
 #include "xmlobjects.hpp"
 
-void writeCPPClasses(std::FILE* hpp, std::FILE* cpp, 
-                     const std::string& dbName,
+void writeCPPClasses(xml::Database& db,
                      std::vector<xml::Object>& objects,
                      std::vector<xml::Relation>& relations);
 

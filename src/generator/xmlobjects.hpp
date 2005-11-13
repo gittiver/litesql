@@ -17,20 +17,39 @@ public:
     string name, value;
     Value(string n, string v) : name(n), value(v) {}
 };
+class IndexField {
+public:
+    string name;
+    IndexField(string n) : name(n) {}
+};
+class Index {
+public:
+    vector<IndexField> fields;
+    AT_index_unique unique;
+    Index(AT_index_unique u) : unique(u) {}
+
+    bool isUnique() const {
+        return unique == A_index_unique_true;
+    }
+};
 class Field {
 public:
     string name;
     AT_field_type type;
     string default_;
     AT_field_indexed indexed;
+    AT_field_unique unique;
     vector<Value> values;
-    Field(string n, AT_field_type t, string d, AT_field_indexed i) 
-        : name(n), type(t), default_(d), indexed(i) {}
+    Field(string n, AT_field_type t, string d, AT_field_indexed i, AT_field_unique u) 
+        : name(n), type(t), default_(d), indexed(i), unique(u) {}
     void value(const Value& v) {
         values.push_back(v);
     }
     bool isIndexed() const {
         return indexed == A_field_indexed_true;
+    }
+    bool isUnique() const {
+        return unique == A_field_unique_true;
     }
     string getQuotedDefaultValue() const {
         if (getCPPType()=="std::string")
@@ -119,6 +138,7 @@ public:
     AT_relation_unidir unidir;
     vector<Relate> related;
     vector<Field> fields;
+    vector<Index> indexes;
     Relation(string i, string n, AT_relation_unidir ud) 
         : id(i), name(n), unidir(ud) {}
     string getName() const {
@@ -166,6 +186,7 @@ public:
     string name, inherits;
     vector<Field> fields;
     vector<Method> methods;
+    vector<Index> indexes;
     vector<RelationHandle> handles;
     map<Relation*, vector<Relate*> > relations;
     Object * parentObject;
@@ -176,9 +197,9 @@ public:
         if (i.size() == 0) {
             inherits = "litesql::Persistent";
             fields.push_back(Field("id", A_field_type_integer, "", 
-                         A_field_indexed_true));
+                         A_field_indexed_true, A_field_unique_true));
             fields.push_back(Field("type", A_field_type_string, "", 
-                        A_field_indexed_false));
+                        A_field_indexed_false, A_field_unique_false));
         }
     }
     int getLastFieldOffset() const {
@@ -208,6 +229,13 @@ public:
         return name + "_";
     }
 };
+class Database {
+public:
+    string name, include, version, nspace;
+};
+void init(Database& db, 
+          vector<Object>& objects,
+          vector<Relation>& relations);
 string safe(const char *s);
 
 

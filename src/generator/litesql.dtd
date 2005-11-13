@@ -10,20 +10,13 @@
           name ID #REQUIRED
           inherits NMTOKEN #IMPLIED>
 
-<!ELEMENT type (value)*>
-<!ATTLIST type
-          name NMTOKEN #REQUIRED
-		  type (integer|string|float|time|date|datetime) #REQUIRED
-		  default CDATA #IMPLIED
-		  min CDATA #IMPLIED
-		  max CDATA #IMPLIED>
-
 <!ELEMENT field (value)*>
 <!ATTLIST field 
           name NMTOKEN #REQUIRED
-          type (integer|string|float|time|date|datetime) #REQUIRED
+          type (boolean|integer|string|float|time|date|datetime) #REQUIRED
           default CDATA #IMPLIED
-          indexed (true|false) "false">
+          indexed (true|false) "false"
+          unique (true|false) "false">
 
 <!ELEMENT index (indexfield, (indexfield)+)>
 <!ATTLIST index 
@@ -52,7 +45,8 @@
           name NMTOKEN #IMPLIED
           id NMTOKEN #IMPLIED
           unidir (true|false) "false">
-          
+
+                   
 <!ELEMENT relate EMPTY>
 <!ATTLIST relate
           unique (true|false) "false"

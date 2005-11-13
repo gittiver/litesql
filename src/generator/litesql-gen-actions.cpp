@@ -1,6 +1,6 @@
 /* XML application for litesql.dtd.
  * Includes actions from litesql-gen.xml.
- * Generated 2005/11/09 07:49:26.
+ * Generated 2005/11/13 13:39:40.
  *
  * This program was generated with the FleXML XML processor generator.
  * FleXML is Copyright © 1999-2005 Kristoffer Rose.  All rights reserved.
@@ -50,57 +50,44 @@
 
 #line 3 "litesql-gen.xml"
 
-#include "cppgenerator.hpp"
 #include "xmlobjects.hpp"
-#include "litesql-gen-cpp.hpp"
+#include "litesql-gen-main.hpp"
 #include "litesql-gen.hpp"
+
 using namespace std;
-using namespace gen;
-FILE *hpp, *cpp;
-vector<xml::Object> objects;
-vector<xml::Relation> relations;
-xml::Object * obj;
-xml::Relation * rel;
-xml::Field * fld;
-xml::Method * mtd;
-bool hasNamespace;
-string dbName;
+using namespace xml;
+vector<Object> objects;
+vector<Relation> relations;
+Database db;
+Object * obj;
+Relation * rel;
+Field * fld;
+Method * mtd;
+Index * idx;
 
 void STag_database(void)
 {
-#line 20 "litesql-gen.xml"
+#line 19 "litesql-gen.xml"
 
-dbName = A_database_name;
-string hppName = toLower(A_database_name) + ".hpp";
-hpp = fopen(hppName.c_str(), "w");
-string cppName = toLower(A_database_name) + ".cpp";
-cpp = fopen(cppName.c_str(), "w");
-fprintf(hpp, "#include \"litesql.hpp\"\n");
-if (A_database_include) 
-    fprintf(hpp, "#include \"%s\"\n", A_database_include);
-fprintf(cpp, "#include \"%s\"\n", hppName.c_str());
-if (A_database_namespace) {
-    fprintf(hpp, "namespace %s {\n", A_database_namespace);
-    fprintf(cpp, "namespace %s {\n", A_database_namespace);
-    hasNamespace = true;
-} else
-    hasNamespace = false;
-fprintf(cpp, "using namespace litesql;\n");
+db.name = safe(A_database_name);
+db.include = safe(A_database_include);
+db.version = safe(A_database_version);
+db.nspace = safe(A_database_namespace);
 
 } /* STag_database */
 
 void STag_object(void)
 {
-#line 38 "litesql-gen.xml"
+#line 25 "litesql-gen.xml"
 
-objects.push_back(xml::Object(A_object_name, xml::safe(A_object_inherits)));
+objects.push_back(Object(A_object_name, safe(A_object_inherits)));
 obj = &objects[objects.size()-1];
 
 } /* STag_object */
 
 void ETag_object(void)
 {
-#line 42 "litesql-gen.xml"
+#line 29 "litesql-gen.xml"
 
 obj = NULL;
 
@@ -108,16 +95,16 @@ obj = NULL;
 
 void STag_relation(void)
 {
-#line 45 "litesql-gen.xml"
+#line 32 "litesql-gen.xml"
 
-relations.push_back(xml::Relation(xml::safe(A_relation_id), xml::safe(A_relation_name),A_relation_unidir));
+relations.push_back(Relation(safe(A_relation_id), safe(A_relation_name),A_relation_unidir));
 rel = &relations[relations.size()-1];
 
 } /* STag_relation */
 
 void ETag_relation(void)
 {
-#line 49 "litesql-gen.xml"
+#line 36 "litesql-gen.xml"
 
 rel = NULL;
 
@@ -125,32 +112,63 @@ rel = NULL;
 
 void STag_field(void)
 {
-#line 52 "litesql-gen.xml"
+#line 39 "litesql-gen.xml"
 
 if (obj) {
-    obj->fields.push_back(xml::Field(A_field_name, 
-                                     A_field_type,xml::safe(A_field_default),A_field_indexed));
+    obj->fields.push_back(Field(A_field_name, 
+                                     A_field_type,safe(A_field_default),A_field_indexed,A_field_unique));
     fld = &obj->fields[obj->fields.size()-1];
 } else if (rel) {
-    rel->fields.push_back(xml::Field(A_field_name, 
-                         A_field_type,xml::safe(A_field_default),A_field_indexed));
+    rel->fields.push_back(Field(A_field_name, 
+                         A_field_type,safe(A_field_default),A_field_indexed, A_field_unique));
     fld = &rel->fields[rel->fields.size()-1];
 }
 
 } /* STag_field */
 
+void STag_index(void)
+{
+#line 50 "litesql-gen.xml"
+
+if (obj) {
+    obj->indexes.push_back(Index(A_index_unique));
+    idx = &obj->indexes[obj->indexes.size()-1];
+} else if (rel) {
+    rel->indexes.push_back(Index(A_index_unique));
+    idx = &rel->indexes[rel->indexes.size()-1];
+} 
+
+} /* STag_index */
+
+void ETag_index(void)
+{
+#line 59 "litesql-gen.xml"
+
+idx = NULL;
+
+} /* ETag_index */
+
+void STag_indexfield(void)
+{
+#line 62 "litesql-gen.xml"
+
+if (idx)
+    idx->fields.push_back(IndexField(A_indexfield_name));
+
+} /* STag_indexfield */
+
 void STag_value(void)
 {
-#line 63 "litesql-gen.xml"
+#line 66 "litesql-gen.xml"
 
 if (fld) 
-    fld->value(xml::Value(A_value_name, A_value_value));
+    fld->value(Value(A_value_name, A_value_value));
 
 } /* STag_value */
 
 void ETag_field(void)
 {
-#line 67 "litesql-gen.xml"
+#line 70 "litesql-gen.xml"
 
 fld = NULL;
 
@@ -158,10 +176,10 @@ fld = NULL;
 
 void STag_method(void)
 {
-#line 70 "litesql-gen.xml"
+#line 73 "litesql-gen.xml"
 
 if (obj) {
-    obj->methods.push_back(xml::Method(A_method_name, xml::safe(A_method_returntype)));
+    obj->methods.push_back(Method(A_method_name, safe(A_method_returntype)));
     mtd = &obj->methods[obj->methods.size()-1];
 }
 
@@ -169,7 +187,7 @@ if (obj) {
 
 void ETag_method(void)
 {
-#line 76 "litesql-gen.xml"
+#line 79 "litesql-gen.xml"
 
 mtd = NULL;
 
@@ -177,62 +195,41 @@ mtd = NULL;
 
 void STag_param(void)
 {
-#line 79 "litesql-gen.xml"
+#line 82 "litesql-gen.xml"
 
 if (mtd) 
-    mtd->param(xml::Param(A_param_name, A_param_type));
+    mtd->param(Param(A_param_name, A_param_type));
 
 } /* STag_param */
 
 void STag_relate(void)
 {
-#line 83 "litesql-gen.xml"
+#line 86 "litesql-gen.xml"
 
 if (rel)
-    rel->related.push_back(xml::Relate(A_relate_object, A_relate_limit, A_relate_unique, xml::safe(A_relate_handle)));
+    rel->related.push_back(Relate(A_relate_object, A_relate_limit, A_relate_unique, safe(A_relate_handle)));
 
 } /* STag_relate */
 
 void ETag_database(void)
 {
-#line 87 "litesql-gen.xml"
+#line 90 "litesql-gen.xml"
 
-try {
-    writeCPPClasses(hpp, cpp, dbName, objects, relations);
-} catch (logic_error& e) {
-    cerr << e.what() << endl;       
-}
-if (hasNamespace) {
-    fprintf(hpp, "}\n");
-    fprintf(cpp, "}\n");
-}
-fclose(hpp);
-fclose(cpp);
+    generateCode(db, objects, relations);    
 
 } /* ETag_database */
 
 
-#line 115 "litesql-gen.xml"
+#line 98 "litesql-gen.xml"
 
 extern FILE * yyin;
 int main(int argc, char **argv) {
-    if (argc != 2) {
-        fprintf(stderr, "usage: litesql-gen <my-database.xml>\n");
-        return -1;
-    }
-    yyin = fopen(argv[1], "r");
-    if (!yyin) {
-        perror("could not open file: ");
-        return -1;
-    }
-    
-    return yylex();
+    return litesql_gen_main(argc, argv, &yyin);
 }
 
 
 /* XML application entry points. */
-void STag_type(void) {}
-void ETag_type(void) {}
+void ETag_indexfield(void) {}
 void ETag_value(void) {}
 void ETag_param(void) {}
 void ETag_relate(void) {}
