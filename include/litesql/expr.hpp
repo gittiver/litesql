@@ -100,20 +100,21 @@ protected:
     const FieldType & field;
     string op;
     string data;
-
+    bool escape;
+    
     Oper(const FieldType & fld, const string& o, const string& d) 
-        : field(fld), op(o), data(escapeSQL(d)) {
+        : field(fld), op(o), data(d), escape(true) {
         extraTables.push_back(fld.table());
     }
     Oper(const FieldType & fld, const string& o, const FieldType &f2) 
-        : field(fld), op(o), data(f2.fullName()) {
+        : field(fld), op(o), data(f2.fullName()), escape(false) {
         extraTables.push_back(fld.table());
     }
 
 public:
     virtual string asString() const {
         string res;
-        res += field.fullName() + " " + op + " " + data;
+        res += field.fullName() + " " + op + " " + (escape ? escapeSQL(data) : data);
         return res;
     }
 };
