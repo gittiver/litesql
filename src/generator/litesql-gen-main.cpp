@@ -1,25 +1,26 @@
 #include <cstdio>
 #include "litesql.hpp"
 #include "litesql-gen-cpp.hpp"
+#include "litesql-gen-graphviz.hpp"
 using namespace std;
 
 char* help = 
 "Usage: litesql-gen [options] <my-database.xml>\n\n"
 "Options:\n"
-" -l, --target=TARGET         generate code for TARGET (default: c++)\n"
+" -t, --target=TARGET         generate code for TARGET (default: c++)\n"
 " -v, --verbose               verbosely report code generation\n"
 " --help                      print help\n"
 "\n"
 "Supported targets:\n"
-"  'c++'    C++ target (.cpp,.hpp)\n"
-//"  'c'      C target (.c,.h)\n"
-//"  'hs'     Haskell target (.hs)\n"
-//"  'sql'    SQL schema of database (.sql)\n"
-//"  'gviz'   Graphviz file (.dot)\n"
+"  'c++'        C++ target (.cpp,.hpp)\n"
+//"  'c'          C target (.c,.h)\n"
+//"  'hs'         Haskell target (.hs)\n"
+//"  'sql'        SQL schema of database (.sql)\n"
+"  'graphviz'   Graphviz file (.dot)\n"
 "\n\n"
 ;
 
-static string language = "c++";
+static string target = "c++";
 static bool verbose = false;
 void report(const string& msg) {
     if (verbose)
@@ -29,10 +30,12 @@ void generateCode(xml::Database& db,
                   vector<xml::Object>& objects,
                   vector<xml::Relation>& relations) {
     xml::init(db, objects, relations);
-    if (language == "c++") 
+    if (target == "c++") 
         writeCPPClasses(db, objects, relations);
+    else if (target == "graphviz") 
+        writeGraphviz(db, objects, relations);
     else
-        throw litesql::Except("unsupported language: " + language);
+        throw litesql::Except("unsupported target: " + target);
 }
 
 int litesql_gen_main(int argc, char **argv, FILE ** yyin) { 
@@ -42,23 +45,23 @@ int litesql_gen_main(int argc, char **argv, FILE ** yyin) {
         if (arg == "-v" || arg == "--verbose") {
             verbose = true;
             continue;
-        } else if (arg == "-l" || arg == "--language") {
+        } else if (arg == "-t" || arg == "--target") {
             if (i+1 >= argc) {
-                fprintf(stderr, "Error: missing language\n");
+                fprintf(stderr, "Error: missing target\n");
                 return -1;
             }    
-            language = argv[i+1];
+            target = argv[i+1];
             i++;
             continue;
-        } else if (litesql::startsWith(arg, "--language=")) {
+        } else if (litesql::startsWith(arg, "--target=")) {
             litesql::Split lang(arg, "=");
-            language = lang[1];
+            target = lang[1];
             continue;
         } else if (arg == "--help") {
             printHelp = true;
             break;
         } else if (i < argc - 1) {
-            fprintf(stderr, "Error: invalid argument '%s'", arg.c_str());
+            fprintf(stderr, "Error: invalid argument '%s'\n", arg.c_str());
             return -1;
         }
     }

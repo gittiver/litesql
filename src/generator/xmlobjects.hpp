@@ -236,6 +236,8 @@ public:
 void init(Database& db, 
           vector<Object>& objects,
           vector<Relation>& relations);
+string capitalize(const string& s);
+string decapitalize(const string& s);
 string safe(const char *s);
 
 

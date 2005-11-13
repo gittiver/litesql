@@ -13,6 +13,19 @@ bool validID(string s) {
         if (!isalnum(s[i]) && !s[i] != '_')
     return true;
 }
+string capitalize(const string& s) {
+    if (s.size() == 0)
+        return s;
+    char buf[2] = {toupper(s[0]), 0};
+    return string(buf) + s.substr(1, s.size());
+}
+string decapitalize(const string& s) {
+    if (s.size() == 0)
+        return s;
+    char buf[2] = {tolower(s[0]), 0};
+    return string(buf) + s.substr(1, s.size());
+}
+
 static void sanityCheck(Database& db,
                         vector<Object>& objects,
                         vector<Relation>& relations) {

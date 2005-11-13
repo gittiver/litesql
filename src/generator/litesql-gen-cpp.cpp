@@ -14,18 +14,6 @@ using namespace litesql;
 
 
 
-string capitalize(string s) {
-    if (s.size() == 0)
-        return s;
-    char buf[2] = {toupper(s[0]), 0};
-    return string(buf) + s.substr(1, s.size());
-}
-string decapitalize(string s) {
-    if (s.size() == 0)
-        return s;
-    char buf[2] = {tolower(s[0]), 0};
-    return string(buf) + s.substr(1, s.size());
-}
 string quote(string s) {
     return "\"" + s + "\"";
 }
@@ -94,7 +82,7 @@ void writeObjFields(Class & cl, const xml::Object & o) {
         cl.variable(ftype);
         cl.variable(field);
         if (fld.values.size() > 0) {
-            Class valueHolder(capitalize(fld.name));
+            Class valueHolder(xml::capitalize(fld.name));
             for (size_t v = 0; v < fld.values.size(); v++) {
                 const xml::Value& value = fld.values[v];
                 string v;
@@ -202,7 +190,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
         xml::RelationHandle& handle = o.handles[i];
         xml::Relation* rel = handle.relation;
 
-        string className = capitalize(handle.name) + "Handle";
+        string className = xml::capitalize(handle.name) + "Handle";
         Class hcl(className,
                   "litesql::RelationHandle<" + o.name + ">");
         Method cons(className);
@@ -507,7 +495,7 @@ void writeStaticRelData(Class& cl, xml::Relation& r) {
         string num;
         if (same)
             num = toString(i2 + 1);        
-        r.related[i2].fieldTypeName = decapitalize(r.related[i2].objectName) 
+        r.related[i2].fieldTypeName = xml::decapitalize(r.related[i2].objectName) 
             + num + "_";
         Variable ftype(r.related[i2].fieldTypeName,
                        "const litesql::FieldType",
@@ -544,7 +532,7 @@ void writeStaticRelData(Class& cl, xml::Relation& r) {
         ftype.static_();
         cl.variable(ftype);
         if (fld.values.size() > 0) {
-            Class valueHolder(capitalize(fld.name));
+            Class valueHolder(xml::capitalize(fld.name));
             for (size_t v = 0; v < fld.values.size(); v++) {
                 const xml::Value& value = fld.values[v];
                 string v;
