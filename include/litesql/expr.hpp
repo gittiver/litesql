@@ -102,13 +102,18 @@ protected:
     string data;
 
     Oper(const FieldType & fld, const string& o, const string& d) 
-        : field(fld), op(o), data(d) {
+        : field(fld), op(o), data(escapeSQL(d)) {
         extraTables.push_back(fld.table());
     }
+    Oper(const FieldType & fld, const string& o, const FieldType &f2) 
+        : field(fld), op(o), data(f2.fullName()) {
+        extraTables.push_back(fld.table());
+    }
+
 public:
     virtual string asString() const {
         string res;
-        res += field.fullName() + " " + op + " " + escapeSQL(data);
+        res += field.fullName() + " " + op + " " + data;
         return res;
     }
 };
@@ -117,35 +122,53 @@ class Eq : public Oper {
 public:
     Eq(const FieldType & fld, const string& d)
         : Oper(fld, "=", d) {}
+    Eq(const FieldType & fld, const FieldType & f2)
+        : Oper(fld, "=", f2) {}
+
 };
 /** inequality operator */
 class NotEq : public Oper {
 public:
     NotEq(const FieldType & fld, const string& d)
         : Oper(fld, "<>", d) {}
+    NotEq(const FieldType & fld, const FieldType & f2)
+        : Oper(fld, "<>", f2) {
+    }
+   
 };
 /** greater than operator */
 class Gt : public Oper {
 public:
     Gt(const FieldType & fld, const string& d)
         : Oper(fld, ">", d) {}
+    Gt(const FieldType & fld, const FieldType& d)
+        : Oper(fld, ">", d) {}
+
 };
 /** greater or equal operator */
 class GtEq : public Oper {
 public:
     GtEq(const FieldType & fld, const string& d)
         : Oper(fld, ">=", d) {}
+    GtEq(const FieldType & fld, const FieldType& d)
+        : Oper(fld, ">=", d) {}
+
 };
 /** less than operator */
 class Lt : public Oper {
 public:
     Lt(const FieldType & fld, const string& d)
         : Oper(fld, "<", d) {}
+    Lt(const FieldType & fld, const FieldType& d)
+        : Oper(fld, "<", d) {}
+
 };
 /** less than or equal operator */
 class LtEq : public Oper {
 public:
     LtEq(const FieldType & fld, const string& d)
+        : Oper(fld, "<=", d) {}
+    LtEq(const FieldType & fld, const FieldType& d)
         : Oper(fld, "<=", d) {}
 
 };
@@ -170,32 +193,43 @@ public:
 And operator&&(const Expr& o1, const Expr& o2);
 Or operator||(const Expr& o1, const Expr& o2);
 template <class T>
-Eq operator==(const FieldType& fld, const T& o2) {
-    return Eq(fld, toString(o2));
+litesql::Eq operator==(const litesql::FieldType& fld, const T& o2) {
+    return litesql::Eq(fld, litesql::toString(o2));
+}
+Eq operator==(const FieldType& fld, const FieldType& f2);
+Gt operator>(const FieldType& fld, const FieldType& o2);
+GtEq operator>=(const FieldType& fld, const FieldType& o2);
+Lt operator<(const FieldType& fld, const FieldType& o2);
+LtEq operator<=(const FieldType& fld, const FieldType& o2);
+NotEq operator!=(const FieldType& fld, const FieldType& f2);
+
+template <class T>
+litesql::Gt operator>(const litesql::FieldType& fld, const T& o2) {
+    return litesql::Gt(fld, litesql::toString(o2));
 }
 
 template <class T>
-Gt operator>(const FieldType& fld, const T& o2) {
-    return Gt(fld, toString(o2));
+litesql::GtEq operator>=(const litesql::FieldType& fld, const T& o2) {
+    return litesql::GtEq(fld, litesql::toString(o2));
+}
+
+template <class T>
+litesql::Lt operator<(const litesql::FieldType& fld, const T& o2) {
+    return litesql::Lt(fld, litesql::toString(o2));
+}
+
+
+template <class T>
+litesql::LtEq operator<=(const litesql::FieldType& fld, const T& o2) {
+    return litesql::LtEq(fld, litesql::toString(o2));
 }
 template <class T>
-GtEq operator>=(const FieldType& fld, const T& o2) {
-    return GtEq(fld, toString(o2));
+litesql::NotEq operator!=(const litesql::FieldType& fld, const T& o2) {
+    return litesql::NotEq(fld, litesql::toString(o2));
 }
-template <class T>
-Lt operator<(const FieldType& fld, const T& o2) {
-    return Lt(fld, toString(o2));
-}
-template <class T>
-LtEq operator<=(const FieldType& fld, const T& o2) {
-    return LtEq(fld, toString(o2));
-}
-template <class T>
-NotEq operator!=(const FieldType& fld, const T& o2) {
-    return NotEq(fld, toString(o2));
+
 Not operator!(const Expr &exp);
 }
 
-}
 
 #endif

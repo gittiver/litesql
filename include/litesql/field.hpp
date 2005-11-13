@@ -83,12 +83,12 @@ public:
     template <class T2>
     const Field & operator=(T2 v) { 
         _modified = true;
-        _value = convert<T2, T>(v); 
+        _value = litesql::convert<T2, T>(v); 
         return *this;
     }
     template <class T2>
     bool operator==(const T2& v) const {
-        return toString(_value) == toString(v);
+        return litesql::toString(_value) == litesql::toString(v);
     }
     template <class T2>
     bool operator!=(const T2& v) const { return !(*this == v); }
@@ -127,12 +127,12 @@ public:
     template <class T2>
     const Field & operator=(T2 v) { 
         _modified = true;
-        _value = convert<T2, string>(v); 
+        _value = litesql::convert<T2, string>(v); 
         return *this;
     }
     template <class T2>
     bool operator==(const T2& v) const {
-        return toString(_value) == toString(v);
+        return litesql::toString(_value) == litesql::toString(v);
     }
     template <class T2>
     bool operator!=(const T2& v) const { return !(*this == v); }
@@ -142,15 +142,15 @@ public:
 
 
 template <class T>
-string operator+(string a, Field<T> f) {
-    return a + string(f);
+std::string operator+(std::string a, litesql::Field<T> f) {
+    return a + std::string(f);
 }
 template <class T>
-string operator+(Field<T> f, string a) {
-    return string(f) + a;    
+std::string operator+(litesql::Field<T> f, std::string a) {
+    return std::string(f) + a;    
 }
 template <class T>
-ostream & operator << (ostream & os, const Field<T> & f) {
+std::ostream & operator << (std::ostream & os, const litesql::Field<T> & f) {
     return os << f.value();
 }
 

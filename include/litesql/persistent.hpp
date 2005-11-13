@@ -38,7 +38,9 @@ protected:
                               const string& sequence);
     void update(Updates& updates); 
     template <class T>
-    void updateField(Updates& updates, string table, Field<T> fld) {
+    void updateField(litesql::Persistent::Updates& updates, 
+                     std::string table, 
+                     litesql::Field<T> fld) {
         if (fld.modified()) {
             updates[table].push_back(make_pair(fld.fieldType(), fld));
             fld.setModified(false);
@@ -90,21 +92,5 @@ public:
     virtual void getTables(Split & tables) const {  }
 };
 
-/** for internal use only: used to define upcasters in Database.
-  \param db database where to select upcasted Persistent
-  \param id idenfitier of upcasted Persistent
-*/
-/*
-template <class T>
-Persistent * upcastHelper(const Database & db, Field & id) {
-    return new T(select<T>(db, id.fieldType() == id.value()).one());
-}
-template <class T>
-Persistent * upcastCopyHelper(Persistent & p) { 
-    Persistent * np = new T(*(Database*)0); 
-    *np = p; 
-    return np; 
-}
-*/
 }
 #endif
