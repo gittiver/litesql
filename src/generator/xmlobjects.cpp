@@ -12,6 +12,8 @@ bool validID(string s) {
     for (size_t i = 1; i < s.size(); i++)
         if (!isalnum(s[i]) && !s[i] != '_')
             return false;
+    if (s[s.size()-1] == '_')
+        return false;
     return true;
 }
 string capitalize(const string& s) {
@@ -31,31 +33,56 @@ static void sanityCheck(Database& db,
                         vector<Object>& objects,
                         vector<Relation>& relations) {
     using namespace litesql;
+    map<string, bool> usedID;
+    
     if (!validID(db.name)) 
         throw Except("invalid id: database.name : " + db.name);
     for (size_t i = 0; i < objects.size(); i++) {
         Object& o = objects[i];
         if (!validID(o.name))
             throw Except("invalid id: object.name : " + o.name);
+        if (usedID.find(o.name) != usedID.end())
+            throw Except("duplicate id: object.name : " + o.name);
+        usedID[o.name] = true;
+        map<string, bool> usedField;
+        usedField.clear();
         for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
             Field& f = o.fields[i2];
             if (!validID(f.name))
-                throw Except("invalid id: object.field.name : " + f.name);
+                throw Except("invalid id: object.field.name : " + o.name + "." + f.name);
+            if (usedField.find(f.name) != usedField.end())
+                throw Except("duplicate id: object.field.name : " + o.name + "." + f.name);
+            usedField[f.name] = true;
         }
     }
     for (size_t i = 0; i < relations.size(); i++) {
         Relation& r = relations[i];
-        if (!validID(r.getName()))
-            throw Except("invalid id: relation.name : " + r.getName());
+        string name = r.getName();
+        if (!validID(name))
+            throw Except("invalid id: relation.name : " + name);
+        if (usedID.find(name) != usedID.end())
+            throw Except("duplicate id: relation.name : " + name);
+        usedID[name] = true;
+        map<string, bool> usedField;
+        usedField.clear();
+  
         for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
             Field& f = r.fields[i2];
             if (!validID(f.name))
-                throw Except("invalid id: relation.field.name : " + f.name);
+                throw Except("invalid id: relation.field.name : " + name + "." + f.name);
+            if (usedField.find(f.name) != usedField.end())
+                throw Except("duplicate id: relation.field.name : " + name + "." + f.name);
+            usedField[f.name] = true;
+
         }
+        usedField.clear();
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
             Relate& rel = r.related[i2];
             if (!validID(rel.handle) && !rel.handle.empty())
-                throw Except("invalid id: relation.relate.handle : " + rel.handle);
+                throw Except("invalid id: relation.relate.handle : " + name + "." + rel.handle);
+            if (usedField.find(rel.handle) != usedField.end())
+                throw Except("duplicate id: relation.relate.handle : " + name + "." + rel.handle);
+            usedField[rel.handle] = true;
         }
             
     }   

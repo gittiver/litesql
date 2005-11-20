@@ -20,14 +20,54 @@ string quote(string s) {
 string brackets(string s) {
     return "(" + s + ")";
 }
-bool validID(string s) {
+static bool validID(string s) {
     static char* words[] = 
-        {"void", "id", "type", "bool","table__",
-         "sequence__", "id_", "type_", "char",
-         "unsigned", "class", "string", "short",
-         "signed", "namespace", "long", "return",
-         "private", "protected", "public"};
+        {"asm","break","case","catch",
+         "char","class","const","continue","default",
+         "delete","do","double","else","enum","extern",
+         "float","for","friend","goto","if","inline","int",
+         "long","new","operator","private","protected",
+         "public","register","return","short","signed",
+         "sizeof","static","struct","switch","template",
+         "this","throw","try","typedef","union","unsigned",
+         "virtual","void","volatile","while"};
+
+    for (size_t i = 0; i < sizeof(words) / sizeof(words[0]); i++)
+        if (s == words[i])
+            return false;
     return true; 
+}
+static void sanityCheck(xml::Database& db,
+                        vector<xml::Object>& objects,
+                        vector<xml::Relation>& relations) {
+    using namespace litesql;
+    if (!validID(db.name)) 
+        throw Except("invalid id: database.name : " + db.name);
+    for (size_t i = 0; i < objects.size(); i++) {
+        xml::Object& o = objects[i];
+        if (!validID(o.name))
+            throw Except("invalid id: object.name : " + o.name);
+        for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
+            xml::Field& f = o.fields[i2];
+            if (!validID(f.name))
+                throw Except("invalid id: object.field.name : " + f.name);
+        }
+    }
+    for (size_t i = 0; i < relations.size(); i++) {
+        xml::Relation& r = relations[i];
+        if (!validID(r.getName()))
+            throw Except("invalid id: relation.name : " + r.getName());
+        for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
+            xml::Field& f = r.fields[i2];
+            if (!validID(f.name))
+                throw Except("invalid id: relation.field.name : " + f.name);
+        }
+        for (size_t i2 = 0; i2 < r.related.size(); i2++) {
+            xml::Relate& rel = r.related[i2];
+            if (!validID(rel.handle) && !rel.handle.empty())
+                throw Except("invalid id: relation.relate.handle : " + rel.handle);
+        }
+    }   
 }
 string makeTableName(string s) {
     if (s.size() > 31)
@@ -1040,7 +1080,9 @@ void writeDatabaseClass(FILE* hpp, FILE* cpp,
 void writeCPPClasses(xml::Database& db,
                      vector<xml::Object>& objects,
                      vector<xml::Relation>& relations) {
+    sanityCheck(db, objects, relations);
     bool hasNamespace = false;
+    
     FILE *hpp, *cpp;
     
     string hppName = toLower(db.name) + ".hpp";
