@@ -11,6 +11,7 @@ bool validID(string s) {
         return false;
     for (size_t i = 1; i < s.size(); i++)
         if (!isalnum(s[i]) && !s[i] != '_')
+            return false;
     return true;
 }
 string capitalize(const string& s) {

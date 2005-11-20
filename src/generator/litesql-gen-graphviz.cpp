@@ -17,10 +17,16 @@ void writeRelations(FILE* f,
                     vector<Relation>& relations) {
     for (size_t i = 0; i < relations.size(); i++) {
         Relation& r = relations[i];
+        string name = replace(r.getName(), "Relation", "");
+
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
             Relate& rel = r.related[i2];
-            fprintf(f, "    \"%s\" -> \"%s\";\n", 
-                    rel.objectName.c_str(), r.getName().c_str());
+            string extra;
+            if (rel.handle.size() > 0)
+                extra = " [label=\"" + rel.handle + "\"]";
+            fprintf(f, "    \"%s\" -> \"%s\"%s;\n", 
+                    rel.objectName.c_str(), name.c_str(),
+                    extra.c_str());
         }
     }
 }
@@ -40,7 +46,7 @@ void writeGraphviz(Database& db,
    fprintf(f, "  node[color=lightblue,style=filled];\n");
    fprintf(f, "  subgraph inheritance {\n");
    fprintf(f, "    edge[style=dashed];\n");
-   writeInheritance(f, objects);
+ //  writeInheritance(f, objects);
    fprintf(f, "  }\n");
    fprintf(f, "  subgraph relations {\n");
    fprintf(f, "    edge[dir=none];\n");
