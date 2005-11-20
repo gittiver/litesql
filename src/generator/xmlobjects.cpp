@@ -66,6 +66,8 @@ static void sanityCheck(Database& db,
         map<string, bool> usedField;
         usedField.clear();
   
+        bool defaults = false;
+        
         for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
             Field& f = r.fields[i2];
             if (!validID(f.name))
@@ -73,6 +75,10 @@ static void sanityCheck(Database& db,
             if (usedField.find(f.name) != usedField.end())
                 throw Except("duplicate id: relation.field.name : " + name + "." + f.name);
             usedField[f.name] = true;
+            if (f.default_.size() > 0)
+                defaults = true;
+            else if (defaults)
+                throw Except("no default-value after field with default value : " + name + "." + f.name);
 
         }
         usedField.clear();

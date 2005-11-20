@@ -54,7 +54,7 @@ void writeGraphviz(Database& db,
    writeInheritance(f, objects);
    fprintf(f, "  }\n");
    fprintf(f, "  subgraph relations {\n");
-   fprintf(f, "    edge[dir=forward,arrowhead=tee];\n");
+   fprintf(f, "    edge[dir=forward,arrowhead=vee];\n");
    writeRelations(f, objects, relations);
    fprintf(f, "  }\n");
    fprintf(f, "}\n");
