@@ -63,6 +63,10 @@ public:
            case A_field_type_integer: return "INTEGER";
            case A_field_type_string: return "TEXT";
            case A_field_type_float: return "FLOAT";
+           case A_field_type_boolean: return "INTEGER";
+           case A_field_type_date: return "INTEGER";
+           case A_field_type_time: return "INTEGER";
+           case A_field_type_datetime: return "INTEGER";
            default: return "";
        }
     }
@@ -71,6 +75,10 @@ public:
            case A_field_type_integer: return "int";
            case A_field_type_string: return "std::string";
            case A_field_type_float: return "float";
+           case A_field_type_boolean: return "bool";
+           case A_field_type_date: return "Date";
+           case A_field_type_time: return "Time";
+           case A_field_type_datetime: return "DateTime";
            default: return "";
        }
     }

@@ -87,7 +87,7 @@ VERSION = @VERSION@
 
 AM_CXXFLAGS = -I../../include
 lib_LTLIBRARIES = liblitesql.la
-liblitesql_la_SOURCES = database.cpp expr.cpp selectquery.cpp persistent.cpp split.cpp string.cpp backend.cpp updatequery.cpp field.cpp datasource.cpp sqlite3.cpp postgresql.cpp mysql.cpp compatibility.cpp
+liblitesql_la_SOURCES = database.cpp expr.cpp selectquery.cpp persistent.cpp split.cpp string.cpp backend.cpp updatequery.cpp field.cpp datasource.cpp sqlite3.cpp postgresql.cpp mysql.cpp compatibility.cpp datetime.cpp
 liblitesql_la_LDFLAGS = -version-info 0:3:0
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -102,7 +102,8 @@ LIBS = @LIBS@
 liblitesql_la_LIBADD = 
 liblitesql_la_OBJECTS =  database.lo expr.lo selectquery.lo \
 persistent.lo split.lo string.lo backend.lo updatequery.lo field.lo \
-datasource.lo sqlite3.lo postgresql.lo mysql.lo compatibility.lo
+datasource.lo sqlite3.lo postgresql.lo mysql.lo compatibility.lo \
+datetime.lo
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -116,9 +117,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/backend.P .deps/compatibility.P .deps/database.P \
-.deps/datasource.P .deps/expr.P .deps/field.P .deps/mysql.P \
-.deps/persistent.P .deps/postgresql.P .deps/selectquery.P .deps/split.P \
-.deps/sqlite3.P .deps/string.P .deps/updatequery.P
+.deps/datasource.P .deps/datetime.P .deps/expr.P .deps/field.P \
+.deps/mysql.P .deps/persistent.P .deps/postgresql.P .deps/selectquery.P \
+.deps/split.P .deps/sqlite3.P .deps/string.P .deps/updatequery.P
 SOURCES = $(liblitesql_la_SOURCES)
 OBJECTS = $(liblitesql_la_OBJECTS)
 

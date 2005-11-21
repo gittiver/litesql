@@ -19,6 +19,7 @@
 #ifndef __litesql_hpp
 #define __litesql_hpp
 #include "litesql/types.hpp"
+#include "litesql/datetime.hpp"
 #include "litesql/except.hpp"
 #include "litesql/cursor.hpp"
 #include "litesql/database.hpp"

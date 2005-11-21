@@ -82,6 +82,8 @@ static void sanityCheck(Database& db,
 
         }
         usedField.clear();
+        bool limits = false;
+        bool uniques = false;
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
             Relate& rel = r.related[i2];
             if (!validID(rel.handle) && !rel.handle.empty())
@@ -89,7 +91,16 @@ static void sanityCheck(Database& db,
             if (usedField.find(rel.handle) != usedField.end())
                 throw Except("duplicate id: relation.relate.handle : " + name + "." + rel.handle);
             usedField[rel.handle] = true;
+            if (rel.isUnique())
+                uniques = true;
+            if (rel.hasLimit())
+                limits = true;
+            if (uniques && limits)
+                throw Except("both 'unique' and 'limit' attributes used in relation " + name);
         }
+        if (r.related.size() != 2 && limits)
+            throw Except("'limit' attribute used in relation of " + toString(r.related.size()) 
+                         + " object(s) " + name);
             
     }   
 }

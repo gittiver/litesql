@@ -10,6 +10,8 @@
 #include <vector>
 #include <utility>
 #include <string>
+#include "litesql/string.hpp"
+
 /** \file field.hpp
     contains FieldType- and Field-classes */
 namespace litesql {
