@@ -24,7 +24,10 @@ class SelectQuery;
 
 class FieldType {
     string _name, _type, _table;
+
+protected:
     typedef vector< pair<string, string> > Values;
+private:
     Values _values;
 public:
 

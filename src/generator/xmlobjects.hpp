@@ -12,6 +12,10 @@ extern int yylineno;
 namespace xml {
 using namespace std;
 using namespace litesql;
+string capitalize(const string& s);
+string decapitalize(const string& s);
+string safe(const char *s);
+
 class Value {
 public:
     string name, value;
@@ -35,13 +39,15 @@ public:
 class Field {
 public:
     string name;
+    string fieldTypeName;
     AT_field_type type;
     string default_;
     AT_field_indexed indexed;
     AT_field_unique unique;
     vector<Value> values;
     Field(string n, AT_field_type t, string d, AT_field_indexed i, AT_field_unique u) 
-        : name(n), type(t), default_(d), indexed(i), unique(u) {}
+        : name(n), fieldTypeName(capitalize(n)), type(t), default_(d), indexed(i), unique(u) {
+    }
     void value(const Value& v) {
         values.push_back(v);
     }
@@ -76,9 +82,9 @@ public:
            case A_field_type_string: return "std::string";
            case A_field_type_float: return "float";
            case A_field_type_boolean: return "bool";
-           case A_field_type_date: return "Date";
-           case A_field_type_time: return "Time";
-           case A_field_type_datetime: return "DateTime";
+           case A_field_type_date: return "litesql::Date";
+           case A_field_type_time: return "litesql::Time";
+           case A_field_type_datetime: return "litesql::DateTime";
            default: return "";
        }
     }
@@ -244,9 +250,6 @@ public:
 void init(Database& db, 
           vector<Object>& objects,
           vector<Relation>& relations);
-string capitalize(const string& s);
-string decapitalize(const string& s);
-string safe(const char *s);
 
 
 }

@@ -59,12 +59,13 @@ class Time {
     /** secs after midnight */
     int value;
 public:
+    Time(int secs=0);
     Time(int hour, int min, int sec);
     int hour() const;
     int min() const;
     int sec() const;
     int secs() const;
-    string asString(string format="%h:%m:%s") const;
+    string asString(string format="%h:%M:%s") const;
 
     Time& setHour(int d);
     Time& setMin(int m);
@@ -84,7 +85,7 @@ public:
     int sec() const;
     time_t timeStamp() const;
     TimeStruct timeStruct() const;
-    string asString(string format="%d.%m.%y %h:%m:%s") const;
+    string asString(string format="%d.%m.%y %h:%M:%s") const;
 
     DateTime& setDay(int d);
     DateTime& setMonth(int m);
@@ -94,6 +95,13 @@ public:
     DateTime& setSec(int y);
     Date& setTimeStamp(time_t t);
 };
+template <>
+Date convert<const string&, Date>(const string& value);
+template <>
+Time convert<const string&, Time>(const string& value);
+template <>
+DateTime convert<const string&, DateTime>(const string& value);
+
 };
 
 #endif

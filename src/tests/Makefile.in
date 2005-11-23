@@ -86,15 +86,18 @@ STRIP = @STRIP@
 VERSION = @VERSION@
 
 AM_CXXFLAGS = -I../../include
-noinst_PROGRAMS = test-split test-selectquery
+noinst_PROGRAMS = test-split test-selectquery test-datetime
 test_split_SOURCES = test-split.cpp
 test_split_LDADD = ../library/liblitesql.la
 test_selectquery_SOURCES = test-selectquery.cpp
 test_selectquery_LDADD = ../library/liblitesql.la
+test_datetime_SOURCES = test-datetime.cpp testdb.cpp
+test_datetime_LDADD = ../library/liblitesql.la
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-noinst_PROGRAMS =  test-split$(EXEEXT) test-selectquery$(EXEEXT)
+noinst_PROGRAMS =  test-split$(EXEEXT) test-selectquery$(EXEEXT) \
+test-datetime$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 
@@ -108,6 +111,9 @@ test_split_LDFLAGS =
 test_selectquery_OBJECTS =  test-selectquery.$(OBJEXT)
 test_selectquery_DEPENDENCIES =  ../library/liblitesql.la
 test_selectquery_LDFLAGS = 
+test_datetime_OBJECTS =  test-datetime.$(OBJEXT) testdb.$(OBJEXT)
+test_datetime_DEPENDENCIES =  ../library/liblitesql.la
+test_datetime_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -120,9 +126,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/test-selectquery.P .deps/test-split.P
-SOURCES = $(test_split_SOURCES) $(test_selectquery_SOURCES)
-OBJECTS = $(test_split_OBJECTS) $(test_selectquery_OBJECTS)
+DEP_FILES =  .deps/test-datetime.P .deps/test-selectquery.P \
+.deps/test-split.P .deps/testdb.P
+SOURCES = $(test_split_SOURCES) $(test_selectquery_SOURCES) $(test_datetime_SOURCES)
+OBJECTS = $(test_split_OBJECTS) $(test_selectquery_OBJECTS) $(test_datetime_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -189,6 +196,10 @@ test-split$(EXEEXT): $(test_split_OBJECTS) $(test_split_DEPENDENCIES)
 test-selectquery$(EXEEXT): $(test_selectquery_OBJECTS) $(test_selectquery_DEPENDENCIES)
 	@rm -f test-selectquery$(EXEEXT)
 	$(CXXLINK) $(test_selectquery_LDFLAGS) $(test_selectquery_OBJECTS) $(test_selectquery_LDADD) $(LIBS)
+
+test-datetime$(EXEEXT): $(test_datetime_OBJECTS) $(test_datetime_DEPENDENCIES)
+	@rm -f test-datetime$(EXEEXT)
+	$(CXXLINK) $(test_datetime_LDFLAGS) $(test_datetime_OBJECTS) $(test_datetime_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 .cpp.obj:

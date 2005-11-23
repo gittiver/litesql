@@ -116,7 +116,7 @@ string Date::asString(string format) const {
     Split data(format, "%");
     TimeStruct ts(value);
     string res = data[0];
-    for (int i = 1; i < data.size(); i+=2) {
+    for (int i = 1; i < data.size(); i++) {
         string rest = data[i].substr(1, data[i].size());
         switch(data[i][0]) {
         case 'd':
@@ -128,10 +128,10 @@ string Date::asString(string format) const {
         case 'y':
             res += toString(ts.year()) + rest;
         }
-        if (data.size() > i+1)
-            res += data[i+1];
     }
     return res;
+}
+Time::Time(int secs) : value(secs) {
 }
 Time::Time(int hour, int min, int sec) {
     value = hour * 3600 + min * 60 + sec;
@@ -167,20 +167,22 @@ Time& Time::setSecs(int secs) {
 string Time::asString(string format) const {
     Split data(format, "%");
     string res = data[0];
-    for (int i = 1; i < data.size(); i+=2) {
+    for (int i = 1; i < data.size(); i++) {
         string rest = data[i].substr(1, data[i].size());
         switch(data[i][0]) {
         case 'h':
             res += toString(hour()) + rest;
             break;
         case 'M':
+            if (min() < 10)
+                res += "0";
             res += toString(min()) + rest;
             break;
         case 's':
+            if (sec() < 10)
+                res += "0";
             res += toString(sec()) + rest;
         }
-        if (data.size() > i+1)
-            res += data[i+1];
     }
     return res;
 }
@@ -232,7 +234,7 @@ string DateTime::asString(string format) const {
     Split data(format, "%");
     TimeStruct ts(value);
     string res = data[0];
-    for (int i = 1; i < data.size(); i+=2) {
+    for (int i = 1; i < data.size(); i++) {
         string rest = data[i].substr(1, data[i].size());
         switch(data[i][0]) {
         case 'd':
@@ -248,16 +250,29 @@ string DateTime::asString(string format) const {
             res += toString(ts.hour()) + rest;
             break;
         case 'M':
+            if (ts.min() < 10)
+                res += "0";
             res += toString(ts.min()) + rest;
             break;
         case 's':
+            if (ts.sec() < 10)
+                res += "0";
             res += toString(ts.sec()) + rest;
             break;
         }
-        if (data.size() > i+1)
-            res += data[i+1];
     }
     return res;
 }
-
+template <>
+Date convert<const string&, Date>(const string& value) {
+    return Date(atoi(value));
+}
+template <>
+Time convert<const string&, Time>(const string& value) {
+    return Time(atoi(value));
+}
+template <>
+DateTime convert<const string&, DateTime>(const string& value) {
+    return DateTime(atoi(value));
+}
 }

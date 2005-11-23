@@ -125,6 +125,10 @@ void init(Database& db,
         if (objects[i].parentObject)
             objects[i].parentObject->children.push_back(&objects[i]);
 
+    for (size_t i = 0; i < objects.size(); i++) {
+        Object& o = objects[i];
+    }
+
     // sort objects of relations alphabetically (ascii)
 
     for (size_t i = 0; i < relations.size(); i++) 
@@ -132,6 +136,7 @@ void init(Database& db,
             
     for (size_t i = 0; i < relations.size(); i++) {
         xml::Relation& rel = relations[i];
+        
 
         for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
             xml::Relate& relate = rel.related[i2];
