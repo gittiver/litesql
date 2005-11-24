@@ -29,6 +29,14 @@ int convert<const string&, int>(const string& value) {
     return strtol(value.c_str(), NULL, 10);
 }
 template <>
+bool convert<int, bool>(int value) {
+    return value;
+}
+template <>
+bool convert<const string&, bool>(const string& value) {
+    return convert<const string&, int>(value);
+}
+template <>
 long long convert<const string&, long long>(const string& value) {
     return strtoll(value.c_str(), NULL, 10);
 }

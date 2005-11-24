@@ -57,7 +57,7 @@ public:
     SelectQuery idQuery() const {
         SelectQuery idq(sel);
         idq.clearResults();
-        idq.result(T::id_.fullName());
+        idq.result(T::Id.fullName());
         return idq;
     }
     /** returns SelectQuery which selects objects */
@@ -92,7 +92,7 @@ public:
         \return *this, methods can be chained */
     DataSource& orderByRelation(FieldType id, FieldType f, bool asc=true) {
         sel.source(id.table());
-        sel.where(id == T::id_);
+        sel.where(id == T::Id);
         sel.orderBy(f.fullName(), asc);
         return *this;
     }

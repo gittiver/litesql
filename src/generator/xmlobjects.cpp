@@ -4,17 +4,19 @@
 #include "litesql.hpp"
 #include <algorithm>
 namespace xml {
-bool validID(string s) {
+string validID(string s, string type="field") {
     if (s.size() == 0) 
-        return false;
+        return "empty identifier";
+    if (toupper(s[0]) == s[0] && type == "field")
+        return "does not begin with lower case letter";
     if (!isalpha(s[0])) 
-        return false;
+        return "first character is not alphabet";
     for (size_t i = 1; i < s.size(); i++)
         if (!isalnum(s[i]) && !s[i] != '_')
-            return false;
+            return "illegal character : " + s[i];
     if (s[s.size()-1] == '_')
-        return false;
-    return true;
+        return "ends with an underscore";
+    return "";
 }
 string capitalize(const string& s) {
     if (s.size() == 0)
@@ -34,12 +36,12 @@ static void sanityCheck(Database& db,
                         vector<Relation>& relations) {
     using namespace litesql;
     map<string, bool> usedID;
-    
-    if (!validID(db.name)) 
+    string err;
+    if (!(err = validID(db.name,"class")).empty()) 
         throw Except("invalid id: database.name : " + db.name);
     for (size_t i = 0; i < objects.size(); i++) {
         Object& o = objects[i];
-        if (!validID(o.name))
+        if (!(err = validID(o.name, "class")).empty())
             throw Except("invalid id: object.name : " + o.name);
         if (usedID.find(o.name) != usedID.end())
             throw Except("duplicate id: object.name : " + o.name);
@@ -48,7 +50,7 @@ static void sanityCheck(Database& db,
         usedField.clear();
         for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
             Field& f = o.fields[i2];
-            if (!validID(f.name))
+            if (!(err = validID(f.name)).empty())
                 throw Except("invalid id: object.field.name : " + o.name + "." + f.name);
             if (usedField.find(f.name) != usedField.end())
                 throw Except("duplicate id: object.field.name : " + o.name + "." + f.name);
@@ -58,7 +60,7 @@ static void sanityCheck(Database& db,
     for (size_t i = 0; i < relations.size(); i++) {
         Relation& r = relations[i];
         string name = r.getName();
-        if (!validID(name))
+        if (!(err = validID(name,"class")).empty())
             throw Except("invalid id: relation.name : " + name);
         if (usedID.find(name) != usedID.end())
             throw Except("duplicate id: relation.name : " + name);
@@ -70,7 +72,7 @@ static void sanityCheck(Database& db,
         
         for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
             Field& f = r.fields[i2];
-            if (!validID(f.name))
+            if (!(err = validID(f.name)).empty())
                 throw Except("invalid id: relation.field.name : " + name + "." + f.name);
             if (usedField.find(f.name) != usedField.end())
                 throw Except("duplicate id: relation.field.name : " + name + "." + f.name);
@@ -86,7 +88,7 @@ static void sanityCheck(Database& db,
         bool uniques = false;
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
             Relate& rel = r.related[i2];
-            if (!validID(rel.handle) && !rel.handle.empty())
+            if (!(err = validID(rel.handle)).empty() && !rel.handle.empty())
                 throw Except("invalid id: relation.relate.handle : " + name + "." + rel.handle);
             if (usedField.find(rel.handle) != usedField.end())
                 throw Except("duplicate id: relation.relate.handle : " + name + "." + rel.handle);

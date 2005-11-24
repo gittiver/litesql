@@ -54,7 +54,7 @@ public:
         if (value.size() > 0) {
             params = "(" + val + ")";
         }
-            
+        
         snprintf(buf, 512, "%s %s%s%s;", 
                  type.c_str(), context.c_str(), name.c_str(), params.c_str());
         return buf;

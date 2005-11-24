@@ -57,8 +57,21 @@ public:
     bool isUnique() const {
         return unique == A_field_unique_true;
     }
+    bool hasQuotedValues() const {
+       switch(type) {
+       case A_field_type_integer:
+       case A_field_type_float: 
+       case A_field_type_boolean: 
+           return false;
+       case A_field_type_string:
+       case A_field_type_date:
+       case A_field_type_time:
+       case A_field_type_datetime:
+           return true;
+       }
+    }
     string getQuotedDefaultValue() const {
-        if (getCPPType()=="std::string")
+        if (hasQuotedValues())
             return "\"" + default_ + "\"";
         if (default_.size() == 0)
             return "0";

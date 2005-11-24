@@ -101,7 +101,9 @@ template <>
 Time convert<const string&, Time>(const string& value);
 template <>
 DateTime convert<const string&, DateTime>(const string& value);
-
+ostream& operator << (ostream& os, const Date& d);
+ostream& operator << (ostream& os, const Time& d);
+ostream& operator << (ostream& os, const DateTime& d);
 };
 
 #endif

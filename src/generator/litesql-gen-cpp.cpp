@@ -30,7 +30,12 @@ static bool validID(string s) {
          "public","register","return","short","signed",
          "sizeof","static","struct","switch","template",
          "this","throw","try","typedef","union","unsigned",
-         "virtual","void","volatile","while"};
+         "virtual","void","volatile","while",   
+         // LiteSQL specific
+         "initValues", "insert", "addUpdates", "addIDUpdates",
+         "getFieldTypes", "delRecord", "delRelations",
+         "update", "del", "typeIsCorrect", "upcast", "upcastCopy"
+        };
 
     for (size_t i = 0; i < sizeof(words) / sizeof(words[0]); i++)
         if (s == words[i])
@@ -121,6 +126,7 @@ void writeObjFields(Class & cl, const xml::Object & o) {
             ftypeClass = fld.fieldTypeName + "Type";
             Class ftypeCl(ftypeClass, "litesql::FieldType");
             Method cons(ftypeClass);
+	    ftypeClass = o.name + "::" + ftypeClass;
             cons.param(Variable("n", "const std::string&"))
                 .param(Variable("t", "const std::string&"))
                 .param(Variable("tbl", "const std::string&"))
@@ -142,6 +148,7 @@ void writeObjFields(Class & cl, const xml::Object & o) {
             }
             cl.class_(ftypeCl);
         }
+	
         Variable ftype(fld.fieldTypeName, ftypeClass, data);
         ftype.static_();
         Variable field(fld.name, "litesql::Field<" + fld.getCPPType() + ">");
@@ -173,11 +180,11 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
     bool hasDefaults = false;
     for (size_t i = 0; i < o.fields.size(); i++) {
         const xml::Field& f = o.fields[i];
-        if ((f.default_.size() > 0) || (f.getCPPType() != "std::string")){
+        if (!f.default_.empty() || !f.hasQuotedValues())
             defaults.body(f.name + " = " + f.getQuotedDefaultValue() + ";");
             hasDefaults = true;
-        } 
-    }
+    } 
+
     
     Method cons1(o.name); // Object(const Database &)
     string consParams = o.inherits + "(db)";

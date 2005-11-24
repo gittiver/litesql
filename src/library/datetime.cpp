@@ -275,4 +275,13 @@ template <>
 DateTime convert<const string&, DateTime>(const string& value) {
     return DateTime(atoi(value));
 }
+ostream& operator << (ostream& os, const Date& d) {
+    return os << d.asString();
+}
+ostream& operator << (ostream& os, const Time& d) {
+    return os << d.asString();
+}
+ostream& operator << (ostream& os, const DateTime& d) {
+    return os << d.asString();
+}
 }

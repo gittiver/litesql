@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
         jill.mother().link(jill);
         jack.siblings().link(jill);
         // select all Persons and order them by age
-        vector<Person> family = select<Person>(db).orderBy(Person::age_).all();
+        vector<Person> family = select<Person>(db).orderBy(Person::Age).all();
         // show results
         for (vector<Person>::iterator i = family.begin(); i != family.end(); i++)
             cout << toString(*i) << endl;
@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
         
         // select a non-existing Person
         try {
-            select<Person>(db, Person::id_ == 100).one();
+            select<Person>(db, Person::Id == 100).one();
         } catch (NotFound e) {
             cout << "No Person with id 100" << endl;
         }
