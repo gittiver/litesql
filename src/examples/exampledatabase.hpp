@@ -1,6 +1,11 @@
 #include "litesql.hpp"
 namespace example {
 class Person;
+class Role;
+class Student;
+class Employee;
+class School;
+class Office;
 class PersonPersonRelationMother {
 public:
     class Row {
@@ -73,14 +78,65 @@ public:
     static litesql::DataSource<Person> getPerson1(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
     static litesql::DataSource<Person> getPerson2(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 };
+class PersonRoleRelationRoles {
+public:
+    class Row {
+    public:
+        litesql::Field<int> role;
+        litesql::Field<int> person;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType person_;
+    static const litesql::FieldType role_;
+    static void link(const litesql::Database& db, const Person& o0, const Role& o1);
+    static void unlink(const litesql::Database& db, const Person& o0, const Role& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<PersonRoleRelationRoles::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class SchoolStudentRelation {
+public:
+    class Row {
+    public:
+        litesql::Field<int> student;
+        litesql::Field<int> school;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType school_;
+    static const litesql::FieldType student_;
+    static void link(const litesql::Database& db, const School& o0, const Student& o1);
+    static void unlink(const litesql::Database& db, const School& o0, const Student& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<SchoolStudentRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class EmployeeOfficeRelation {
+public:
+    class Row {
+    public:
+        litesql::Field<int> office;
+        litesql::Field<int> employee;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType employee_;
+    static const litesql::FieldType office_;
+    static void link(const litesql::Database& db, const Employee& o0, const Office& o1);
+    static void unlink(const litesql::Database& db, const Employee& o0, const Office& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<EmployeeOfficeRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
 class Person : public litesql::Persistent {
 public:
-    class SexType : public litesql::FieldType {
-    public:
-        static const int Male;
-        static const int Female;
-        SexType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
-    };
     class Sex {
     public:
         static const int Male;
@@ -122,21 +178,30 @@ public:
         litesql::DataSource<Person> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<PersonPersonRelationChildren::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
+    class RolesHandle : public litesql::RelationHandle<Person> {
+    public:
+        RolesHandle(const Person& owner);
+        void link(const Role& o0);
+        void unlink(const Role& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Role> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<PersonRoleRelationRoles::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
-    static const litesql::FieldType Id;
+    static const litesql::FieldType id_;
     litesql::Field<int> id;
-    static const litesql::FieldType Type;
+    static const litesql::FieldType type_;
     litesql::Field<std::string> type;
-    static const litesql::FieldType Name;
+    static const litesql::FieldType name_;
     litesql::Field<std::string> name;
-    static const litesql::FieldType Age;
+    static const litesql::FieldType age_;
     litesql::Field<int> age;
 protected:
     static std::vector < std::pair< std::string, std::string > > sex_values;
 public:
-    static Person::SexType Sex;
+    static const litesql::FieldType sex_;
     litesql::Field<int> sex;
     static void initValues();
 protected:
@@ -150,6 +215,7 @@ public:
     Person::FatherHandle father();
     Person::SiblingsHandle siblings();
     Person::ChildrenHandle children();
+    Person::RolesHandle roles();
     virtual void sayHello();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
@@ -169,6 +235,202 @@ public:
     std::auto_ptr<Person> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, Person o);
+class Role : public litesql::Persistent {
+public:
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType id_;
+    litesql::Field<int> id;
+    static const litesql::FieldType type_;
+    litesql::Field<std::string> type;
+protected:
+    void defaults();
+public:
+    Role(const litesql::Database& db);
+    Role(const litesql::Database& db, const litesql::Record& rec);
+    Role(const Role& obj);
+    const Role& operator=(const Role& obj);
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<Role> upcast();
+    std::auto_ptr<Role> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, Role o);
+class Student : public Role {
+public:
+    class SchoolHandle : public litesql::RelationHandle<Student> {
+    public:
+        SchoolHandle(const Student& owner);
+        void link(const School& o0);
+        void unlink(const School& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<School> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<SchoolStudentRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    Student(const litesql::Database& db);
+    Student(const litesql::Database& db, const litesql::Record& rec);
+    Student(const Student& obj);
+    const Student& operator=(const Student& obj);
+    Student::SchoolHandle school();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<Student> upcast();
+    std::auto_ptr<Student> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, Student o);
+class Employee : public Role {
+public:
+    class OfficeHandle : public litesql::RelationHandle<Employee> {
+    public:
+        OfficeHandle(const Employee& owner);
+        void link(const Office& o0);
+        void unlink(const Office& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Office> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<EmployeeOfficeRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    Employee(const litesql::Database& db);
+    Employee(const litesql::Database& db, const litesql::Record& rec);
+    Employee(const Employee& obj);
+    const Employee& operator=(const Employee& obj);
+    Employee::OfficeHandle office();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<Employee> upcast();
+    std::auto_ptr<Employee> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, Employee o);
+class School : public litesql::Persistent {
+public:
+    class StudentsHandle : public litesql::RelationHandle<School> {
+    public:
+        StudentsHandle(const School& owner);
+        void link(const Student& o0);
+        void unlink(const Student& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Student> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<SchoolStudentRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType id_;
+    litesql::Field<int> id;
+    static const litesql::FieldType type_;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType name_;
+    litesql::Field<std::string> name;
+protected:
+    void defaults();
+public:
+    School(const litesql::Database& db);
+    School(const litesql::Database& db, const litesql::Record& rec);
+    School(const School& obj);
+    const School& operator=(const School& obj);
+    School::StudentsHandle students();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<School> upcast();
+    std::auto_ptr<School> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, School o);
+class Office : public litesql::Persistent {
+public:
+    class EmployeesHandle : public litesql::RelationHandle<Office> {
+    public:
+        EmployeesHandle(const Office& owner);
+        void link(const Employee& o0);
+        void unlink(const Employee& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Employee> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<EmployeeOfficeRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType id_;
+    litesql::Field<int> id;
+    static const litesql::FieldType type_;
+    litesql::Field<std::string> type;
+protected:
+    void defaults();
+public:
+    Office(const litesql::Database& db);
+    Office(const litesql::Database& db, const litesql::Record& rec);
+    Office(const Office& obj);
+    const Office& operator=(const Office& obj);
+    Office::EmployeesHandle employees();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<Office> upcast();
+    std::auto_ptr<Office> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, Office o);
 class ExampleDatabase : public litesql::Database {
 public:
     ExampleDatabase(std::string backendType, std::string connInfo);

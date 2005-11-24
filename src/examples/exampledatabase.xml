@@ -26,4 +26,23 @@
         <relate object="Person" handle="children"/>
         <relate object="Person"/>
     </relation>
+    <object name="Role"/>
+    <object name="Student" inherits="Role"/>
+    <object name="Employee" inherits="Role"/>
+    <relation id="Roles">
+        <relate object="Person" handle="roles"/>
+        <relate object="Role"/>
+    </relation>
+    <object name="School">
+        <field name="name" type="string"/>
+    </object>
+    <relation>
+        <relate object="Student" handle="school"/>
+        <relate object="School" handle="students" limit="one"/>
+    </relation>
+    <object name="Office"/>
+    <relation>
+        <relate object="Employee" handle="office"/>
+        <relate object="Office" handle="employees"/>
+    </relation>
 </database>
