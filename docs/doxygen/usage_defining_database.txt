@@ -29,14 +29,12 @@ input.
 A database definition file has a root tag which encloses all definitions
 inside it. It must have exactly one 'database'-tag.
 \code
-<database name="TestDatabase" [version="1.0"] [namespace="test"] [include="extra.hpp"]>
+<database name="TestDatabase" [namespace="test"] [include="extra.hpp"]>
    ... definitions ...
 </database>
 \endcode
 Note: attributes in [square brackets] are optional.
 
-- 'version' - attribute is currently not used but it can be used to define
-conversions between database-versions in the future.
 - 'namespace' - attribute defines C++ - namespace into which all generated
 classes will be put.
 - 'include' - attribute defines C++ - header file to be included in generated header file
@@ -109,6 +107,27 @@ inside 'object'-tag.
 - 'handle' - attribute defines identifier for relation handle, a short cut when accessing relation from a single object.
 - relation attributes can be defined using 'field'-tag
 - Note: Put relation attributes with default values last so link-method can be properly generated
+\subsection index_tag Index-tag 
+'index'-tag defines an index built on two or more fields.
+It can be used inside 'object'- and 'relation'-tags.
+
+\code
+<field name="myfield" type="integer" [default="value"] [indexed="true"]/>
+<field name="color" type="integer">
+    <value name="Red" value="0"/>
+    <value name="Green" value="1"/>
+</field>
+<index [unique="true"]>
+    <indexfield name="myfield"/>
+    <indexfield name="color"/>
+</index>
+\endcode
+- 'unique' - attribute defines whether there can be multiple equal field tuples 
+
+\subsection indexfield_tag Indexfield-tag
+'indexfield'-tag defines an index field inside multi field index.
+It can be used inside 'index'-tag.
+
 \section namingnote Naming Identifiers
 
 C++'s reserved words cannot be used as identifier names. Also, "id"- and 

@@ -14,7 +14,7 @@ a time.
 
 Creating a cursor(two ways):
 \code
-Cursor<Record> cur1 = db.cursor(SelectQuery().result("id").source("Person"));
+Cursor<Record> cur1 = db.cursor(SelectQuery().result("id_").source("Person_"));
 Cursor<Person> cur2 = select<Person>(db).cursor();
 \endcode
 

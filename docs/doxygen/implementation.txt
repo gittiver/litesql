@@ -12,23 +12,20 @@
  - \ref codegenerator 
  - \ref mappingtodatabase
  - \ref virtualmethods
-\section codegenerator Code Generator parsedb.py
+\section codegenerator Code Generator litesql-gen
 
-LiteSQL 0.1 used C-macros to help in implementing object persistence routines.
-It worked to some extent but it had too much limitations. 
-
-Current version uses XML database definition file which is used to generate
+LiteSQL uses XML database definition file which is used to generate
 Persistent and Relation classes. 
 
 The example database definition file (exampledatabase.xml)
 page will result in two files (exampledatabase.hpp and testdatabase.cpp)
 when fed to code generator. 
-\include ../examples/exampledatabase.xml
+\include exampledatabase.xml
 exampledatabase.hpp contains class declarations for persistent objects and 
 relations
-\include ../examples/exampledatabase.hpp
+\include exampledatabase.hpp
 exampledatabase.cpp contains implementation of methods and lots of static data.
-\include ../examples/exampledatabase.cpp
+\include exampledatabase.cpp
 
 \section mappingtodatabase Mapping Objects to Relational Database
 
@@ -60,7 +57,7 @@ The database schema extracted from definitions above is similar to following:
 CREATE TABLE Playable_ (id_ INTEGER PRIMARY KEY, type_ TEXT, name_ TEXT);
 CREATE TABLE AudioFile_ (id_ INTEGER PRIMARY KEY, file_ TEXT);
 CREATE TABLE Collection_ (id_ INTEGER PRIMARY KEY, type_ TEXT, description_ TEXT);
-CREATE TABLE AudioFile_Collection_1 (AudioFile1 INTEGER, Collection2 INTEGER, percent_ INTEGER);
+CREATE TABLE AudioFile_Collection_ (AudioFile1 INTEGER, Collection2 INTEGER, percent_ INTEGER);
 
 -- original name: idx_AudioFile_Collection_AudioFile1
 CREATE INDEX _71b11d59ca507479edd464e053cd01 ON AudioFile_Collection_1 (AudioFile1); 
@@ -105,9 +102,8 @@ p.upcast().play();
 // this executes actually select<AudioFile>(db, Playable::id_() == x).one().play();
 \endcode
 
-Persistent-class has a static mapping of Upcasters keyed with strings.
-Database-class registers an upcaster function for each Persistent-class.
-An upcaster function returns a Persistent of correct type with all fields.
+The code generator (litesql-gen) writes upcast-method that returns object of
+correct type.
 
 Sometimes extra fields that an inherited Persistent may have are not needed
 when accessing virtual methods. It would be futile to execute SQL statements.

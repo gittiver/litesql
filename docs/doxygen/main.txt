@@ -21,29 +21,31 @@ indexes and sequences to database and upgrades schema when needed.
 
 In addition to object persistence, LiteSQL provides object relations which
 can be used to model any kind of C++ data structures. Objects can be selected,
-filtered and ordered using template- and class-based API which are type 
-checked at compile time.
+filtered and ordered using template- and class-based API with type checking at 
+compile time.
  
 \section features Features
 
 - SQLite3, PostgreSQL and MySQL - backend support
 - object persistence layer with relation support
 - automatic database schema creation and upgrading
-- small code base: less than 2500 lines of C++
 - create complex SQL queries using compile time checked class API; minimizes need to write SQL query strings
 
 \section status Status
 
 - this a testing release
+- no Windows support yet
 
 \section requirements Requirements
 
 - gcc-compatible C++ compiler that supports member templates
 - client library and header files for at least one backend: libsqlite3, libmysqlclient or libpq
-- scons build tool
-- Python 2.3 (Python 2.2 should work too): database definition file parser is 
-  written in Python
 
+\subsection optionalreqs Optional
+- automake 1.4  
+- autoconf 2.59
+- flexml 1.44 (to generate code generator ;)
+- doxygen 1.4.5
 \section license License
 
 This library is distributed under the terms of \ref bsdlicense
@@ -93,6 +95,7 @@ ideas there.
 
 Simple example database definition file exampledatabase.xml:
 \include exampledatabase.xml
+\image html exampledatabase.png
 
 \subsection quickstart2 Step 2: Run Code Generator
 \code

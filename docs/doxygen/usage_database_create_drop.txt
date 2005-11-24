@@ -1,4 +1,4 @@
-/* LiteSQL - Documentation
+/*sLiteSQL - Documentathon
  * 
  * By Tero Laitinen 
  * 
@@ -10,6 +10,8 @@
 
 The code below defines a simple database:
 \code
+<?xml version="1.0"?>
+<!DOCTYPE database SYSTEM "litesql.dtd">
 <database name="PersonDatabase">
     <object name="Person">
         <field name="name" type="string"/>
@@ -21,7 +23,7 @@ The database file is created when PersonDatabase is constructed. First argument
 of constructor is requested backend. Other possibilities are "postgresql"
 and "mysql". Refer to class documentation for details.
 \code
-PersonDatabase db("sqlite3", "person.db");
+PersonDatabase db("sqlite3", "database=person.db");
 \endcode
 
 The database has to be created before any Persistent - classes can be used.

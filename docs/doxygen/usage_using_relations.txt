@@ -70,7 +70,7 @@ bob.friends.link(bill);
 
 A fetching example:
 \code
-Person bob = bill.friends.get(Person::name_ == "Bob").one();
+Person bob = bill.friends.get(Person::Name == "Bob").one();
 
 vector<Person> billsFriends = bill.friends.get().all();
 \endcode
@@ -102,11 +102,11 @@ FriendsRelation::link(db, bill, bob);
 A fetching example:
 \code
 Person bob = FriendsRelation::getPerson2(db, 
-                                         FriendsRelation::person1==bill.id,
-                                         Person::name_ == "Bob").one();
+                                         FriendsRelation::Person1==bill.id,
+                                         Person::Name == "Bob").one();
 
 vector<Person> billsFriends = 
-     FriendsRelation::getPerson2(db, FriendsRelation::person1==bill.id).all();
+     FriendsRelation::getPerson2(db, FriendsRelation::Person1==bill.id).all();
 \endcode
 
 An unlinking example:

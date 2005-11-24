@@ -19,7 +19,7 @@ as the first field.
 
 A query example:
 \code
-Database db("sqlite3", "test.db");
+Database db("sqlite3", "database=test.db");
 db.query("CREATE TABLE custom(value INTEGER);");
 db.query("INSERT INTO custom VALUES (1)");
 Records recs = db.query("SELECT * from custom");
