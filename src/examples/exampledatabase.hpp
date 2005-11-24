@@ -15,8 +15,8 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType person1_;
-    static const litesql::FieldType person2_;
+    static const litesql::FieldType person1;
+    static const litesql::FieldType person2;
     static void link(const litesql::Database& db, const Person& o0, const Person& o1);
     static void unlink(const litesql::Database& db, const Person& o0, const Person& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
@@ -33,8 +33,8 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType person1_;
-    static const litesql::FieldType person2_;
+    static const litesql::FieldType person1;
+    static const litesql::FieldType person2;
     static void link(const litesql::Database& db, const Person& o0, const Person& o1);
     static void unlink(const litesql::Database& db, const Person& o0, const Person& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
@@ -51,8 +51,8 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType person1_;
-    static const litesql::FieldType person2_;
+    static const litesql::FieldType person1;
+    static const litesql::FieldType person2;
     static void link(const litesql::Database& db, const Person& o0, const Person& o1);
     static void unlink(const litesql::Database& db, const Person& o0, const Person& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
@@ -69,8 +69,8 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType person1_;
-    static const litesql::FieldType person2_;
+    static const litesql::FieldType person1;
+    static const litesql::FieldType person2;
     static void link(const litesql::Database& db, const Person& o0, const Person& o1);
     static void unlink(const litesql::Database& db, const Person& o0, const Person& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
@@ -78,7 +78,7 @@ public:
     static litesql::DataSource<Person> getPerson1(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
     static litesql::DataSource<Person> getPerson2(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 };
-class PersonRoleRelationRoles {
+class RoleRelation {
 public:
     class Row {
     public:
@@ -87,12 +87,12 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType person_;
-    static const litesql::FieldType role_;
+    static const litesql::FieldType person;
+    static const litesql::FieldType role;
     static void link(const litesql::Database& db, const Person& o0, const Role& o1);
     static void unlink(const litesql::Database& db, const Person& o0, const Role& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
-    static litesql::DataSource<PersonRoleRelationRoles::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<RoleRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
@@ -106,8 +106,8 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType school_;
-    static const litesql::FieldType student_;
+    static const litesql::FieldType school;
+    static const litesql::FieldType student;
     static void link(const litesql::Database& db, const School& o0, const Student& o1);
     static void unlink(const litesql::Database& db, const School& o0, const Student& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
@@ -125,8 +125,8 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType employee_;
-    static const litesql::FieldType office_;
+    static const litesql::FieldType employee;
+    static const litesql::FieldType office;
     static void link(const litesql::Database& db, const Employee& o0, const Office& o1);
     static void unlink(const litesql::Database& db, const Employee& o0, const Office& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
@@ -137,6 +137,12 @@ public:
 };
 class Person : public litesql::Persistent {
 public:
+    class SexType : public litesql::FieldType {
+    public:
+        static const int Male;
+        static const int Female;
+        SexType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
+    };
     class Sex {
     public:
         static const int Male;
@@ -185,23 +191,23 @@ public:
         void unlink(const Role& o0);
         void del(const litesql::Expr& expr=litesql::Expr());
         litesql::DataSource<Role> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-        litesql::DataSource<PersonRoleRelationRoles::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<RoleRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
-    static const litesql::FieldType id_;
+    static const litesql::FieldType Id;
     litesql::Field<int> id;
-    static const litesql::FieldType type_;
+    static const litesql::FieldType Type;
     litesql::Field<std::string> type;
-    static const litesql::FieldType name_;
+    static const litesql::FieldType Name;
     litesql::Field<std::string> name;
-    static const litesql::FieldType age_;
+    static const litesql::FieldType Age;
     litesql::Field<int> age;
 protected:
     static std::vector < std::pair< std::string, std::string > > sex_values;
 public:
-    static const litesql::FieldType sex_;
+    static Person::SexType Sex;
     litesql::Field<int> sex;
     static void initValues();
 protected:
@@ -237,12 +243,21 @@ public:
 std::ostream & operator<<(std::ostream& os, Person o);
 class Role : public litesql::Persistent {
 public:
+    class PersonHandle : public litesql::RelationHandle<Role> {
+    public:
+        PersonHandle(const Role& owner);
+        void link(const Person& o0);
+        void unlink(const Person& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Person> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<RoleRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
-    static const litesql::FieldType id_;
+    static const litesql::FieldType Id;
     litesql::Field<int> id;
-    static const litesql::FieldType type_;
+    static const litesql::FieldType Type;
     litesql::Field<std::string> type;
 protected:
     void defaults();
@@ -251,6 +266,7 @@ public:
     Role(const litesql::Database& db, const litesql::Record& rec);
     Role(const Role& obj);
     const Role& operator=(const Role& obj);
+    Role::PersonHandle person();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
@@ -355,11 +371,11 @@ public:
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
-    static const litesql::FieldType id_;
+    static const litesql::FieldType Id;
     litesql::Field<int> id;
-    static const litesql::FieldType type_;
+    static const litesql::FieldType Type;
     litesql::Field<std::string> type;
-    static const litesql::FieldType name_;
+    static const litesql::FieldType Name;
     litesql::Field<std::string> name;
 protected:
     void defaults();
@@ -401,9 +417,9 @@ public:
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
-    static const litesql::FieldType id_;
+    static const litesql::FieldType Id;
     litesql::Field<int> id;
-    static const litesql::FieldType type_;
+    static const litesql::FieldType Type;
     litesql::Field<std::string> type;
 protected:
     void defaults();

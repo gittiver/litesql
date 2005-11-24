@@ -16,9 +16,11 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
     
     if (supportsSequences() && values[0][0] == "NULL")
         id = execute("SELECT nextval('" + sequence + "');")->records()[0][0];
-    for (size_t i = 0; i < tables.size(); i++) {
+    for (int i = tables.size()-1; i >= 0; i--) {
         string fieldString = Split(fields[i]).join(",");
         string valueString;
+        if (!values[i].empty())
+            values[i][0] = id;
         Split valueSplit(values[i]);
         for (size_t i2 = 0; i2 < valueSplit.size(); i2++)
             valueSplit[i2] = escapeSQL(valueSplit[i2]);
@@ -26,8 +28,9 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
         string query = "INSERT INTO " + tables[i] + " (" + fieldString
             + ") VALUES (" + valueString + ");";
         execute(query);
-        if (!supportsSequences() && id == "NULL")
+        if (!supportsSequences() && id == "NULL") 
             id = getInsertID();
+        
     }
     return id;
 }

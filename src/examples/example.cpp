@@ -17,7 +17,9 @@ int main(int argc, char **argv) {
         // using SQLite3 as backend
         ExampleDatabase db("sqlite3", "database=example.db");
         // create tables, sequences and indexes
+	db.verbose = true;
         db.create();
+	db.begin();
 
         // create couple of Person-objects
         Person jeff(db);
@@ -39,7 +41,7 @@ int main(int argc, char **argv) {
         jess.name = "Jess";
         jess.sex = Person::Sex::Female;
         jess.update();
-        // build up relationships between Persons
+        // build up relationships between Persons 
         jeff.children().link(jack);
         jill.children().link(jack);
         jill.children().link(jess);
@@ -47,6 +49,30 @@ int main(int argc, char **argv) {
         jack.mother().link(jill);
         jill.mother().link(jill);
         jack.siblings().link(jill);
+        // roles (linking examples)
+        Office office(db);
+	office.update();
+        School school(db);
+	school.update();
+
+        Employee jeffRole(db);
+        jeffRole.update();
+        jeff.roles().link(jeffRole);
+        jeffRole.office().link(office);
+
+        Student jackRole(db), jillRole(db);
+        jackRole.update();
+        jillRole.update();
+        jack.roles().link(jackRole);
+        jill.roles().link(jillRole);
+        
+        jackRole.school().link(school);
+        jillRole.school().link(school);
+        
+        // count Persons
+	cout << "There are " << select<Person>(db).count() 
+             << " persons." << endl;
+	
         // select all Persons and order them by age
         vector<Person> family = select<Person>(db).orderBy(Person::Age).all();
         // show results
@@ -72,6 +98,7 @@ int main(int argc, char **argv) {
             cout << "No Person with id 100" << endl;
         }
         // clean up 
+	db.commit();
         db.drop();
     } catch (Except e) {
         cerr << e << endl;

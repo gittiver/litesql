@@ -568,8 +568,7 @@ void writeStaticRelData(Class& cl, xml::Relation& r) {
         string num;
         if (same)
             num = toString(i2 + 1);        
-        r.related[i2].fieldTypeName = xml::decapitalize(r.related[i2].objectName) 
-            + num + "_";
+        r.related[i2].fieldTypeName = xml::decapitalize(r.related[i2].objectName) + num;
         Variable ftype(r.related[i2].fieldTypeName,
                        "const litesql::FieldType",
                        quote(r.related[i2].objectName 
@@ -655,7 +654,6 @@ void writeStaticRelData(Class& cl, xml::Relation& r) {
     for (int i = r.related.size()-1; i >= 0; i--) {
         xml::Relate& rel = r.related[i];
         string fname = rel.fieldTypeName;
-        fname = fname.substr(0, fname.size()-1);
         Variable fld(fname, "litesql::Field<int>");
         rowcl.variable(fld);
         rowcons.body("case " + toString(fieldNum) + ":")

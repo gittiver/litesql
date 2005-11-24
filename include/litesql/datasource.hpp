@@ -60,6 +60,13 @@ public:
         idq.result(T::Id.fullName());
         return idq;
     }
+    size_t count() const {
+	SelectQuery cq(sel);
+	cq.clearResults();
+	cq.limit(0).offset(0);
+	cq.result("count(*)");
+	return atoi(db.query(cq)[0][0]);
+    }
     /** returns SelectQuery which selects objects */
     SelectQuery objectQuery() const {
         return sel;

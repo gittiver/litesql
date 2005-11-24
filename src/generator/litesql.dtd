@@ -1,7 +1,6 @@
 <!ELEMENT database (object|relation)+>
 <!ATTLIST database
           name ID #REQUIRED
-          version CDATA #IMPLIED
           namespace NMTOKEN #IMPLIED
 		  include CDATA #IMPLIED>
 

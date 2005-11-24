@@ -258,7 +258,7 @@ public:
 };
 class Database {
 public:
-    string name, include, version, nspace;
+    string name, include, nspace;
 };
 void init(Database& db, 
           vector<Object>& objects,

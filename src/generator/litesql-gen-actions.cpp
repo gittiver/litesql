@@ -1,6 +1,6 @@
 /* XML application for litesql.dtd.
  * Includes actions from litesql-gen.xml.
- * Generated 2005/11/13 13:39:40.
+ * Generated 2005/11/24 18:33:13.
  *
  * This program was generated with the FleXML XML processor generator.
  * FleXML is Copyright © 1999-2005 Kristoffer Rose.  All rights reserved.
@@ -71,14 +71,13 @@ void STag_database(void)
 
 db.name = safe(A_database_name);
 db.include = safe(A_database_include);
-db.version = safe(A_database_version);
 db.nspace = safe(A_database_namespace);
 
 } /* STag_database */
 
 void STag_object(void)
 {
-#line 25 "litesql-gen.xml"
+#line 24 "litesql-gen.xml"
 
 objects.push_back(Object(A_object_name, safe(A_object_inherits)));
 obj = &objects[objects.size()-1];
@@ -87,7 +86,7 @@ obj = &objects[objects.size()-1];
 
 void ETag_object(void)
 {
-#line 29 "litesql-gen.xml"
+#line 28 "litesql-gen.xml"
 
 obj = NULL;
 
@@ -95,7 +94,7 @@ obj = NULL;
 
 void STag_relation(void)
 {
-#line 32 "litesql-gen.xml"
+#line 31 "litesql-gen.xml"
 
 relations.push_back(Relation(safe(A_relation_id), safe(A_relation_name),A_relation_unidir));
 rel = &relations[relations.size()-1];
@@ -104,7 +103,7 @@ rel = &relations[relations.size()-1];
 
 void ETag_relation(void)
 {
-#line 36 "litesql-gen.xml"
+#line 35 "litesql-gen.xml"
 
 rel = NULL;
 
@@ -112,7 +111,7 @@ rel = NULL;
 
 void STag_field(void)
 {
-#line 39 "litesql-gen.xml"
+#line 38 "litesql-gen.xml"
 
 if (obj) {
     obj->fields.push_back(Field(A_field_name, 
@@ -128,7 +127,7 @@ if (obj) {
 
 void STag_index(void)
 {
-#line 50 "litesql-gen.xml"
+#line 49 "litesql-gen.xml"
 
 if (obj) {
     obj->indexes.push_back(Index(A_index_unique));
@@ -142,7 +141,7 @@ if (obj) {
 
 void ETag_index(void)
 {
-#line 59 "litesql-gen.xml"
+#line 58 "litesql-gen.xml"
 
 idx = NULL;
 
@@ -150,7 +149,7 @@ idx = NULL;
 
 void STag_indexfield(void)
 {
-#line 62 "litesql-gen.xml"
+#line 61 "litesql-gen.xml"
 
 if (idx)
     idx->fields.push_back(IndexField(A_indexfield_name));
@@ -159,7 +158,7 @@ if (idx)
 
 void STag_value(void)
 {
-#line 66 "litesql-gen.xml"
+#line 65 "litesql-gen.xml"
 
 if (fld) 
     fld->value(Value(A_value_name, A_value_value));
@@ -168,7 +167,7 @@ if (fld)
 
 void ETag_field(void)
 {
-#line 70 "litesql-gen.xml"
+#line 69 "litesql-gen.xml"
 
 fld = NULL;
 
@@ -176,7 +175,7 @@ fld = NULL;
 
 void STag_method(void)
 {
-#line 73 "litesql-gen.xml"
+#line 72 "litesql-gen.xml"
 
 if (obj) {
     obj->methods.push_back(Method(A_method_name, safe(A_method_returntype)));
@@ -187,7 +186,7 @@ if (obj) {
 
 void ETag_method(void)
 {
-#line 79 "litesql-gen.xml"
+#line 78 "litesql-gen.xml"
 
 mtd = NULL;
 
@@ -195,7 +194,7 @@ mtd = NULL;
 
 void STag_param(void)
 {
-#line 82 "litesql-gen.xml"
+#line 81 "litesql-gen.xml"
 
 if (mtd) 
     mtd->param(Param(A_param_name, A_param_type));
@@ -204,7 +203,7 @@ if (mtd)
 
 void STag_relate(void)
 {
-#line 86 "litesql-gen.xml"
+#line 85 "litesql-gen.xml"
 
 if (rel)
     rel->related.push_back(Relate(A_relate_object, A_relate_limit, A_relate_unique, safe(A_relate_handle)));
@@ -213,14 +212,14 @@ if (rel)
 
 void ETag_database(void)
 {
-#line 90 "litesql-gen.xml"
+#line 89 "litesql-gen.xml"
 
     generateCode(db, objects, relations);    
 
 } /* ETag_database */
 
 
-#line 98 "litesql-gen.xml"
+#line 97 "litesql-gen.xml"
 
 extern FILE * yyin;
 int main(int argc, char **argv) {

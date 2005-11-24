@@ -19,7 +19,6 @@ Index * idx;
 <start tag="database"><![CDATA[
 db.name = safe({name});
 db.include = safe({include});
-db.version = safe({version});
 db.nspace = safe({namespace});
 ]]></start>
 <start tag="object"><![CDATA[

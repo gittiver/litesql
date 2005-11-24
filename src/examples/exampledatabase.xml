@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE database SYSTEM "litesql.dtd">
+<!DOCTYPE database SYSTEM "litesql.dtd"> 
 <database name="ExampleDatabase" namespace="example">
     <object name="Person">
         <field name="name" type="string"/>
@@ -29,9 +29,9 @@
     <object name="Role"/>
     <object name="Student" inherits="Role"/>
     <object name="Employee" inherits="Role"/>
-    <relation id="Roles">
-        <relate object="Person" handle="roles"/>
-        <relate object="Role"/>
+    <relation id="Roles" name="RoleRelation">
+        <relate object="Person" handle="roles" limit="one"/>
+        <relate object="Role" handle="person"/>
     </relation>
     <object name="School">
         <field name="name" type="string"/>
