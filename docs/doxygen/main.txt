@@ -46,6 +46,7 @@ compile time.
 - autoconf 2.59
 - flexml 1.44 (to generate code generator ;)
 - doxygen 1.4.5
+- dpkg-buildpackage (to generate debian packages)
 \section license License
 
 This library is distributed under the terms of \ref bsdlicense
