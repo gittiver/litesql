@@ -176,7 +176,7 @@ INSERT INTO Person_Person_Siblings (Person1,Person2) VALUES ('2','3')
 INSERT INTO Role_ (id_,type_) values (NULL,'Employee');
 INSERT INTO Employee_ (id_) values (1);
 INSERT INTO Person_Role_Roles (Person1,Role2) VALUES ('1','1')
-INSERT INTO Employee_Office_ (Employee1,Office2) VALUES ('1','0')
+INSERT INTO Employee_Office_ (Employee1,Office2) VALUES ('1','1')
 INSERT INTO Role_ (id_,type_) values (NULL,'Student');
 INSERT INTO Student_ (id_) values (2);
 INSERT INTO Role_ (id_,type_) values (NULL,'Student');
@@ -185,8 +185,8 @@ INSERT INTO School_ (id_,type_) values (NULL, 'School');
 INSERT INTO Office_ (id_,type_) values (NULL, 'School');
 INSERT INTO Person_Role_Roles (Person1,Role2) VALUES ('3','2')
 INSERT INTO Person_Role_Roles (Person1,Role2) VALUES ('2','3')
-INSERT INTO School_Student_ (School1,Student2) VALUES ('0','2')
-INSERT INTO School_Student_ (School1,Student2) VALUES ('0','3')
+INSERT INTO School_Student_ (School1,Student2) VALUES ('1','2')
+INSERT INTO School_Student_ (School1,Student2) VALUES ('1','3')
 SELECT count(*) FROM Person_
 SELECT Person_.id_,Person_.type_,Person_.name_,Person_.age_,Person_.sex_ FROM 
 Person_ ORDER BY Person_.age_

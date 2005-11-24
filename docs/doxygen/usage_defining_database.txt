@@ -16,13 +16,8 @@ For those of you familiar with DTD, the file format is defined in
 To make valid XML, the definition file should begin with following lines:
 \code
 <?xml version="1.0"?>
-<!DOCTYPE database SYSTEM "http://litesql.sourceforge.net/litesql.dtd">
+<!DOCTYPE database SYSTEM "litesql.dtd">
 \endcode
-
-Currently, the parser (and code generator) does not require those or even
-validate XML. An external validating parser (rxp, for example) may be used
-to validate database definitions until the code generator validates its
-input.
 
 \subsection database_tag Database-tag
 
@@ -64,8 +59,8 @@ and relation attributes. They can be placed inside 'object'-tag or
     <value name="Green" value="1"/>
 </field>
 \endcode
-- possible values for 'type'-field are "integer" or "string"
-- 'default' - attribute defines the initial value of field when object is
+- possible values for 'type'-field are "integer","string","boolean","date","time" and "datetime"
+- 'default' - attribute defines the initial value of field when object is 
 created.
 - 'indexed' - attribute defines whether to CREATE INDEX for the field or not,
 default value is 'false'.

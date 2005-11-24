@@ -95,6 +95,7 @@ ideas there.
 
 Simple example database definition file exampledatabase.xml:
 \include exampledatabase.xml
+Figure of database (generated with graphviz and litesql-gen):
 \image html exampledatabase.png
 
 \subsection quickstart2 Step 2: Run Code Generator

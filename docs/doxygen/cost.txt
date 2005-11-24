@@ -10,35 +10,23 @@
 
 \section memoryoverhead Memory Overhead
 
-I have not made accurate memory usage measures but sizeof reports that
-Persistent with one field needs 104 bytes of memory on 32bit i586. Extra 
-fields cost 12 bytes each. 
-
-A relation handle uses 8 bytes of memory per Persistent object. 
+Extra variables in each Persistent object instance:
+- bool modified - flag in each field
+- bool oldID - flag (used to track id - changes)
+- bool inDatabase - flag
+- Database* - pointer
 
 \section performanceoverhead Performance Overhead
 
-When Persistent object is created:
-- it constructs a vector and equally many strings as there is fields
-- pointers to Field-objects are inserted to vector.
-- a pointer to Persistent is passed to each RelationHandle-object
+- one INSERT-SQL statement is required per inherited Persistent-class (deep class inheritance hierarchies cost)
+- selection of objects needs joins 
 
-Mapping class hierarchy to relational database is not cheap either.
-When inserting data to database one INSERT-SQL statement is required per 
-inherited Persistent-class. The biggest performance hit is selecting.
-Selecting inherited Persistent-objects requires table joins. 
-
-This topic will be researched with detail when the library
-itself has reached stable and consistent functionality.
-
-Until then, keep in mind that there is a price tag in each Persistent.
 \section codesizeoverhead Code Size Overhead
 
-As demonstrated in \ref implementation, database definition file parser 
-(parsedb.py) generates a lot of code. In addition to that, a part of that code
+As demonstrated in \ref implementation, code generator
+(litesql-gen) generates a lot of code. In addition to that, a part of that code
 uses templates which will produce even more code. 
 
 This is rarely a problem but worth to note when memory is tight.
-
 */
 

@@ -14,5 +14,6 @@ version is reached.
 \section todolist Current "To Do"-List:
 - writing extensive unit testers 
 - ensuring that library compiles on different platforms and compilers
+- documenting
 */
 

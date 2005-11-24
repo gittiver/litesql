@@ -17,6 +17,24 @@
 LiteSQL uses XML database definition file which is used to generate
 Persistent and Relation classes. 
 
+litesql-gen is the code generator written in C++ that generates code from 
+database definition file. 
+
+Small help:
+\code
+./litesql-gen  --help
+Usage: litesql-gen [options] <my-database.xml>
+
+Options:
+ -t, --target=TARGET         generate code for TARGET (default: c++)
+ -v, --verbose               verbosely report code generation
+ --help                      print help
+
+Supported targets:
+ 'c++'        C++ target (.cpp,.hpp)
+ 'graphviz'   Graphviz file (.dot)
+\endcode
+
 The example database definition file (exampledatabase.xml)
 page will result in two files (exampledatabase.hpp and testdatabase.cpp)
 when fed to code generator. 
@@ -95,11 +113,11 @@ af.name = "A good song";
 af.file = "goodsong.mp3";
 af.update();
 
-Playable p = select<Playable>(db, Playable::name_() == "A good song").one()
+Playable p = select<Playable>(db, Playable::Name == "A good song").one()
 // p has only one field: name
 
 p.upcast().play();
-// this executes actually select<AudioFile>(db, Playable::id_() == x).one().play();
+// this executes actually select<AudioFile>(db, Playable::Id == x).one().play();
 \endcode
 
 The code generator (litesql-gen) writes upcast-method that returns object of
@@ -109,8 +127,7 @@ Sometimes extra fields that an inherited Persistent may have are not needed
 when accessing virtual methods. It would be futile to execute SQL statements.
 Another upcaster function is provided to help in this situation. 
 
-For example, onDelete() - method that usually just deletes all relation links to
-the object in question does not need any fields. del() - method that calls
+For example, onDelete() - may not need any fields. del() - method that calls
 onDelete() uses upcastCopy() to access onDelete() of inherited Persistent.
 
 \code

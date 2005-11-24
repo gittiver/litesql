@@ -98,13 +98,13 @@ Notes:
 \code
 // intersection of Bob's and Bill's friends
 DataSource<Person> commonFriends = 
-    intersect(bob.friends.get(), bill.friends.get());
+    intersect(bob.friends().get(), bill.friends().get());
 // persons that are Bob's friends and/or Bill's friends
 DataSource<Person> allFriends = 
-    union_(bob.friends.get(), bill.friends.get());
+    union_(bob.friends().get(), bill.friends().get());
 // persons that are Bob's friends but not Bill's friends
 DataSource<Person> allFriends = 
-    except(bob.friends.get(), bill.friends.get());
+    except(bob.friends().get(), bill.friends().get());
 \endcode
 
 */

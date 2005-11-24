@@ -17,9 +17,9 @@ int main(int argc, char **argv) {
         // using SQLite3 as backend
         ExampleDatabase db("sqlite3", "database=example.db");
         // create tables, sequences and indexes
-	db.verbose = true;
         db.create();
-	db.begin();
+        // start transaction
+        db.begin();
 
         // create couple of Person-objects
         Person jeff(db);
@@ -51,9 +51,9 @@ int main(int argc, char **argv) {
         jack.siblings().link(jill);
         // roles (linking examples)
         Office office(db);
-	office.update();
+        office.update();
         School school(db);
-	school.update();
+        school.update();
 
         Employee jeffRole(db);
         jeffRole.update();
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
         jillRole.school().link(school);
         
         // count Persons
-	cout << "There are " << select<Person>(db).count() 
+        cout << "There are " << select<Person>(db).count() 
              << " persons." << endl;
 	
         // select all Persons and order them by age
@@ -97,8 +97,9 @@ int main(int argc, char **argv) {
         } catch (NotFound e) {
             cout << "No Person with id 100" << endl;
         }
+        // commit transaction
+        db.commit();
         // clean up 
-	db.commit();
         db.drop();
     } catch (Except e) {
         cerr << e << endl;
