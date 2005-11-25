@@ -8,7 +8,7 @@
     Manual */
 /** \page changes Changes
 \section vercvs CVS Version
-
+- bug fix: litesql-gen rejected relations with two or more objects with no relation handles (duplicate handle)
 \section ver0_3_0 Version 0.3.0
 - anonymous enums removed from enumerated field values (in generated code), compiles now with g++-4.0
 - Relation::Row-class added, represents rows of relation table

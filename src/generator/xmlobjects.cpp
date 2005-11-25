@@ -92,7 +92,8 @@ static void sanityCheck(Database& db,
                 throw Except("invalid id: relation.relate.handle : " + name + "." + rel.handle);
             if (usedField.find(rel.handle) != usedField.end())
                 throw Except("duplicate id: relation.relate.handle : " + name + "." + rel.handle);
-            usedField[rel.handle] = true;
+            if (!rel.handle.empty())
+                usedField[rel.handle] = true;
             if (rel.isUnique())
                 uniques = true;
             if (rel.hasLimit())
