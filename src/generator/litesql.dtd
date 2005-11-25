@@ -1,8 +1,8 @@
 <!ELEMENT database (object|relation)+>
 <!ATTLIST database
           name ID #REQUIRED
-          namespace NMTOKEN #IMPLIED
-		  include CDATA #IMPLIED>
+          namespace NMTOKEN #REQUIRED
+	  include CDATA #IMPLIED>
 
 <!ELEMENT object ((field)*,(method)*,(index)*)>
 <!ATTLIST object

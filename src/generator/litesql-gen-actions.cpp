@@ -1,6 +1,6 @@
 /* XML application for litesql.dtd.
  * Includes actions from litesql-gen.xml.
- * Generated 2005/11/24 18:33:13.
+ * Generated 2005/11/24 21:46:56.
  *
  * This program was generated with the FleXML XML processor generator.
  * FleXML is Copyright © 1999-2005 Kristoffer Rose.  All rights reserved.

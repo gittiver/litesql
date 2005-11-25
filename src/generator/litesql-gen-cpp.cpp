@@ -568,7 +568,7 @@ void writeStaticRelData(Class& cl, xml::Relation& r) {
         string num;
         if (same)
             num = toString(i2 + 1);        
-        r.related[i2].fieldTypeName = xml::decapitalize(r.related[i2].objectName) + num;
+        r.related[i2].fieldTypeName = r.related[i2].objectName + num;
         Variable ftype(r.related[i2].fieldTypeName,
                        "const litesql::FieldType",
                        quote(r.related[i2].objectName 
@@ -653,7 +653,7 @@ void writeStaticRelData(Class& cl, xml::Relation& r) {
     }
     for (int i = r.related.size()-1; i >= 0; i--) {
         xml::Relate& rel = r.related[i];
-        string fname = rel.fieldTypeName;
+        string fname = xml::decapitalize(rel.fieldTypeName);
         Variable fld(fname, "litesql::Field<int>");
         rowcl.variable(fld);
         rowcons.body("case " + toString(fieldNum) + ":")
@@ -671,7 +671,8 @@ void writeStaticRelData(Class& cl, xml::Relation& r) {
     cl.class_(rowcl);
 
 }
-void writeRelMethods(Class& cl, xml::Relation& r) {
+void writeRelMethods(xml::Database& database,
+		     Class& cl, xml::Relation& r) {
     Variable dbparam("db", "const litesql::Database&");
     Variable destExpr("expr", "const litesql::Expr&", 
                        "litesql::Expr()");
@@ -768,7 +769,7 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
 
     for (size_t i2 = 0; i2 < r.related.size(); i2++) {
         xml::Relate& rel = r.related[i2];
-        Variable obj("o" + toString(i2), "const " + rel.objectName + "&");
+        Variable obj("o" + toString(i2), "const " +  database.nspace + "::" +rel.objectName + "&");
         link.param(obj);
         unlink.param(obj);
     }
@@ -787,7 +788,7 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
             xml::Relate& rel = r.related[i2];
             Method get("get", "litesql::DataSource<" 
-                       + rel.objectName + ">");
+                       + database.nspace + "::" + rel.objectName + ">");
             rel.getMethodName = "get<" + rel.objectName + ">";
             get.static_().templateSpec("")
                 .param(dbparam).param(destExpr).param(srcExpr)
@@ -795,8 +796,8 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
                 .body("sel.source(table__);")
                 .body("sel.result(" + rel.fieldTypeName + ".fullName());")
                 .body("sel.where(srcExpr);")
-                .body("return DataSource<" + rel.objectName 
-                      + ">(db, "+rel.objectName+"::Id.in(sel) && expr);");
+                .body("return DataSource<" + database.nspace + "::" + rel.objectName 
+                      + ">(db, "+database.nspace + "::" + rel.objectName+"::Id.in(sel) && expr);");
             cl.method(get);
         }
     } else {
@@ -812,7 +813,7 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
             }
             rel.getMethodName = "get" + rel.objectName + num;
             Method get(rel.getMethodName, 
-                       "litesql::DataSource<" 
+                       "litesql::DataSource<" + database.nspace + "::" 
                         + rel.objectName + ">");
 
             get.static_()
@@ -821,8 +822,9 @@ void writeRelMethods(Class& cl, xml::Relation& r) {
                 .body("sel.source(table__);")
                 .body("sel.result(" + rel.fieldTypeName + ".fullName());")
                 .body("sel.where(srcExpr);")
-                .body("return DataSource<" + rel.objectName 
-                      + ">(db, "+rel.objectName+"::Id.in(sel) && expr);");
+                .body("return DataSource<" + database.nspace + "::" 
+                     + rel.objectName 
+                      + ">(db, "+database.nspace + "::" + rel.objectName+"::Id.in(sel) && expr);");
             cl.method(get);
         }
     }
@@ -1164,7 +1166,7 @@ void writeCPPClasses(xml::Database& db,
         xml::Relation & o = relations[i];
         Class cl(o.getName());
         writeStaticRelData(cl, o);
-        writeRelMethods(cl, o);
+        writeRelMethods(db, cl, o);
         
         cl.write(hpp, cpp);
     }

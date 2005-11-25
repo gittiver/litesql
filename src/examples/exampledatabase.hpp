@@ -15,14 +15,14 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType person1;
-    static const litesql::FieldType person2;
-    static void link(const litesql::Database& db, const Person& o0, const Person& o1);
-    static void unlink(const litesql::Database& db, const Person& o0, const Person& o1);
+    static const litesql::FieldType Person1;
+    static const litesql::FieldType Person2;
+    static void link(const litesql::Database& db, const example::Person& o0, const example::Person& o1);
+    static void unlink(const litesql::Database& db, const example::Person& o0, const example::Person& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<PersonPersonRelationMother::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
-    static litesql::DataSource<Person> getPerson1(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-    static litesql::DataSource<Person> getPerson2(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+    static litesql::DataSource<example::Person> getPerson1(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+    static litesql::DataSource<example::Person> getPerson2(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 };
 class PersonPersonRelationFather {
 public:
@@ -33,14 +33,14 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType person1;
-    static const litesql::FieldType person2;
-    static void link(const litesql::Database& db, const Person& o0, const Person& o1);
-    static void unlink(const litesql::Database& db, const Person& o0, const Person& o1);
+    static const litesql::FieldType Person1;
+    static const litesql::FieldType Person2;
+    static void link(const litesql::Database& db, const example::Person& o0, const example::Person& o1);
+    static void unlink(const litesql::Database& db, const example::Person& o0, const example::Person& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<PersonPersonRelationFather::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
-    static litesql::DataSource<Person> getPerson1(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-    static litesql::DataSource<Person> getPerson2(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+    static litesql::DataSource<example::Person> getPerson1(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+    static litesql::DataSource<example::Person> getPerson2(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 };
 class PersonPersonRelationSiblings {
 public:
@@ -51,14 +51,14 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType person1;
-    static const litesql::FieldType person2;
-    static void link(const litesql::Database& db, const Person& o0, const Person& o1);
-    static void unlink(const litesql::Database& db, const Person& o0, const Person& o1);
+    static const litesql::FieldType Person1;
+    static const litesql::FieldType Person2;
+    static void link(const litesql::Database& db, const example::Person& o0, const example::Person& o1);
+    static void unlink(const litesql::Database& db, const example::Person& o0, const example::Person& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<PersonPersonRelationSiblings::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
-    static litesql::DataSource<Person> getPerson1(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-    static litesql::DataSource<Person> getPerson2(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+    static litesql::DataSource<example::Person> getPerson1(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+    static litesql::DataSource<example::Person> getPerson2(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 };
 class PersonPersonRelationChildren {
 public:
@@ -69,14 +69,14 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType person1;
-    static const litesql::FieldType person2;
-    static void link(const litesql::Database& db, const Person& o0, const Person& o1);
-    static void unlink(const litesql::Database& db, const Person& o0, const Person& o1);
+    static const litesql::FieldType Person1;
+    static const litesql::FieldType Person2;
+    static void link(const litesql::Database& db, const example::Person& o0, const example::Person& o1);
+    static void unlink(const litesql::Database& db, const example::Person& o0, const example::Person& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<PersonPersonRelationChildren::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
-    static litesql::DataSource<Person> getPerson1(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-    static litesql::DataSource<Person> getPerson2(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+    static litesql::DataSource<example::Person> getPerson1(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+    static litesql::DataSource<example::Person> getPerson2(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 };
 class RoleRelation {
 public:
@@ -87,10 +87,10 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType person;
-    static const litesql::FieldType role;
-    static void link(const litesql::Database& db, const Person& o0, const Role& o1);
-    static void unlink(const litesql::Database& db, const Person& o0, const Role& o1);
+    static const litesql::FieldType Person;
+    static const litesql::FieldType Role;
+    static void link(const litesql::Database& db, const example::Person& o0, const example::Role& o1);
+    static void unlink(const litesql::Database& db, const example::Person& o0, const example::Role& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<RoleRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
@@ -106,10 +106,10 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType school;
-    static const litesql::FieldType student;
-    static void link(const litesql::Database& db, const School& o0, const Student& o1);
-    static void unlink(const litesql::Database& db, const School& o0, const Student& o1);
+    static const litesql::FieldType School;
+    static const litesql::FieldType Student;
+    static void link(const litesql::Database& db, const example::School& o0, const example::Student& o1);
+    static void unlink(const litesql::Database& db, const example::School& o0, const example::Student& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<SchoolStudentRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
@@ -125,10 +125,10 @@ public:
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType employee;
-    static const litesql::FieldType office;
-    static void link(const litesql::Database& db, const Employee& o0, const Office& o1);
-    static void unlink(const litesql::Database& db, const Employee& o0, const Office& o1);
+    static const litesql::FieldType Employee;
+    static const litesql::FieldType Office;
+    static void link(const litesql::Database& db, const example::Employee& o0, const example::Office& o1);
+    static void unlink(const litesql::Database& db, const example::Employee& o0, const example::Office& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<EmployeeOfficeRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
