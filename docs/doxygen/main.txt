@@ -9,7 +9,7 @@
 \htmlonly
 <center> 
 <a href="http://sourceforge.net">
-<img src="http://sourceforge.net/sflogo.php?group_id=litesql&type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" />
+<img src="http://sourceforge.net/sflogo.php?group_id=113304&type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" />
 </a></center>
 \endhtmlonly
 \section intro Introduction
