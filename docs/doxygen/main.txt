@@ -71,6 +71,7 @@ ideas there.
 \subsection toc Table of Contents
  - \ref implementation
  - \ref changes
+ - \ref contributors
  - \ref future
  - \ref usage_defining_database
  - \ref usage_database_create_drop

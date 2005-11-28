@@ -1,0 +1,15 @@
+/* LiteSQL - Documentation - Contributors
+ * 
+ * By Tero Laitinen 
+ * 
+ * See LICENSE for copyright information. */
+/* \file documentation.txt
+    Manual */
+/** \page contributors Contributors
+
+Eric McDonald
+- Wrote better tests for backend databases to configure.ac. 
+
+Axel Schmidt 
+- Made LiteSQL compile with VC++ (fixed some related bugs).
+*/
