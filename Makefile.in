@@ -77,11 +77,19 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 LTLIB = @LTLIB@
 MAKEINFO = @MAKEINFO@
+MYSQL_CONFIG = @MYSQL_CONFIG@
+MYSQL_CXXFLAGS = @MYSQL_CXXFLAGS@
+MYSQL_LIBS = @MYSQL_LIBS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
+PGSQL_CONFIG = @PGSQL_CONFIG@
+PGSQL_CXXFLAGS = @PGSQL_CXXFLAGS@
+PGSQL_LDFLAGS = @PGSQL_LDFLAGS@
 RANLIB = @RANLIB@
 RC = @RC@
+SQLITE3_CXXFLAGS = @SQLITE3_CXXFLAGS@
+SQLITE3_LDFLAGS = @SQLITE3_LDFLAGS@
 STRIP = @STRIP@
 VERSION = @VERSION@
 
@@ -91,9 +99,9 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = 
-DIST_COMMON =  README ./stamp-h.in INSTALL Makefile.am Makefile.in \
-aclocal.m4 config.guess config.h.in config.sub configure configure.ac \
-install-sh ltmain.sh missing mkinstalldirs
+DIST_COMMON =  README ./stamp-h.in Makefile.am Makefile.in aclocal.m4 \
+config.guess config.h.in config.sub configure configure.ac install-sh \
+ltmain.sh missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)

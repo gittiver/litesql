@@ -9,10 +9,7 @@
 #ifndef _litesql_postgresql_hpp
 #define _litesql_postgresql_hpp
 #ifdef HAVE_LIBPQ
-#ifdef HAVE_POSTGRESQL8
-#include "postgresql/8.0/libpq-fe.h"
-#else
-#include "postgresql/libpq-fe.h"
+#include "libpq-fe.h"
 #endif
 #include "litesql/except.hpp"
 #include "litesql/types.hpp"
