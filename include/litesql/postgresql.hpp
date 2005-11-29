@@ -10,7 +10,6 @@
 #define _litesql_postgresql_hpp
 #ifdef HAVE_LIBPQ
 #include "libpq-fe.h"
-#endif
 #include "litesql/except.hpp"
 #include "litesql/types.hpp"
 #include "litesql/string.hpp"
