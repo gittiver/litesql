@@ -8,6 +8,7 @@
     Manual */
 /** \page changes Changes
 \section vercvs CVS Version
+\section ver0_3_1 Version 0.3.1
 - namespace - attribute is required now on (used in litesql-gen)
 - relation field type names are now consistent with object field type names (they start with uppercase letter) 
 - bug fix: litesql-gen rejected relations with two or more objects with no relation handles (duplicate handle)
