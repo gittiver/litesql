@@ -33,7 +33,7 @@ Methods:
 - link : link objects
 - unlink : remove a link between objects
 - get<type> : get a DataSource<type> of objects
-- flush : drop all object links
+- del : drop links using an expression
 - ( getTYPEn : non-template versions for relations with duplicate types )
 
 \section usage_relationhandle RelationHandle-class
@@ -43,10 +43,12 @@ access to relation. It can be used to link, unlink or select objects
 related to relation handle's owner.
 
 RelationHandle-class' methods:
-- link
-- unlink
-- get<type> : generated for n-ary relations
-- get : generated for 2-ended relations 
+- link : link owner to another object
+- unlink : unlink owner from another object
+- del : drop links using an expression
+- get<type> : get a DataSource<type> of objects (generated for n-ary relations)
+- get : get a DataSource of known type (generated for 2-ended relations, only one type)
+- ( getTYPEn : non-template versions for relations with three or more duplicate types )
 
 \section usage_relationhandle_examples RelationHandle-Examples
 

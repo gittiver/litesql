@@ -11,12 +11,12 @@
 In order to support virtual methods a Persistent object must be upcasted to
 correct type before calling virtual method.
 
-upcast is a template method to which you must pass a correct base type of 
-Persistent. upcast will return an auto_ptr which holds a pointer to an object
+upcast will return an auto_ptr which holds a pointer to an object
 of correct type.
 
 upcastCopy is similar to upcast. It does not select an object of correct type
-but just constructs it in memory. Note that constructed object does not have
+from database but just constructs it in memory. Note 
+that constructed object does not have
 all of its fields. This method is suitable when virtual method to be called
 does not need any special fields.
 

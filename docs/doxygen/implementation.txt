@@ -78,16 +78,16 @@ CREATE TABLE Collection_ (id_ INTEGER PRIMARY KEY, type_ TEXT, description_ TEXT
 CREATE TABLE AudioFile_Collection_ (AudioFile1 INTEGER, Collection2 INTEGER, percent_ INTEGER);
 
 -- original name: idx_AudioFile_Collection_AudioFile1
-CREATE INDEX _71b11d59ca507479edd464e053cd01 ON AudioFile_Collection_1 (AudioFile1); 
+CREATE INDEX _71b11d59ca507479edd464e053cd01 ON AudioFile_Collection_ (AudioFile1); 
 
 -- original name: idx_AudioFile_Collection_Collection2
-CREATE INDEX _e1305d9ca2d1c6947b38fc301ad676 ON AudioFile_Collection_1 (Collection2); 
+CREATE INDEX _e1305d9ca2d1c6947b38fc301ad676 ON AudioFile_Collection_ (Collection2); 
 
 -- original name: idx_AudioFile_Collection_AudioFile1_Collection2
-CREATE INDEX _7e632b2ede1b6f3348d36e44e443d0 ON AudioFile_Collection_1 (AudioFile1,Collection2); 
+CREATE INDEX _7e632b2ede1b6f3348d36e44e443d0 ON AudioFile_Collection_ (AudioFile1,Collection2); 
 \endcode
 
-The relation table AudioFile_Collection_1 is indexed by both of its fields.
+The relation table AudioFile_Collection_ is indexed by both of its fields.
 If table or index identifier is longer than 31 characters, it will be 
 truncated by calculating MD5-sum of the identifier because all backends do not
 support longer identifiers (certain PostgreSQL - versions at least).

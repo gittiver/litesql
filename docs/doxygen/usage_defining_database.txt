@@ -24,7 +24,7 @@ To make valid XML, the definition file should begin with following lines:
 A database definition file has a root tag which encloses all definitions
 inside it. It must have exactly one 'database'-tag.
 \code
-<database name="TestDatabase" [namespace="test"] [include="extra.hpp"]>
+<database name="TestDatabase" namespace="test" [include="extra.hpp"]>
    ... definitions ...
 </database>
 \endcode
@@ -53,7 +53,7 @@ placed inside 'database'-tag.
 and relation attributes. They can be placed inside 'object'-tag or 
 'relation'-tag.
 \code
-<field name="myfield" type="integer" [default="value"] [indexed="true"]/>
+<field name="myfield" type="integer" [default="1"] [indexed="true"]/>
 <field name="color" type="integer">
     <value name="Red" value="0"/>
     <value name="Green" value="1"/>
