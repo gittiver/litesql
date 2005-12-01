@@ -33,6 +33,7 @@ Note: attributes in [square brackets] are optional.
 - 'namespace' - attribute defines C++ - namespace into which all generated
 classes will be put.
 - 'include' - attribute defines C++ - header file to be included in generated header file
+
 The definition above will be extracted to C++ - class test::TestDatabase.
 
 \subsection object_tag Object-tag
