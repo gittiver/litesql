@@ -3,9 +3,25 @@ AC_INIT([LiteSQL], [0.3.1], [litesql-users@lists.sourceforge.net], [litesql])
 AC_CONFIG_SRCDIR([src/library/database.cpp])
 AM_INIT_AUTOMAKE([litesql], [0.3.1])
 AM_CONFIG_HEADER(config.h)
+
+# Program Checks
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
+AC_CHECK_PROG([DOXYGEN], [doxygen], [doxygen], [not found])
+# Doxygen
+DOXYGEN_OUTPUT_DIR=".."
+AC_SUBST(DOXYGEN_OUTPUT_DIR)
+AM_CONDITIONAL(HAVE_DOXYGEN, [test "x$DOXYGEN" = "xdoxygen"])
+DOXYGEN_OUTPUT_SUBDIRS=""
+if test "x$DOXYGEN" = "xdoxygen"
+then
+    for d in html
+    do
+	DOXYGEN_OUTPUT_SUBDIRS="${DOXYGEN_OUTPUT_SUBDIRS} ${DOXYGEN_OUTPUT_DIR}/$d"
+    done
+fi
+AC_SUBST(DOXYGEN_OUTPUT_SUBDIRS)
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -62,7 +78,7 @@ AC_SUBST(SQLITE3_CXXFLAGS)
 AC_SUBST(SQLITE3_LDFLAGS)
 
 # Check for MySQL client lib.
-AH_TEMPLATE(HAVE_LIBMYSQLCLIENT, [Define to 1 if you have the `mysqlclient' library (-lmysqlclient).])
+AH_TEMPLATE(HAVE_LIBMYSQLCLIENT, [Define to 1 if you have the 'mysqlclient' library (-lmysqlclient).])
 find_mysql="yes"
 mysql_config_path="/usr"
 AC_ARG_VAR([MYSQL_CONFIG], [location of mysql_config])

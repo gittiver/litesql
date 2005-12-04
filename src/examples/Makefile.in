@@ -65,6 +65,9 @@ CC = @CC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 DLLTOOL = @DLLTOOL@
+DOXYGEN = @DOXYGEN@
+DOXYGEN_OUTPUT_DIR = @DOXYGEN_OUTPUT_DIR@
+DOXYGEN_OUTPUT_SUBDIRS = @DOXYGEN_OUTPUT_SUBDIRS@
 ECHO = @ECHO@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
@@ -93,10 +96,11 @@ SQLITE3_LDFLAGS = @SQLITE3_LDFLAGS@
 STRIP = @STRIP@
 VERSION = @VERSION@
 
-AM_CXXFLAGS = -I../../include
+AM_CXXFLAGS = -I$(srcdir)/../../include
 noinst_PROGRAMS = example
-example_SOURCES = example.cpp exampledatabase.cpp
+example_SOURCES = example.cpp exampledatabase.cpp exampledatabase.hpp
 example_LDADD = ../library/liblitesql.la
+EXTRA_DIST = exampledatabase.dot exampledatabase.png exampledatabase.xml example_output.txt example_queries.txt
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -116,6 +120,11 @@ CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DIST_COMMON =  Makefile.am Makefile.in
 
 
