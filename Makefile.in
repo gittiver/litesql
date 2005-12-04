@@ -93,7 +93,7 @@ SQLITE3_LDFLAGS = @SQLITE3_LDFLAGS@
 STRIP = @STRIP@
 VERSION = @VERSION@
 
-SUBDIRS = src include
+SUBDIRS = src include docs
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

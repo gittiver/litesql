@@ -1,6 +1,7 @@
-AC_PREREQ(2.50)
-AC_INIT(src/library/database.cpp)
-AM_INIT_AUTOMAKE(litesql,0.3)
+AC_PREREQ(2.53)
+AC_INIT([LiteSQL], [0.3.1], [litesql-users@lists.sourceforge.net], [litesql])
+AC_CONFIG_SRCDIR([src/library/database.cpp])
+AM_INIT_AUTOMAKE([litesql], [0.3.1])
 AM_CONFIG_HEADER(config.h)
 AC_PROG_CC
 AC_PROG_CXX
@@ -134,5 +135,6 @@ LIBS="$LIBS ${MYSQL_LIBS}"
 
 AC_PROG_LIBTOOL
 AC_OUTPUT(Makefile include/Makefile include/litesql/Makefile src/Makefile 
-          src/library/Makefile src/generator/Makefile src/tests/Makefile src/examples/Makefile) 
+          src/library/Makefile src/generator/Makefile src/tests/Makefile src/examples/Makefile
+          docs/Makefile docs/doxygen/Makefile docs/doxygen/doxygen.conf) 
 
