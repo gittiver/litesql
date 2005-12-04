@@ -63,11 +63,11 @@ bob.update();
 
 // both objects must be stored in database before they can be linked
 
-bill.friends.link(bob);
+bill.friends().link(bob);
 
 // following statement would throw an exception because they are already friends
 // (friends is bidirectional relation)
-bob.friends.link(bill);
+bob.friends().link(bill);
 \endcode
 
 A fetching example:
@@ -80,7 +80,7 @@ vector<Person> billsFriends = bill.friends().get().all();
 An unlinking example:
 \code
 // Bill and Bob are no longer friends
-bill.friends.unlink(bob);
+bill.friends().unlink(bob);
 \endcode
 
 \section usage_relation_examples Relation-Examples
@@ -105,11 +105,11 @@ A fetching example:
 \code
 Person bob = FriendsRelation::getPerson2(db, 
                                          Person::Name == "Bob",
-                                         FriendsRelation::person1==bill.id).one();
+                                         FriendsRelation::Person1==bill.id).one();
 
 vector<Person> billsFriends = 
      FriendsRelation::getPerson2(db, Expr(), 
-                                 FriendsRelation::person1==bill.id).all();
+                                 FriendsRelation::Person1==bill.id).all();
 \endcode
 
 An unlinking example:

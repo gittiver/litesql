@@ -31,13 +31,5 @@ age_ = 33
 sex_ = 1
 -------------------------------------
 
--------------------------------------
-id_ = 3
-type_ = Person
-name_ = Jack
-age_ = 15
-sex_ = 0
--------------------------------------
-
 Hi! My name is Jack and I am 15 years old.
 No Person with id 100

@@ -191,9 +191,6 @@ SELECT count(*) FROM Person_
 SELECT Person_.id_,Person_.type_,Person_.name_,Person_.age_,Person_.sex_ FROM 
 Person_ ORDER BY Person_.age_
 SELECT Person_.id_,Person_.type_,Person_.name_,Person_.age_,Person_.sex_ FROM 
-Person_ WHERE Person_.id_ in (SELECT Person_Person_Children.Person2 FROM 
-Person_Person_Children WHERE Person_Person_Children.Person1 = '1')
-SELECT Person_.id_,Person_.type_,Person_.name_,Person_.age_,Person_.sex_ FROM 
 Person_ WHERE Person_.id_ in (SELECT Person_.id_ FROM Person_ WHERE Person_.id_ 
 in (SELECT Person_Person_Children.Person2 FROM Person_Person_Children WHERE 
 Person_Person_Children.Person1 = '1') INTERSECT SELECT Person_.id_ FROM Person_ 

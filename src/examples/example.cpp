@@ -81,10 +81,6 @@ int main(int argc, char **argv) {
              
         // select intersection of Jeff's and Jill's children and
         // iterate results with cursor
-        family = jeff.children().get().all();
-        for (vector<Person>::iterator i = family.begin(); i != family.end(); i++)
-            cout << toString(*i) << endl;
-
         Cursor<Person> cursor = intersect(jeff.children().get(), 
                                           jill.children().get()).cursor();
         // Jack should say hello
