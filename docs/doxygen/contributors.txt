@@ -9,6 +9,7 @@
 
 Eric McDonald
 - Wrote better tests for backend databases to configure.ac. 
+- Wrote versioning and packaging improvements.
 
 Axel Schmidt 
 - Made LiteSQL compile with VC++ (fixed some related bugs).
