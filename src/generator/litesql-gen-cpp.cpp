@@ -121,7 +121,7 @@ void writeObjFields(Class & cl, const xml::Object & o) {
             ftypeClass = fld.fieldTypeName + "Type";
             Class ftypeCl(ftypeClass, "litesql::FieldType");
             Method cons(ftypeClass);
-	    ftypeClass = o.name + "::" + ftypeClass;
+   	        ftypeClass = "const " + o.name + "::" + ftypeClass;
             cons.param(Variable("n", "const std::string&"))
                 .param(Variable("t", "const std::string&"))
                 .param(Variable("tbl", "const std::string&"))
@@ -592,9 +592,10 @@ void writeStaticRelData(Class& cl, const xml::Relation& r) {
             ftypeClass = fld.fieldTypeName + "Type";
             Class ftypeCl(ftypeClass, "litesql::FieldType");
             Method cons(ftypeClass);
-            cons.param(Variable("n", "const string&"))
-                .param(Variable("t", "const string&"))
-                .param(Variable("tbl", "const string&"))
+   	        ftypeClass = "const " + r.getName() + "::" + ftypeClass;
+            cons.param(Variable("n", "const std::string&"))
+                .param(Variable("t", "const std::string&"))
+                .param(Variable("tbl", "const std::string&"))
                 .param(Variable("vals", "const litesql::FieldType::Values&", "Values()"))
                 .constructor("litesql::FieldType(n,t,tbl,vals)");
             

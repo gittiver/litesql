@@ -280,7 +280,7 @@ public:
         string getSQL(string rowIDType) {
             if (primaryKey)
                 type = rowIDType;
-            return name + " " + type + " " + extra;
+            return name + " " + type + extra;
         }
     };
     class DBIndex {
