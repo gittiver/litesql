@@ -8,6 +8,7 @@
 #include "litesql-gen.hpp"
 #include "litesql/split.hpp"
 #include "litesql/string.hpp"
+
 extern int yylineno;
 namespace xml {
 using namespace std;
@@ -15,7 +16,7 @@ using namespace litesql;
 string capitalize(const string& s);
 string decapitalize(const string& s);
 string safe(const char *s);
-
+string makeDBName(const string& s);
 class Value {
 public:
     string name, value;
@@ -136,7 +137,7 @@ public:
 class Relate {
 public:    
     string objectName;
-    string fieldTypeName;
+    string fieldTypeName, fieldName;
     string getMethodName;
     int paramPos;
     AT_relate_limit limit;
@@ -162,17 +163,18 @@ public:
 class Relation {
 public:
     string id, name;
+    string table;
     AT_relation_unidir unidir;
-    vector<Relate> related;
-    vector<Field> fields;
-    vector<Index> indexes;
+    vector<Relate*> related;
+    vector<Field*> fields;
+    vector<Index*> indices;
     Relation(string i, string n, AT_relation_unidir ud) 
         : id(i), name(n), unidir(ud) {}
     string getName() const {
         if (name.size() == 0) {
             string result;
             for (size_t i = 0; i < related.size(); i++) 
-                result += related[i].objectName;
+                result += related[i]->objectName;
             return result + "Relation" + id;
         }
         return name;
@@ -184,9 +186,9 @@ public:
         map<string, int> names;
         int max = 0;
         for (size_t i = 0; i < related.size(); i++) {
-            if (names.find(related[i].objectName) == names.end()) 
-                names[related[i].objectName] = 0;
-            int value =	++names[related[i].objectName];
+            if (names.find(related[i]->objectName) == names.end()) 
+                names[related[i]->objectName] = 0;
+            int value =	++names[related[i]->objectName];
             if (value > max)
                 max = value;
         }
@@ -195,37 +197,37 @@ public:
     int countTypes(string name) const {
         int res = 0;
         for (size_t i = 0; i < related.size(); i++)
-            if (related[i].objectName == name)
+            if (related[i]->objectName == name)
                 res++;
         return res;
     }
     string getTable() const {
         Split res;
         for (size_t i = 0; i < related.size(); i++)
-            res.push_back(related[i].objectName);
+            res.push_back(related[i]->objectName);
         res.push_back(id);
 
-        return res.join("_");
+        return makeDBName(res.join("_"));
     }
 };
 class Object {
 public:
     string name, inherits;
-    vector<Field> fields;
-    vector<Method> methods;
-    vector<Index> indexes;
-    vector<RelationHandle> handles;
+    vector<Field*> fields;
+    vector<Method*> methods;
+    vector<Index*> indices;
+    vector<RelationHandle*> handles;
     map<Relation*, vector<Relate*> > relations;
-    Object * parentObject;
+    Object* parentObject;
     vector<Object*> children;
 
     Object(string n, string i) : name(n), inherits(i),
         parentObject(NULL) {
         if (i.size() == 0) {
             inherits = "litesql::Persistent";
-            fields.push_back(Field("id", A_field_type_integer, "", 
-                         A_field_indexed_true, A_field_unique_true));
-            fields.push_back(Field("type", A_field_type_string, "", 
+            fields.push_back(new Field("id", A_field_type_integer, "", 
+                         A_field_indexed_false, A_field_unique_false));
+            fields.push_back(new Field("type", A_field_type_string, "", 
                         A_field_indexed_false, A_field_unique_false));
         }
     }
@@ -234,7 +236,7 @@ public:
             return fields.size();
         else return parentObject->getLastFieldOffset() + fields.size();
     }
-    void getAllFields(vector<Field>& flds) const {
+    void getAllFields(vector<Field*>& flds) const {
         if (parentObject)
             parentObject->getAllFields(flds);
         for (size_t i = 0; i < fields.size(); i++)
@@ -253,16 +255,70 @@ public:
             return parentObject->getBaseObject();
     }
     string getTable() const {
-        return name + "_";
+        return makeDBName(name + "_");
+    }
+    string getSequence() const {
+        return makeDBName(name + "_seq");
     }
 };
 class Database {
 public:
+    class Sequence {
+    public:
+        string name, table;
+        string getSQL() {
+            return "CREATE SEQUENCE " + name + " START 1 INCREMENT 1";
+        }
+    };
+    class DBField {
+    public:
+        string name, type, extra;
+        bool primaryKey;
+        Field* field;
+        vector<DBField*> references;
+        DBField() : primaryKey(false) {}
+        string getSQL(string rowIDType) {
+            if (primaryKey)
+                type = rowIDType;
+            return name + " " + type + " " + extra;
+        }
+    };
+    class DBIndex {
+    public:
+        string name, table;
+        bool unique;
+        vector<DBField*> fields;
+        DBIndex() : unique(false) {}
+        string getSQL() {
+            litesql::Split flds;
+            for (size_t i = 0; i < fields.size(); i++)
+                flds.push_back(fields[i]->name);
+            string uniqueS;
+            if (unique)
+                uniqueS = " UNIQUE";
+            return "CREATE" + uniqueS + " INDEX " + name + " ON " + table + " (" + flds.join(",") + ")";
+        }
+    };
+    class Table {
+    public:
+        string name;
+        vector<DBField*> fields;
+        string getSQL(string rowIDType) {
+            litesql::Split flds;
+            for (size_t i = 0; i < fields.size(); i++)
+                flds.push_back(fields[i]->getSQL(rowIDType));
+            return "CREATE TABLE " + name + " (" + flds.join(",") + ")";
+        }
+
+    };
+    vector<Sequence*> sequences;
+    vector<DBIndex*> indices;
+    vector<Table*> tables;
     string name, include, nspace;
 };
 void init(Database& db, 
-          vector<Object>& objects,
-          vector<Relation>& relations);
+          vector<Object*>& objects,
+          vector<Relation*>& relations);
 
 
 }

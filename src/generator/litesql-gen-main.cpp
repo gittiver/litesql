@@ -14,8 +14,10 @@ char* help =
 "Supported targets:\n"
 "  'c++'        C++ target (.cpp,.hpp)\n"
 //"  'c'          C target (.c,.h)\n"
-//"  'hs'         Haskell target (.hs)\n"
+//"  'haskell'    Haskell target (.hs)\n"
 //"  'sql'        SQL schema of database (.sql)\n"
+//"  'php'        PHP target (.php)\n"
+//"  'python'     Python target (.py)\n"
 "  'graphviz'   Graphviz file (.dot)\n"
 "\n\n"
 ;
@@ -27,8 +29,8 @@ void report(const string& msg) {
         cout << msg;
 }
 void generateCode(xml::Database& db,
-                  vector<xml::Object>& objects,
-                  vector<xml::Relation>& relations) {
+                  vector<xml::Object*>& objects,
+                  vector<xml::Relation*>& relations) {
     xml::init(db, objects, relations);
     if (target == "c++") 
         writeCPPClasses(db, objects, relations);

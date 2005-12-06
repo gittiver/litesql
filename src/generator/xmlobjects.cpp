@@ -1,6 +1,7 @@
 #include "../library/compatibility.hpp"
 #include "xmlobjects.hpp"
 #include "litesql-gen-main.hpp"
+#include "md5.hpp"
 #include "litesql.hpp"
 #include <algorithm>
 namespace xml {
@@ -30,17 +31,21 @@ string decapitalize(const string& s) {
     char buf[2] = {tolower(s[0]), 0};
     return string(buf) + s.substr(1, s.size());
 }
-
+string makeDBName(const string& s) {
+    if (s.size() > 31)
+        return "_" + md5HexDigest(s);
+    return s;
+}
 static void sanityCheck(Database& db,
-                        vector<Object>& objects,
-                        vector<Relation>& relations) {
+                        vector<Object*>& objects,
+                        vector<Relation*>& relations) {
     using namespace litesql;
     map<string, bool> usedID;
     string err;
     if (!(err = validID(db.name,"class")).empty()) 
         throw Except("invalid id: database.name : " + db.name);
     for (size_t i = 0; i < objects.size(); i++) {
-        Object& o = objects[i];
+        Object& o = *objects[i];
         if (!(err = validID(o.name, "class")).empty())
             throw Except("invalid id: object.name : " + o.name);
         if (usedID.find(o.name) != usedID.end())
@@ -49,7 +54,7 @@ static void sanityCheck(Database& db,
         map<string, bool> usedField;
         usedField.clear();
         for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
-            Field& f = o.fields[i2];
+            Field& f = *o.fields[i2];
             if (!(err = validID(f.name)).empty())
                 throw Except("invalid id: object.field.name : " + o.name + "." + f.name);
             if (usedField.find(f.name) != usedField.end())
@@ -58,7 +63,7 @@ static void sanityCheck(Database& db,
         }
     }
     for (size_t i = 0; i < relations.size(); i++) {
-        Relation& r = relations[i];
+        Relation& r = *relations[i];
         string name = r.getName();
         if (!(err = validID(name,"class")).empty())
             throw Except("invalid id: relation.name : " + name);
@@ -71,7 +76,7 @@ static void sanityCheck(Database& db,
         bool defaults = false;
         
         for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
-            Field& f = r.fields[i2];
+            Field& f = *r.fields[i2];
             if (!(err = validID(f.name)).empty())
                 throw Except("invalid id: relation.field.name : " + name + "." + f.name);
             if (usedField.find(f.name) != usedField.end())
@@ -87,7 +92,7 @@ static void sanityCheck(Database& db,
         bool limits = false;
         bool uniques = false;
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
-            Relate& rel = r.related[i2];
+            Relate& rel = *r.related[i2];
             if (!(err = validID(rel.handle)).empty() && !rel.handle.empty())
                 throw Except("invalid id: relation.relate.handle : " + name + "." + rel.handle);
             if (usedField.find(rel.handle) != usedField.end())
@@ -107,45 +112,201 @@ static void sanityCheck(Database& db,
             
     }   
 }
+
+static void initSchema(Database& db,
+                vector<Object*>& objects,
+                vector<Relation*>& relations) {
+    for (size_t i = 0; i < objects.size(); i++) {
+        Object& o = *objects[i];
+        map<string, Database::DBField*> fldMap;
+        Database::Table* tbl = new Database::Table;
+        tbl->name = o.getTable();
+        db.tables.push_back(tbl);
+        
+        if (!o.parentObject) {
+            Database::Sequence* seq = new Database::Sequence;
+            seq->name = o.getSequence();
+            seq->table = o.getTable();
+            db.sequences.push_back(seq);
+        } else {
+            Database::DBField *id = new Database::DBField;
+            id->name = "id_";
+            id->type = "INTEGER";
+            id->primaryKey = true;
+            tbl->fields.push_back(id);
+        }
+        
+
+
+        for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
+            Field& f = *o.fields[i2];
+            Database::DBField* fld = new Database::DBField;
+            fld->name = f.name + "_";
+            fldMap[f.name] = fld;
+            fld->type = f.getSQLType();
+            fld->primaryKey = (i2 == 0);
+            if (f.isUnique())
+                fld->extra = " UNIQUE";
+            fld->field = o.fields[i2];
+            tbl->fields.push_back(fld);
+            
+            if (f.isIndexed()) {
+                Database::DBIndex* idx = new Database::DBIndex;
+                idx->name = makeDBName(tbl->name + fld->name + "idx");
+                idx->table = tbl->name;
+                idx->fields.push_back(fld);
+                db.indices.push_back(idx);
+            }
+                
+        }
+        for (size_t i2 = 0; i2 < o.indices.size(); i2++) {
+            const Index& idx = *o.indices[i2];
+
+            litesql::Split fldNames;
+            Database::DBIndex* index = new Database::DBIndex;
+            for (size_t i3 = 0; i3 < idx.fields.size(); i3++) {
+                if (fldMap.find(idx.fields[i3].name) == fldMap.end())
+                    throw litesql::Except("Indexfield " + o.name + "." + idx.fields[i3].name + " is invalid.");
+                index->fields.push_back(fldMap[idx.fields[i3].name]);
+                fldNames.push_back(idx.fields[i3].name);
+            }
+
+            index->name = makeDBName(tbl->name + "_" + fldNames.join("_") + "_idx");
+            string unique = "";
+            if (idx.isUnique())
+                index->unique = true;
+            db.indices.push_back(index);
+        }
+    }
+    for (size_t i = 0; i < relations.size(); i++) {
+        Relation& r = *relations[i];
+        Database::Table* tbl = new Database::Table;
+        db.tables.push_back(tbl);
+        tbl->name = r.getTable();
+        vector<Database::DBField*> objFields;
+        map<string, Database::DBField*> fldMap;
+        for (size_t i2 = 0; i2 < r.related.size(); i2++) {
+            const xml::Relate& relate = *r.related[i2];
+            string extra;
+            if (relate.isUnique())
+                    extra = " UNIQUE";
+            else if (r.related.size() == 2) { 
+                if (i2 == 0 && r.related[1]->hasLimit())
+                    extra = " UNIQUE";
+                if (i2 == 1 && r.related[0]->hasLimit())
+                    extra = " UNIQUE";
+            }
+            Database::DBField* fld = new Database::DBField;
+            fld->name = relate.fieldName;
+            fld->type = "INTEGER";
+            fld->extra = extra;
+            tbl->fields.push_back(fld);
+            objFields.push_back(fld);
+            
+            Database::DBIndex* idx = new Database::DBIndex;
+            idx->name = makeDBName(tbl->name + fld->name + "idx");
+            idx->table = tbl->name;
+            idx->fields.push_back(fld);
+            db.indices.push_back(idx);
+            
+        }
+        for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
+            Field& f = *r.fields[i2];
+            string extra;
+            for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
+                Field& f = *r.fields[i2];
+                Database::DBField* fld = new Database::DBField;
+                fld->name = f.name + "_";
+                fldMap[f.name] = fld;
+                fld->type = f.getSQLType();
+                fld->primaryKey = false;
+                if (f.isUnique())
+                    fld->extra = " UNIQUE";
+                fld->field = r.fields[i2];
+                tbl->fields.push_back(fld);
+            
+                if (f.isIndexed()) {
+                    Database::DBIndex* idx = new Database::DBIndex;
+                    idx->name = makeDBName(tbl->name + fld->name + "idx");
+                    idx->table = tbl->name;
+                    idx->fields.push_back(fld);
+                    db.indices.push_back(idx);
+                }
+                
+            }
+        }
+        if (r.related.size() > 1) {
+
+            Database::DBIndex* idx = new Database::DBIndex;
+            idx->name = makeDBName(tbl->name + "_all_idx");
+            idx->table = tbl->name;
+            for (size_t i2 = 0; i2 < objFields.size(); i2++)
+                idx->fields.push_back(objFields[i2]);
+            db.indices.push_back(idx);
+        }
+        for (size_t i2 = 0; i2 < r.indices.size(); i2++) {
+            const Index& idx = *r.indices[i2];
+
+            litesql::Split fldNames;
+            Database::DBIndex* index = new Database::DBIndex;
+            for (size_t i3 = 0; i3 < idx.fields.size(); i3++) {
+                Database::DBField* fld = new Database::DBField;
+                if (fldMap.find(idx.fields[i3].name) == fldMap.end())
+                    throw litesql::Except("Indexfield " + r.name + "." + idx.fields[i3].name + " is invalid.");
+                index->fields.push_back(fldMap[idx.fields[i3].name]);
+                fldNames.push_back(idx.fields[i3].name);
+            }
+
+            index->name = makeDBName(tbl->name + "_" + fldNames.join("_") + "_idx");
+            string unique = "";
+            if (idx.isUnique())
+                index->unique = true;
+            db.indices.push_back(index);
+        }
+    }
+
+}
+
 void init(Database& db,
-          vector<Object>& objects,
-          vector<Relation>& relations) {
-    map<string, xml::Object*> objMap;
+          vector<Object*>& objects,
+          vector<Relation*>& relations) {
+    map<string, Object*> objMap;
     report("validating XML file\n");
     sanityCheck(db, objects, relations);
     report("linking XML - objects\n"); 
-    // make string -> xml::Object mapping
+    // make string -> Object mapping
 
     for (size_t i = 0; i < objects.size(); i++)
-        objMap[objects[i].name] = &objects[i];
+        objMap[objects[i]->name] = objects[i];
 
     // make Object's class hierarchy mapping (parent and children)
 
     for (size_t i = 0; i < objects.size(); i++) 
-        if (objMap.find(objects[i].inherits) != objMap.end())
-            objects[i].parentObject = objMap[objects[i].inherits];
+        if (objMap.find(objects[i]->inherits) != objMap.end())
+            objects[i]->parentObject = objMap[objects[i]->inherits];
     for (size_t i = 0; i < objects.size(); i++) 
-        if (objects[i].parentObject)
-            objects[i].parentObject->children.push_back(&objects[i]);
-
-    for (size_t i = 0; i < objects.size(); i++) {
-        Object& o = objects[i];
-    }
+        if (objects[i]->parentObject)
+            objects[i]->parentObject->children.push_back(objects[i]);
 
     // sort objects of relations alphabetically (ascii)
 
     for (size_t i = 0; i < relations.size(); i++) 
-        sort(relations[i].related.begin(), relations[i].related.end());
+        sort(relations[i]->related.begin(), relations[i]->related.end());
             
     for (size_t i = 0; i < relations.size(); i++) {
-        xml::Relation& rel = relations[i];
+        Relation& rel = *relations[i];
+        bool same = rel.sameTypes() > 1;
         
-
         for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
-            xml::Relate& relate = rel.related[i2];
-            xml::Object* obj = objMap[relate.objectName];
+            Relate& relate = *rel.related[i2];
+            Object* obj = objMap[relate.objectName];
+            string num;
+            if (same)
+                num = toString(i2 + 1);
+            relate.fieldTypeName = relate.objectName + num;
+            relate.fieldName = relate.objectName + toString(i2 + 1);
             if (obj->relations.find(&rel) == obj->relations.end())
-                obj->relations[&rel] = vector<xml::Relate*>();
+                obj->relations[&rel] = vector<Relate*>();
 
             // make Object -> Relation mapping
 
@@ -154,19 +315,23 @@ void init(Database& db,
                 
                 // make Object's relation handles
 
-                xml::RelationHandle handle(relate.handle, &rel,
-                                           &relate, obj);
+                RelationHandle* handle = new RelationHandle(relate.handle, &rel,
+                                                                      &relate, obj);
                 for (size_t i3 = 0; i3 < rel.related.size(); i3++) {
                     if (i2 != i3) {
-                        xml::Object* o = objMap[rel.related[i3].objectName];
+                        Object* o = objMap[rel.related[i3]->objectName];
                         // make RelationHandle -> (Object,Relation) mapping
-                        handle.destObjects.push_back(make_pair(o,&rel.related[i3]));
+                        handle->destObjects.push_back(make_pair(o,rel.related[i3]));
                     }
                 }
                 obj->handles.push_back(handle);
             }
         }
     }
+    
+
+    initSchema(db, objects, relations);
+
 }
 string safe(const char * s) {
     if (s)

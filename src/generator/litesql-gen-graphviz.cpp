@@ -2,9 +2,9 @@
 using namespace std;
 using namespace xml;
 void writeInheritance(FILE* f, 
-                      vector<Object>& objects) {
+                      vector<Object*>& objects) {
     for (size_t i = 0; i < objects.size(); i++) {
-        Object& o = objects[i];
+        Object& o = *objects[i];
         fprintf(f, "    \"%s\"", o.name.c_str());
         if (o.parentObject)
             fprintf(f, " -> \"%s\"", o.inherits.c_str());
@@ -13,19 +13,19 @@ void writeInheritance(FILE* f,
 }
 
 void writeRelations(FILE* f,
-                    vector<Object>& objects, 
-                    vector<Relation>& relations) {
+                    vector<Object*>& objects, 
+                    vector<Relation*>& relations) {
     for (size_t i = 0; i < relations.size(); i++) {
-        Relation& r = relations[i];
+        Relation& r = *relations[i];
 
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
-            Relate& rel = r.related[i2];
+            Relate& rel = *r.related[i2];
             string extra;
             for (size_t i3 = 0; i3 < r.related.size(); i3++) {
                 if (i3 == i2) 
                     continue;
 
-                Relate& destRel = r.related[i3];
+                Relate& destRel = *r.related[i3];
                 if (rel.handle.size() > 0) {
                     extra = " [label=\"" + rel.handle + "\"]";
                     fprintf(f, "    \"%s\" -> \"%s\"%s;\n", 
@@ -38,8 +38,8 @@ void writeRelations(FILE* f,
 }
 
 void writeGraphviz(Database& db,
-                   vector<Object>& objects,
-                   vector<Relation>& relations) {
+                   vector<Object*>& objects,
+                   vector<Relation*>& relations) {
    string fname = toLower(db.name + ".dot"); 
    FILE* f = fopen(fname.c_str(), "w");
    if (!f) {

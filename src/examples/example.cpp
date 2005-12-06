@@ -17,6 +17,7 @@ int main(int argc, char **argv) {
         // using SQLite3 as backend
         ExampleDatabase db("sqlite3", "database=example.db");
         // create tables, sequences and indexes
+        db.verbose = true;
         db.create();
         // start transaction
         db.begin();

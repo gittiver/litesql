@@ -1964,7 +1964,7 @@ char *yytext;
 #line 1 "litesql-gen.l"
 #define INITIAL 0
 /* Validating XML processor for litesql.dtd.
- * Generated 2005/11/29 17:42:21.
+ * Generated 2005/12/06 13:13:10.
  *
  * This program was generated with the FleXML XML processor generator.
  * FleXML is Copyright © 1999-2005 Kristoffer Rose.  All rights reserved.

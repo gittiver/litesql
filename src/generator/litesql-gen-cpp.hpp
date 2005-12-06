@@ -4,7 +4,7 @@
 #include "xmlobjects.hpp"
 
 void writeCPPClasses(xml::Database& db,
-                     std::vector<xml::Object>& objects,
-                     std::vector<xml::Relation>& relations);
+                     std::vector<xml::Object*>& objects,
+                     std::vector<xml::Relation*>& relations);
 
 #endif

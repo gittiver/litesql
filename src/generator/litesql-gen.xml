@@ -7,8 +7,8 @@
 
 using namespace std;
 using namespace xml;
-vector<Object> objects;
-vector<Relation> relations;
+vector<Object*> objects;
+vector<Relation*> relations;
 Database db;
 Object * obj;
 Relation * rel;
@@ -22,38 +22,32 @@ db.include = safe({include});
 db.nspace = safe({namespace});
 ]]></start>
 <start tag="object"><![CDATA[
-objects.push_back(Object({name}, safe({inherits})));
-obj = &objects[objects.size()-1];
+objects.push_back(obj = new Object({name}, safe({inherits})));
 ]]></start>
 <end tag="object"><![CDATA[
 obj = NULL;
 ]]></end>
 <start tag="relation"><![CDATA[
-relations.push_back(Relation(safe({id}), safe({name}),{unidir}));
-rel = &relations[relations.size()-1];
+relations.push_back(rel = new Relation(safe({id}), safe({name}),{unidir}));
 ]]></start>
 <end tag="relation"><![CDATA[
 rel = NULL;
 ]]></end>
 <start tag="field"><![CDATA[
 if (obj) {
-    obj->fields.push_back(Field({name}, 
+    obj->fields.push_back(fld =new Field({name}, 
                                      {type},safe({default}),{indexed},{unique}));
-    fld = &obj->fields[obj->fields.size()-1];
 } else if (rel) {
-    rel->fields.push_back(Field({name}, 
+    rel->fields.push_back(fld = new Field({name}, 
                          {type},safe({default}),{indexed}, {unique}));
-    fld = &rel->fields[rel->fields.size()-1];
 }
 ]]></start>
 <start tag="index"><![CDATA[
-if (obj) {
-    obj->indexes.push_back(Index({unique}));
-    idx = &obj->indexes[obj->indexes.size()-1];
-} else if (rel) {
-    rel->indexes.push_back(Index({unique}));
-    idx = &rel->indexes[rel->indexes.size()-1];
-} 
+idx = new Index({unique});
+if (obj) 
+    obj->indices.push_back(idx);
+else if (rel) 
+    rel->indices.push_back(idx);
 ]]></start>
 <end tag="index"><![CDATA[
 idx = NULL;
@@ -71,8 +65,7 @@ fld = NULL;
 ]]></end>
 <start tag="method"><![CDATA[
 if (obj) {
-    obj->methods.push_back(Method({name}, safe({returntype})));
-    mtd = &obj->methods[obj->methods.size()-1];
+    obj->methods.push_back(mtd = new Method({name}, safe({returntype})));
 }
 ]]></start>
 <end tag="method"><![CDATA[
@@ -84,7 +77,7 @@ if (mtd)
 ]]></start>
 <start tag="relate"><![CDATA[
 if (rel)
-    rel->related.push_back(Relate({object}, {limit}, {unique}, safe({handle})));
+    rel->related.push_back(new Relate({object}, {limit}, {unique}, safe({handle})));
 ]]></start>
 <end tag="database"><![CDATA[
     generateCode(db, objects, relations);    
