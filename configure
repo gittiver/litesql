@@ -20311,7 +20311,7 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 
 
 
-                                                                                                              ac_config_files="$ac_config_files Makefile include/Makefile include/litesql/Makefile src/Makefile src/library/Makefile src/generator/Makefile src/tests/Makefile src/examples/Makefile docs/Makefile docs/doxygen/Makefile docs/doxygen/doxygen.conf"
+                                                                                                                                  ac_config_files="$ac_config_files Makefile include/Makefile include/litesql/Makefile src/Makefile src/library/Makefile src/generator/Makefile src/tests/Makefile src/examples/Makefile docs/Makefile docs/doxygen/Makefile rpm/Makefile docs/doxygen/doxygen.conf rpm/litesql.spec"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -20857,7 +20857,9 @@ do
   "src/examples/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/examples/Makefile" ;;
   "docs/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
   "docs/doxygen/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/doxygen/Makefile" ;;
+  "rpm/Makefile" ) CONFIG_FILES="$CONFIG_FILES rpm/Makefile" ;;
   "docs/doxygen/doxygen.conf" ) CONFIG_FILES="$CONFIG_FILES docs/doxygen/doxygen.conf" ;;
+  "rpm/litesql.spec" ) CONFIG_FILES="$CONFIG_FILES rpm/litesql.spec" ;;
   "default-1" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
