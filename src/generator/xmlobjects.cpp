@@ -144,7 +144,7 @@ static void initSchema(Database& db,
             fld->name = f.name + "_";
             fldMap[f.name] = fld;
             fld->type = f.getSQLType();
-            fld->primaryKey = (i2 == 0);
+            fld->primaryKey = false;
             if (f.isUnique())
                 fld->extra = " UNIQUE";
             fld->field = o.fields[i2];
