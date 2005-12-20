@@ -212,29 +212,26 @@ static void initSchema(Database& db,
         }
         for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
             Field& f = *r.fields[i2];
-            string extra;
-            for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
-                Field& f = *r.fields[i2];
-                Database::DBField* fld = new Database::DBField;
-                fld->name = f.name + "_";
-                fldMap[f.name] = fld;
-                fld->type = f.getSQLType();
-                fld->primaryKey = false;
-                if (f.isUnique())
-                    fld->extra = " UNIQUE";
-                fld->field = r.fields[i2];
-                tbl->fields.push_back(fld);
+            Database::DBField* fld = new Database::DBField;
+            fld->name = f.name + "_";
+            fldMap[f.name] = fld;
+            fld->type = f.getSQLType();
+            fld->primaryKey = false;
+            if (f.isUnique())
+                fld->extra = " UNIQUE";
+            fld->field = r.fields[i2];
+            tbl->fields.push_back(fld);
             
-                if (f.isIndexed()) {
-                    Database::DBIndex* idx = new Database::DBIndex;
-                    idx->name = makeDBName(tbl->name + fld->name + "idx");
-                    idx->table = tbl->name;
-                    idx->fields.push_back(fld);
-                    db.indices.push_back(idx);
-                }
-                
+            if (f.isIndexed()) {
+                Database::DBIndex* idx = new Database::DBIndex;
+                idx->name = makeDBName(tbl->name + fld->name + "idx");
+                idx->table = tbl->name;
+                idx->fields.push_back(fld);
+                db.indices.push_back(idx);
             }
+            
         }
+    
         if (r.related.size() > 1) {
 
             Database::DBIndex* idx = new Database::DBIndex;
