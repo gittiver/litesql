@@ -8,6 +8,7 @@
     Manual */
 /** \page changes Changes
 \section vercvs CVS Version
+- bug fix: litesql-gen produced broken table names when using longer name than 31 characters
 - bug fix: litesql-gen produced broken SQL (duplicated relation attribute fields in CREATE TABLE - statements)
 - RPM packaging headers (by Eric McDonald)
 - added .cvsignore - files (by Eric McDonald)

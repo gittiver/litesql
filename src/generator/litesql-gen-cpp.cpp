@@ -81,7 +81,7 @@ void writeStaticObjData(Class& cl, const xml::Object& o) {
     cl.variable(type__);
 
     Variable table__("table__", "const std::string", 
-                     quote(xml::makeDBName(o.getTable())));
+                     quote(o.getTable()));
     table__.static_();
     cl.variable(table__);
 
@@ -552,7 +552,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
 
 void writeStaticRelData(Class& cl, const xml::Relation& r) {
     Variable table("table__", "const std::string", 
-                   quote(xml::makeDBName(r.getTable())));
+                   quote(r.getTable()));
     table.static_();
     cl.variable(table);
     Method initValues("initValues", "void");
