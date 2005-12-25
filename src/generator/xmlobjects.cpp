@@ -41,6 +41,7 @@ static void sanityCheck(Database& db,
                         vector<Relation*>& relations) {
     using namespace litesql;
     map<string, bool> usedID;
+    map<string, bool> objectName;
     string err;
     if (!(err = validID(db.name,"class")).empty()) 
         throw Except("invalid id: database.name : " + db.name);
@@ -51,6 +52,7 @@ static void sanityCheck(Database& db,
         if (usedID.find(o.name) != usedID.end())
             throw Except("duplicate id: object.name : " + o.name);
         usedID[o.name] = true;
+        objectName[o.name] = true;
         map<string, bool> usedField;
         usedField.clear();
         for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
@@ -97,6 +99,8 @@ static void sanityCheck(Database& db,
                 throw Except("invalid id: relation.relate.handle : " + name + "." + rel.handle);
             if (usedField.find(rel.handle) != usedField.end())
                 throw Except("duplicate id: relation.relate.handle : " + name + "." + rel.handle);
+            if (objectName.find(rel.objectName) == objectName.end())
+                throw Except("unknown object: relation.relate.name : " + name + "." + rel.objectName);
             if (!rel.handle.empty())
                 usedField[rel.handle] = true;
             if (rel.isUnique())
