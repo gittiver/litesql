@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
         jill.children().link(jess);
         jack.father().link(jeff);
         jack.mother().link(jill);
-        jill.mother().link(jill);
+        jess.mother().link(jill);
         jack.siblings().link(jill);
         // roles (linking examples)
         Office office(db);
@@ -61,14 +61,14 @@ int main(int argc, char **argv) {
         jeff.roles().link(jeffRole);
         jeffRole.office().link(office);
 
-        Student jackRole(db), jillRole(db);
+        Student jackRole(db), jessRole(db);
         jackRole.update();
-        jillRole.update();
+        jessRole.update();
         jack.roles().link(jackRole);
-        jill.roles().link(jillRole);
+        jess.roles().link(jessRole);
         
         jackRole.school().link(school);
-        jillRole.school().link(school);
+        jessRole.school().link(school);
         
         // count Persons
         cout << "There are " << select<Person>(db).count() 

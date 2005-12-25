@@ -122,7 +122,6 @@ static int callback(void *r, int argc, char **argv, char **azColName) {
     for (int i = 0; i < argc; i++) 
         rec.push_back(argv[i] ? argv[i] : "NULL");   
     res->recs.push_back(rec);
-    delete res;
     return 0;
 }
 void SQLite3::throwError(int status) const {
