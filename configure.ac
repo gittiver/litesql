@@ -39,6 +39,8 @@ AC_FUNC_REALLOC
 
 AC_CHECK_FUNCS([gettimeofday memset strchr strdup strrchr strstr strtol strtof strtoll atof localtime_r mktime])
 
+pkg_config_reqs_tv=""
+
 # Check for SQLite3.
 find_sqlite3="yes"
 sqlite3_master_dir=/usr
@@ -72,6 +74,15 @@ then
 	LDFLAGS="$LDFLAGS ${SQLITE3_LDFLAGS}"
 	AC_CHECK_LIB([sqlite3], [sqlite3_open])
 	LDFLAGS="${saved_LDFLAGS}"
+	if test "x${ac_cv_lib_sqlite3_sqlite3_open}" = "xyes"
+	then
+	    if test "x" = "x${pkg_config_reqs_tv}"
+	    then
+		pkg_config_reqs_tv="Requires: sqlite3"
+	    else
+		pkg_config_reqs_tv="${pkg_config_reqs_tv}, sqlite3"
+	    fi
+	fi
     fi
 fi
 AC_SUBST(SQLITE3_CXXFLAGS)
@@ -115,6 +126,7 @@ pgsql_config_path="/usr"
 AC_ARG_VAR([PGSQL_CONFIG], [location of pg_config])
 PGSQL_CXXFLAGS=""
 PGSQL_LDFLAGS=""
+PGSQL_LIBS=""
 AC_ARG_WITH([pgsql], AS_HELP_STRING([--with-pgsql@<:@=PATH@:>@],
 [compile with PostgreSQL support @<:@default=yes@:>@]),[
 case "$withval" in
@@ -137,11 +149,19 @@ then
     saved_LDFLAGS="$LDFLAGS"
     LDFLAGS="$LDFLAGS ${PGSQL_LDFLAGS}"
     AC_CHECK_LIB([pq], [PQconnectdb])
+    if test "x${ac_cv_lib_pq_PQconnectdb}" = "xyes"
+    then
+	PGSQL_LIBS="-lpq"
+    fi
     LDFLAGS="${saved_LDFLAGS}"
 fi
 fi
 AC_SUBST(PGSQL_CXXFLAGS)
 AC_SUBST(PGSQL_LDFLAGS)
+AC_SUBST(PGSQL_LIBS)
+
+# "Requires" tag and values for 'litesql.pc'
+AC_SUBST(pkg_config_reqs_tv)
 
 # For now, combine various DB backend flags into master flags.
 # Later, it might be useful to only compile and link with the flags when necessary.
@@ -152,6 +172,6 @@ LIBS="$LIBS ${MYSQL_LIBS}"
 AC_PROG_LIBTOOL
 AC_OUTPUT(Makefile include/Makefile include/litesql/Makefile src/Makefile 
           src/library/Makefile src/generator/Makefile src/tests/Makefile src/examples/Makefile
-          docs/Makefile docs/doxygen/Makefile rpm/Makefile 
-          docs/doxygen/doxygen.conf rpm/litesql.spec) 
+          docs/Makefile docs/doxygen/Makefile rpm/Makefile pkg/Makefile 
+          docs/doxygen/doxygen.conf rpm/litesql.spec pkg/litesql-config pkg/litesql.pc) 
 

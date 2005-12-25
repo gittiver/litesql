@@ -1,2 +1,2 @@
-SUBDIRS=src include docs rpm
+SUBDIRS=src include docs rpm pkg
 AUTOMAKE_OPTIONS=foreign

@@ -89,12 +89,14 @@ PACKAGE = @PACKAGE@
 PGSQL_CONFIG = @PGSQL_CONFIG@
 PGSQL_CXXFLAGS = @PGSQL_CXXFLAGS@
 PGSQL_LDFLAGS = @PGSQL_LDFLAGS@
+PGSQL_LIBS = @PGSQL_LIBS@
 RANLIB = @RANLIB@
 RC = @RC@
 SQLITE3_CXXFLAGS = @SQLITE3_CXXFLAGS@
 SQLITE3_LDFLAGS = @SQLITE3_LDFLAGS@
 STRIP = @STRIP@
 VERSION = @VERSION@
+pkg_config_reqs_tv = @pkg_config_reqs_tv@
 
 litesqlincludedir = $(includedir)/litesql
 litesqlinclude_HEADERS = backend.hpp     except.hpp  operations.hpp  selectquery.hpp  types.hpp  cursor.hpp      expr.hpp    persistent.hpp  split.hpp        updatequery.hpp  database.hpp    field.hpp   postgresql.hpp  sqlite3.hpp      utils.hpp  datasource.hpp  mysql.hpp   relation.hpp    string.hpp datetime.hpp

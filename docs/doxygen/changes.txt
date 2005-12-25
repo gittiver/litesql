@@ -8,6 +8,7 @@
     Manual */
 /** \page changes Changes
 \section vercvs CVS Version
+- litesql-config utility and pkg-config support added (by Eric McDonald)
 - bug fix: litesql-gen produced broken table names when using longer name than 31 characters
 - bug fix: litesql-gen produced broken SQL (duplicated relation attribute fields in CREATE TABLE - statements)
 - RPM packaging headers (by Eric McDonald)

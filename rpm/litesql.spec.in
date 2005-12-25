@@ -64,12 +64,16 @@ make
 %docdir %{_datadir}/doc/%{name}-%{version}
 %{_datadir}/doc/%{name}-%{version}
 %attr(0755, root, root) %{_bindir}/litesql-gen
+%attr(0755, root, root) %{_bindir}/litesql-config
+%{_libdir}/pkgconfig/litesql.pc
 %{_includedir}/litesql.hpp
 %{_includedir}/litesql
 
 %changelog
 
-* Sat Dec 18 2005 Tero Laitinen <tero.laitinen@iki.fi>
+* Sat Dec 24 2005 Tero Laitinen <tero.laitinen@iki.fi>
+- bug fix: litesql-gen produced broken table names when using longer name than 31 characters
+- bug fix: litesql-gen produced broken SQL (duplicated relation attribute fields in CREATE TABLE - statements)
 - RPM packaging headers (by Eric McDonald)
 - added .cvsignore - files (by Eric McDonald)
 - versioning and packaging improvements (by Eric McDonald)
