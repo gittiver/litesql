@@ -88,20 +88,21 @@ bool PostgreSQL::supportsSequences() const {
     return true;
 }
 void PostgreSQL::begin() const {
-    if (!transaction) 
-        execute("BEGIN;");
+  if (!transaction) {
+    delete execute("BEGIN;");
     transaction = true;
+  }
 }
 void PostgreSQL::commit() const {
     if (transaction) {
-        execute("COMMIT;");
+        delete execute("COMMIT;");
         transaction = false;
     }
 }
 void PostgreSQL::rollback() const {
     if (transaction) {
-        execute("ROLLBACK;");
-        transaction = false;
+      delete execute("ROLLBACK;");
+      transaction = false;
     }
 }
 Backend::Result* PostgreSQL::execute(string query) const {

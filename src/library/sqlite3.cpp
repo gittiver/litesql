@@ -70,7 +70,7 @@ SQLite3::Cursor::~Cursor() {
         sqlite3_finalize(stmt);
     }
 }
-SQLite3::SQLite3(string connInfo) : db(NULL) {
+SQLite3::SQLite3(string connInfo) : db(NULL), transaction(false) {
     Split params(connInfo);
     string database;
     for (size_t i = 0; i < params.size(); i++) {
@@ -96,19 +96,19 @@ string SQLite3::getInsertID() const {
 }
 void SQLite3::begin() const {
     if (!transaction) {
-        execute("BEGIN;");
+        delete execute("BEGIN;");
         transaction = true;
     }
 }
 void SQLite3::commit() const {
     if (transaction) {
-        execute("COMMIT;");
+        delete execute("COMMIT;");
         transaction = false;
     }
 }
 void SQLite3::rollback() const {
     if (transaction) {
-        execute("ROLLBACK;");
+        delete execute("ROLLBACK;");
         transaction = false;
     }
 }
@@ -122,7 +122,8 @@ static int callback(void *r, int argc, char **argv, char **azColName) {
     for (int i = 0; i < argc; i++) 
         rec.push_back(argv[i] ? argv[i] : "NULL");   
     res->recs.push_back(rec);
-	return 0;
+    delete res;
+    return 0;
 }
 void SQLite3::throwError(int status) const {
     string error = sqlite3_errmsg(db);

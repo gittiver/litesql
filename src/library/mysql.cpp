@@ -121,13 +121,13 @@ string MySQL::getInsertID() const {
     return toString(mysql_insert_id(&conn));
 }
 void MySQL::begin() const {
-    execute("BEGIN");
+  delete execute("BEGIN");
 }
 void MySQL::commit() const {
-    execute("COMMIT");
+  delete execute("COMMIT");
 }
 void MySQL::rollback() const {
-    execute("ROLLBACK");
+  delete execute("ROLLBACK");
 }
 Backend::Result* MySQL::execute(string query) const {
     if (mysql_real_query(&conn, query.c_str(), query.size())) {

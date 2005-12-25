@@ -8,6 +8,7 @@
     Manual */
 /** \page changes Changes
 \section vercvs CVS Version
+- bug fix: all backend transaction routines leaked some memory (fixed by Michel Loiseleur)
 - bug fix: litesql-gen crashed when XML file had undefined objects inside relation tag
 - litesql-config utility and pkg-config support added (by Eric McDonald)
 - bug fix: litesql-gen produced broken table names when using longer name than 31 characters

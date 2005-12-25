@@ -14,8 +14,11 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
                    string sequence) const {
     string id = values[0][0];
     
-    if (supportsSequences() && values[0][0] == "NULL")
-        id = execute("SELECT nextval('" + sequence + "');")->records()[0][0];
+    if (supportsSequences() && values[0][0] == "NULL") {
+      Result * r = execute("SELECT nextval('" + sequence + "');");
+      id = r->records()[0][0];
+      delete r;
+    }
     for (int i = tables.size()-1; i >= 0; i--) {
         string fieldString = Split(fields[i]).join(",");
         string valueString;
@@ -27,7 +30,7 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
         valueString = valueSplit.join(",");
         string query = "INSERT INTO " + tables[i] + " (" + fieldString
             + ") VALUES (" + valueString + ");";
-        execute(query);
+        delete execute(query);
         if (!supportsSequences() && id == "NULL") 
             id = getInsertID();
         
