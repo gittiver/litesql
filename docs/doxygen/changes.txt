@@ -8,6 +8,9 @@
     Manual */
 /** \page changes Changes
 \section vercvs CVS Version
+2006 January 3:
+- bug fix: litesql-gen writes explicit template parameters for make_pair now (gcc 2.96 requires it)
+
 2005 December 25:
 - bug fix: all backend transaction routines leaked some memory (fixed by Michel Loiseleur)
 - bug fix: litesql-gen crashed when XML file had undefined objects inside relation tag

@@ -112,7 +112,7 @@ void writeObjFields(Class & cl, const xml::Object & o) {
             init.body(fld.name + "_values.clear();");
             for (size_t i2 = 0; i2 < fld.values.size(); i2++) {
                 const xml::Value& val = fld.values[i2];
-                init.body(fld.name + "_values.push_back(make_pair("
+                init.body(fld.name + "_values.push_back(make_pair<std::string, std::string>("
                           + quote(val.name) + "," + quote(val.value) + "));");    
             }
         }
