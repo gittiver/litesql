@@ -8,6 +8,9 @@
     Manual */
 /** \page changes Changes
 \section vercvs CVS Version
+2006 January 14:
+- bug fix: litesql-gen did not sort objects of relation tags and this resulted to broken relation table names
+
 2006 January 3:
 - bug fix: litesql-gen writes explicit template parameters for make_pair now (gcc 2.96 requires it)
 

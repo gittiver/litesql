@@ -4,6 +4,17 @@
 #include "md5.hpp"
 #include "litesql.hpp"
 #include <algorithm>
+namespace std {
+    struct less<xml::Relate*> {
+        bool operator()(xml::Relate const* r1, xml::Relate const* r2) {
+            if (!r1)
+                return true;
+            if (!r2)
+                return false;
+            return *r1 < *r2;
+        }
+    };
+}
 namespace xml {
 string validID(string s, string type="field") {
     if (s.size() == 0) 
@@ -267,7 +278,6 @@ static void initSchema(Database& db,
     }
 
 }
-
 void init(Database& db,
           vector<Object*>& objects,
           vector<Relation*>& relations) {
@@ -291,9 +301,11 @@ void init(Database& db,
 
     // sort objects of relations alphabetically (ascii)
 
-    for (size_t i = 0; i < relations.size(); i++) 
-        sort(relations[i]->related.begin(), relations[i]->related.end());
-            
+    for (size_t i = 0; i < relations.size(); i++) {
+        sort(relations[i]->related.begin(), relations[i]->related.end(),
+                less<Relate*>());
+    }
+          
     for (size_t i = 0; i < relations.size(); i++) {
         Relation& rel = *relations[i];
         bool same = rel.sameTypes() > 1;
