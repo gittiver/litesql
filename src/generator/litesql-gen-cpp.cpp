@@ -943,7 +943,9 @@ void writeCPPClasses(xml::Database& db,
         perror(msg.c_str());
         return;
     }
-    
+    string defName = "_" + toLower(db.name) + "_hpp_";
+    fprintf(hpp, "#ifndef %s\n", defName.c_str());
+    fprintf(hpp, "#define %s\n", defName.c_str());
     fprintf(hpp, "#include \"litesql.hpp\"\n");
     if (!db.include.empty()) 
         fprintf(hpp, "#include \"%s\"\n", db.include.c_str());
@@ -1003,7 +1005,7 @@ void writeCPPClasses(xml::Database& db,
     }
     report("writing database class\n");
     writeDatabaseClass(hpp, cpp, db, objects, relations);
-    
+    fprintf(hpp, "#endif\n");
     if (hasNamespace) {
         fprintf(hpp, "}\n");
         fprintf(cpp, "}\n");
