@@ -143,14 +143,13 @@ static void initSchema(Database& db,
             seq->name = o.getSequence();
             seq->table = o.getTable();
             db.sequences.push_back(seq);
-        } 
-        Database::DBField *id = new Database::DBField;
-        id->name = "id_";
-        id->type = "INTEGER";
-        id->primaryKey = true;
-        tbl->fields.push_back(id);
-        
-
+        }  else {
+            Database::DBField *id = new Database::DBField; 
+            id->name = "id_";
+            id->type = "INTEGER";
+            id->primaryKey = true;
+            tbl->fields.push_back(id);
+        }
 
         for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
             Field& f = *o.fields[i2];
@@ -158,7 +157,7 @@ static void initSchema(Database& db,
             fld->name = f.name + "_";
             fldMap[f.name] = fld;
             fld->type = f.getSQLType();
-            fld->primaryKey = false;
+            fld->primaryKey = (f.name == "id");
             if (f.isUnique())
                 fld->extra = " UNIQUE";
             fld->field = o.fields[i2];

@@ -1322,12 +1322,12 @@ std::vector<litesql::Database::SchemaItem> ExampleDatabase::getSchema() const {
         res.push_back(Database::SchemaItem("School_seq","sequence","CREATE SEQUENCE School_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Office_seq","sequence","CREATE SEQUENCE Office_seq START 1 INCREMENT 1"));
     }
-    res.push_back(Database::SchemaItem("Person_","table","CREATE TABLE Person_ (id_ INTEGER,type_ TEXT,name_ TEXT,age_ INTEGER,sex_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Role_","table","CREATE TABLE Role_ (id_ INTEGER,type_ TEXT)"));
+    res.push_back(Database::SchemaItem("Person_","table","CREATE TABLE Person_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,age_ INTEGER,sex_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Role_","table","CREATE TABLE Role_ (id_ " + backend->getRowIDType() + ",type_ TEXT)"));
     res.push_back(Database::SchemaItem("Student_","table","CREATE TABLE Student_ (id_ " + backend->getRowIDType() + ")"));
     res.push_back(Database::SchemaItem("Employee_","table","CREATE TABLE Employee_ (id_ " + backend->getRowIDType() + ")"));
-    res.push_back(Database::SchemaItem("School_","table","CREATE TABLE School_ (id_ INTEGER,type_ TEXT,name_ TEXT)"));
-    res.push_back(Database::SchemaItem("Office_","table","CREATE TABLE Office_ (id_ INTEGER,type_ TEXT)"));
+    res.push_back(Database::SchemaItem("School_","table","CREATE TABLE School_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT)"));
+    res.push_back(Database::SchemaItem("Office_","table","CREATE TABLE Office_ (id_ " + backend->getRowIDType() + ",type_ TEXT)"));
     res.push_back(Database::SchemaItem("Person_Person_Mother","table","CREATE TABLE Person_Person_Mother (Person1 INTEGER UNIQUE,Person2 INTEGER)"));
     res.push_back(Database::SchemaItem("Person_Person_Father","table","CREATE TABLE Person_Person_Father (Person1 INTEGER UNIQUE,Person2 INTEGER)"));
     res.push_back(Database::SchemaItem("Person_Person_Siblings","table","CREATE TABLE Person_Person_Siblings (Person1 INTEGER,Person2 INTEGER)"));

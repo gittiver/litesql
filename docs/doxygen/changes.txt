@@ -11,6 +11,8 @@
 
 2006 January 16:
 - bug fix: litesql-gen did not create correct SQL schema for backends with auto incrementing primary key fields (mysql, sqlite3)
+- bug fix: SQLite3 - backend did not reset transaction state when error occurred
+
 
 2006 January 14:
 - bug fix: litesql-gen did not sort objects of relation tags and this resulted to broken relation table names

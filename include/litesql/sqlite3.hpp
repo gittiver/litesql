@@ -41,8 +41,9 @@ public:
     class Cursor : public Backend::Cursor {
         sqlite3 * db;
         sqlite3_stmt * stmt;
+        const SQLite3& owner;
     public:
-        Cursor(sqlite3 * db, sqlite3_stmt * s);
+        Cursor(sqlite3 * db, sqlite3_stmt * s, const SQLite3& owner);
         virtual Record fetchOne();
         virtual ~Cursor();
     };
