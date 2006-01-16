@@ -254,54 +254,54 @@ template <> litesql::DataSource<example::Role> RoleRelation::get(const litesql::
     sel.where(srcExpr);
     return DataSource<example::Role>(db, example::Role::Id.in(sel) && expr);
 }
-StudentSchoolRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
-         : school(StudentSchoolRelation::School), student(StudentSchoolRelation::Student) {
+SchoolStudentRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : student(SchoolStudentRelation::Student), school(SchoolStudentRelation::School) {
     switch(rec.size()) {
     case 2:
-        school = rec[1];
+        student = rec[1];
     case 1:
-        student = rec[0];
+        school = rec[0];
     }
 }
-const std::string StudentSchoolRelation::table__("Student_School_");
-const litesql::FieldType StudentSchoolRelation::Student("Student1","INTEGER",table__);
-const litesql::FieldType StudentSchoolRelation::School("School2","INTEGER",table__);
-void StudentSchoolRelation::link(const litesql::Database& db, const example::Student& o0, const example::School& o1) {
+const std::string SchoolStudentRelation::table__("School_Student_");
+const litesql::FieldType SchoolStudentRelation::School("School1","INTEGER",table__);
+const litesql::FieldType SchoolStudentRelation::Student("Student2","INTEGER",table__);
+void SchoolStudentRelation::link(const litesql::Database& db, const example::School& o0, const example::Student& o1) {
     Record values;
     Split fields;
-    fields.push_back(Student.name());
-    values.push_back(o0.id);
     fields.push_back(School.name());
+    values.push_back(o0.id);
+    fields.push_back(Student.name());
     values.push_back(o1.id);
     db.insert(table__, values, fields);
 }
-void StudentSchoolRelation::unlink(const litesql::Database& db, const example::Student& o0, const example::School& o1) {
-    db.delete_(table__, (Student == o0.id && School == o1.id));
+void SchoolStudentRelation::unlink(const litesql::Database& db, const example::School& o0, const example::Student& o1) {
+    db.delete_(table__, (School == o0.id && Student == o1.id));
 }
-void StudentSchoolRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
+void SchoolStudentRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
     db.delete_(table__, expr);
 }
-litesql::DataSource<StudentSchoolRelation::Row> StudentSchoolRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+litesql::DataSource<SchoolStudentRelation::Row> SchoolStudentRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
     SelectQuery sel;
-    sel.result(Student.fullName());
     sel.result(School.fullName());
+    sel.result(Student.fullName());
     sel.source(table__);
     sel.where(expr);
-    return DataSource<StudentSchoolRelation::Row>(db, sel);
+    return DataSource<SchoolStudentRelation::Row>(db, sel);
 }
-template <> litesql::DataSource<example::Student> StudentSchoolRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    SelectQuery sel;
-    sel.source(table__);
-    sel.result(Student.fullName());
-    sel.where(srcExpr);
-    return DataSource<example::Student>(db, example::Student::Id.in(sel) && expr);
-}
-template <> litesql::DataSource<example::School> StudentSchoolRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+template <> litesql::DataSource<example::School> SchoolStudentRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     SelectQuery sel;
     sel.source(table__);
     sel.result(School.fullName());
     sel.where(srcExpr);
     return DataSource<example::School>(db, example::School::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<example::Student> SchoolStudentRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Student.fullName());
+    sel.where(srcExpr);
+    return DataSource<example::Student>(db, example::Student::Id.in(sel) && expr);
 }
 EmployeeOfficeRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : office(EmployeeOfficeRelation::Office), employee(EmployeeOfficeRelation::Employee) {
@@ -457,11 +457,11 @@ const litesql::FieldType Person::Type("type_","TEXT",table__);
 const litesql::FieldType Person::Name("name_","TEXT",table__);
 const litesql::FieldType Person::Age("age_","INTEGER",table__);
 std::vector < std::pair< std::string, std::string > > Person::sex_values;
-Person::SexType Person::Sex("sex_","INTEGER",table__,sex_values);
+const Person::SexType Person::Sex("sex_","INTEGER",table__,sex_values);
 void Person::initValues() {
     sex_values.clear();
-    sex_values.push_back(make_pair("Male","0"));
-    sex_values.push_back(make_pair("Female","1"));
+    sex_values.push_back(make_pair<std::string, std::string>("Male","0"));
+    sex_values.push_back(make_pair<std::string, std::string>("Female","1"));
 }
 void Person::defaults() {
     id = 0;
@@ -779,19 +779,19 @@ Student::SchoolHandle::SchoolHandle(const Student& owner)
          : litesql::RelationHandle<Student>(owner) {
 }
 void Student::SchoolHandle::link(const School& o0) {
-    StudentSchoolRelation::link(owner->getDatabase(), *owner, o0);
+    SchoolStudentRelation::link(owner->getDatabase(), o0, *owner);
 }
 void Student::SchoolHandle::unlink(const School& o0) {
-    StudentSchoolRelation::unlink(owner->getDatabase(), *owner, o0);
+    SchoolStudentRelation::unlink(owner->getDatabase(), o0, *owner);
 }
 void Student::SchoolHandle::del(const litesql::Expr& expr) {
-    StudentSchoolRelation::del(owner->getDatabase(), expr);
+    SchoolStudentRelation::del(owner->getDatabase(), expr);
 }
 litesql::DataSource<School> Student::SchoolHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    return StudentSchoolRelation::get<School>(owner->getDatabase(), expr, (StudentSchoolRelation::Student == owner->id) && srcExpr);
+    return SchoolStudentRelation::get<School>(owner->getDatabase(), expr, (SchoolStudentRelation::Student == owner->id) && srcExpr);
 }
-litesql::DataSource<StudentSchoolRelation::Row> Student::SchoolHandle::getRows(const litesql::Expr& expr) {
-    return StudentSchoolRelation::getRows(owner->getDatabase(), expr && (StudentSchoolRelation::Student == owner->id));
+litesql::DataSource<SchoolStudentRelation::Row> Student::SchoolHandle::getRows(const litesql::Expr& expr) {
+    return SchoolStudentRelation::getRows(owner->getDatabase(), expr && (SchoolStudentRelation::Student == owner->id));
 }
 const std::string Student::type__("Student");
 const std::string Student::table__("Student_");
@@ -846,7 +846,7 @@ void Student::delRecord() {
     Role::delRecord();
 }
 void Student::delRelations() {
-    StudentSchoolRelation::del(*db, (StudentSchoolRelation::Student == id));
+    SchoolStudentRelation::del(*db, (SchoolStudentRelation::Student == id));
 }
 void Student::update() {
     if (!inDatabase) {
@@ -1021,19 +1021,19 @@ School::StudentsHandle::StudentsHandle(const School& owner)
          : litesql::RelationHandle<School>(owner) {
 }
 void School::StudentsHandle::link(const Student& o0) {
-    StudentSchoolRelation::link(owner->getDatabase(), o0, *owner);
+    SchoolStudentRelation::link(owner->getDatabase(), *owner, o0);
 }
 void School::StudentsHandle::unlink(const Student& o0) {
-    StudentSchoolRelation::unlink(owner->getDatabase(), o0, *owner);
+    SchoolStudentRelation::unlink(owner->getDatabase(), *owner, o0);
 }
 void School::StudentsHandle::del(const litesql::Expr& expr) {
-    StudentSchoolRelation::del(owner->getDatabase(), expr);
+    SchoolStudentRelation::del(owner->getDatabase(), expr);
 }
 litesql::DataSource<Student> School::StudentsHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    return StudentSchoolRelation::get<Student>(owner->getDatabase(), expr, (StudentSchoolRelation::School == owner->id) && srcExpr);
+    return SchoolStudentRelation::get<Student>(owner->getDatabase(), expr, (SchoolStudentRelation::School == owner->id) && srcExpr);
 }
-litesql::DataSource<StudentSchoolRelation::Row> School::StudentsHandle::getRows(const litesql::Expr& expr) {
-    return StudentSchoolRelation::getRows(owner->getDatabase(), expr && (StudentSchoolRelation::School == owner->id));
+litesql::DataSource<SchoolStudentRelation::Row> School::StudentsHandle::getRows(const litesql::Expr& expr) {
+    return SchoolStudentRelation::getRows(owner->getDatabase(), expr && (SchoolStudentRelation::School == owner->id));
 }
 const std::string School::type__("School");
 const std::string School::table__("School_");
@@ -1116,7 +1116,7 @@ void School::delRecord() {
     deleteFromTable(table__, id);
 }
 void School::delRelations() {
-    StudentSchoolRelation::del(*db, (StudentSchoolRelation::School == id));
+    SchoolStudentRelation::del(*db, (SchoolStudentRelation::School == id));
 }
 void School::update() {
     if (!inDatabase) {
@@ -1322,40 +1322,40 @@ std::vector<litesql::Database::SchemaItem> ExampleDatabase::getSchema() const {
         res.push_back(Database::SchemaItem("School_seq","sequence","CREATE SEQUENCE School_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Office_seq","sequence","CREATE SEQUENCE Office_seq START 1 INCREMENT 1"));
     }
-        res.push_back(Database::SchemaItem("Person_","table","CREATE TABLE Person_ (id_ " + backend->getRowIDType() + " ,type_ TEXT ,name_ TEXT ,age_ INTEGER ,sex_ INTEGER )"));
-        res.push_back(Database::SchemaItem("Role_","table","CREATE TABLE Role_ (id_ " + backend->getRowIDType() + " ,type_ TEXT )"));
-        res.push_back(Database::SchemaItem("Student_","table","CREATE TABLE Student_ (id_ " + backend->getRowIDType() + " )"));
-        res.push_back(Database::SchemaItem("Employee_","table","CREATE TABLE Employee_ (id_ " + backend->getRowIDType() + " )"));
-        res.push_back(Database::SchemaItem("School_","table","CREATE TABLE School_ (id_ " + backend->getRowIDType() + " ,type_ TEXT ,name_ TEXT )"));
-        res.push_back(Database::SchemaItem("Office_","table","CREATE TABLE Office_ (id_ " + backend->getRowIDType() + " ,type_ TEXT )"));
-        res.push_back(Database::SchemaItem("Person_Person_Mother","table","CREATE TABLE Person_Person_Mother (Person1 INTEGER  UNIQUE,Person2 INTEGER )"));
-        res.push_back(Database::SchemaItem("Person_Person_Father","table","CREATE TABLE Person_Person_Father (Person1 INTEGER  UNIQUE,Person2 INTEGER )"));
-        res.push_back(Database::SchemaItem("Person_Person_Siblings","table","CREATE TABLE Person_Person_Siblings (Person1 INTEGER ,Person2 INTEGER )"));
-        res.push_back(Database::SchemaItem("Person_Person_Children","table","CREATE TABLE Person_Person_Children (Person1 INTEGER ,Person2 INTEGER )"));
-        res.push_back(Database::SchemaItem("Person_Role_Roles","table","CREATE TABLE Person_Role_Roles (Person1 INTEGER ,Role2 INTEGER  UNIQUE)"));
-        res.push_back(Database::SchemaItem("Student_School_","table","CREATE TABLE Student_School_ (Student1 INTEGER  UNIQUE,School2 INTEGER )"));
-        res.push_back(Database::SchemaItem("Employee_Office_","table","CREATE TABLE Employee_Office_ (Employee1 INTEGER ,Office2 INTEGER )"));
-        res.push_back(Database::SchemaItem("Person_Person_MotherPerson1idx","index","CREATE INDEX Person_Person_MotherPerson1idx ON Person_Person_Mother (Person1)"));
-        res.push_back(Database::SchemaItem("Person_Person_MotherPerson2idx","index","CREATE INDEX Person_Person_MotherPerson2idx ON Person_Person_Mother (Person2)"));
-        res.push_back(Database::SchemaItem("Person_Person_Mother_all_idx","index","CREATE INDEX Person_Person_Mother_all_idx ON Person_Person_Mother (Person1,Person2)"));
-        res.push_back(Database::SchemaItem("Person_Person_FatherPerson1idx","index","CREATE INDEX Person_Person_FatherPerson1idx ON Person_Person_Father (Person1)"));
-        res.push_back(Database::SchemaItem("Person_Person_FatherPerson2idx","index","CREATE INDEX Person_Person_FatherPerson2idx ON Person_Person_Father (Person2)"));
-        res.push_back(Database::SchemaItem("Person_Person_Father_all_idx","index","CREATE INDEX Person_Person_Father_all_idx ON Person_Person_Father (Person1,Person2)"));
-        res.push_back(Database::SchemaItem("_34075df976066c68dc72b59fb8173148","index","CREATE INDEX _34075df976066c68dc72b59fb8173148 ON Person_Person_Siblings (Person1)"));
-        res.push_back(Database::SchemaItem("_c8f8035039c38a3c01d8d26a7ccdeaac","index","CREATE INDEX _c8f8035039c38a3c01d8d26a7ccdeaac ON Person_Person_Siblings (Person2)"));
-        res.push_back(Database::SchemaItem("Person_Person_Siblings_all_idx","index","CREATE INDEX Person_Person_Siblings_all_idx ON Person_Person_Siblings (Person1,Person2)"));
-        res.push_back(Database::SchemaItem("_9ee6686ab46c8df7de530bbb3414c58e","index","CREATE INDEX _9ee6686ab46c8df7de530bbb3414c58e ON Person_Person_Children (Person1)"));
-        res.push_back(Database::SchemaItem("_fcdb7736f2440759d1142b864dfde27d","index","CREATE INDEX _fcdb7736f2440759d1142b864dfde27d ON Person_Person_Children (Person2)"));
-        res.push_back(Database::SchemaItem("Person_Person_Children_all_idx","index","CREATE INDEX Person_Person_Children_all_idx ON Person_Person_Children (Person1,Person2)"));
-        res.push_back(Database::SchemaItem("Person_Role_RolesPerson1idx","index","CREATE INDEX Person_Role_RolesPerson1idx ON Person_Role_Roles (Person1)"));
-        res.push_back(Database::SchemaItem("Person_Role_RolesRole2idx","index","CREATE INDEX Person_Role_RolesRole2idx ON Person_Role_Roles (Role2)"));
-        res.push_back(Database::SchemaItem("Person_Role_Roles_all_idx","index","CREATE INDEX Person_Role_Roles_all_idx ON Person_Role_Roles (Person1,Role2)"));
-        res.push_back(Database::SchemaItem("Student_School_Student1idx","index","CREATE INDEX Student_School_Student1idx ON Student_School_ (Student1)"));
-        res.push_back(Database::SchemaItem("Student_School_School2idx","index","CREATE INDEX Student_School_School2idx ON Student_School_ (School2)"));
-        res.push_back(Database::SchemaItem("Student_School__all_idx","index","CREATE INDEX Student_School__all_idx ON Student_School_ (Student1,School2)"));
-        res.push_back(Database::SchemaItem("Employee_Office_Employee1idx","index","CREATE INDEX Employee_Office_Employee1idx ON Employee_Office_ (Employee1)"));
-        res.push_back(Database::SchemaItem("Employee_Office_Office2idx","index","CREATE INDEX Employee_Office_Office2idx ON Employee_Office_ (Office2)"));
-        res.push_back(Database::SchemaItem("Employee_Office__all_idx","index","CREATE INDEX Employee_Office__all_idx ON Employee_Office_ (Employee1,Office2)"));
+    res.push_back(Database::SchemaItem("Person_","table","CREATE TABLE Person_ (id_ INTEGER,type_ TEXT,name_ TEXT,age_ INTEGER,sex_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Role_","table","CREATE TABLE Role_ (id_ INTEGER,type_ TEXT)"));
+    res.push_back(Database::SchemaItem("Student_","table","CREATE TABLE Student_ (id_ " + backend->getRowIDType() + ")"));
+    res.push_back(Database::SchemaItem("Employee_","table","CREATE TABLE Employee_ (id_ " + backend->getRowIDType() + ")"));
+    res.push_back(Database::SchemaItem("School_","table","CREATE TABLE School_ (id_ INTEGER,type_ TEXT,name_ TEXT)"));
+    res.push_back(Database::SchemaItem("Office_","table","CREATE TABLE Office_ (id_ INTEGER,type_ TEXT)"));
+    res.push_back(Database::SchemaItem("Person_Person_Mother","table","CREATE TABLE Person_Person_Mother (Person1 INTEGER UNIQUE,Person2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Person_Person_Father","table","CREATE TABLE Person_Person_Father (Person1 INTEGER UNIQUE,Person2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Person_Person_Siblings","table","CREATE TABLE Person_Person_Siblings (Person1 INTEGER,Person2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Person_Person_Children","table","CREATE TABLE Person_Person_Children (Person1 INTEGER,Person2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Person_Role_Roles","table","CREATE TABLE Person_Role_Roles (Person1 INTEGER,Role2 INTEGER UNIQUE)"));
+    res.push_back(Database::SchemaItem("School_Student_","table","CREATE TABLE School_Student_ (School1 INTEGER,Student2 INTEGER UNIQUE)"));
+    res.push_back(Database::SchemaItem("Employee_Office_","table","CREATE TABLE Employee_Office_ (Employee1 INTEGER,Office2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Person_Person_MotherPerson1idx","index","CREATE INDEX Person_Person_MotherPerson1idx ON Person_Person_Mother (Person1)"));
+    res.push_back(Database::SchemaItem("Person_Person_MotherPerson2idx","index","CREATE INDEX Person_Person_MotherPerson2idx ON Person_Person_Mother (Person2)"));
+    res.push_back(Database::SchemaItem("Person_Person_Mother_all_idx","index","CREATE INDEX Person_Person_Mother_all_idx ON Person_Person_Mother (Person1,Person2)"));
+    res.push_back(Database::SchemaItem("Person_Person_FatherPerson1idx","index","CREATE INDEX Person_Person_FatherPerson1idx ON Person_Person_Father (Person1)"));
+    res.push_back(Database::SchemaItem("Person_Person_FatherPerson2idx","index","CREATE INDEX Person_Person_FatherPerson2idx ON Person_Person_Father (Person2)"));
+    res.push_back(Database::SchemaItem("Person_Person_Father_all_idx","index","CREATE INDEX Person_Person_Father_all_idx ON Person_Person_Father (Person1,Person2)"));
+    res.push_back(Database::SchemaItem("_fc4501d1c1e9cc173fbe356a08a9d12f","index","CREATE INDEX _fc4501d1c1e9cc173fbe356a08a9d12f ON Person_Person_Siblings (Person1)"));
+    res.push_back(Database::SchemaItem("_29908e51ecc673e39c38238d4abe5b3b","index","CREATE INDEX _29908e51ecc673e39c38238d4abe5b3b ON Person_Person_Siblings (Person2)"));
+    res.push_back(Database::SchemaItem("Person_Person_Siblings_all_idx","index","CREATE INDEX Person_Person_Siblings_all_idx ON Person_Person_Siblings (Person1,Person2)"));
+    res.push_back(Database::SchemaItem("_c77a0c252bbee950ec06bda52dd09648","index","CREATE INDEX _c77a0c252bbee950ec06bda52dd09648 ON Person_Person_Children (Person1)"));
+    res.push_back(Database::SchemaItem("_64f9014350ce47b5d0f7606b127df7c3","index","CREATE INDEX _64f9014350ce47b5d0f7606b127df7c3 ON Person_Person_Children (Person2)"));
+    res.push_back(Database::SchemaItem("Person_Person_Children_all_idx","index","CREATE INDEX Person_Person_Children_all_idx ON Person_Person_Children (Person1,Person2)"));
+    res.push_back(Database::SchemaItem("Person_Role_RolesPerson1idx","index","CREATE INDEX Person_Role_RolesPerson1idx ON Person_Role_Roles (Person1)"));
+    res.push_back(Database::SchemaItem("Person_Role_RolesRole2idx","index","CREATE INDEX Person_Role_RolesRole2idx ON Person_Role_Roles (Role2)"));
+    res.push_back(Database::SchemaItem("Person_Role_Roles_all_idx","index","CREATE INDEX Person_Role_Roles_all_idx ON Person_Role_Roles (Person1,Role2)"));
+    res.push_back(Database::SchemaItem("School_Student_School1idx","index","CREATE INDEX School_Student_School1idx ON School_Student_ (School1)"));
+    res.push_back(Database::SchemaItem("School_Student_Student2idx","index","CREATE INDEX School_Student_Student2idx ON School_Student_ (Student2)"));
+    res.push_back(Database::SchemaItem("School_Student__all_idx","index","CREATE INDEX School_Student__all_idx ON School_Student_ (School1,Student2)"));
+    res.push_back(Database::SchemaItem("Employee_Office_Employee1idx","index","CREATE INDEX Employee_Office_Employee1idx ON Employee_Office_ (Employee1)"));
+    res.push_back(Database::SchemaItem("Employee_Office_Office2idx","index","CREATE INDEX Employee_Office_Office2idx ON Employee_Office_ (Office2)"));
+    res.push_back(Database::SchemaItem("Employee_Office__all_idx","index","CREATE INDEX Employee_Office__all_idx ON Employee_Office_ (Employee1,Office2)"));
     return res;
 }
 void ExampleDatabase::initialize() {

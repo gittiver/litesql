@@ -97,21 +97,21 @@ public:
 ;
 ;
 };
-class StudentSchoolRelation {
+class SchoolStudentRelation {
 public:
     class Row {
     public:
-        litesql::Field<int> school;
         litesql::Field<int> student;
+        litesql::Field<int> school;
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
-    static const litesql::FieldType Student;
     static const litesql::FieldType School;
-    static void link(const litesql::Database& db, const example::Student& o0, const example::School& o1);
-    static void unlink(const litesql::Database& db, const example::Student& o0, const example::School& o1);
+    static const litesql::FieldType Student;
+    static void link(const litesql::Database& db, const example::School& o0, const example::Student& o1);
+    static void unlink(const litesql::Database& db, const example::School& o0, const example::Student& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
-    static litesql::DataSource<StudentSchoolRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<SchoolStudentRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
@@ -207,7 +207,7 @@ public:
 protected:
     static std::vector < std::pair< std::string, std::string > > sex_values;
 public:
-    static Person::SexType Sex;
+    static const Person::SexType Sex;
     litesql::Field<int> sex;
     static void initValues();
 protected:
@@ -294,7 +294,7 @@ public:
         void unlink(const School& o0);
         void del(const litesql::Expr& expr=litesql::Expr());
         litesql::DataSource<School> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-        litesql::DataSource<StudentSchoolRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<SchoolStudentRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
     static const std::string type__;
     static const std::string table__;
@@ -366,7 +366,7 @@ public:
         void unlink(const Student& o0);
         void del(const litesql::Expr& expr=litesql::Expr());
         litesql::DataSource<Student> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-        litesql::DataSource<StudentSchoolRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<SchoolStudentRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
     static const std::string type__;
     static const std::string table__;

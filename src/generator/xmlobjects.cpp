@@ -143,13 +143,12 @@ static void initSchema(Database& db,
             seq->name = o.getSequence();
             seq->table = o.getTable();
             db.sequences.push_back(seq);
-        } else {
-            Database::DBField *id = new Database::DBField;
-            id->name = "id_";
-            id->type = "INTEGER";
-            id->primaryKey = true;
-            tbl->fields.push_back(id);
-        }
+        } 
+        Database::DBField *id = new Database::DBField;
+        id->name = "id_";
+        id->type = "INTEGER";
+        id->primaryKey = true;
+        tbl->fields.push_back(id);
         
 
 
