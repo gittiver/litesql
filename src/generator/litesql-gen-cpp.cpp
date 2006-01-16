@@ -1005,11 +1005,13 @@ void writeCPPClasses(xml::Database& db,
     }
     report("writing database class\n");
     writeDatabaseClass(hpp, cpp, db, objects, relations);
-    fprintf(hpp, "#endif\n");
     if (hasNamespace) {
         fprintf(hpp, "}\n");
         fprintf(cpp, "}\n");
     }
+
+    fprintf(hpp, "#endif\n");
+
     fclose(hpp);
     fclose(cpp);
 }
