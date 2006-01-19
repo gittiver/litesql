@@ -35,18 +35,18 @@ void Database::openDatabase() {
     throw DatabaseError("Unknown backend: " + backendType);
 }
 void Database::storeSchemaItem(const SchemaItem& s) const {
-    delete_("schema", 
-            RawExpr("name='" + s.name + "' and type='" + s.type + "'"));
+    delete_("schema_", 
+            RawExpr("name_='" + s.name + "' and type_='" + s.type + "'"));
     Record values;
     values.push_back(s.name);
     values.push_back(s.type);
     values.push_back(s.sql);
-    insert("schema", values);
+    insert("schema_", values);
 }
 
 vector<Database::SchemaItem> Database::getCurrentSchema() const {
     SelectQuery sel;
-    sel.result("name").result("type").result("sql").source("schema");
+    sel.result("name_").result("type_").result("sql_").source("schema_");
     vector<SchemaItem> s;
     Records recs;
     try {

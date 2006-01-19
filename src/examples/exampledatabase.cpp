@@ -1315,7 +1315,7 @@ ExampleDatabase::ExampleDatabase(std::string backendType, std::string connInfo)
 }
 std::vector<litesql::Database::SchemaItem> ExampleDatabase::getSchema() const {
     vector<Database::SchemaItem> res;
-    res.push_back(Database::SchemaItem("schema","table","CREATE TABLE schema (name TEXT, type TEXT, sql TEXT);"));
+    res.push_back(Database::SchemaItem("schema_","table","CREATE TABLE schema_ (name_ TEXT, type_ TEXT, sql_ TEXT);"));
     if (backend->supportsSequences()) {
         res.push_back(Database::SchemaItem("Person_seq","sequence","CREATE SEQUENCE Person_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Role_seq","sequence","CREATE SEQUENCE Role_seq START 1 INCREMENT 1"));

@@ -833,9 +833,9 @@ void getSchema(const xml::Database& db,
 //    Records recs;
     Split rec;
     mtd.body("vector<Database::SchemaItem> res;");
-    rec.push_back(quote("schema"));
+    rec.push_back(quote("schema_"));
     rec.push_back(quote("table"));
-    rec.push_back(quote("CREATE TABLE schema (name TEXT, type TEXT, sql TEXT);"));
+    rec.push_back(quote("CREATE TABLE schema_ (name_ TEXT, type_ TEXT, sql_ TEXT);"));
 //    recs.push_back(rec);
     mtd.body("res.push_back(Database::SchemaItem(" + rec.join(",") + "));");
     mtd.body("if (backend->supportsSequences()) {");

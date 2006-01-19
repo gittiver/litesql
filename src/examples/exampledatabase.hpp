@@ -1,3 +1,5 @@
+#ifndef _exampledatabase_hpp_
+#define _exampledatabase_hpp_
 #include "litesql.hpp"
 namespace example {
 class Person;
@@ -455,3 +457,4 @@ protected:
     static void initialize();
 };
 }
+#endif

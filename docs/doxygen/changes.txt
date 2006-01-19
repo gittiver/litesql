@@ -9,6 +9,9 @@
 /** \page changes Changes
 \section vercvs CVS Version
 
+2006 January 19:
+- bug fix: MySQL 5 does not like names like 'schema' and 'sql'. Internal table is now named to 'schema_' and fields are postfixed with an underscore. This breaks compatibility with databases created with previous versions. 
+
 2006 January 16:
 - bug fix: litesql-gen did not create correct SQL schema for backends with auto incrementing primary key fields (mysql, sqlite3)
 - bug fix: SQLite3 - backend did not reset transaction state when error occurred
