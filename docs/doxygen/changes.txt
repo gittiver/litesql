@@ -12,6 +12,7 @@
 2006 January 20:
 - bug fix: Date-, DateTime- and Time-fields were broken. 
 - bug fix: litesql-gen wrote invalid default values for Date-, DateTime and Time-fields. 
+- bug fix: litesql-gen did not reset fields' modified flags when assigning record to object
 
 2006 January 19:
 - bug fix: MySQL 5 does not like names like 'schema' and 'sql'. Internal table is now named to 'schema_' and fields are postfixed with an underscore. This breaks compatibility with databases created with previous versions. 

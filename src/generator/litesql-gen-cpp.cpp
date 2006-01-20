@@ -219,7 +219,8 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
                        + o.fields[i]->name 
                        + " = convert<const std::string&, "
                        + o.fields[i]->getCPPType() 
-                       + ">(rec[" + toString(p) + "]);");
+                       + ">(rec[" + toString(p) + "]);")
+                .body("    " + o.fields[i]->name + ".setModified(false);");
 
         }
         cons2.body("}");
