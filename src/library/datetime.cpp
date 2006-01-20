@@ -276,28 +276,29 @@ DateTime convert<const string&, DateTime>(const string& value) {
     return DateTime(atoi(value));
 }
 template <>
-Date load<Date>(const string& value) {
-    return Date(atoi(value));
+Date convert<int, Date>(int value) {
+    return Date(value);
 }
 template <>
-DateTime load<DateTime>(const string& value) {
-    return DateTime(atoi(value));
+Time convert<int, Time>(int value) {
+    return Time(value);
 }
 template <>
-Time load<Time>(const string& value) {
-    return Time(atoi(value));
+DateTime convert<int, DateTime>(int value) {
+    return DateTime(value);
 }
+
 template <>
-string store<Date>(const Date& value) {
+std::string convert<const Date&, std::string>(const Date& value) {
     return toString(value.timeStamp());
 }
 template <>
-string store<DateTime>(const DateTime& value) {
-    return toString(value.timeStamp());
-}
-template <>
-string store<Time>(const Time& value) {
+std::string convert<const Time&, std::string>(const Time& value) {
     return toString(value.secs());
+}
+template <>
+std::string convert<const DateTime&, std::string>(const DateTime& value) {
+    return toString(value.timeStamp());
 }
 
 ostream& operator << (ostream& os, const Date& d) {

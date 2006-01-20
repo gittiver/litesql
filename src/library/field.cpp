@@ -32,6 +32,10 @@ template <>
 string convert<const float&, string>(const float& value) {
     return toString(value);
 }
+template <>
+string convert<const bool&, string>(const bool& value) {
+    return toString(value);
+}
 
 template <>
 int convert<const string&, int>(const string& value) {
