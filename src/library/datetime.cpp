@@ -275,6 +275,31 @@ template <>
 DateTime convert<const string&, DateTime>(const string& value) {
     return DateTime(atoi(value));
 }
+template <>
+Date load<Date>(const string& value) {
+    return Date(atoi(value));
+}
+template <>
+DateTime load<DateTime>(const string& value) {
+    return DateTime(atoi(value));
+}
+template <>
+Time load<Time>(const string& value) {
+    return Time(atoi(value));
+}
+template <>
+string store<Date>(const Date& value) {
+    return toString(value.timeStamp());
+}
+template <>
+string store<DateTime>(const DateTime& value) {
+    return toString(value.timeStamp());
+}
+template <>
+string store<Time>(const Time& value) {
+    return toString(value.secs());
+}
+
 ostream& operator << (ostream& os, const Date& d) {
     return os << d.asString();
 }

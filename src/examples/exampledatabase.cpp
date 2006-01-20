@@ -477,11 +477,11 @@ Person::Person(const litesql::Database& db, const litesql::Record& rec)
     defaults();
     size_t size = (rec.size() > 5) ? 5 : rec.size();
     switch(size) {
-    case 5: sex = rec[4];
-    case 4: age = rec[3];
-    case 3: name = rec[2];
-    case 2: type = rec[1];
-    case 1: id = rec[0];
+    case 5: sex = load<int>(rec[4]);
+    case 4: age = load<int>(rec[3]);
+    case 3: name = load<std::string>(rec[2]);
+    case 2: type = load<std::string>(rec[1]);
+    case 1: id = load<int>(rec[0]);
     }
 }
 Person::Person(const Person& obj)
@@ -661,8 +661,8 @@ Role::Role(const litesql::Database& db, const litesql::Record& rec)
     defaults();
     size_t size = (rec.size() > 2) ? 2 : rec.size();
     switch(size) {
-    case 2: type = rec[1];
-    case 1: id = rec[0];
+    case 2: type = load<std::string>(rec[1]);
+    case 1: id = load<int>(rec[0]);
     }
 }
 Role::Role(const Role& obj)
@@ -1053,9 +1053,9 @@ School::School(const litesql::Database& db, const litesql::Record& rec)
     defaults();
     size_t size = (rec.size() > 3) ? 3 : rec.size();
     switch(size) {
-    case 3: name = rec[2];
-    case 2: type = rec[1];
-    case 1: id = rec[0];
+    case 3: name = load<std::string>(rec[2]);
+    case 2: type = load<std::string>(rec[1]);
+    case 1: id = load<int>(rec[0]);
     }
 }
 School::School(const School& obj)
@@ -1203,8 +1203,8 @@ Office::Office(const litesql::Database& db, const litesql::Record& rec)
     defaults();
     size_t size = (rec.size() > 2) ? 2 : rec.size();
     switch(size) {
-    case 2: type = rec[1];
-    case 1: id = rec[0];
+    case 2: type = load<std::string>(rec[1]);
+    case 1: id = load<int>(rec[0]);
     }
 }
 Office::Office(const Office& obj)

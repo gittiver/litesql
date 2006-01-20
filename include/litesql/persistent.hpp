@@ -39,10 +39,11 @@ protected:
     void update(Updates& updates); 
     template <class T>
     void updateField(litesql::Persistent::Updates& updates, 
-                     std::string table, 
+                     const std::string& table, 
                      litesql::Field<T> fld) {
         if (fld.modified()) {
-            updates[table].push_back(make_pair(fld.fieldType(), fld));
+            updates[table].push_back(make_pair(fld.fieldType(), 
+                                               litesql::store(fld.value())));
             fld.setModified(false);
         }
     }

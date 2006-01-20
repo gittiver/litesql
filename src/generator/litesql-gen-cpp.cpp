@@ -216,7 +216,9 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
         for(int i = o.fields.size() - 1; i >= 0; i--) {
             int p = last - o.fields.size() + i;
             cons2.body("case " + toString(p+1) + ": " 
-                       + o.fields[i]->name + " = rec[" + toString(p) + "];");
+                       + o.fields[i]->name 
+                       + " = load<" + o.fields[i]->getCPPType() 
+                       + ">(rec[" + toString(p) + "]);");
 
         }
         cons2.body("}");

@@ -59,6 +59,16 @@ public:
 template <class From, class To>
 To convert(From value);
 
+/** store function */
+template <class T>
+std::string store(const T& value) {
+    return litesql::toString(value);
+}
+
+template <class T>
+T load(const std::string& value) {
+    return convert<const std::string&, T>(value);
+}
 /** holds field value */
 template <class T>
 class Field {

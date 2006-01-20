@@ -101,6 +101,19 @@ template <>
 Time convert<const string&, Time>(const string& value);
 template <>
 DateTime convert<const string&, DateTime>(const string& value);
+template <>
+Date load<Date>(const string& value);
+template <>
+DateTime load<DateTime>(const string& value);
+template <>
+Time load<Time>(const string& value);
+template <>
+string store<Date>(const Date& value);
+template <>
+string store<DateTime>(const DateTime& value);
+template <>
+string store<Time>(const Time& value);
+
 ostream& operator << (ostream& os, const Date& d);
 ostream& operator << (ostream& os, const Time& d);
 ostream& operator << (ostream& os, const DateTime& d);
