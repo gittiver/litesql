@@ -63,11 +63,11 @@ public:
        case A_field_type_integer:
        case A_field_type_float: 
        case A_field_type_boolean: 
-           return false;
-       case A_field_type_string:
        case A_field_type_date:
        case A_field_type_time:
        case A_field_type_datetime:
+           return false;
+       case A_field_type_string:
            return true;
        }
     }
