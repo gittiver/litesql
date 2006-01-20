@@ -24,6 +24,15 @@ template <>
 string convert<float, string>(float value) {
     return toString(value);
 }
+template <> 
+string convert<const int&, string>(const int& value) {
+    return toString(value);
+}
+template <>
+string convert<const float&, string>(const float& value) {
+    return toString(value);
+}
+
 template <>
 int convert<const string&, int>(const string& value) {
     return strtol(value.c_str(), NULL, 10);

@@ -43,7 +43,7 @@ protected:
                      litesql::Field<T> fld) {
         if (fld.modified()) {
             updates[table].push_back(make_pair(fld.fieldType(), 
-                                               litesql::store(fld.value())));
+                       litesql::convert<const T&, std::string>(fld.value())));
             fld.setModified(false);
         }
     }
