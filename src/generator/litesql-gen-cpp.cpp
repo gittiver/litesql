@@ -310,7 +310,8 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
         Method del("del", "void");
         params.clear();
         params.push_back("owner->getDatabase()");
-        params.push_back("expr");
+        params.push_back("expr && " + rel->getName() 
+                + "::" + handle.relate->fieldTypeName + " == owner->id");
         del.param(exprParam).body(rel->getName() + "::del(" + params.join(", ") + ");");
 
 

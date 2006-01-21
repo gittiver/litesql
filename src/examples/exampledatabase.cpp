@@ -369,7 +369,7 @@ void Person::MotherHandle::unlink(const Person& o0) {
     PersonPersonRelationMother::unlink(owner->getDatabase(), *owner, o0);
 }
 void Person::MotherHandle::del(const litesql::Expr& expr) {
-    PersonPersonRelationMother::del(owner->getDatabase(), expr);
+    PersonPersonRelationMother::del(owner->getDatabase(), expr && PersonPersonRelationMother::Person1 == owner->id);
 }
 litesql::DataSource<Person> Person::MotherHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     return PersonPersonRelationMother::getPerson2(owner->getDatabase(), expr, (PersonPersonRelationMother::Person1 == owner->id) && srcExpr);
@@ -387,7 +387,7 @@ void Person::FatherHandle::unlink(const Person& o0) {
     PersonPersonRelationFather::unlink(owner->getDatabase(), *owner, o0);
 }
 void Person::FatherHandle::del(const litesql::Expr& expr) {
-    PersonPersonRelationFather::del(owner->getDatabase(), expr);
+    PersonPersonRelationFather::del(owner->getDatabase(), expr && PersonPersonRelationFather::Person1 == owner->id);
 }
 litesql::DataSource<Person> Person::FatherHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     return PersonPersonRelationFather::getPerson2(owner->getDatabase(), expr, (PersonPersonRelationFather::Person1 == owner->id) && srcExpr);
@@ -405,7 +405,7 @@ void Person::SiblingsHandle::unlink(const Person& o0) {
     PersonPersonRelationSiblings::unlink(owner->getDatabase(), *owner, o0);
 }
 void Person::SiblingsHandle::del(const litesql::Expr& expr) {
-    PersonPersonRelationSiblings::del(owner->getDatabase(), expr);
+    PersonPersonRelationSiblings::del(owner->getDatabase(), expr && PersonPersonRelationSiblings::Person1 == owner->id);
 }
 litesql::DataSource<Person> Person::SiblingsHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     return PersonPersonRelationSiblings::getPerson2(owner->getDatabase(), expr, (PersonPersonRelationSiblings::Person1 == owner->id) && srcExpr);
@@ -423,7 +423,7 @@ void Person::ChildrenHandle::unlink(const Person& o0) {
     PersonPersonRelationChildren::unlink(owner->getDatabase(), *owner, o0);
 }
 void Person::ChildrenHandle::del(const litesql::Expr& expr) {
-    PersonPersonRelationChildren::del(owner->getDatabase(), expr);
+    PersonPersonRelationChildren::del(owner->getDatabase(), expr && PersonPersonRelationChildren::Person1 == owner->id);
 }
 litesql::DataSource<Person> Person::ChildrenHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     return PersonPersonRelationChildren::getPerson2(owner->getDatabase(), expr, (PersonPersonRelationChildren::Person1 == owner->id) && srcExpr);
@@ -441,7 +441,7 @@ void Person::RolesHandle::unlink(const Role& o0) {
     RoleRelation::unlink(owner->getDatabase(), *owner, o0);
 }
 void Person::RolesHandle::del(const litesql::Expr& expr) {
-    RoleRelation::del(owner->getDatabase(), expr);
+    RoleRelation::del(owner->getDatabase(), expr && RoleRelation::Person == owner->id);
 }
 litesql::DataSource<Role> Person::RolesHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     return RoleRelation::get<Role>(owner->getDatabase(), expr, (RoleRelation::Person == owner->id) && srcExpr);
@@ -641,7 +641,7 @@ void Role::PersonHandle::unlink(const Person& o0) {
     RoleRelation::unlink(owner->getDatabase(), o0, *owner);
 }
 void Role::PersonHandle::del(const litesql::Expr& expr) {
-    RoleRelation::del(owner->getDatabase(), expr);
+    RoleRelation::del(owner->getDatabase(), expr && RoleRelation::Role == owner->id);
 }
 litesql::DataSource<Person> Role::PersonHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     return RoleRelation::get<Person>(owner->getDatabase(), expr, (RoleRelation::Role == owner->id) && srcExpr);
@@ -792,7 +792,7 @@ void Student::SchoolHandle::unlink(const School& o0) {
     SchoolStudentRelation::unlink(owner->getDatabase(), o0, *owner);
 }
 void Student::SchoolHandle::del(const litesql::Expr& expr) {
-    SchoolStudentRelation::del(owner->getDatabase(), expr);
+    SchoolStudentRelation::del(owner->getDatabase(), expr && SchoolStudentRelation::Student == owner->id);
 }
 litesql::DataSource<School> Student::SchoolHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     return SchoolStudentRelation::get<School>(owner->getDatabase(), expr, (SchoolStudentRelation::Student == owner->id) && srcExpr);
@@ -914,7 +914,7 @@ void Employee::OfficeHandle::unlink(const Office& o0) {
     EmployeeOfficeRelation::unlink(owner->getDatabase(), *owner, o0);
 }
 void Employee::OfficeHandle::del(const litesql::Expr& expr) {
-    EmployeeOfficeRelation::del(owner->getDatabase(), expr);
+    EmployeeOfficeRelation::del(owner->getDatabase(), expr && EmployeeOfficeRelation::Employee == owner->id);
 }
 litesql::DataSource<Office> Employee::OfficeHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     return EmployeeOfficeRelation::get<Office>(owner->getDatabase(), expr, (EmployeeOfficeRelation::Employee == owner->id) && srcExpr);
@@ -1036,7 +1036,7 @@ void School::StudentsHandle::unlink(const Student& o0) {
     SchoolStudentRelation::unlink(owner->getDatabase(), *owner, o0);
 }
 void School::StudentsHandle::del(const litesql::Expr& expr) {
-    SchoolStudentRelation::del(owner->getDatabase(), expr);
+    SchoolStudentRelation::del(owner->getDatabase(), expr && SchoolStudentRelation::School == owner->id);
 }
 litesql::DataSource<Student> School::StudentsHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     return SchoolStudentRelation::get<Student>(owner->getDatabase(), expr, (SchoolStudentRelation::School == owner->id) && srcExpr);
@@ -1190,7 +1190,7 @@ void Office::EmployeesHandle::unlink(const Employee& o0) {
     EmployeeOfficeRelation::unlink(owner->getDatabase(), o0, *owner);
 }
 void Office::EmployeesHandle::del(const litesql::Expr& expr) {
-    EmployeeOfficeRelation::del(owner->getDatabase(), expr);
+    EmployeeOfficeRelation::del(owner->getDatabase(), expr && EmployeeOfficeRelation::Office == owner->id);
 }
 litesql::DataSource<Employee> Office::EmployeesHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     return EmployeeOfficeRelation::get<Employee>(owner->getDatabase(), expr, (EmployeeOfficeRelation::Office == owner->id) && srcExpr);

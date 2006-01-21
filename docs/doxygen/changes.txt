@@ -11,6 +11,7 @@
 
 2006 January 21:
 - feature: litesql-gen writes static FieldType - objects for subclasses' id fields
+- bug fix: litesql-gen wrote broken RelationHandle::del - method. It deleted all rows.
 
 2006 January 20:
 - bug fix: Date-, DateTime- and Time-fields were broken. 
