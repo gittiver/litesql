@@ -478,10 +478,15 @@ Person::Person(const litesql::Database& db, const litesql::Record& rec)
     size_t size = (rec.size() > 5) ? 5 : rec.size();
     switch(size) {
     case 5: sex = convert<const std::string&, int>(rec[4]);
+        sex.setModified(false);
     case 4: age = convert<const std::string&, int>(rec[3]);
+        age.setModified(false);
     case 3: name = convert<const std::string&, std::string>(rec[2]);
+        name.setModified(false);
     case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
     case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
     }
 }
 Person::Person(const Person& obj)
@@ -662,7 +667,9 @@ Role::Role(const litesql::Database& db, const litesql::Record& rec)
     size_t size = (rec.size() > 2) ? 2 : rec.size();
     switch(size) {
     case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
     case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
     }
 }
 Role::Role(const Role& obj)
@@ -795,6 +802,7 @@ litesql::DataSource<SchoolStudentRelation::Row> Student::SchoolHandle::getRows(c
 }
 const std::string Student::type__("Student");
 const std::string Student::table__("Student_");
+const litesql::FieldType Student::StudentId("id_","INTEGER",table__);
 Student::Student(const litesql::Database& db)
      : Role(db) {
 }
@@ -916,6 +924,7 @@ litesql::DataSource<EmployeeOfficeRelation::Row> Employee::OfficeHandle::getRows
 }
 const std::string Employee::type__("Employee");
 const std::string Employee::table__("Employee_");
+const litesql::FieldType Employee::EmployeeId("id_","INTEGER",table__);
 Employee::Employee(const litesql::Database& db)
      : Role(db) {
 }
@@ -1054,8 +1063,11 @@ School::School(const litesql::Database& db, const litesql::Record& rec)
     size_t size = (rec.size() > 3) ? 3 : rec.size();
     switch(size) {
     case 3: name = convert<const std::string&, std::string>(rec[2]);
+        name.setModified(false);
     case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
     case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
     }
 }
 School::School(const School& obj)
@@ -1204,7 +1216,9 @@ Office::Office(const litesql::Database& db, const litesql::Record& rec)
     size_t size = (rec.size() > 2) ? 2 : rec.size();
     switch(size) {
     case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
     case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
     }
 }
 Office::Office(const Office& obj)

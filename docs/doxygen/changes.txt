@@ -9,6 +9,9 @@
 /** \page changes Changes
 \section vercvs CVS Version
 
+2006 January 21:
+- feature: litesql-gen writes static FieldType - objects for subclasses' id fields
+
 2006 January 20:
 - bug fix: Date-, DateTime- and Time-fields were broken. 
 - bug fix: litesql-gen wrote invalid default values for Date-, DateTime and Time-fields. 
@@ -33,7 +36,6 @@
 - bug fix: all backend transaction routines leaked some memory (fixed by Michel Loiseleur)
 - bug fix: litesql-gen crashed when XML file had undefined objects inside relation tag
 - litesql-config utility and pkg-config support added (by Eric McDonald)
-
 - bug fix: litesql-gen produced broken table names when using longer name than 31 characters
 - bug fix: litesql-gen produced broken SQL (duplicated relation attribute fields in CREATE TABLE - statements)
 - RPM packaging headers (by Eric McDonald)

@@ -95,7 +95,16 @@ void writeStaticObjData(Class& cl, const xml::Object& o) {
 void writeObjFields(Class & cl, const xml::Object & o) {
     Method init("initValues", "void");
     bool hasValues = false;
+    string ftypeClass ="const litesql::FieldType";
+
     init.static_();
+
+    if (o.parentObject) {
+        Variable ftype(o.name + "Id", ftypeClass, 
+                       quote("id_") + "," + quote("INTEGER") + ",table__");
+        ftype.static_();
+        cl.variable(ftype);
+    }
     
     for (size_t i = 0; i < o.fields.size(); i++) {
         const xml::Field& fld = *o.fields[i];
@@ -116,7 +125,6 @@ void writeObjFields(Class & cl, const xml::Object & o) {
                           + quote(val.name) + "," + quote(val.value) + "));");    
             }
         }
-        string ftypeClass ="const litesql::FieldType";
         if (!fld.values.empty()) {
             ftypeClass = fld.fieldTypeName + "Type";
             Class ftypeCl(ftypeClass, "litesql::FieldType");

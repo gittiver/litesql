@@ -300,6 +300,7 @@ public:
     };
     static const std::string type__;
     static const std::string table__;
+    static const litesql::FieldType StudentId;
     Student(const litesql::Database& db);
     Student(const litesql::Database& db, const litesql::Record& rec);
     Student(const Student& obj);
@@ -336,6 +337,7 @@ public:
     };
     static const std::string type__;
     static const std::string table__;
+    static const litesql::FieldType EmployeeId;
     Employee(const litesql::Database& db);
     Employee(const litesql::Database& db, const litesql::Record& rec);
     Employee(const Employee& obj);
