@@ -46,7 +46,6 @@ Record SQLite3::Cursor::fetchOne() {
         {
         case SQLITE_ERROR: case SQLITE_MISUSE: {
                 std::string error = sqlite3_errmsg(db);
-                owner.transaction = false;
                 throw UnknownError("step failed: " +toString(status)  + error);
             }
         case SQLITE_DONE: return Record(); break;
@@ -129,7 +128,6 @@ static int callback(void *r, int argc, char **argv, char **azColName) {
 void SQLite3::throwError(int status) const {
     string error = sqlite3_errmsg(db);
     error = toString(status) + "=status code : " + error;
-    transaction = false;
     switch(status) {
     case SQLITE_ERROR: throw SQLError(error);
     case SQLITE_INTERNAL: throw InternalError(error);
