@@ -10,7 +10,7 @@
 
 \section vercvs CVS Version
 
-\section ver0_3_1 Version 0.3.1
+\section ver0_3_2 Version 0.3.2
 2006 January 25:
 - feature: static FieldType-objects for subclasses' id fields are now named Class::Own::Id so that they can be used in template methods
 - bug fix: litesql-gen compiles again with g++ 4.0 (explicit template specialization was missing)
