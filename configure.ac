@@ -1,7 +1,7 @@
 AC_PREREQ(2.53)
-AC_INIT([LiteSQL], [0.3.1], [litesql-users@lists.sourceforge.net], [litesql])
+AC_INIT([LiteSQL], [0.3.2], [litesql-users@lists.sourceforge.net], [litesql])
 AC_CONFIG_SRCDIR([src/library/database.cpp])
-AM_INIT_AUTOMAKE([litesql], [0.3.1])
+AM_INIT_AUTOMAKE([litesql], [0.3.2])
 AM_CONFIG_HEADER(config.h)
 
 # Program Checks

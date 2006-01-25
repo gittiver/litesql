@@ -13,9 +13,10 @@ using namespace litesql;
 using namespace example;
 
 int main(int argc, char **argv) {
+
+         std::cout << "joo" << std::endl;
     try {
         // using SQLite3 as backend
-         std::cout << "joo" << std::endl;
          ExampleDatabase db("sqlite3", "database=example.db");
         // create tables, sequences and indexes
         db.verbose = true;

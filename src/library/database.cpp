@@ -36,7 +36,8 @@ void Database::openDatabase() {
 }
 void Database::storeSchemaItem(const SchemaItem& s) const {
     delete_("schema_", 
-            RawExpr("name_='" + s.name + "' and type_='" + s.type + "'"));
+            RawExpr("name_='" + s.name 
+                + "' and type_='" + s.type + "'"));
     Record values;
     values.push_back(s.name);
     values.push_back(s.type);

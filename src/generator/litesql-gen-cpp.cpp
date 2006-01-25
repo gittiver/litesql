@@ -101,21 +101,22 @@ void writeObjFields(Class & cl, const xml::Object & o) {
 
     Class ownData("Own");
     Variable ftype("Id", ftypeClass, 
-                   quote("id_") + "," + quote("INTEGER") + ",table__");
+                   quote("id_") + "," + quote("INTEGER") 
+                   + "," + quote(o.getTable()));
     ftype.static_();
     ownData.variable(ftype);
     
     cl.class_(ownData);
-    
+  
     for (size_t i = 0; i < o.fields.size(); i++) {
         const xml::Field& fld = *o.fields[i];
         string data = quote(fld.name + "_") + "," +
-                      quote(fld.getSQLType()) + "," +
-                      "table__";
+            quote(fld.getSQLType()) + "," +
+            "table__";
         if (!fld.values.empty()) {
             data += "," + fld.name + "_values"; 
             Variable values(fld.name + "_values", 
-                            "std::vector < std::pair< std::string, std::string > >");
+                    "std::vector < std::pair< std::string, std::string > >");
             values.static_().protected_();
             cl.variable(values);
             hasValues = true;
@@ -123,20 +124,20 @@ void writeObjFields(Class & cl, const xml::Object & o) {
             for (size_t i2 = 0; i2 < fld.values.size(); i2++) {
                 const xml::Value& val = fld.values[i2];
                 init.body(fld.name + "_values.push_back(make_pair<std::string, std::string>("
-                          + quote(val.name) + "," + quote(val.value) + "));");    
+                        + quote(val.name) + "," + quote(val.value) + "));");    
             }
         }
         if (!fld.values.empty()) {
             ftypeClass = fld.fieldTypeName + "Type";
             Class ftypeCl(ftypeClass, "litesql::FieldType");
             Method cons(ftypeClass);
-   	        ftypeClass = "const " + o.name + "::" + ftypeClass;
+            ftypeClass = "const " + o.name + "::" + ftypeClass;
             cons.param(Variable("n", "const std::string&"))
                 .param(Variable("t", "const std::string&"))
                 .param(Variable("tbl", "const std::string&"))
                 .param(Variable("vals", "const litesql::FieldType::Values&", "Values()"))
                 .constructor("litesql::FieldType(n,t,tbl,vals)");
-            
+
             ftypeCl.method(cons);
             for (size_t v = 0; v < fld.values.size(); v++) {
                 const xml::Value& value = fld.values[v];
@@ -146,13 +147,13 @@ void writeObjFields(Class & cl, const xml::Object & o) {
                 else
                     v = value.value;
                 Variable val(value.name, "const " + fld.getCPPType(), v);
-                
+
                 val.static_();
                 ftypeCl.variable(val);
             }
             cl.class_(ftypeCl);
         }
-	
+
         Variable ftype(fld.fieldTypeName, ftypeClass, data);
         ftype.static_();
         Variable field(fld.name, "litesql::Field<" + fld.getCPPType() + ">");
