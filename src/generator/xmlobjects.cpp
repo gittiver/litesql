@@ -5,6 +5,7 @@
 #include "litesql.hpp"
 #include <algorithm>
 namespace std {
+    template <>
     struct less<xml::Relate*> {
         bool operator()(xml::Relate const* r1, xml::Relate const* r2) {
             if (!r1)

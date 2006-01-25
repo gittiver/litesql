@@ -99,12 +99,13 @@ void writeObjFields(Class & cl, const xml::Object & o) {
 
     init.static_();
 
-    if (o.parentObject) {
-        Variable ftype(o.name + "Id", ftypeClass, 
-                       quote("id_") + "," + quote("INTEGER") + ",table__");
-        ftype.static_();
-        cl.variable(ftype);
-    }
+    Class ownData("Own");
+    Variable ftype("Id", ftypeClass, 
+                   quote("id_") + "," + quote("INTEGER") + ",table__");
+    ftype.static_();
+    ownData.variable(ftype);
+    
+    cl.class_(ownData);
     
     for (size_t i = 0; i < o.fields.size(); i++) {
         const xml::Field& fld = *o.fields[i];

@@ -15,7 +15,8 @@ using namespace example;
 int main(int argc, char **argv) {
     try {
         // using SQLite3 as backend
-        ExampleDatabase db("sqlite3", "database=example.db");
+         std::cout << "joo" << std::endl;
+         ExampleDatabase db("sqlite3", "database=example.db");
         // create tables, sequences and indexes
         db.verbose = true;
         db.create();

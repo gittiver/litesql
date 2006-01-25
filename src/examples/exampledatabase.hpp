@@ -139,6 +139,10 @@ public:
 };
 class Person : public litesql::Persistent {
 public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
     class SexType : public litesql::FieldType {
     public:
         static const int Male;
@@ -245,6 +249,10 @@ public:
 std::ostream & operator<<(std::ostream& os, Person o);
 class Role : public litesql::Persistent {
 public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
     class PersonHandle : public litesql::RelationHandle<Role> {
     public:
         PersonHandle(const Role& owner);
@@ -289,6 +297,10 @@ public:
 std::ostream & operator<<(std::ostream& os, Role o);
 class Student : public Role {
 public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
     class SchoolHandle : public litesql::RelationHandle<Student> {
     public:
         SchoolHandle(const Student& owner);
@@ -300,7 +312,6 @@ public:
     };
     static const std::string type__;
     static const std::string table__;
-    static const litesql::FieldType StudentId;
     Student(const litesql::Database& db);
     Student(const litesql::Database& db, const litesql::Record& rec);
     Student(const Student& obj);
@@ -326,6 +337,10 @@ public:
 std::ostream & operator<<(std::ostream& os, Student o);
 class Employee : public Role {
 public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
     class OfficeHandle : public litesql::RelationHandle<Employee> {
     public:
         OfficeHandle(const Employee& owner);
@@ -337,7 +352,6 @@ public:
     };
     static const std::string type__;
     static const std::string table__;
-    static const litesql::FieldType EmployeeId;
     Employee(const litesql::Database& db);
     Employee(const litesql::Database& db, const litesql::Record& rec);
     Employee(const Employee& obj);
@@ -363,6 +377,10 @@ public:
 std::ostream & operator<<(std::ostream& os, Employee o);
 class School : public litesql::Persistent {
 public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
     class StudentsHandle : public litesql::RelationHandle<School> {
     public:
         StudentsHandle(const School& owner);
@@ -409,6 +427,10 @@ public:
 std::ostream & operator<<(std::ostream& os, School o);
 class Office : public litesql::Persistent {
 public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
     class EmployeesHandle : public litesql::RelationHandle<Office> {
     public:
         EmployeesHandle(const Office& owner);

@@ -352,6 +352,7 @@ template <> litesql::DataSource<example::Office> EmployeeOfficeRelation::get(con
     sel.where(srcExpr);
     return DataSource<example::Office>(db, example::Office::Id.in(sel) && expr);
 }
+const litesql::FieldType Person::Own::Id("id_","INTEGER",table__);
 const int Person::SexType::Male(0);
 const int Person::SexType::Female(1);
 Person::SexType::SexType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals)
@@ -631,6 +632,7 @@ std::ostream & operator<<(std::ostream& os, Person o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
+const litesql::FieldType Role::Own::Id("id_","INTEGER",table__);
 Role::PersonHandle::PersonHandle(const Role& owner)
          : litesql::RelationHandle<Role>(owner) {
 }
@@ -782,6 +784,7 @@ std::ostream & operator<<(std::ostream& os, Role o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
+const litesql::FieldType Student::Own::Id("id_","INTEGER",table__);
 Student::SchoolHandle::SchoolHandle(const Student& owner)
          : litesql::RelationHandle<Student>(owner) {
 }
@@ -802,7 +805,6 @@ litesql::DataSource<SchoolStudentRelation::Row> Student::SchoolHandle::getRows(c
 }
 const std::string Student::type__("Student");
 const std::string Student::table__("Student_");
-const litesql::FieldType Student::StudentId("id_","INTEGER",table__);
 Student::Student(const litesql::Database& db)
      : Role(db) {
 }
@@ -904,6 +906,7 @@ std::ostream & operator<<(std::ostream& os, Student o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
+const litesql::FieldType Employee::Own::Id("id_","INTEGER",table__);
 Employee::OfficeHandle::OfficeHandle(const Employee& owner)
          : litesql::RelationHandle<Employee>(owner) {
 }
@@ -924,7 +927,6 @@ litesql::DataSource<EmployeeOfficeRelation::Row> Employee::OfficeHandle::getRows
 }
 const std::string Employee::type__("Employee");
 const std::string Employee::table__("Employee_");
-const litesql::FieldType Employee::EmployeeId("id_","INTEGER",table__);
 Employee::Employee(const litesql::Database& db)
      : Role(db) {
 }
@@ -1026,6 +1028,7 @@ std::ostream & operator<<(std::ostream& os, Employee o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
+const litesql::FieldType School::Own::Id("id_","INTEGER",table__);
 School::StudentsHandle::StudentsHandle(const School& owner)
          : litesql::RelationHandle<School>(owner) {
 }
@@ -1180,6 +1183,7 @@ std::ostream & operator<<(std::ostream& os, School o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
+const litesql::FieldType Office::Own::Id("id_","INTEGER",table__);
 Office::EmployeesHandle::EmployeesHandle(const Office& owner)
          : litesql::RelationHandle<Office>(owner) {
 }
@@ -1355,11 +1359,11 @@ std::vector<litesql::Database::SchemaItem> ExampleDatabase::getSchema() const {
     res.push_back(Database::SchemaItem("Person_Person_FatherPerson1idx","index","CREATE INDEX Person_Person_FatherPerson1idx ON Person_Person_Father (Person1)"));
     res.push_back(Database::SchemaItem("Person_Person_FatherPerson2idx","index","CREATE INDEX Person_Person_FatherPerson2idx ON Person_Person_Father (Person2)"));
     res.push_back(Database::SchemaItem("Person_Person_Father_all_idx","index","CREATE INDEX Person_Person_Father_all_idx ON Person_Person_Father (Person1,Person2)"));
-    res.push_back(Database::SchemaItem("_fc4501d1c1e9cc173fbe356a08a9d12f","index","CREATE INDEX _fc4501d1c1e9cc173fbe356a08a9d12f ON Person_Person_Siblings (Person1)"));
-    res.push_back(Database::SchemaItem("_29908e51ecc673e39c38238d4abe5b3b","index","CREATE INDEX _29908e51ecc673e39c38238d4abe5b3b ON Person_Person_Siblings (Person2)"));
+    res.push_back(Database::SchemaItem("_34075df976066c68dc72b59fb8173148","index","CREATE INDEX _34075df976066c68dc72b59fb8173148 ON Person_Person_Siblings (Person1)"));
+    res.push_back(Database::SchemaItem("_c8f8035039c38a3c01d8d26a7ccdeaac","index","CREATE INDEX _c8f8035039c38a3c01d8d26a7ccdeaac ON Person_Person_Siblings (Person2)"));
     res.push_back(Database::SchemaItem("Person_Person_Siblings_all_idx","index","CREATE INDEX Person_Person_Siblings_all_idx ON Person_Person_Siblings (Person1,Person2)"));
-    res.push_back(Database::SchemaItem("_c77a0c252bbee950ec06bda52dd09648","index","CREATE INDEX _c77a0c252bbee950ec06bda52dd09648 ON Person_Person_Children (Person1)"));
-    res.push_back(Database::SchemaItem("_64f9014350ce47b5d0f7606b127df7c3","index","CREATE INDEX _64f9014350ce47b5d0f7606b127df7c3 ON Person_Person_Children (Person2)"));
+    res.push_back(Database::SchemaItem("_9ee6686ab46c8df7de530bbb3414c58e","index","CREATE INDEX _9ee6686ab46c8df7de530bbb3414c58e ON Person_Person_Children (Person1)"));
+    res.push_back(Database::SchemaItem("_fcdb7736f2440759d1142b864dfde27d","index","CREATE INDEX _fcdb7736f2440759d1142b864dfde27d ON Person_Person_Children (Person2)"));
     res.push_back(Database::SchemaItem("Person_Person_Children_all_idx","index","CREATE INDEX Person_Person_Children_all_idx ON Person_Person_Children (Person1,Person2)"));
     res.push_back(Database::SchemaItem("Person_Role_RolesPerson1idx","index","CREATE INDEX Person_Role_RolesPerson1idx ON Person_Role_Roles (Person1)"));
     res.push_back(Database::SchemaItem("Person_Role_RolesRole2idx","index","CREATE INDEX Person_Role_RolesRole2idx ON Person_Role_Roles (Role2)"));
