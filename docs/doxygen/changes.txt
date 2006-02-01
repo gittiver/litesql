@@ -9,6 +9,8 @@
 /** \page changes Changes
 
 \section vercvs CVS Version
+2006 February 1:
+- bug fix: sqlite3-backend had a concurrency bug (fixed by F.Javier Noguera)
 
 \section ver0_3_2 Version 0.3.2
 2006 January 25:

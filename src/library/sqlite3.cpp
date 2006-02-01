@@ -53,6 +53,9 @@ Record SQLite3::Cursor::fetchOne() {
             usleep(5000);
             busy = true;
             break;
+        case SQLITE_ROW:
+            busy = false;
+            break;
         }
     } while (busy);
     Record rec;
