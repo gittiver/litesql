@@ -8,7 +8,7 @@ Section: libs
 Package: liblitesql-dev
 Section: libdevel
 Architecture: any
-Depends: liblitesql (= 0.3.0)
+Depends: liblitesql (= 0.3.2)
 Suggests: libpq-dev, libmysqlclient14-dev, libsqlite3-dev 
 Description: C++ object-relational persistence framework - development files
 
