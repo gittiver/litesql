@@ -14,7 +14,7 @@ using namespace std;
 /** returns DataSource for accessing objects of type T */
 template <class T>
 litesql::DataSource<T> select(const litesql::Database & db, 
-                              const litesql::Expr &e=litesql::Expr()) {
+                              const typename T::Expr &e=typename T::Expr()) {
     return litesql::DataSource<T>(db, e);
 }
 /** returns DataSource for accessing intersection of two sets of objects 

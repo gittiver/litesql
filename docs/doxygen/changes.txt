@@ -9,6 +9,9 @@
 /** \page changes Changes
 
 \section vercvs CVS Version
+2006 February 4:
+- feature: stronger type checking for expressions and field types, select<Person>(db, Role::Id == 1).one() does not compile now.
+
 2006 February 1:
 - bug fix: sqlite3-backend had a concurrency bug (fixed by F.Javier Noguera)
 

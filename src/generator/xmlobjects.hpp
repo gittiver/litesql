@@ -143,6 +143,7 @@ public:
     AT_relate_limit limit;
     AT_relate_unique unique;
     string handle;
+    Object* object;
     Relate(string on, AT_relate_limit l, AT_relate_unique u, string h) 
         : objectName(on), limit(l), unique(u), handle(h) {
         if (hasLimit() && isUnique())

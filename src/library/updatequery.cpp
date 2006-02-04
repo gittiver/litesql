@@ -8,7 +8,7 @@
 namespace litesql {
 using namespace std;
 UpdateQuery& UpdateQuery::where(const Expr& e) {
-    _where = (RawExpr(_where) && e).asString();
+    _where = litesql::And(RawExpr(_where),e).asString();
     return *this;
 }
 UpdateQuery& UpdateQuery::set(FieldType f, string value) {

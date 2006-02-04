@@ -64,14 +64,14 @@ public:
 class Method {
 public:
     string name, returnType, templateParams, constructorParams;
-    bool isStatic, isVirtual, isProtected, isTemplate, isTemplateSpec, isDefinition, isConst, isAbstract;
+    bool isStatic, isVirtual, isProtected, isTemplate, isTemplateSpec, isDefinition, isConst, isAbstract, isExplicit, isInline;
     vector<Variable> params;
     vector<string> bodyLines;
    
     Method(const string& n, const string& rt="") 
         : name(n), returnType(rt), templateParams(""), constructorParams(""),
           isStatic(false), isVirtual(false), isProtected(false), isTemplate(false),
-          isTemplateSpec(false), isDefinition(false), isConst(false), isAbstract(false) {}
+          isTemplateSpec(false), isDefinition(false), isConst(false), isAbstract(false), isExplicit(false), isInline(false) {}
     Method& param(const Variable& v) {
         params.push_back(v);
         return *this;
@@ -118,15 +118,29 @@ public:
         isAbstract = true;
         return *this;
     }
+    Method& explicit_() {
+        isExplicit = true;
+        return *this;
+    }
+    Method& inline_() {
+        isInline = true;
+        return *this;
+    }
 
     void write(FILE * hpp, FILE * cpp, string context, int indent=0) {
         string ind = string(" ") * indent;
+        string expl;
         string tpl;
         string sta;
         string ret;
         string cons;
+        string inl;
+        if (isExplicit)
+           expl = "explicit "; 
         if (isTemplate) 
             tpl = "template <" + templateParams + "> ";
+        if (isInline)
+            inl = "inline ";
         if (isStatic)
             sta = "static ";
         if (isVirtual)
@@ -149,15 +163,16 @@ public:
         string result;
         
         if (!isTemplateSpec)
-            fprintf(hpp, "%s%s%s%s%s(%s)%s", ind.c_str(), tpl.c_str(), sta.c_str(),
+            fprintf(hpp, "%s%s%s%s%s%s%s(%s)%s", ind.c_str(), expl.c_str(), tpl.c_str(), inl.c_str(), sta.c_str(),
                     ret.c_str(), name.c_str(), paramString.c_str(), cnst.c_str());
         if (isDefinition) 
             fprintf(hpp, ";\n");
         else {
-            if (isTemplate && !isTemplateSpec) {
-                fprintf(hpp, " {\n");
+            if ((isTemplate && !isTemplateSpec) || isInline) {
+                
+                fprintf(hpp, "%s {\n", cons.c_str());
                 for (size_t i = 0; i < bodyLines.size(); i++) 
-                    fprintf(hpp, "%s%s\n", ind.c_str(), bodyLines[i].c_str());
+                    fprintf(hpp, "%s    %s\n", ind.c_str(), bodyLines[i].c_str());
                 fprintf(hpp, "%s}\n", ind.c_str());
             } else {
                 fprintf(hpp, ";\n");
@@ -184,8 +199,13 @@ class Class {
     vector<Method> methods;
     vector<Variable> variables;
     vector<Class> classes;
+    vector<string> typedefs;
 public:
     Class(string n, string i="") : name(n), inherits(i) {}
+    Class& typedef_(const string what, const string is) {
+        typedefs.push_back("typedef " + is + " " + what);
+        return *this;
+    }
     Class& method(const Method& m) {
         methods.push_back(m);
         return *this;
@@ -208,6 +228,11 @@ public:
         string mode = "public";
         fprintf(hpp, "%sclass %s%s {\n", ind.c_str(), name.c_str(), inh.c_str());
         fprintf(hpp, "%spublic:\n", ind.c_str());
+        for (size_t i = 0; i < classes.size(); i++) 
+            fprintf(hpp, "%s    class %s;\n", 
+                    ind.c_str(), classes[i].name.c_str());
+        for (size_t i = 0; i < typedefs.size(); i++)
+            fprintf(hpp, "%s    %s;\n", ind.c_str(), typedefs[i].c_str());
         for (size_t i = 0; i < classes.size(); i++) {
 
             classes[i].write(hpp, cpp, indent + 4, context);

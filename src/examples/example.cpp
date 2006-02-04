@@ -91,6 +91,7 @@ int main(int argc, char **argv) {
             (*cursor).sayHello();
         
         // select a non-existing Person
+        cout << (Person::Id == 100).asString() << endl;
         try {
             select<Person>(db, Person::Id == 100).one();
         } catch (NotFound e) {

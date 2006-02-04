@@ -191,45 +191,6 @@ public:
     }
     
 };
-And operator&&(const Expr& o1, const Expr& o2);
-Or operator||(const Expr& o1, const Expr& o2);
-template <class T>
-litesql::Eq operator==(const litesql::FieldType& fld, const T& o2) {
-    return litesql::Eq(fld, litesql::toString(o2));
-}
-Eq operator==(const FieldType& fld, const FieldType& f2);
-Gt operator>(const FieldType& fld, const FieldType& o2);
-GtEq operator>=(const FieldType& fld, const FieldType& o2);
-Lt operator<(const FieldType& fld, const FieldType& o2);
-LtEq operator<=(const FieldType& fld, const FieldType& o2);
-NotEq operator!=(const FieldType& fld, const FieldType& f2);
-
-template <class T>
-litesql::Gt operator>(const litesql::FieldType& fld, const T& o2) {
-    return litesql::Gt(fld, litesql::toString(o2));
-}
-
-template <class T>
-litesql::GtEq operator>=(const litesql::FieldType& fld, const T& o2) {
-    return litesql::GtEq(fld, litesql::toString(o2));
-}
-
-template <class T>
-litesql::Lt operator<(const litesql::FieldType& fld, const T& o2) {
-    return litesql::Lt(fld, litesql::toString(o2));
-}
-
-
-template <class T>
-litesql::LtEq operator<=(const litesql::FieldType& fld, const T& o2) {
-    return litesql::LtEq(fld, litesql::toString(o2));
-}
-template <class T>
-litesql::NotEq operator!=(const litesql::FieldType& fld, const T& o2) {
-    return litesql::NotEq(fld, litesql::toString(o2));
-}
-
-Not operator!(const Expr &exp);
 }
 
 

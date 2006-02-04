@@ -4,6 +4,7 @@
 #include "md5.hpp"
 #include "litesql.hpp"
 #include <algorithm>
+
 namespace std {
     template <>
     struct less<xml::Relate*> {
@@ -311,7 +312,10 @@ void init(Database& db,
         
         for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
             Relate& relate = *rel.related[i2];
+
+            relate.paramPos = i2;
             Object* obj = objMap[relate.objectName];
+            relate.object = obj;
             string num;
             if (same)
                 num = toString(i2 + 1);

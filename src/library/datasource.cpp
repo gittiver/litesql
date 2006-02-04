@@ -29,7 +29,7 @@ SelectQuery selectObjectQuery(const vector<FieldType>& fdatas,
         tableSet.insert(tables[i]);
     }
     if (tables.size() > 1)
-        sel.where((e && RawExpr(tableFilters.join(" AND "))).asString()); 
+        sel.where(litesql::And(e, RawExpr(tableFilters.join(" AND "))).asString()); 
     else
         sel.where(e.asString());
     
