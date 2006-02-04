@@ -20331,7 +20331,7 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 
 
 
-                                                                                                                                                                ac_config_files="$ac_config_files Makefile include/Makefile include/litesql/Makefile src/Makefile src/library/Makefile src/generator/Makefile src/tests/Makefile src/examples/Makefile docs/Makefile docs/doxygen/Makefile rpm/Makefile pkg/Makefile docs/doxygen/doxygen.conf rpm/litesql.spec pkg/litesql-config pkg/litesql.pc"
+                                                                                                                                                                          ac_config_files="$ac_config_files Makefile include/Makefile include/litesql/Makefile src/Makefile src/library/Makefile src/generator/Makefile src/tests/Makefile src/examples/Makefile docs/Makefile docs/doxygen/Makefile rpm/Makefile pkg/Makefile debian/Makefile docs/doxygen/doxygen.conf rpm/litesql.spec pkg/litesql-config pkg/litesql.pc"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -20879,6 +20879,7 @@ do
   "docs/doxygen/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/doxygen/Makefile" ;;
   "rpm/Makefile" ) CONFIG_FILES="$CONFIG_FILES rpm/Makefile" ;;
   "pkg/Makefile" ) CONFIG_FILES="$CONFIG_FILES pkg/Makefile" ;;
+  "debian/Makefile" ) CONFIG_FILES="$CONFIG_FILES debian/Makefile" ;;
   "docs/doxygen/doxygen.conf" ) CONFIG_FILES="$CONFIG_FILES docs/doxygen/doxygen.conf" ;;
   "rpm/litesql.spec" ) CONFIG_FILES="$CONFIG_FILES rpm/litesql.spec" ;;
   "pkg/litesql-config" ) CONFIG_FILES="$CONFIG_FILES pkg/litesql-config" ;;
