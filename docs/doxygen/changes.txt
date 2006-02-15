@@ -12,6 +12,7 @@
 
 2006 February 15:
 - feature: const-attribute for methods 
+- bug fix: litesql-gen writes const methods for relation handles
 
 2006 February 4:
 - feature: stronger type checking for expressions and field types, select<Person>(db, Role::Id == 1).one() does not compile now.

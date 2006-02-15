@@ -460,7 +460,8 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
         hcl.method(getRows);
         cl.class_(hcl);
         Method hdlMethod(handle.name, o.name + "::" + className);
-        hdlMethod.body("return " + o.name + "::" +  className + "(*this);");
+        hdlMethod.body("return " + o.name + "::" +  className + "(*this);")
+            .const_();
         cl.method(hdlMethod);
     }
 }
