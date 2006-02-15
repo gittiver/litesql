@@ -9,6 +9,10 @@
 /** \page changes Changes
 
 \section vercvs CVS Version
+
+2006 February 15:
+- feature: const-attribute for methods 
+
 2006 February 4:
 - feature: stronger type checking for expressions and field types, select<Person>(db, Role::Id == 1).one() does not compile now.
 - feature: Makefile.am, Makefile.in files to debian-subdir (Debian packaging headers)

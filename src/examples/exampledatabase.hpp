@@ -297,28 +297,28 @@ public:
     typedef RowTypes::PersonPersonRelationMotherRow Row;
     class FieldType : public litesql::FieldType {
     public:
-        template <class T> inline Expressions::PersonPersonRelationMother operator==(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationMother operator==(const T& value) const {
             return Expressions::PersonPersonRelationMother(litesql::Eq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationMother operator!=(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationMother operator!=(const T& value) const {
             return Expressions::PersonPersonRelationMother(litesql::Neq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationMother operator>(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationMother operator>(const T& value) const {
             return Expressions::PersonPersonRelationMother(litesql::Gt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationMother operator<(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationMother operator<(const T& value) const {
             return Expressions::PersonPersonRelationMother(litesql::Lt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationMother operator>=(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationMother operator>=(const T& value) const {
             return Expressions::PersonPersonRelationMother(litesql::GtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationMother operator<=(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationMother operator<=(const T& value) const {
             return Expressions::PersonPersonRelationMother(litesql::LtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationMother in(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationMother in(const T& value) const {
             return Expressions::PersonPersonRelationMother(litesql::In(*this, value));
         }
-        template <class T> inline Expressions::PersonPersonRelationMother like(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationMother like(const T& value) const {
             return Expressions::PersonPersonRelationMother(litesql::Like(*this, litesql::toString(value)));
         }
         FieldType(const std::string& name, const std::string& type, const std::string& table, const Values& values=Values());
@@ -340,28 +340,28 @@ public:
     typedef RowTypes::PersonPersonRelationFatherRow Row;
     class FieldType : public litesql::FieldType {
     public:
-        template <class T> inline Expressions::PersonPersonRelationFather operator==(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationFather operator==(const T& value) const {
             return Expressions::PersonPersonRelationFather(litesql::Eq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationFather operator!=(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationFather operator!=(const T& value) const {
             return Expressions::PersonPersonRelationFather(litesql::Neq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationFather operator>(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationFather operator>(const T& value) const {
             return Expressions::PersonPersonRelationFather(litesql::Gt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationFather operator<(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationFather operator<(const T& value) const {
             return Expressions::PersonPersonRelationFather(litesql::Lt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationFather operator>=(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationFather operator>=(const T& value) const {
             return Expressions::PersonPersonRelationFather(litesql::GtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationFather operator<=(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationFather operator<=(const T& value) const {
             return Expressions::PersonPersonRelationFather(litesql::LtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationFather in(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationFather in(const T& value) const {
             return Expressions::PersonPersonRelationFather(litesql::In(*this, value));
         }
-        template <class T> inline Expressions::PersonPersonRelationFather like(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationFather like(const T& value) const {
             return Expressions::PersonPersonRelationFather(litesql::Like(*this, litesql::toString(value)));
         }
         FieldType(const std::string& name, const std::string& type, const std::string& table, const Values& values=Values());
@@ -383,28 +383,28 @@ public:
     typedef RowTypes::PersonPersonRelationSiblingsRow Row;
     class FieldType : public litesql::FieldType {
     public:
-        template <class T> inline Expressions::PersonPersonRelationSiblings operator==(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationSiblings operator==(const T& value) const {
             return Expressions::PersonPersonRelationSiblings(litesql::Eq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationSiblings operator!=(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationSiblings operator!=(const T& value) const {
             return Expressions::PersonPersonRelationSiblings(litesql::Neq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationSiblings operator>(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationSiblings operator>(const T& value) const {
             return Expressions::PersonPersonRelationSiblings(litesql::Gt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationSiblings operator<(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationSiblings operator<(const T& value) const {
             return Expressions::PersonPersonRelationSiblings(litesql::Lt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationSiblings operator>=(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationSiblings operator>=(const T& value) const {
             return Expressions::PersonPersonRelationSiblings(litesql::GtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationSiblings operator<=(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationSiblings operator<=(const T& value) const {
             return Expressions::PersonPersonRelationSiblings(litesql::LtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationSiblings in(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationSiblings in(const T& value) const {
             return Expressions::PersonPersonRelationSiblings(litesql::In(*this, value));
         }
-        template <class T> inline Expressions::PersonPersonRelationSiblings like(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationSiblings like(const T& value) const {
             return Expressions::PersonPersonRelationSiblings(litesql::Like(*this, litesql::toString(value)));
         }
         FieldType(const std::string& name, const std::string& type, const std::string& table, const Values& values=Values());
@@ -426,28 +426,28 @@ public:
     typedef RowTypes::PersonPersonRelationChildrenRow Row;
     class FieldType : public litesql::FieldType {
     public:
-        template <class T> inline Expressions::PersonPersonRelationChildren operator==(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationChildren operator==(const T& value) const {
             return Expressions::PersonPersonRelationChildren(litesql::Eq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationChildren operator!=(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationChildren operator!=(const T& value) const {
             return Expressions::PersonPersonRelationChildren(litesql::Neq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationChildren operator>(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationChildren operator>(const T& value) const {
             return Expressions::PersonPersonRelationChildren(litesql::Gt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationChildren operator<(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationChildren operator<(const T& value) const {
             return Expressions::PersonPersonRelationChildren(litesql::Lt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationChildren operator>=(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationChildren operator>=(const T& value) const {
             return Expressions::PersonPersonRelationChildren(litesql::GtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationChildren operator<=(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationChildren operator<=(const T& value) const {
             return Expressions::PersonPersonRelationChildren(litesql::LtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::PersonPersonRelationChildren in(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationChildren in(const T& value) const {
             return Expressions::PersonPersonRelationChildren(litesql::In(*this, value));
         }
-        template <class T> inline Expressions::PersonPersonRelationChildren like(const T& value) const {
+        template <class T> Expressions::PersonPersonRelationChildren like(const T& value) const {
             return Expressions::PersonPersonRelationChildren(litesql::Like(*this, litesql::toString(value)));
         }
         FieldType(const std::string& name, const std::string& type, const std::string& table, const Values& values=Values());
@@ -469,28 +469,28 @@ public:
     typedef RowTypes::RoleRelationRow Row;
     class FieldType : public litesql::FieldType {
     public:
-        template <class T> inline Expressions::RoleRelation operator==(const T& value) const {
+        template <class T> Expressions::RoleRelation operator==(const T& value) const {
             return Expressions::RoleRelation(litesql::Eq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::RoleRelation operator!=(const T& value) const {
+        template <class T> Expressions::RoleRelation operator!=(const T& value) const {
             return Expressions::RoleRelation(litesql::Neq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::RoleRelation operator>(const T& value) const {
+        template <class T> Expressions::RoleRelation operator>(const T& value) const {
             return Expressions::RoleRelation(litesql::Gt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::RoleRelation operator<(const T& value) const {
+        template <class T> Expressions::RoleRelation operator<(const T& value) const {
             return Expressions::RoleRelation(litesql::Lt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::RoleRelation operator>=(const T& value) const {
+        template <class T> Expressions::RoleRelation operator>=(const T& value) const {
             return Expressions::RoleRelation(litesql::GtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::RoleRelation operator<=(const T& value) const {
+        template <class T> Expressions::RoleRelation operator<=(const T& value) const {
             return Expressions::RoleRelation(litesql::LtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::RoleRelation in(const T& value) const {
+        template <class T> Expressions::RoleRelation in(const T& value) const {
             return Expressions::RoleRelation(litesql::In(*this, value));
         }
-        template <class T> inline Expressions::RoleRelation like(const T& value) const {
+        template <class T> Expressions::RoleRelation like(const T& value) const {
             return Expressions::RoleRelation(litesql::Like(*this, litesql::toString(value)));
         }
         FieldType(const std::string& name, const std::string& type, const std::string& table, const Values& values=Values());
@@ -513,28 +513,28 @@ public:
     typedef RowTypes::SchoolStudentRelationRow Row;
     class FieldType : public litesql::FieldType {
     public:
-        template <class T> inline Expressions::SchoolStudentRelation operator==(const T& value) const {
+        template <class T> Expressions::SchoolStudentRelation operator==(const T& value) const {
             return Expressions::SchoolStudentRelation(litesql::Eq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::SchoolStudentRelation operator!=(const T& value) const {
+        template <class T> Expressions::SchoolStudentRelation operator!=(const T& value) const {
             return Expressions::SchoolStudentRelation(litesql::Neq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::SchoolStudentRelation operator>(const T& value) const {
+        template <class T> Expressions::SchoolStudentRelation operator>(const T& value) const {
             return Expressions::SchoolStudentRelation(litesql::Gt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::SchoolStudentRelation operator<(const T& value) const {
+        template <class T> Expressions::SchoolStudentRelation operator<(const T& value) const {
             return Expressions::SchoolStudentRelation(litesql::Lt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::SchoolStudentRelation operator>=(const T& value) const {
+        template <class T> Expressions::SchoolStudentRelation operator>=(const T& value) const {
             return Expressions::SchoolStudentRelation(litesql::GtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::SchoolStudentRelation operator<=(const T& value) const {
+        template <class T> Expressions::SchoolStudentRelation operator<=(const T& value) const {
             return Expressions::SchoolStudentRelation(litesql::LtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::SchoolStudentRelation in(const T& value) const {
+        template <class T> Expressions::SchoolStudentRelation in(const T& value) const {
             return Expressions::SchoolStudentRelation(litesql::In(*this, value));
         }
-        template <class T> inline Expressions::SchoolStudentRelation like(const T& value) const {
+        template <class T> Expressions::SchoolStudentRelation like(const T& value) const {
             return Expressions::SchoolStudentRelation(litesql::Like(*this, litesql::toString(value)));
         }
         FieldType(const std::string& name, const std::string& type, const std::string& table, const Values& values=Values());
@@ -557,28 +557,28 @@ public:
     typedef RowTypes::EmployeeOfficeRelationRow Row;
     class FieldType : public litesql::FieldType {
     public:
-        template <class T> inline Expressions::EmployeeOfficeRelation operator==(const T& value) const {
+        template <class T> Expressions::EmployeeOfficeRelation operator==(const T& value) const {
             return Expressions::EmployeeOfficeRelation(litesql::Eq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::EmployeeOfficeRelation operator!=(const T& value) const {
+        template <class T> Expressions::EmployeeOfficeRelation operator!=(const T& value) const {
             return Expressions::EmployeeOfficeRelation(litesql::Neq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::EmployeeOfficeRelation operator>(const T& value) const {
+        template <class T> Expressions::EmployeeOfficeRelation operator>(const T& value) const {
             return Expressions::EmployeeOfficeRelation(litesql::Gt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::EmployeeOfficeRelation operator<(const T& value) const {
+        template <class T> Expressions::EmployeeOfficeRelation operator<(const T& value) const {
             return Expressions::EmployeeOfficeRelation(litesql::Lt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::EmployeeOfficeRelation operator>=(const T& value) const {
+        template <class T> Expressions::EmployeeOfficeRelation operator>=(const T& value) const {
             return Expressions::EmployeeOfficeRelation(litesql::GtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::EmployeeOfficeRelation operator<=(const T& value) const {
+        template <class T> Expressions::EmployeeOfficeRelation operator<=(const T& value) const {
             return Expressions::EmployeeOfficeRelation(litesql::LtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::EmployeeOfficeRelation in(const T& value) const {
+        template <class T> Expressions::EmployeeOfficeRelation in(const T& value) const {
             return Expressions::EmployeeOfficeRelation(litesql::In(*this, value));
         }
-        template <class T> inline Expressions::EmployeeOfficeRelation like(const T& value) const {
+        template <class T> Expressions::EmployeeOfficeRelation like(const T& value) const {
             return Expressions::EmployeeOfficeRelation(litesql::Like(*this, litesql::toString(value)));
         }
         FieldType(const std::string& name, const std::string& type, const std::string& table, const Values& values=Values());
@@ -607,28 +607,28 @@ public:
     typedef Expressions::Person Expr;
     class FieldType : public litesql::FieldType {
     public:
-        template <class T> inline Expressions::Person operator==(const T& value) const {
+        template <class T> Expressions::Person operator==(const T& value) const {
             return Expressions::Person(litesql::Eq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Person operator!=(const T& value) const {
+        template <class T> Expressions::Person operator!=(const T& value) const {
             return Expressions::Person(litesql::Neq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Person operator>(const T& value) const {
+        template <class T> Expressions::Person operator>(const T& value) const {
             return Expressions::Person(litesql::Gt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Person operator<(const T& value) const {
+        template <class T> Expressions::Person operator<(const T& value) const {
             return Expressions::Person(litesql::Lt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Person operator>=(const T& value) const {
+        template <class T> Expressions::Person operator>=(const T& value) const {
             return Expressions::Person(litesql::GtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Person operator<=(const T& value) const {
+        template <class T> Expressions::Person operator<=(const T& value) const {
             return Expressions::Person(litesql::LtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Person in(const T& value) const {
+        template <class T> Expressions::Person in(const T& value) const {
             return Expressions::Person(litesql::In(*this, value));
         }
-        template <class T> inline Expressions::Person like(const T& value) const {
+        template <class T> Expressions::Person like(const T& value) const {
             return Expressions::Person(litesql::Like(*this, litesql::toString(value)));
         }
         FieldType(const std::string& name, const std::string& type, const std::string& table, const Values& values=Values());
@@ -743,28 +743,28 @@ public:
     typedef Expressions::Role Expr;
     class FieldType : public litesql::FieldType {
     public:
-        template <class T> inline Expressions::Role operator==(const T& value) const {
+        template <class T> Expressions::Role operator==(const T& value) const {
             return Expressions::Role(litesql::Eq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Role operator!=(const T& value) const {
+        template <class T> Expressions::Role operator!=(const T& value) const {
             return Expressions::Role(litesql::Neq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Role operator>(const T& value) const {
+        template <class T> Expressions::Role operator>(const T& value) const {
             return Expressions::Role(litesql::Gt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Role operator<(const T& value) const {
+        template <class T> Expressions::Role operator<(const T& value) const {
             return Expressions::Role(litesql::Lt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Role operator>=(const T& value) const {
+        template <class T> Expressions::Role operator>=(const T& value) const {
             return Expressions::Role(litesql::GtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Role operator<=(const T& value) const {
+        template <class T> Expressions::Role operator<=(const T& value) const {
             return Expressions::Role(litesql::LtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Role in(const T& value) const {
+        template <class T> Expressions::Role in(const T& value) const {
             return Expressions::Role(litesql::In(*this, value));
         }
-        template <class T> inline Expressions::Role like(const T& value) const {
+        template <class T> Expressions::Role like(const T& value) const {
             return Expressions::Role(litesql::Like(*this, litesql::toString(value)));
         }
         FieldType(const std::string& name, const std::string& type, const std::string& table, const Values& values=Values());
@@ -907,28 +907,28 @@ public:
     typedef Expressions::School Expr;
     class FieldType : public litesql::FieldType {
     public:
-        template <class T> inline Expressions::School operator==(const T& value) const {
+        template <class T> Expressions::School operator==(const T& value) const {
             return Expressions::School(litesql::Eq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::School operator!=(const T& value) const {
+        template <class T> Expressions::School operator!=(const T& value) const {
             return Expressions::School(litesql::Neq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::School operator>(const T& value) const {
+        template <class T> Expressions::School operator>(const T& value) const {
             return Expressions::School(litesql::Gt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::School operator<(const T& value) const {
+        template <class T> Expressions::School operator<(const T& value) const {
             return Expressions::School(litesql::Lt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::School operator>=(const T& value) const {
+        template <class T> Expressions::School operator>=(const T& value) const {
             return Expressions::School(litesql::GtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::School operator<=(const T& value) const {
+        template <class T> Expressions::School operator<=(const T& value) const {
             return Expressions::School(litesql::LtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::School in(const T& value) const {
+        template <class T> Expressions::School in(const T& value) const {
             return Expressions::School(litesql::In(*this, value));
         }
-        template <class T> inline Expressions::School like(const T& value) const {
+        template <class T> Expressions::School like(const T& value) const {
             return Expressions::School(litesql::Like(*this, litesql::toString(value)));
         }
         FieldType(const std::string& name, const std::string& type, const std::string& table, const Values& values=Values());
@@ -989,28 +989,28 @@ public:
     typedef Expressions::Office Expr;
     class FieldType : public litesql::FieldType {
     public:
-        template <class T> inline Expressions::Office operator==(const T& value) const {
+        template <class T> Expressions::Office operator==(const T& value) const {
             return Expressions::Office(litesql::Eq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Office operator!=(const T& value) const {
+        template <class T> Expressions::Office operator!=(const T& value) const {
             return Expressions::Office(litesql::Neq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Office operator>(const T& value) const {
+        template <class T> Expressions::Office operator>(const T& value) const {
             return Expressions::Office(litesql::Gt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Office operator<(const T& value) const {
+        template <class T> Expressions::Office operator<(const T& value) const {
             return Expressions::Office(litesql::Lt(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Office operator>=(const T& value) const {
+        template <class T> Expressions::Office operator>=(const T& value) const {
             return Expressions::Office(litesql::GtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Office operator<=(const T& value) const {
+        template <class T> Expressions::Office operator<=(const T& value) const {
             return Expressions::Office(litesql::LtEq(*this, litesql::toString(value)));
         }
-        template <class T> inline Expressions::Office in(const T& value) const {
+        template <class T> Expressions::Office in(const T& value) const {
             return Expressions::Office(litesql::In(*this, value));
         }
-        template <class T> inline Expressions::Office like(const T& value) const {
+        template <class T> Expressions::Office like(const T& value) const {
             return Expressions::Office(litesql::Like(*this, litesql::toString(value)));
         }
         FieldType(const std::string& name, const std::string& type, const std::string& table, const Values& values=Values());

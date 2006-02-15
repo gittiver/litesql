@@ -113,9 +113,13 @@ public:
 class Method {
 public:
     string name, returnType;
+    AT_method_const const_;
     vector<Param> params;
-    Method(string n, string rt) 
-        : name(n), returnType(rt) {}
+    Method(string n, string rt, AT_method_const c)
+        : name(n), returnType(rt), const_(c) {}
+    bool isConst() const {
+        return const_ == A_method_const_true;
+    }
     void param(const Param& p) {
         params.push_back(p);
     }

@@ -1,6 +1,6 @@
 /* XML application for litesql.dtd.
  * Includes actions from litesql-gen.xml.
- * Generated 2005/12/06 13:13:10.
+ * Generated 2006/02/15 15:06:43.
  *
  * This program was generated with the FleXML XML processor generator.
  * FleXML is Copyright © 1999-2005 Kristoffer Rose.  All rights reserved.
@@ -172,14 +172,15 @@ void STag_method(void)
 #line 66 "litesql-gen.xml"
 
 if (obj) {
-    obj->methods.push_back(mtd = new Method(A_method_name, safe(A_method_returntype)));
+    obj->methods.push_back(mtd = new Method(A_method_name, safe(A_method_returntype),
+                           A_method_const));
 }
 
 } /* STag_method */
 
 void ETag_method(void)
 {
-#line 71 "litesql-gen.xml"
+#line 72 "litesql-gen.xml"
 
 mtd = NULL;
 
@@ -187,7 +188,7 @@ mtd = NULL;
 
 void STag_param(void)
 {
-#line 74 "litesql-gen.xml"
+#line 75 "litesql-gen.xml"
 
 if (mtd) 
     mtd->param(Param(A_param_name, A_param_type));
@@ -196,7 +197,7 @@ if (mtd)
 
 void STag_relate(void)
 {
-#line 78 "litesql-gen.xml"
+#line 79 "litesql-gen.xml"
 
 if (rel)
     rel->related.push_back(new Relate(A_relate_object, A_relate_limit, A_relate_unique, safe(A_relate_handle)));
@@ -205,14 +206,14 @@ if (rel)
 
 void ETag_database(void)
 {
-#line 82 "litesql-gen.xml"
+#line 83 "litesql-gen.xml"
 
     generateCode(db, objects, relations);    
 
 } /* ETag_database */
 
 
-#line 90 "litesql-gen.xml"
+#line 91 "litesql-gen.xml"
 
 extern FILE * yyin;
 int main(int argc, char **argv) {
