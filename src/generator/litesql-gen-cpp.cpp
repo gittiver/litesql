@@ -115,7 +115,7 @@ void writeFieldType(Class& cl, string exprType, string ftypeName) {
             + "(litesql::Eq(*this, litesql::toString(value)));");
     writeFieldOp(ftypeClass, "operator!=", exprType, ftypeName,
             "return " + exprType + 
-            "(litesql::Neq(*this, litesql::toString(value)));");
+            "(litesql::NotEq(*this, litesql::toString(value)));");
     writeFieldOp(ftypeClass, "operator>", exprType, ftypeName,
             "return " + exprType + 
             "(litesql::Gt(*this, litesql::toString(value)));");

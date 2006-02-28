@@ -564,19 +564,19 @@ const Person& Person::operator=(const Person& obj) {
     litesql::Persistent::operator=(obj);
     return *this;
 }
-Person::MotherHandle Person::mother() {
+Person::MotherHandle Person::mother() const {
     return Person::MotherHandle(*this);
 }
-Person::FatherHandle Person::father() {
+Person::FatherHandle Person::father() const {
     return Person::FatherHandle(*this);
 }
-Person::SiblingsHandle Person::siblings() {
+Person::SiblingsHandle Person::siblings() const {
     return Person::SiblingsHandle(*this);
 }
-Person::ChildrenHandle Person::children() {
+Person::ChildrenHandle Person::children() const {
     return Person::ChildrenHandle(*this);
 }
-Person::RolesHandle Person::roles() {
+Person::RolesHandle Person::roles() const {
     return Person::RolesHandle(*this);
 }
 std::string Person::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
@@ -749,7 +749,7 @@ const Role& Role::operator=(const Role& obj) {
     litesql::Persistent::operator=(obj);
     return *this;
 }
-Role::PersonHandle Role::person() {
+Role::PersonHandle Role::person() const {
     return Role::PersonHandle(*this);
 }
 std::string Role::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
@@ -882,7 +882,7 @@ const Student& Student::operator=(const Student& obj) {
     Role::operator=(obj);
     return *this;
 }
-Student::SchoolHandle Student::school() {
+Student::SchoolHandle Student::school() const {
     return Student::SchoolHandle(*this);
 }
 std::string Student::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
@@ -1004,7 +1004,7 @@ const Employee& Employee::operator=(const Employee& obj) {
     Role::operator=(obj);
     return *this;
 }
-Employee::OfficeHandle Employee::office() {
+Employee::OfficeHandle Employee::office() const {
     return Employee::OfficeHandle(*this);
 }
 std::string Employee::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
@@ -1153,7 +1153,7 @@ const School& School::operator=(const School& obj) {
     litesql::Persistent::operator=(obj);
     return *this;
 }
-School::StudentsHandle School::students() {
+School::StudentsHandle School::students() const {
     return School::StudentsHandle(*this);
 }
 std::string School::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
@@ -1308,7 +1308,7 @@ const Office& Office::operator=(const Office& obj) {
     litesql::Persistent::operator=(obj);
     return *this;
 }
-Office::EmployeesHandle Office::employees() {
+Office::EmployeesHandle Office::employees() const {
     return Office::EmployeesHandle(*this);
 }
 std::string Office::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {

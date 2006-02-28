@@ -10,6 +10,10 @@
 
 \section vercvs CVS Version
 
+2006 February 28
+- bug fix: litesql-gen wrote unknown Neq - Expr in stead of NotEq.
+- bug fix: localtime_r replacement provided (by Axel Schmidt)
+
 2006 February 15:
 - feature: const-attribute for methods 
 - bug fix: litesql-gen writes const methods for relation handles

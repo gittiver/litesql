@@ -301,7 +301,7 @@ public:
             return Expressions::PersonPersonRelationMother(litesql::Eq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::PersonPersonRelationMother operator!=(const T& value) const {
-            return Expressions::PersonPersonRelationMother(litesql::Neq(*this, litesql::toString(value)));
+            return Expressions::PersonPersonRelationMother(litesql::NotEq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::PersonPersonRelationMother operator>(const T& value) const {
             return Expressions::PersonPersonRelationMother(litesql::Gt(*this, litesql::toString(value)));
@@ -344,7 +344,7 @@ public:
             return Expressions::PersonPersonRelationFather(litesql::Eq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::PersonPersonRelationFather operator!=(const T& value) const {
-            return Expressions::PersonPersonRelationFather(litesql::Neq(*this, litesql::toString(value)));
+            return Expressions::PersonPersonRelationFather(litesql::NotEq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::PersonPersonRelationFather operator>(const T& value) const {
             return Expressions::PersonPersonRelationFather(litesql::Gt(*this, litesql::toString(value)));
@@ -387,7 +387,7 @@ public:
             return Expressions::PersonPersonRelationSiblings(litesql::Eq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::PersonPersonRelationSiblings operator!=(const T& value) const {
-            return Expressions::PersonPersonRelationSiblings(litesql::Neq(*this, litesql::toString(value)));
+            return Expressions::PersonPersonRelationSiblings(litesql::NotEq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::PersonPersonRelationSiblings operator>(const T& value) const {
             return Expressions::PersonPersonRelationSiblings(litesql::Gt(*this, litesql::toString(value)));
@@ -430,7 +430,7 @@ public:
             return Expressions::PersonPersonRelationChildren(litesql::Eq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::PersonPersonRelationChildren operator!=(const T& value) const {
-            return Expressions::PersonPersonRelationChildren(litesql::Neq(*this, litesql::toString(value)));
+            return Expressions::PersonPersonRelationChildren(litesql::NotEq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::PersonPersonRelationChildren operator>(const T& value) const {
             return Expressions::PersonPersonRelationChildren(litesql::Gt(*this, litesql::toString(value)));
@@ -473,7 +473,7 @@ public:
             return Expressions::RoleRelation(litesql::Eq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::RoleRelation operator!=(const T& value) const {
-            return Expressions::RoleRelation(litesql::Neq(*this, litesql::toString(value)));
+            return Expressions::RoleRelation(litesql::NotEq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::RoleRelation operator>(const T& value) const {
             return Expressions::RoleRelation(litesql::Gt(*this, litesql::toString(value)));
@@ -517,7 +517,7 @@ public:
             return Expressions::SchoolStudentRelation(litesql::Eq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::SchoolStudentRelation operator!=(const T& value) const {
-            return Expressions::SchoolStudentRelation(litesql::Neq(*this, litesql::toString(value)));
+            return Expressions::SchoolStudentRelation(litesql::NotEq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::SchoolStudentRelation operator>(const T& value) const {
             return Expressions::SchoolStudentRelation(litesql::Gt(*this, litesql::toString(value)));
@@ -561,7 +561,7 @@ public:
             return Expressions::EmployeeOfficeRelation(litesql::Eq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::EmployeeOfficeRelation operator!=(const T& value) const {
-            return Expressions::EmployeeOfficeRelation(litesql::Neq(*this, litesql::toString(value)));
+            return Expressions::EmployeeOfficeRelation(litesql::NotEq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::EmployeeOfficeRelation operator>(const T& value) const {
             return Expressions::EmployeeOfficeRelation(litesql::Gt(*this, litesql::toString(value)));
@@ -611,7 +611,7 @@ public:
             return Expressions::Person(litesql::Eq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::Person operator!=(const T& value) const {
-            return Expressions::Person(litesql::Neq(*this, litesql::toString(value)));
+            return Expressions::Person(litesql::NotEq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::Person operator>(const T& value) const {
             return Expressions::Person(litesql::Gt(*this, litesql::toString(value)));
@@ -711,11 +711,11 @@ public:
     Person(const litesql::Database& db, const litesql::Record& rec);
     Person(const Person& obj);
     const Person& operator=(const Person& obj);
-    Person::MotherHandle mother();
-    Person::FatherHandle father();
-    Person::SiblingsHandle siblings();
-    Person::ChildrenHandle children();
-    Person::RolesHandle roles();
+    Person::MotherHandle mother() const;
+    Person::FatherHandle father() const;
+    Person::SiblingsHandle siblings() const;
+    Person::ChildrenHandle children() const;
+    Person::RolesHandle roles() const;
     virtual void sayHello();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
@@ -747,7 +747,7 @@ public:
             return Expressions::Role(litesql::Eq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::Role operator!=(const T& value) const {
-            return Expressions::Role(litesql::Neq(*this, litesql::toString(value)));
+            return Expressions::Role(litesql::NotEq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::Role operator>(const T& value) const {
             return Expressions::Role(litesql::Gt(*this, litesql::toString(value)));
@@ -796,7 +796,7 @@ public:
     Role(const litesql::Database& db, const litesql::Record& rec);
     Role(const Role& obj);
     const Role& operator=(const Role& obj);
-    Role::PersonHandle person();
+    Role::PersonHandle person() const;
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
@@ -838,7 +838,7 @@ public:
     Student(const litesql::Database& db, const litesql::Record& rec);
     Student(const Student& obj);
     const Student& operator=(const Student& obj);
-    Student::SchoolHandle school();
+    Student::SchoolHandle school() const;
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
@@ -880,7 +880,7 @@ public:
     Employee(const litesql::Database& db, const litesql::Record& rec);
     Employee(const Employee& obj);
     const Employee& operator=(const Employee& obj);
-    Employee::OfficeHandle office();
+    Employee::OfficeHandle office() const;
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
@@ -911,7 +911,7 @@ public:
             return Expressions::School(litesql::Eq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::School operator!=(const T& value) const {
-            return Expressions::School(litesql::Neq(*this, litesql::toString(value)));
+            return Expressions::School(litesql::NotEq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::School operator>(const T& value) const {
             return Expressions::School(litesql::Gt(*this, litesql::toString(value)));
@@ -962,7 +962,7 @@ public:
     School(const litesql::Database& db, const litesql::Record& rec);
     School(const School& obj);
     const School& operator=(const School& obj);
-    School::StudentsHandle students();
+    School::StudentsHandle students() const;
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
@@ -993,7 +993,7 @@ public:
             return Expressions::Office(litesql::Eq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::Office operator!=(const T& value) const {
-            return Expressions::Office(litesql::Neq(*this, litesql::toString(value)));
+            return Expressions::Office(litesql::NotEq(*this, litesql::toString(value)));
         }
         template <class T> Expressions::Office operator>(const T& value) const {
             return Expressions::Office(litesql::Gt(*this, litesql::toString(value)));
@@ -1042,7 +1042,7 @@ public:
     Office(const litesql::Database& db, const litesql::Record& rec);
     Office(const Office& obj);
     const Office& operator=(const Office& obj);
-    Office::EmployeesHandle employees();
+    Office::EmployeesHandle employees() const;
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
