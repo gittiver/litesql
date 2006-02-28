@@ -6,6 +6,7 @@
 #include "litesql/datetime.hpp"
 #include "litesql/split.hpp"
 #include <time.h>
+#include "compatibility.hpp"
 using namespace std;
 namespace litesql {
 
