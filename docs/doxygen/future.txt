@@ -8,12 +8,20 @@
 
 /** \page future The Future
 
-The library is now in testing and no new features will be added until a stable
-version is reached. 
+The library is now in testing and no new radical features will 
+be added until a stable version is reached. 
 
 \section todolist Current "To Do"-List:
 - writing extensive unit testers 
 - ensuring that library compiles on different platforms and compilers
 - documenting
+- methods for accessing information of objects, fields and relations run-time (reflectivity support)
+- support for backend specific options/optimizations (for example triggers, stored procedures, different storage engines)
+- chained relation handles: jack.children().friends().mother().get().all() 
+- combined relation (objects): 
+- select upcasted - method: selects group of objects and automatically upcasts them to correct type effectively (using select distinct type_ from X)
+- update-, delete- and persistent related methods for relation row objects
+- user defined field types (such as date, datetime, time - classes)
+- reset - feature to sqlite3 - backend (optimization)
 */
 

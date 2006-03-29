@@ -672,14 +672,14 @@ std::auto_ptr<Person> Person::upcast() {
 }
 std::auto_ptr<Person> Person::upcastCopy() {
     Person* np = NULL;
+    if (!np)
+        np = new Person(*this);
     np->id = id;
     np->type = type;
     np->name = name;
     np->age = age;
     np->sex = sex;
     np->inDatabase = inDatabase;
-    if (!np)
-        np = new Person(*this);
     return auto_ptr<Person>(np);
 }
 std::ostream & operator<<(std::ostream& os, Person o) {
@@ -834,11 +834,11 @@ std::auto_ptr<Role> Role::upcastCopy() {
         np = new Student(*db);
     if (type == Employee::type__)
         np = new Employee(*db);
+    if (!np)
+        np = new Role(*this);
     np->id = id;
     np->type = type;
     np->inDatabase = inDatabase;
-    if (!np)
-        np = new Role(*this);
     return auto_ptr<Role>(np);
 }
 std::ostream & operator<<(std::ostream& os, Role o) {
@@ -958,9 +958,9 @@ std::auto_ptr<Student> Student::upcast() {
 }
 std::auto_ptr<Student> Student::upcastCopy() {
     Student* np = NULL;
-    np->inDatabase = inDatabase;
     if (!np)
         np = new Student(*this);
+    np->inDatabase = inDatabase;
     return auto_ptr<Student>(np);
 }
 std::ostream & operator<<(std::ostream& os, Student o) {
@@ -1080,9 +1080,9 @@ std::auto_ptr<Employee> Employee::upcast() {
 }
 std::auto_ptr<Employee> Employee::upcastCopy() {
     Employee* np = NULL;
-    np->inDatabase = inDatabase;
     if (!np)
         np = new Employee(*this);
+    np->inDatabase = inDatabase;
     return auto_ptr<Employee>(np);
 }
 std::ostream & operator<<(std::ostream& os, Employee o) {
@@ -1235,12 +1235,12 @@ std::auto_ptr<School> School::upcast() {
 }
 std::auto_ptr<School> School::upcastCopy() {
     School* np = NULL;
+    if (!np)
+        np = new School(*this);
     np->id = id;
     np->type = type;
     np->name = name;
     np->inDatabase = inDatabase;
-    if (!np)
-        np = new School(*this);
     return auto_ptr<School>(np);
 }
 std::ostream & operator<<(std::ostream& os, School o) {
@@ -1385,11 +1385,11 @@ std::auto_ptr<Office> Office::upcast() {
 }
 std::auto_ptr<Office> Office::upcastCopy() {
     Office* np = NULL;
+    if (!np)
+        np = new Office(*this);
     np->id = id;
     np->type = type;
     np->inDatabase = inDatabase;
-    if (!np)
-        np = new Office(*this);
     return auto_ptr<Office>(np);
 }
 std::ostream & operator<<(std::ostream& os, Office o) {
