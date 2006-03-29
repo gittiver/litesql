@@ -1,4 +1,4 @@
-/* LiteSQL - Documentation - Changes
+/* lITEsqL - Documentation - Changes
  * 
  * By Tero Laitinen 
  * 
@@ -10,10 +10,13 @@
 
 \section vercvs CVS Version
 
+2006 March 29
+- bug fix: litesql-gen wrote broken CREATE INDEX-statement, bug 1456468. (by Anonymous)
+
 2006 March 5:
 - ToDo-list updated.
 
-2006 February 28
+2006 February 28:
 - bug fix: litesql-gen wrote unknown Neq - Expr in stead of NotEq.
 - bug fix: localtime_r replacement provided (by Axel Schmidt)
 

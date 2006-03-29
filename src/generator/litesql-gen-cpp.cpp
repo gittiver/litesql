@@ -608,14 +608,16 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
         upcastCopy.body("if (type == " + names[i] + "::type__)")
             .body("    np = new " + names[i] + "(*db);");
     }
+    upcastCopy
+        .body("if (!np)")
+        .body("    np = new " + o.name + "(*this);");
+
     for (size_t i = 0; i < o.fields.size(); i++) {
         upcastCopy.body("np->" + o.fields[i]->name + " = " 
                         + o.fields[i]->name + ";");
     }
     upcastCopy
         .body("np->inDatabase = inDatabase;")
-        .body("if (!np)")
-        .body("    np = new " + o.name + "(*this);")
         .body("return auto_ptr<" + o.name + ">(np);");
     upcast.body("return auto_ptr<" + o.name 
                 + ">(new " + o.name + "(*this));");

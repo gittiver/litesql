@@ -187,6 +187,7 @@ static void initSchema(Database& db,
             }
 
             index->name = makeDBName(tbl->name + "_" + fldNames.join("_") + "_idx");
+            index->table = tbl->name;
             string unique = "";
             if (idx.isUnique())
                 index->unique = true;
