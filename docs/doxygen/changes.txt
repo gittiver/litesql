@@ -9,6 +9,9 @@
 /** \page changes Changes
 
 \section vercvs CVS Version
+2006 April 11:
+- bug fix: It is it possible to build .deb-packages without need of root-privileges. (fixed by Paul Tötterman)
+
 2006 March 30:
 - compatibility fix: litesql-gen wrote loosely template specializations for methods, "template <> Result<T> methodName(...);" in stead of "template <> Result<T> methodName<T>(...);"
 - bug fix: convert<int, float> was missing

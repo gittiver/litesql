@@ -14,14 +14,14 @@ dummy0: doxygen.conf
 	$(DOXYGEN) doxygen.conf && touch dummy0
 
 install-data-local: dummy0
-	mkdir -p $(datadir)/doc/$(LITESQL_SHORTNAME) && \
+	mkdir -p $(DESTDIR)$(datadir)/doc/$(LITESQL_SHORTNAME) && \
 	for d in $(DOXYGEN_OUTPUT_SUBDIRS) ;\
 	do \
-	    cp -pr $$d $(datadir)/doc/$(LITESQL_SHORTNAME) ;\
+	    cp -pr $$d $(DESTDIR)$(datadir)/doc/$(LITESQL_SHORTNAME) ;\
 	done
 
 uninstall-local:
-	-rm -rf $(datadir)/doc/$(LITESQL_SHORTNAME)
+	-rm -rf $(DESTDIR)$(datadir)/doc/$(LITESQL_SHORTNAME)
 
 clean-local:
 	-for d in $(DOXYGEN_OUTPUT_SUBDIRS) ;\
