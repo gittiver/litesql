@@ -21,6 +21,10 @@ string convert<int, string>(int value) {
     return toString(value);
 }
 template <>
+float convert<int, float>(int value) {
+    return value;
+}
+template <>
 string convert<float, string>(float value) {
     return toString(value);
 }

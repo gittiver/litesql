@@ -9,6 +9,7 @@
 /** \file datetime.hpp
     constains Date, Time and DateTime - classes */
 #include "field.hpp"
+#include <time.h>
 namespace litesql {
 using namespace std;
 /* holds struct tm */

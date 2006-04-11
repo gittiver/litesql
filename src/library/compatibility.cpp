@@ -1,4 +1,5 @@
 #include "compatibility.hpp"
+#include <stdlib.h>
 #include <time.h>
 #ifndef HAVE_STRTOLL
 long long int strtoll(const char *nptr, char **endptr, int base) {

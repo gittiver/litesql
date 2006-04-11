@@ -1,4 +1,4 @@
-/* lITEsqL - Documentation - Changes
+/* LiteSQL - Documentation - Changes
  * 
  * By Tero Laitinen 
  * 
@@ -9,8 +9,11 @@
 /** \page changes Changes
 
 \section vercvs CVS Version
+2006 March 30:
+- compatibility fix: litesql-gen wrote loosely template specializations for methods, "template <> Result<T> methodName(...);" in stead of "template <> Result<T> methodName<T>(...);"
+- bug fix: convert<int, float> was missing
 
-2006 March 29
+2006 March 29:
 - bug fix: litesql-gen wrote broken CREATE INDEX-statement, bug 1456468. (by Anonymous)
 
 2006 March 5:

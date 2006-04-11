@@ -19,6 +19,9 @@ string quote(string s) {
 string brackets(string s) {
     return "(" + s + ")";
 }
+string brackets2(string s) {
+    return "<" + s + ">";
+}
 static bool validID(string s) {
     static char* words[] = 
         {"asm","break","case","catch",
@@ -407,7 +410,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
                 for (size_t i2 = 0; i2 < handle.destObjects.size(); i2++) {
                     xml::Object* dest = handle.destObjects[i2].first;
                     xml::Relate* relate = handle.destObjects[i2].second;
-                    Method get("get", 
+                    Method get("get" + brackets2(dest->name), 
                                "litesql::DataSource<" + dest->name + ">");
                     string exprType = "Expressions::" 
                         + dest->getBaseObject()->name;
@@ -907,7 +910,7 @@ void writeRelMethods(xml::Database& database,
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
             string num;
             xml::Relate& rel = *r.related[i2];
-            string ename = "Expressions::" + rel.objectName;
+            string ename = "Expressions::" + rel.object->getBaseObject()->name;
 
             Variable objExpr2("expr", "const " + ename + "&", ename + "()");
 

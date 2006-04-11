@@ -4,6 +4,7 @@
     <object name="Person">
         <field name="name" type="string"/>
         <field name="age" type="integer" default="15"/>
+        <field name="_pubdate" type="date"/>
         <field name="sex" type="integer">
             <value name="Male" value="0"/>
             <value name="Female" value="1"/>
