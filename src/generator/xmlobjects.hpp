@@ -17,6 +17,7 @@ string capitalize(const string& s);
 string decapitalize(const string& s);
 string safe(const char *s);
 string makeDBName(const string& s);
+string quote(const string& s);
 class Value {
 public:
     string name, value;

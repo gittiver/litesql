@@ -1,6 +1,7 @@
 #include <cstdio>
 #include "litesql.hpp"
 #include "litesql-gen-cpp.hpp"
+#include "litesql-gen-python.hpp"
 #include "litesql-gen-graphviz.hpp"
 using namespace std;
 
@@ -17,7 +18,7 @@ char* help =
 //"  'haskell'    Haskell target (.hs)\n"
 //"  'sql'        SQL schema of database (.sql)\n"
 //"  'php'        PHP target (.php)\n"
-//"  'python'     Python target (.py)\n"
+"  'python'     Python target (.py)\n"
 "  'graphviz'   Graphviz file (.dot)\n"
 "\n\n"
 ;
@@ -28,12 +29,29 @@ void report(const string& msg) {
     if (verbose)
         cout << msg;
 }
+string quote(const string& s) {
+    return "\"" + s + "\"";
+}
+string brackets(const std::string& s) {
+    return "(" + s + ")";
+}
+string sqbrackets(const std::string& s) {
+    return "[" + s + "]";
+}
+string braces(const std::string& s) {
+    return "{" + s + "}";
+}
+
+
+
 void generateCode(xml::Database& db,
                   vector<xml::Object*>& objects,
                   vector<xml::Relation*>& relations) {
     xml::init(db, objects, relations);
     if (target == "c++") 
         writeCPPClasses(db, objects, relations);
+    else if (target == "python")
+        writePython(db, objects, relations);
     else if (target == "graphviz") 
         writeGraphviz(db, objects, relations);
     else

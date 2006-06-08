@@ -10,4 +10,9 @@ void generateCode(xml::Database& db,
 int litesql_gen_main(int argc, char **argv, std::FILE ** yyin);
 
 void report(const std::string& msg);
+
+std::string quote(const std::string& s);
+std::string brackets(const std::string& s);
+std::string sqbrackets(const std::string& s);
+std::string braces(const std::string& s);
 #endif

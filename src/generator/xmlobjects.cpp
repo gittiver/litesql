@@ -30,6 +30,26 @@ string validID(string s, string type="field") {
             return "illegal character : " + s[i];
     if (s[s.size()-1] == '_')
         return "ends with an underscore";
+    static char* cppwords[] = 
+        {"asm","break","case","catch",
+         "char","class","const","continue","default",
+         "delete","do","double","else","enum","extern",
+         "float","for","friend","goto","if","inline","int",
+         "long","new","operator","private","protected",
+         "public","register","return","short","signed",
+         "sizeof","static","struct","switch","template",
+         "this","throw","try","typedef","union","unsigned",
+         "virtual","void","volatile","while",   
+         // LiteSQL specific
+         "initValues", "insert", "addUpdates", "addIDUpdates",
+         "getFieldTypes", "delRecord", "delRelations",
+         "update", "del", "typeIsCorrect", "upcast", "upcastCopy"
+        };
+
+    for (size_t i = 0; i < sizeof(cppwords) / sizeof(cppwords[0]); i++)
+        if (s == cppwords[i])
+            return "is a reserved word of C++";
+
     return "";
 }
 string capitalize(const string& s) {
@@ -49,6 +69,7 @@ string makeDBName(const string& s) {
         return "_" + md5HexDigest(s);
     return s;
 }
+
 static void sanityCheck(Database& db,
                         vector<Object*>& objects,
                         vector<Relation*>& relations) {
