@@ -317,9 +317,15 @@ void init(Database& db,
     for (size_t i = 0; i < objects.size(); i++) 
         if (objMap.find(objects[i]->inherits) != objMap.end())
             objects[i]->parentObject = objMap[objects[i]->inherits];
-    for (size_t i = 0; i < objects.size(); i++) 
+    for (size_t i = 0; i < objects.size(); i++) {
         if (objects[i]->parentObject)
             objects[i]->parentObject->children.push_back(objects[i]);
+        int objOffset = objects[i]->getLastFieldOffset();
+        for (size_t i2 = 0; i2 < objects[i]->fields.size(); i2++) {
+            xml::Field* fld = objects[i]->fields[i2];
+            fld->offset = objOffset - objects[i]->fields.size() + i2;
+        }
+    }
 
     // sort objects of relations alphabetically (ascii)
 

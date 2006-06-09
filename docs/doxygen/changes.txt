@@ -9,6 +9,12 @@
 /** \page changes Changes
 
 \section vercvs CVS Version
+2006 June 9
+- prototype of Python-target 
+
+2006 June 8:
+- started writing Python-target for litesql-gen 
+
 2006 April 11:
 - bug fix: It is it possible to build .deb-packages without need of root-privileges. (fixed by Paul Tötterman)
 

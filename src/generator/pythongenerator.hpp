@@ -21,11 +21,16 @@ public:
         return *this;
     }
     Block& operator++(int) {
+        (*this)("");
         indent += 2;
         return *this;
     }
     Block& operator--(int) {
         indent -= 2;
+        (*this)("");
+        (*this)("");
+
+
         return *this;
     }
     void write(FILE* f) {

@@ -13,68 +13,12 @@ using namespace litesql;
 
 
 
-string quote(string s) {
-    return "\"" + s + "\"";
-}
-string brackets(string s) {
-    return "(" + s + ")";
-}
 string brackets2(string s) {
     return "<" + s + ">";
 }
-static bool validID(string s) {
-    static char* words[] = 
-        {"asm","break","case","catch",
-         "char","class","const","continue","default",
-         "delete","do","double","else","enum","extern",
-         "float","for","friend","goto","if","inline","int",
-         "long","new","operator","private","protected",
-         "public","register","return","short","signed",
-         "sizeof","static","struct","switch","template",
-         "this","throw","try","typedef","union","unsigned",
-         "virtual","void","volatile","while",   
-         // LiteSQL specific
-         "initValues", "insert", "addUpdates", "addIDUpdates",
-         "getFieldTypes", "delRecord", "delRelations",
-         "update", "del", "typeIsCorrect", "upcast", "upcastCopy"
-        };
-
-    for (size_t i = 0; i < sizeof(words) / sizeof(words[0]); i++)
-        if (s == words[i])
-            return false;
-    return true; 
-}
-static void sanityCheck(xml::Database& db,
-                        vector<xml::Object*>& objects,
-                        vector<xml::Relation*>& relations) {
-    using namespace litesql;
-    if (!validID(db.name)) 
-        throw Except("invalid id: database.name : " + db.name);
-    for (size_t i = 0; i < objects.size(); i++) {
-        xml::Object& o = *objects[i];
-        if (!validID(o.name))
-            throw Except("invalid id: object.name : " + o.name);
-        for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
-            xml::Field& f = *o.fields[i2];
-            if (!validID(f.name))
-                throw Except("invalid id: object.field.name : " + f.name);
-        }
-    }
-    for (size_t i = 0; i < relations.size(); i++) {
-        xml::Relation& r = *relations[i];
-        if (!validID(r.getName()))
-            throw Except("invalid id: relation.name : " + r.getName());
-        for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
-            xml::Field& f = *r.fields[i2];
-            if (!validID(f.name))
-                throw Except("invalid id: relation.field.name : " + f.name);
-        }
-        for (size_t i2 = 0; i2 < r.related.size(); i2++) {
-            xml::Relate& rel = *r.related[i2];
-            if (!validID(rel.handle) && !rel.handle.empty())
-                throw Except("invalid id: relation.relate.handle : " + rel.handle);
-        }
-    }   
+static string mapInherits(string s) {
+    if (s == "")
+        return "litesql::Persistent";
 }
 
 
@@ -218,8 +162,8 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
 
     
     Method cons1(o.name); // Object(const Database &)
-    string consParams = o.inherits + "(db)";
-    string cons2Params = o.inherits + "(db, rec)";
+    string consParams = o.getInherits("c++") + "(db)";
+    string cons2Params = o.getInherits("c++") + "(db, rec)";
     if (o.fields.size() > 0) {
         Split fieldInst;
         for (size_t i = 0; i < o.fields.size(); i++) {
@@ -263,7 +207,7 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
     }
     
     Method cons3(o.name); // Object(const Object& obj);
-    string consParams3 = o.inherits + "(obj)";    
+    string consParams3 = o.getInherits("c++") + "(obj)";    
     if (o.fields.size() > 0) {
         Split fieldCopy;
         for (size_t i = 0; i < o.fields.size(); i++) {
@@ -287,7 +231,7 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
         }
         assign.body("}");
     }
-    assign.body(o.inherits + "::operator=(obj);");
+    assign.body(o.getInherits("c++") + "::operator=(obj);");
     assign.body("return *this;");
     
     cl.method(cons1).method(cons2).method(cons3).method(assign);
@@ -492,10 +436,10 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
     insert.body("fieldRecs.push_back(fields);")
         .body("valueRecs.push_back(values);");
     if (o.parentObject) {
-        insert.body("return " + o.inherits 
+        insert.body("return " + o.getInherits("c++") 
                     + "::insert(tables, fieldRecs, valueRecs);");
     } else
-        insert.body("return " + o.inherits
+        insert.body("return " + o.getInherits("c++")
                     + "::insert(tables, fieldRecs, valueRecs, " 
                     + "sequence__);");
 
@@ -520,7 +464,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
         addUpdates.body("updateField(updates, table__, " + f.name + ");");
     }
     if (o.parentObject) 
-        addUpdates.body(o.inherits + "::addUpdates(updates);");
+        addUpdates.body(o.getInherits("c++") + "::addUpdates(updates);");
     Method addIDUpdates("addIDUpdates", "void");    
     addIDUpdates.protected_().virtual_()
         .param(Variable("updates", "Updates&"));
@@ -529,7 +473,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
             .body("prepareUpdate(updates, table__);")
             .body("updateField(updates, table__, id);");
         if (o.parentObject->parentObject)
-            addIDUpdates.body(o.inherits + "::addIDUpdates(updates);");
+            addIDUpdates.body(o.getInherits("c++") + "::addIDUpdates(updates);");
     }
     
     Method getFieldTypes("getFieldTypes", "void");
@@ -565,7 +509,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
     delRecord.protected_().virtual_()
         .body("deleteFromTable(table__, id);");
     if (o.parentObject)
-        delRecord.body(o.inherits + "::delRecord();");
+        delRecord.body(o.getInherits("c++") + "::delRecord();");
     Method delRelations("delRelations", "void");
     delRelations.protected_().virtual_();
     for (map<xml::Relation*, vector<xml::Relate*> >::const_iterator i = 
@@ -1035,7 +979,6 @@ void writeDatabaseClass(FILE* hpp, FILE* cpp,
 void writeCPPClasses(xml::Database& db,
                      vector<xml::Object*>& objects,
                      vector<xml::Relation*>& relations) {
-    sanityCheck(db, objects, relations);
     bool hasNamespace = false;
     
     FILE *hpp, *cpp;
@@ -1118,7 +1061,7 @@ void writeCPPClasses(xml::Database& db,
 
     for (size_t i = 0; i < objects.size(); i++) {
         xml::Object & o = *objects[i];
-        Class cl(o.name, o.inherits);
+        Class cl(o.name, o.getInherits("c++"));
         if (!o.parentObject)
             cl.typedef_("Expr", "Expressions::" + o.name);
         writeStaticObjData(cl, o);

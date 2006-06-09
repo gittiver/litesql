@@ -8,6 +8,7 @@
 #include "litesql-gen.hpp"
 #include "litesql/split.hpp"
 #include "litesql/string.hpp"
+#include "litesql/except.hpp"
 
 extern int yylineno;
 namespace xml {
@@ -47,8 +48,9 @@ public:
     AT_field_indexed indexed;
     AT_field_unique unique;
     vector<Value> values;
+    int offset;
     Field(string n, AT_field_type t, string d, AT_field_indexed i, AT_field_unique u) 
-        : name(n), fieldTypeName(capitalize(n)), type(t), default_(d), indexed(i), unique(u) {
+        : name(n), fieldTypeName(capitalize(n)), type(t), default_(d), indexed(i), unique(u), offset(-1) {
     }
     void value(const Value& v) {
         values.push_back(v);
@@ -64,20 +66,32 @@ public:
        case A_field_type_integer:
        case A_field_type_float: 
        case A_field_type_boolean: 
+           return false;
+       case A_field_type_string:
        case A_field_type_date:
        case A_field_type_time:
        case A_field_type_datetime:
-           return false;
-       case A_field_type_string:
            return true;
        }
     }
     string getQuotedDefaultValue() const {
         if (hasQuotedValues())
             return "\"" + default_ + "\"";
+
         if (default_.size() == 0)
             return "0";
-        return default_;
+        switch(type) {
+            case A_field_type_boolean:
+                
+                if (toLower(default_) == "false")
+                    return "0";
+                if (toLower(default_) == "true")
+                    return "1";
+                
+
+            default:
+                return default_;
+        }
     }
     string getSQLType() const {
        switch(type) {
@@ -230,12 +244,19 @@ public:
     Object(string n, string i) : name(n), inherits(i),
         parentObject(NULL) {
         if (i.size() == 0) {
-            inherits = "litesql::Persistent";
+            inherits = "";
             fields.push_back(new Field("id", A_field_type_integer, "", 
                          A_field_indexed_false, A_field_unique_false));
             fields.push_back(new Field("type", A_field_type_string, "", 
                         A_field_indexed_false, A_field_unique_false));
         }
+    }
+    string getInherits(const string& style) const {
+        if (style == "c++")
+            return "litesql::Persistent";
+        else if (style == "python")
+            return "litesql.Persistent";
+        throw litesql::Except("Unknown style: " + style);
     }
     int getLastFieldOffset() const {
         if (!parentObject)
