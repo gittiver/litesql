@@ -252,10 +252,13 @@ public:
         }
     }
     string getInherits(const string& style) const {
+        if (!inherits.empty())
+            return inherits;
         if (style == "c++")
             return "litesql::Persistent";
         else if (style == "python")
             return "litesql.Persistent";
+        
         throw litesql::Except("Unknown style: " + style);
     }
     int getLastFieldOffset() const {

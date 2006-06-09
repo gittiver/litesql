@@ -18,7 +18,7 @@ static std::string pyBool(bool b) {
 void writeObject(Block& pre, Block& post, 
                  const xml::Database& db, 
                  const xml::Object& o) {
-    Split fieldTypes, fields;
+    Split fieldTypes, fields, sepFieldTypes;
     for (size_t i = 0; i < o.fields.size(); i++) {
         xml::Field* fld = o.fields[i];
         Split values;
@@ -38,6 +38,8 @@ void writeObject(Block& pre, Block& post,
             ftype.push_back(brackets(values.join(", ")));
             
         fieldTypes.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
+        sepFieldTypes.push_back(xml::capitalize(fld->name) + " = litesql.FieldType" 
+                + brackets(ftype.join(", ")));
         fields.push_back(quote(fld->name) + " : litesql.Field" + brackets(
                     "fieldTypes" + sqbrackets(toString(i)))); 
                     
@@ -48,15 +50,16 @@ void writeObject(Block& pre, Block& post,
         xml::Relate* relate = handle->relate;
         Split data;
         Split ftype;
+
+        ftype.push_back(quote(relate->fieldTypeName));
         ftype.push_back(quote(relate->fieldName));
-        ftype.push_back(quote(relate->fieldName + "_"));
         ftype.push_back(quote("INTEGER"));
         ftype.push_back(quote(handle->relation->getTable()));
+        ftype.push_back(toString(relate->paramPos));
         data.push_back(handle->relation->getName());
         data.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
-        data.push_back(o.name);
         handles.push_back(quote(handle->name) 
-                + " : litesql.RelationHandle" + brackets(data.join(", ")));
+                + " : litesql.RelationHandleType" + brackets(data.join(", ")));
     }
     Split methods;
     for (size_t i = 0; i < o.methods.size(); i++) {
@@ -72,46 +75,70 @@ void writeObject(Block& pre, Block& post,
         params.push_back(rel->getName());
         
         for (size_t i2 = 0; i2 < relates.size(); i2++)
-            params.push_back(quote(relates[i2]->fieldTypeName));
+            params.push_back(quote(relates[i2]->fieldName));
         relations.push_back(brackets(params.join(", ")));
     }
-
+    Split children;
+    Split childrenMap;
+    o.getChildrenNames(children);
+    for (size_t i = 0; i < children.size(); i++)
+        childrenMap.push_back(quote(children[i]) + " : " + children[i]);
+    post(o.name + ".subClasses = " + braces(childrenMap.join(", ")));
     pre("class " + o.name + brackets(o.getInherits("python")) + ":");
     pre++;
-    pre("className = " + quote(o.name))
+//    pre("className = " + quote(o.name))
+    pre
+    
        ("table = " + quote(o.getTable()))
        ("fieldTypes = " + sqbrackets(fieldTypes.join(",\n" + string(" ") * 14)))
-       ("fields = " + braces(fields.join(",\n" + string(" ") * 10)))
-       ("def getHandles(cls):")
-       ++
-       ("return " + braces(handles.join(",\n" + string(" ") * 11)))
-       --
-       ("getHandles = classmethod(getHandles)")
-       ("relations = " + sqbrackets(relations.join(", ")));
+       ("handles = " 
+            + braces(handles.join(",\n" + string(" ") * 11)))
+
+//       ("fields = " + braces(fields.join(",\n" + string(" ") * 10)))
+       ("relations = " + sqbrackets(relations.join(", ")))
        ("methods = " + braces(methods.join(",\n" + string(" ") * 11)));
+        
+    for (size_t i = 0; i < sepFieldTypes.size(); i++)
+        pre(sepFieldTypes[i]);
     pre--;
+
 }
 void writeRelation(Block& pre, Block& post,
                    xml::Database& database,
 		           xml::Relation& r) {
 
-    Split objects, attrs, objectFields;
+    Split objects, attrs, objectFields, fields;
     set<string> objSet;
+    
     for (size_t i = 0; i < r.related.size(); i++) {
         xml::Relate* relate = r.related[i];
         objects.push_back(relate->objectName);
-        Split ftypeParams;
         if (objSet.find(relate->objectName) != objSet.end()) 
             continue;
         objSet.insert(relate->objectName);
-        ftypeParams.push_back(quote(relate->fieldTypeName));
-        ftypeParams.push_back(quote(relate->fieldName));
-        ftypeParams.push_back(quote("INTEGER"));
-        ftypeParams.push_back(quote(r.getTable()));
+
+        Split ftype;
+
+        ftype.push_back(quote(relate->fieldTypeName));
+        ftype.push_back(quote(relate->fieldName));
+        ftype.push_back(quote("INTEGER"));
+        ftype.push_back(quote(r.getTable()));
+        ftype.push_back(toString(relate->paramPos));
         objectFields.push_back(quote(relate->objectName) 
                 + " : litesql.FieldType" 
-                               + brackets(ftypeParams.join(", ")));
-        
+                               + brackets(ftype.join(", ")));
+        fields.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
+    }
+    for (size_t i = 0; i < r.fields.size(); i++) {
+        xml::Field* fld = r.fields[i];
+        Split ftype;
+        ftype.push_back(quote(fld->name));
+        ftype.push_back(quote(fld->name + "_"));
+        ftype.push_back(quote(fld->getSQLType()));
+        ftype.push_back(quote(r.getTable()));
+        ftype.push_back(toString(r.related.size() + i));
+        fields.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
+        attrs.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
                                 
     }
     
@@ -119,7 +146,8 @@ void writeRelation(Block& pre, Block& post,
       ++
       ("table = " + quote(r.getTable()))
       ("# objects = " + sqbrackets(objects.join(", ")))
-      ("attrs = " + sqbrackets(attrs.join(", ")))
+      ("attrs = " + sqbrackets(attrs.join(",\n" + string(" ") * 9)))
+      ("fields = " + sqbrackets(fields.join(", " + string(" ") * 10)))
       ("objectFields = " + braces(objectFields.join(",\n" + string(" ")* 16)))
       ("unidir = " + pyBool(r.isUnidir()))
       --;
@@ -136,7 +164,7 @@ void writeDatabase(Block& pre, Block& post,
     Split rec;
     rec.push_back(quote("schema_"));
     rec.push_back(quote("table"));
-    rec.push_back(quote("CREATE TABLE schema_ (name_ TEXT, type_ TEXT, sql_ TEXT);"));
+    rec.push_back(quote("CREATE TABLE schema_ (name_ TEXT, type_ TEXT, sql_ TEXT)"));
     basicSchema.push_back(brackets(rec.join(", ")));
     
     for (size_t i = 0; i < db.sequences.size(); i++) {
@@ -150,7 +178,7 @@ void writeDatabase(Block& pre, Block& post,
         Split rec;
         rec.push_back(quote(db.tables[i]->name));
         rec.push_back(quote("table"));
-        rec.push_back(quote(db.tables[i]->getSQL("\" + self.getRowIDType() + \"")));
+        rec.push_back(quote(db.tables[i]->getSQL("\" + self.backend.getRowIDType() + \"")));
         basicSchema.push_back(brackets(rec.join(", ")));
 
     }
