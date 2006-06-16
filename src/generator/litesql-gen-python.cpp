@@ -53,7 +53,7 @@ void writeObject(Block& pre, Block& post,
 
         ftype.push_back(quote(relate->fieldTypeName));
         ftype.push_back(quote(relate->fieldName));
-        ftype.push_back(quote("int"));
+        ftype.push_back("int");
         ftype.push_back(quote(handle->relation->getTable()));
         ftype.push_back(toString(relate->paramPos));
         data.push_back(handle->relation->getName());
@@ -121,7 +121,7 @@ void writeRelation(Block& pre, Block& post,
 
         ftype.push_back(quote(relate->fieldTypeName));
         ftype.push_back(quote(relate->fieldName));
-        ftype.push_back(quote("int"));
+        ftype.push_back("int");
         ftype.push_back(quote(r.getTable()));
         ftype.push_back(toString(relate->paramPos));
         objectFields.push_back(quote(relate->objectName) 
