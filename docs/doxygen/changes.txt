@@ -9,6 +9,9 @@
 /** \page changes Changes
 
 \section vercvs CVS Version
+2006 June 16
+- litesql-gen: some modifications to Python-target
+
 2006 June 9
 - prototype of Python-target 
 

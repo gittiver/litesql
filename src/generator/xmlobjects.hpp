@@ -117,6 +117,19 @@ public:
            default: return "";
        }
     }
+    string getPythonType() const {
+       switch(type) {
+           case A_field_type_integer: return "int";
+           case A_field_type_string: return "str";
+           case A_field_type_float: return "float";
+           case A_field_type_boolean: return "bool";
+           case A_field_type_date: return "litesql.Date";
+           case A_field_type_time: return "litesql.Time";
+           case A_field_type_datetime: return "litesql.DateTime";
+           default: return "";
+       }
+    }
+
 };
 class Param {
 public:
