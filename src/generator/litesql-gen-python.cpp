@@ -225,17 +225,23 @@ void writePython(xml::Database& db,
         fprintf(file, "import %s\n", db.include.c_str());
     
     report("writing relations\n");
+    Split relationNames;
     for (size_t i = 0; i < relations.size(); i++) {
         xml::Relation & o = *relations[i];
+        relationNames.push_back(o.getName());
         writeRelation(pre, post, db, o);
     }
 
     report("writing persistent objects\n");
 
+    Split objectNames;
     for (size_t i = 0; i < objects.size(); i++) {
         xml::Object & o = *objects[i];
+        objectNames.push_back(o.name);
         writeObject(pre, post, db, o);
     }
+    post("objects = " + sqbrackets(objectNames.join(", ")))
+        ("relations = " + sqbrackets(relationNames.join(", ")));
 
     report("writing database class\n");
     writeDatabase(pre, post, db, objects, relations);
