@@ -18,7 +18,7 @@ static std::string pyBool(bool b) {
 void writeObject(Block& pre, Block& post, 
                  const xml::Database& db, 
                  const xml::Object& o) {
-    Split fieldTypes, fields, sepFieldTypes;
+    Split fieldTypes, fields;
     for (size_t i = 0; i < o.fields.size(); i++) {
         xml::Field* fld = o.fields[i];
         Split values;
@@ -38,8 +38,8 @@ void writeObject(Block& pre, Block& post,
             ftype.push_back(brackets(values.join(", ")));
             
         fieldTypes.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
-        sepFieldTypes.push_back(xml::capitalize(fld->name) + " = litesql.FieldType" 
-                + brackets(ftype.join(", ")));
+        post(o.name + "." + xml::capitalize(fld->name) + " = " 
+                + o.name + ".fieldTypes" + sqbrackets(toString(i)));
         fields.push_back(quote(fld->name) + " : litesql.Field" + brackets(
                     "fieldTypes" + sqbrackets(toString(i)))); 
                     
@@ -96,11 +96,9 @@ void writeObject(Block& pre, Block& post,
 
 //       ("fields = " + braces(fields.join(",\n" + string(" ") * 10)))
        ("relations = " + sqbrackets(relations.join(", ")))
-       ("methods = " + braces(methods.join(",\n" + string(" ") * 11)));
-        
-    for (size_t i = 0; i < sepFieldTypes.size(); i++)
-        pre(sepFieldTypes[i]);
-    pre--;
+       ("methods = " + braces(methods.join(",\n" + string(" ") * 11)))
+       --;
+
 
 }
 void writeRelation(Block& pre, Block& post,
@@ -128,6 +126,10 @@ void writeRelation(Block& pre, Block& post,
                 + " : litesql.FieldType" 
                                + brackets(ftype.join(", ")));
         fields.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
+        post(r.getName() + "." + 
+                xml::capitalize(relate->fieldTypeName) 
+                + " = " + r.getName() + ".fields" + sqbrackets(toString(i)));
+
     }
     for (size_t i = 0; i < r.fields.size(); i++) {
         xml::Field* fld = r.fields[i];
@@ -139,6 +141,10 @@ void writeRelation(Block& pre, Block& post,
         ftype.push_back(toString(r.related.size() + i));
         fields.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
         attrs.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
+        post(r.getName() + "." + xml::capitalize(fld->name) + " = "
+                + r.getName() + ".attrs" 
+                                + sqbrackets(toString(i)));
+
                                 
     }
     
@@ -150,7 +156,7 @@ void writeRelation(Block& pre, Block& post,
       ("fields = " + sqbrackets(fields.join(", " + string(" ") * 10)))
       ("objectFields = " + braces(objectFields.join(",\n" + string(" ")* 16)))
       ("unidir = " + pyBool(r.isUnidir()))
-      --;
+     --;
     post(r.getName() + ".objects = " + sqbrackets(objects.join(", ")));
 }
 
