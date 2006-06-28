@@ -65,6 +65,8 @@ void writeObject(Block& pre, Block& post,
     for (size_t i = 0; i < o.methods.size(); i++) {
         xml::Method* mtd = o.methods[i];
         methods.push_back(quote(mtd->name) + " : litesql.Method()");
+        post(o.name + "." + xml::capitalize(mtd->name) + " = " + o.name 
+                + ".methods" + sqbrackets(quote(mtd->name)));
     }
     Split relations;
     for (map<xml::Relation*, vector<xml::Relate*> >::const_iterator i = 
