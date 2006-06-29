@@ -290,7 +290,7 @@ static void initSchema(Database& db,
                 index->fields.push_back(fldMap[idx.fields[i3].name]);
                 fldNames.push_back(idx.fields[i3].name);
             }
-
+            index->table = tbl->name;
             index->name = makeDBName(tbl->name + "_" + fldNames.join("_") + "_idx");
             string unique = "";
             if (idx.isUnique())
