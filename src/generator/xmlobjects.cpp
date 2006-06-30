@@ -238,6 +238,9 @@ static void initSchema(Database& db,
             fld->type = "INTEGER";
             fld->extra = extra;
             tbl->fields.push_back(fld);
+
+            fldMap[relate.fieldTypeName] = fld;
+            
             objFields.push_back(fld);
             
             Database::DBIndex* idx = new Database::DBIndex;
