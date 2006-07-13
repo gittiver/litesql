@@ -9,6 +9,9 @@
 /** \page changes Changes
 
 \section vercvs CVS Version
+2006 July 13
+- litesql-gen -t python: schema_ table is now the first schema item 
+  
 2006 June 29
 - litesql-gen: index-tag inside relation-tag did not generate proper SQL
 
