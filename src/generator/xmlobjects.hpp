@@ -99,9 +99,9 @@ public:
            case A_field_type_string: return "TEXT";
            case A_field_type_float: return "FLOAT";
            case A_field_type_boolean: return "INTEGER";
-           case A_field_type_date: return "TEXT";
-           case A_field_type_time: return "TEXT";
-           case A_field_type_datetime: return "TEXT";
+           case A_field_type_date: return "DATE";
+           case A_field_type_time: return "VARCHAR(10)";
+           case A_field_type_datetime: return "TIMESTAMP";
            default: return "";
        }
     }
@@ -122,7 +122,7 @@ public:
            case A_field_type_integer: return "int";
            case A_field_type_string: return "str";
            case A_field_type_float: return "float";
-           case A_field_type_boolean: return "bool";
+           case A_field_type_boolean: return "int";
            case A_field_type_date: return "litesql.Date";
            case A_field_type_time: return "litesql.Time";
            case A_field_type_datetime: return "litesql.DateTime";

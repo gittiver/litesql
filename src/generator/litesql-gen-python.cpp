@@ -116,9 +116,6 @@ void writeRelation(Block& pre, Block& post,
     for (size_t i = 0; i < r.related.size(); i++) {
         xml::Relate* relate = r.related[i];
         objects.push_back(relate->objectName);
-        if (objSet.find(relate->objectName) != objSet.end())
-            continue;
-        objSet.insert(relate->objectName);
 
         Split ftype;
 
@@ -127,13 +124,17 @@ void writeRelation(Block& pre, Block& post,
         ftype.push_back("int");
         ftype.push_back(quote(r.getTable()));
         ftype.push_back(toString(relate->paramPos));
-        objectFields.push_back(quote(relate->objectName)
-                + " : litesql.FieldType"
-                               + brackets(ftype.join(", ")));
+
+        if (objSet.find(relate->objectName) == objSet.end())
+            objectFields.push_back(quote(relate->objectName)
+                    + " : litesql.FieldType"
+                                   + brackets(ftype.join(", ")));
         fields.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
         post(r.getName() + "." +
                 xml::capitalize(relate->fieldTypeName)
                 + " = " + r.getName() + ".fields" + sqbrackets(toString(i)));
+
+        objSet.insert(relate->objectName);
 
     }
     for (size_t i = 0; i < r.fields.size(); i++) {
