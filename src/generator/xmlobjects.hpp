@@ -99,9 +99,9 @@ public:
            case A_field_type_string: return "TEXT";
            case A_field_type_float: return "FLOAT";
            case A_field_type_boolean: return "INTEGER";
-           case A_field_type_date: return "INTEGER";
-           case A_field_type_time: return "INTEGER";
-           case A_field_type_datetime: return "INTEGER";
+           case A_field_type_date: return "TEXT";
+           case A_field_type_time: return "TEXT";
+           case A_field_type_datetime: return "TEXT";
            default: return "";
        }
     }

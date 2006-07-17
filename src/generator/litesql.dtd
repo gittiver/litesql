@@ -4,6 +4,15 @@
           namespace NMTOKEN #REQUIRED
 	  include CDATA #IMPLIED>
 
+<!ELEMENT type EMPTY>
+<!ATTLIST type
+          name NMTOKEN
+          class NMTOKEN
+          sql-type CDATA>
+
+<!ELEMENT include EMPTY>
+<!ATTLIST file CDATA>
+
 <!ELEMENT object ((field)*,(method)*,(index)*)>
 <!ATTLIST object
           name ID #REQUIRED
