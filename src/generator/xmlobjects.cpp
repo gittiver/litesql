@@ -4,7 +4,6 @@
 #include "md5.hpp"
 #include "litesql.hpp"
 #include <algorithm>
-
 namespace std {
     template <>
     struct less<xml::Relate*> {
@@ -18,19 +17,8 @@ namespace std {
     };
 }
 namespace xml {
-string validID(string s, string type="field") {
-    if (s.size() == 0) 
-        return "empty identifier";
-    if (toupper(s[0]) == s[0] && type == "field")
-        return "does not begin with lower case letter";
-    if (!isalpha(s[0])) 
-        return "first character is not alphabet";
-    for (size_t i = 1; i < s.size(); i++)
-        if (!isalnum(s[i]) && !s[i] != '_')
-            return "illegal character : " + s[i];
-    if (s[s.size()-1] == '_')
-        return "ends with an underscore";
-    static char* cppwords[] = 
+static bool isCPPReservedWord(const string& s) {
+    static char* words[] = 
         {"asm","break","case","catch",
          "char","class","const","continue","default",
          "delete","do","double","else","enum","extern",
@@ -46,10 +34,26 @@ string validID(string s, string type="field") {
          "update", "del", "typeIsCorrect", "upcast", "upcastCopy"
         };
 
-    for (size_t i = 0; i < sizeof(cppwords) / sizeof(cppwords[0]); i++)
-        if (s == cppwords[i])
-            return "is a reserved word of C++";
+    for (size_t i = 0; i < sizeof(words) / sizeof(words[0]); i++)
+        if (s == words[i])
+            return true;
+    return false; 
+}
 
+string validID(string s, string type="field") {
+    if (s.size() == 0) 
+        return "empty identifier";
+    if (toupper(s[0]) == s[0] && type == "field")
+        return "does not begin with lower case letter";
+    if (!isalpha(s[0])) 
+        return "first character is not alphabet";
+    for (size_t i = 1; i < s.size(); i++)
+        if (!isalnum(s[i]) && !s[i] != '_')
+            return "illegal character : " + s[i];
+    if (s[s.size()-1] == '_')
+        return "ends with an underscore";
+    if (isCPPReservedWord(s))
+        return "is C++ reserved word";
     return "";
 }
 string capitalize(const string& s) {
@@ -69,7 +73,6 @@ string makeDBName(const string& s) {
         return "_" + md5HexDigest(s);
     return s;
 }
-
 static void sanityCheck(Database& db,
                         vector<Object*>& objects,
                         vector<Relation*>& relations) {
@@ -78,13 +81,13 @@ static void sanityCheck(Database& db,
     map<string, bool> objectName;
     string err;
     if (!(err = validID(db.name,"class")).empty()) 
-        throw Except("invalid id: database.name : " + db.name);
+        throw XMLExcept(db.pos, "invalid id: database.name : " + db.name + " : " + err);
     for (size_t i = 0; i < objects.size(); i++) {
         Object& o = *objects[i];
         if (!(err = validID(o.name, "class")).empty())
-            throw Except("invalid id: object.name : " + o.name);
+            throw XMLExcept(o.pos, "invalid id: object.name : " + o.name + " : " + err);
         if (usedID.find(o.name) != usedID.end())
-            throw Except("duplicate id: object.name : " + o.name);
+            throw XMLExcept(o.pos, "duplicate id: object.name : " + o.name);
         usedID[o.name] = true;
         objectName[o.name] = true;
         map<string, bool> usedField;
@@ -92,9 +95,9 @@ static void sanityCheck(Database& db,
         for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
             Field& f = *o.fields[i2];
             if (!(err = validID(f.name)).empty())
-                throw Except("invalid id: object.field.name : " + o.name + "." + f.name);
+                throw XMLExcept(o.pos, "invalid id: object.field.name : " + o.name + "." + f.name + " : " + err);
             if (usedField.find(f.name) != usedField.end())
-                throw Except("duplicate id: object.field.name : " + o.name + "." + f.name);
+                throw XMLExcept(o.pos, "duplicate id: object.field.name : " + o.name + "." + f.name);
             usedField[f.name] = true;
         }
     }
@@ -102,9 +105,9 @@ static void sanityCheck(Database& db,
         Relation& r = *relations[i];
         string name = r.getName();
         if (!(err = validID(name,"class")).empty())
-            throw Except("invalid id: relation.name : " + name);
+            throw XMLExcept(r.pos, "invalid id: relation.name : " + name + " : " + err);
         if (usedID.find(name) != usedID.end())
-            throw Except("duplicate id: relation.name : " + name);
+            throw XMLExcept(r.pos, "duplicate id: relation.name : " + name);
         usedID[name] = true;
         map<string, bool> usedField;
         usedField.clear();
@@ -114,14 +117,14 @@ static void sanityCheck(Database& db,
         for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
             Field& f = *r.fields[i2];
             if (!(err = validID(f.name)).empty())
-                throw Except("invalid id: relation.field.name : " + name + "." + f.name);
+                throw XMLExcept(f.pos, "invalid id: relation.field.name : " + name + "." + f.name + " : " + err);
             if (usedField.find(f.name) != usedField.end())
-                throw Except("duplicate id: relation.field.name : " + name + "." + f.name);
+                throw XMLExcept(f.pos, "duplicate id: relation.field.name : " + name + "." + f.name);
             usedField[f.name] = true;
             if (f.default_.size() > 0)
                 defaults = true;
             else if (defaults)
-                throw Except("no default-value after field with default value : " + name + "." + f.name);
+                throw XMLExcept(f.pos, "no default-value after field with default value : " + name + "." + f.name);
 
         }
         usedField.clear();
@@ -130,11 +133,11 @@ static void sanityCheck(Database& db,
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
             Relate& rel = *r.related[i2];
             if (!(err = validID(rel.handle)).empty() && !rel.handle.empty())
-                throw Except("invalid id: relation.relate.handle : " + name + "." + rel.handle);
+                throw XMLExcept(rel.pos, "invalid id: relation.relate.handle : " + name + "." + rel.handle + " : " + err);
             if (usedField.find(rel.handle) != usedField.end())
-                throw Except("duplicate id: relation.relate.handle : " + name + "." + rel.handle);
+                throw XMLExcept(rel.pos, "duplicate id: relation.relate.handle : " + name + "." + rel.handle);
             if (objectName.find(rel.objectName) == objectName.end())
-                throw Except("unknown object: relation.relate.name : " + name + "." + rel.objectName);
+                throw XMLExcept(rel.pos, "unknown object: relation.relate.name : " + name + "." + rel.objectName);
             if (!rel.handle.empty())
                 usedField[rel.handle] = true;
             if (rel.isUnique())
@@ -142,18 +145,19 @@ static void sanityCheck(Database& db,
             if (rel.hasLimit())
                 limits = true;
             if (uniques && limits)
-                throw Except("both 'unique' and 'limit' attributes used in relation " + name);
+                throw XMLExcept(rel.pos, "both 'unique' and 'limit' attributes used in relation " + name);
         }
         if (r.related.size() != 2 && limits)
-            throw Except("'limit' attribute used in relation of " + toString(r.related.size()) 
+            throw XMLExcept(r.pos, "'limit' attribute used in relation of " + toString(r.related.size()) 
                          + " object(s) " + name);
             
     }   
 }
 
-static void initSchema(Database& db,
-                vector<Object*>& objects,
-                vector<Relation*>& relations) {
+static void initSchema(Database& db) {
+    vector<Object*>& objects = db.objects;
+    vector<Relation*>& relations = db.relations;
+
     for (size_t i = 0; i < objects.size(); i++) {
         Object& o = *objects[i];
         map<string, Database::DBField*> fldMap;
@@ -202,13 +206,13 @@ static void initSchema(Database& db,
             Database::DBIndex* index = new Database::DBIndex;
             for (size_t i3 = 0; i3 < idx.fields.size(); i3++) {
                 if (fldMap.find(idx.fields[i3].name) == fldMap.end())
-                    throw litesql::Except("Indexfield " + o.name + "." + idx.fields[i3].name + " is invalid.");
+                    throw XMLExcept(idx.fields[i3].pos, 
+                                  "Indexfield " + o.name + "." + idx.fields[i3].name + " is invalid.");
                 index->fields.push_back(fldMap[idx.fields[i3].name]);
                 fldNames.push_back(idx.fields[i3].name);
             }
 
             index->name = makeDBName(tbl->name + "_" + fldNames.join("_") + "_idx");
-            index->table = tbl->name;
             string unique = "";
             if (idx.isUnique())
                 index->unique = true;
@@ -238,9 +242,6 @@ static void initSchema(Database& db,
             fld->type = "INTEGER";
             fld->extra = extra;
             tbl->fields.push_back(fld);
-
-            fldMap[relate.fieldTypeName] = fld;
-            
             objFields.push_back(fld);
             
             Database::DBIndex* idx = new Database::DBIndex;
@@ -289,11 +290,12 @@ static void initSchema(Database& db,
             for (size_t i3 = 0; i3 < idx.fields.size(); i3++) {
                 Database::DBField* fld = new Database::DBField;
                 if (fldMap.find(idx.fields[i3].name) == fldMap.end())
-                    throw litesql::Except("Indexfield " + r.name + "." + idx.fields[i3].name + " is invalid.");
+                    throw XMLExcept(idx.fields[i3].pos,
+                               "Indexfield " + r.name + "." + idx.fields[i3].name + " is invalid.");
                 index->fields.push_back(fldMap[idx.fields[i3].name]);
                 fldNames.push_back(idx.fields[i3].name);
             }
-            index->table = tbl->name;
+
             index->name = makeDBName(tbl->name + "_" + fldNames.join("_") + "_idx");
             string unique = "";
             if (idx.isUnique())
@@ -303,9 +305,11 @@ static void initSchema(Database& db,
     }
 
 }
-void init(Database& db,
-          vector<Object*>& objects,
-          vector<Relation*>& relations) {
+void init(Database& db) {
+    vector<Object*>& objects = db.objects;
+    vector<Relation*>& relations = db.relations;
+
+
     map<string, Object*> objMap;
     report("validating XML file\n");
     sanityCheck(db, objects, relations);
@@ -320,7 +324,8 @@ void init(Database& db,
     for (size_t i = 0; i < objects.size(); i++) 
         if (objMap.find(objects[i]->inherits) != objMap.end())
             objects[i]->parentObject = objMap[objects[i]->inherits];
-    for (size_t i = 0; i < objects.size(); i++) {
+
+    for (size_t i = 0; i < objects.size(); i++)  {
         if (objects[i]->parentObject)
             objects[i]->parentObject->children.push_back(objects[i]);
         int objOffset = objects[i]->getLastFieldOffset();
@@ -343,10 +348,7 @@ void init(Database& db,
         
         for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
             Relate& relate = *rel.related[i2];
-
-            relate.paramPos = i2;
             Object* obj = objMap[relate.objectName];
-            relate.object = obj;
             string num;
             if (same)
                 num = toString(i2 + 1);
@@ -362,7 +364,8 @@ void init(Database& db,
                 
                 // make Object's relation handles
 
-                RelationHandle* handle = new RelationHandle(relate.handle, &rel,
+                RelationHandle* handle = new RelationHandle(relate.pos, 
+                                                            relate.handle, &rel,
                                                                       &relate, obj);
                 for (size_t i3 = 0; i3 < rel.related.size(); i3++) {
                     if (i2 != i3) {
@@ -377,7 +380,7 @@ void init(Database& db,
     }
     
 
-    initSchema(db, objects, relations);
+    initSchema(db);
 
 }
 string safe(const char * s) {

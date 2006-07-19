@@ -1,16 +1,21 @@
 #include <cstdio>
 #include "litesql.hpp"
 #include "litesql-gen-cpp.hpp"
-#include "litesql-gen-python.hpp"
 #include "litesql-gen-graphviz.hpp"
+#include "litesql-gen-python.hpp"
+#include "scanner.hpp"
 using namespace std;
 
 char* help = 
-"Usage: litesql-gen [options] <my-database.xml>\n\n"
+"Usage: litesql-gen [options] <database.xml>\n\n"
 "Options:\n"
-" -t, --target=TARGET         generate code for TARGET (default: c++)\n"
+" -t TARGET, --target=TARGET  generate code for TARGET (default: c++)\n"
 " -v, --verbose               verbosely report code generation\n"
-" --help                      print help\n"
+" --prepend-file=FILE         prepend file FILE to every generated file\n"
+" -d DIR, --dir=DIR           write generated files to directory DIR\n"
+" --cppext=EXT                define extension for C++ source files (cpp)\n"
+" --hppext=EXT                define extension for C++ header files (hpp)\n"
+" -h, --help                  print help\n"
 "\n"
 "Supported targets:\n"
 "  'c++'        C++ target (.cpp,.hpp)\n"
@@ -23,80 +28,66 @@ char* help =
 "\n\n"
 ;
 
-static string target = "c++";
+static Args* args = NULL;
 static bool verbose = false;
 void report(const string& msg) {
     if (verbose)
         cout << msg;
 }
-string quote(const string& s) {
-    return "\"" + s + "\"";
-}
-string brackets(const std::string& s) {
-    return "(" + s + ")";
-}
-string sqbrackets(const std::string& s) {
-    return "[" + s + "]";
-}
-string braces(const std::string& s) {
-    return "{" + s + "}";
-}
-
-
-
-void generateCode(xml::Database& db,
-                  vector<xml::Object*>& objects,
-                  vector<xml::Relation*>& relations) {
-    xml::init(db, objects, relations);
+void generateCode(xml::Database& db) {
+    if (!args)
+        throw litesql::Except("no arguments");
+    string target = (*args)["target"];
+    xml::init(db);
     if (target == "c++") 
-        writeCPPClasses(db, objects, relations);
+        writeCPPClasses(db, *args);
     else if (target == "python")
-        writePython(db, objects, relations);
+        writePython(db, *args);
     else if (target == "graphviz") 
-        writeGraphviz(db, objects, relations);
+        writeGraphviz(db, *args);
     else
         throw litesql::Except("unsupported target: " + target);
 }
-
+int parseFile(const string& name, FILE** yyin) {
+    *yyin = fopen(name.c_str(), "r");
+    currentFile = name;
+    if (!*yyin) {
+        string msg = "could not open file '" + name + "'";
+        throw litesql::Except(msg); // + ":" + strerror(errno));
+    }
+    int ret = yylex();
+    return ret;
+}
 int litesql_gen_main(int argc, char **argv, FILE ** yyin) { 
     bool printHelp = false;
-    for (size_t i = 1; i < argc; i++) {
-        string arg = argv[i];
-        if (arg == "-v" || arg == "--verbose") {
-            verbose = true;
-            continue;
-        } else if (arg == "-t" || arg == "--target") {
-            if (i+1 >= argc) {
-                fprintf(stderr, "Error: missing target\n");
-                return -1;
-            }    
-            target = argv[i+1];
-            i++;
-            continue;
-        } else if (litesql::startsWith(arg, "--target=")) {
-            litesql::Split lang(arg, "=");
-            target = lang[1];
-            continue;
-        } else if (arg == "--help") {
-            printHelp = true;
-            break;
-        } else if (i < argc - 1) {
-            fprintf(stderr, "Error: invalid argument '%s'\n", arg.c_str());
-            return -1;
-        }
+    args = new Args(argc, argv);
+    try {
+         (*args)
+            .option("verbose", "-v", "--verbose")
+            .option("target", "-t", "--target", true, false, "c++")
+            .option("help", "-h", "--help")
+            .option("prepend-file", "", "--prepend-file", true)
+            .option("dir", "-d", "--dir", true)
+            .option("cppext", "", "--cpp-ext", true, false, "cpp")
+            .option("hppext", "", "--hpp-ext", true, false, "hpp")
+            .parse();
+    } catch (litesql::Except e) {
+        cerr << e << endl;
+        return -1;
     }
-    if (argc == 1 || printHelp) {
+    if (args->has("help")) {
         fprintf(stderr, help);
         return -1;
     }
-    *yyin = fopen(argv[argc-1], "r");
-    if (!*yyin) {
-        string msg = "could not open file '" + string(argv[argc-1]) + "'";
-        perror(msg.c_str());
+    if (args->has("verbose"))
+        verbose = true;
+    litesql::Split params = args->getParams();
+    if (params.size() != 1) {
+        cerr << "Usage: litesql-gen [options] <database.xml>" << endl << endl;
         return -1;
     }
     try {
-        return yylex();
+        parseFile(argv[argc-1], yyin);
     } catch (litesql::Except e) {
         cerr << "Error: " << e << endl;
         return -1;

@@ -2,8 +2,7 @@
 #define _litesql_gen_python_hpp
 #include <cstdio>
 #include "xmlobjects.hpp"
+#include "common.hpp"
 
-void writePython(xml::Database& db,
-                 std::vector<xml::Object*>& objects,
-                 std::vector<xml::Relation*>& relations);
+void writePython(xml::Database& db, Args& args);
 #endif

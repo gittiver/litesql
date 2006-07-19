@@ -4,6 +4,7 @@
 #include "litesql-gen-main.hpp"
 #include "pythongenerator.hpp"
 #include "xmlobjects.hpp"
+#include "common.hpp"
 #include <ctype.h>
 #include <cstdio>
 #include <set>
@@ -220,9 +221,11 @@ void writeDatabase(Block& pre, Block& post,
            --
        --;
 }
-void writePython(xml::Database& db,
-                 vector<xml::Object*>& objects,
-                 vector<xml::Relation*>& relations) {
+void writePython(xml::Database& db, Args& args) {
+    vector<xml::Object*>& objects = db.objects;
+    vector<xml::Relation*>& relations = db.relations;
+
+
     FILE *file;
 
     Block pre, post;

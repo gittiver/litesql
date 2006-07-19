@@ -9,6 +9,10 @@
 /** \page changes Changes
 
 \section vercvs CVS Version
+2006 July 19
+- litesql-gen, some internal refactoring, _broken_ at the moment
+- include-tag, support for multiple input files
+
 2006 July 13
 - litesql-gen -t python: schema_ table is now the first schema item 
 - Date, DateTime, Time-classes are stored now ISO8601 YYYY-MM-DD HH:MM:SS-format

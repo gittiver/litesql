@@ -32,10 +32,10 @@ class Persistent {
 protected:
     typedef map<string, vector<pair<FieldType, string> > > Updates;
     /** executed when object is created into database */    
-    string Persistent::insert(Record& tables, 
-                              Records& fieldRecs,
-                              Records& values,
-                              const string& sequence);
+    string insert(Record& tables, 
+                  Records& fieldRecs,
+                  Records& values,
+                  const string& sequence);
     void update(Updates& updates); 
     template <class T>
     void updateField(litesql::Persistent::Updates& updates, 

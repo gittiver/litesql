@@ -1,9 +1,9 @@
 /* XML processor/application API for litesql.dtd.
- * Generated 2006/02/15 15:06:43.
+ * Generated 2006/07/19 22:47:47.
  *
  * This program was generated with the FleXML XML processor generator.
  * FleXML is Copyright © 1999-2005 Kristoffer Rose.  All rights reserved.
- * (Id: flexml.pl,v 1.44 2005/02/23 23:08:16 mquinson Exp).
+ * (Id: flexml.pl,v 1.52 2006/07/13 19:06:42 mquinson Exp).
  * 
  * There are two, intertwined parts to this program, part A and part B.
  *
@@ -52,6 +52,14 @@ extern void STag_database(void);
 extern void ETag_database(void);
 extern void STag_object(void);
 extern void ETag_object(void);
+extern void STag_type(void);
+extern void ETag_type(void);
+extern void STag_include(void);
+extern void ETag_include(void);
+extern void STag_if_d_backend(void);
+extern void ETag_if_d_backend(void);
+extern void STag_option(void);
+extern void ETag_option(void);
 extern void STag_field(void);
 extern void ETag_field(void);
 extern void STag_index(void);
@@ -70,77 +78,107 @@ extern void STag_relate(void);
 extern void ETag_relate(void);
 
 /* XML application data. */
-typedef const char* AT_indexfield_name;
-#define AU_indexfield_name NULL
+typedef const char* AT_type_name;
+#define AU_type_name NULL
+typedef const char* AT_option_name;
+#define AU_option_name NULL
 typedef const char* AT_relation_id;
 #define AU_relation_id NULL
-typedef const char* AT_value_name;
-#define AU_value_name NULL
 typedef enum { AU_relate_limit, A_relate_limit_one,A_relate_limit_many } AT_relate_limit;
 typedef const char* AT_object_name;
 #define AU_object_name NULL
-typedef const char* AT_relate_object;
-#define AU_relate_object NULL
-typedef const char* AT_database_include;
-#define AU_database_include NULL
 typedef enum { AU_field_indexed, A_field_indexed_true,A_field_indexed_false } AT_field_indexed;
-typedef const char* AT_field_name;
-#define AU_field_name NULL
-typedef enum { AU_relate_unique, A_relate_unique_true,A_relate_unique_false } AT_relate_unique;
-typedef const char* AT_value_value;
-#define AU_value_value NULL
+typedef const char* AT_type_sqltype;
+#define AU_type_sqltype NULL
 typedef const char* AT_database_name;
 #define AU_database_name NULL
-typedef const char* AT_object_inherits;
-#define AU_object_inherits NULL
-typedef enum { AU_method_const, A_method_const_true,A_method_const_false } AT_method_const;
 typedef const char* AT_database_namespace;
 #define AU_database_namespace NULL
 typedef enum { AU_relation_unidir, A_relation_unidir_true,A_relation_unidir_false } AT_relation_unidir;
-typedef const char* AT_param_name;
-#define AU_param_name NULL
-typedef enum { AU_index_unique, A_index_unique_true,A_index_unique_false } AT_index_unique;
 typedef const char* AT_method_name;
 #define AU_method_name NULL
-typedef enum { AU_field_type, A_field_type_boolean,A_field_type_integer,A_field_type_string,A_field_type_float,A_field_type_time,A_field_type_date,A_field_type_datetime } AT_field_type;
 typedef const char* AT_field_default;
 #define AU_field_default NULL
 typedef const char* AT_method_returntype;
 #define AU_method_returntype NULL
-typedef const char* AT_relation_name;
-#define AU_relation_name NULL
 typedef const char* AT_param_type;
 #define AU_param_type NULL
+typedef const char* AT_field_sqltype;
+#define AU_field_sqltype NULL
+typedef const char* AT_relate_remotehandle;
+#define AU_relate_remotehandle NULL
+typedef const char* AT_indexfield_name;
+#define AU_indexfield_name NULL
+typedef const char* AT_option_value;
+#define AU_option_value NULL
+typedef const char* AT_if_d_backend_name;
+#define AU_if_d_backend_name NULL
+typedef const char* AT_value_name;
+#define AU_value_name NULL
+typedef const char* AT_relate_object;
+#define AU_relate_object NULL
+typedef const char* AT_database_include;
+#define AU_database_include NULL
+typedef enum { AU_object_temporary, A_object_temporary_true,A_object_temporary_false } AT_object_temporary;
+typedef const char* AT_field_name;
+#define AU_field_name NULL
+typedef const char* AT_object_inherits;
+#define AU_object_inherits NULL
+typedef const char* AT_value_value;
+#define AU_value_value NULL
+typedef enum { AU_relate_unique, A_relate_unique_true,A_relate_unique_false } AT_relate_unique;
+typedef enum { AU_index_unique, A_index_unique_true,A_index_unique_false } AT_index_unique;
+typedef const char* AT_param_name;
+#define AU_param_name NULL
+typedef const char* AT_field_type;
+#define AU_field_type NULL
+typedef const char* AT_type_class;
+#define AU_type_class NULL
+typedef const char* AT_include_file;
+#define AU_include_file NULL
+typedef enum { AU_relate_owner, A_relate_owner_true,A_relate_owner_false } AT_relate_owner;
+typedef const char* AT_relation_name;
+#define AU_relation_name NULL
 typedef const char* AT_relate_handle;
 #define AU_relate_handle NULL
 typedef enum { AU_field_unique, A_field_unique_true,A_field_unique_false } AT_field_unique;
 
 /* FleXML-provided data. */
 extern const char* pcdata;
-extern AT_indexfield_name A_indexfield_name;
+extern AT_type_name A_type_name;
+extern AT_option_name A_option_name;
 extern AT_relation_id A_relation_id;
-extern AT_value_name A_value_name;
 extern AT_relate_limit A_relate_limit;
 extern AT_object_name A_object_name;
-extern AT_relate_object A_relate_object;
-extern AT_database_include A_database_include;
 extern AT_field_indexed A_field_indexed;
-extern AT_field_name A_field_name;
-extern AT_relate_unique A_relate_unique;
-extern AT_value_value A_value_value;
+extern AT_type_sqltype A_type_sqltype;
 extern AT_database_name A_database_name;
-extern AT_object_inherits A_object_inherits;
-extern AT_method_const A_method_const;
 extern AT_database_namespace A_database_namespace;
 extern AT_relation_unidir A_relation_unidir;
-extern AT_param_name A_param_name;
-extern AT_index_unique A_index_unique;
 extern AT_method_name A_method_name;
-extern AT_field_type A_field_type;
 extern AT_field_default A_field_default;
 extern AT_method_returntype A_method_returntype;
-extern AT_relation_name A_relation_name;
 extern AT_param_type A_param_type;
+extern AT_field_sqltype A_field_sqltype;
+extern AT_relate_remotehandle A_relate_remotehandle;
+extern AT_indexfield_name A_indexfield_name;
+extern AT_option_value A_option_value;
+extern AT_if_d_backend_name A_if_d_backend_name;
+extern AT_value_name A_value_name;
+extern AT_relate_object A_relate_object;
+extern AT_database_include A_database_include;
+extern AT_object_temporary A_object_temporary;
+extern AT_field_name A_field_name;
+extern AT_object_inherits A_object_inherits;
+extern AT_value_value A_value_value;
+extern AT_relate_unique A_relate_unique;
+extern AT_index_unique A_index_unique;
+extern AT_param_name A_param_name;
+extern AT_field_type A_field_type;
+extern AT_type_class A_type_class;
+extern AT_include_file A_include_file;
+extern AT_relate_owner A_relate_owner;
+extern AT_relation_name A_relation_name;
 extern AT_relate_handle A_relate_handle;
 extern AT_field_unique A_field_unique;
 

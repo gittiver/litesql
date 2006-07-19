@@ -6,9 +6,9 @@
 #include <algorithm>
 #include <map>
 #include "litesql-gen.hpp"
-#include "litesql/split.hpp"
-#include "litesql/string.hpp"
 #include "litesql/except.hpp"
+#include "litesql/string.hpp"
+#include "litesql/split.hpp"
 
 extern int yylineno;
 namespace xml {
@@ -18,39 +18,56 @@ string capitalize(const string& s);
 string decapitalize(const string& s);
 string safe(const char *s);
 string makeDBName(const string& s);
-string quote(const string& s);
-class Value {
+
+class Position {
+public:
+    string file;
+    int line;
+    Position(const string& f, int l) : file(f), line(l) {}
+};
+class XMLExcept : public Except { 
+public:
+    XMLExcept(const Position& p, const string& m) 
+      : Except("In file " + p.file + ", line " + toString(p.line) + " : " 
+              + m) {}
+};
+class XML {
+public:
+    Position pos;
+    XML(const Position& p) : pos(p) {}
+};
+class Value : public XML {
 public:
     string name, value;
-    Value(string n, string v) : name(n), value(v) {}
+    Value(const Position& p, string n, string v) : XML(p), name(n), value(v) {}
 };
-class IndexField {
+class IndexField : public XML {
 public:
     string name;
-    IndexField(string n) : name(n) {}
+    IndexField(const Position& p, string n) : XML(p), name(n) {}
 };
-class Index {
+class Index : public XML {
 public:
     vector<IndexField> fields;
     AT_index_unique unique;
-    Index(AT_index_unique u) : unique(u) {}
+    Index(const Position& p, AT_index_unique u) : XML(p), unique(u) {}
 
     bool isUnique() const {
         return unique == A_index_unique_true;
     }
 };
-class Field {
+class Field : public XML {
 public:
     string name;
     string fieldTypeName;
-    AT_field_type type;
+    string type;
     string default_;
     AT_field_indexed indexed;
     AT_field_unique unique;
     vector<Value> values;
     int offset;
-    Field(string n, AT_field_type t, string d, AT_field_indexed i, AT_field_unique u) 
-        : name(n), fieldTypeName(capitalize(n)), type(t), default_(d), indexed(i), unique(u), offset(-1) {
+    Field(const Position& p, string n, AT_field_type t, string d, AT_field_indexed i, AT_field_unique u) 
+       : XML(p), name(n), fieldTypeName(capitalize(n)), type(t), default_(d), indexed(i), unique(u) {
     }
     void value(const Value& v) {
         values.push_back(v);
@@ -62,39 +79,28 @@ public:
         return unique == A_field_unique_true;
     }
     bool hasQuotedValues() const {
-       switch(type) {
+/*       switch(type) {
        case A_field_type_integer:
        case A_field_type_float: 
        case A_field_type_boolean: 
-           return false;
-       case A_field_type_string:
        case A_field_type_date:
        case A_field_type_time:
        case A_field_type_datetime:
+           return false;
+       case A_field_type_string:
            return true;
-       }
+       }*/
+       return "";
     }
     string getQuotedDefaultValue() const {
         if (hasQuotedValues())
             return "\"" + default_ + "\"";
-
         if (default_.size() == 0)
             return "0";
-        switch(type) {
-            case A_field_type_boolean:
-                
-                if (toLower(default_) == "false")
-                    return "0";
-                if (toLower(default_) == "true")
-                    return "1";
-                
-
-            default:
-                return default_;
-        }
+        return default_;
     }
     string getSQLType() const {
-       switch(type) {
+/*       switch(type) {
            case A_field_type_integer: return "INTEGER";
            case A_field_type_string: return "TEXT";
            case A_field_type_float: return "FLOAT";
@@ -103,9 +109,11 @@ public:
            case A_field_type_time: return "VARCHAR(10)";
            case A_field_type_datetime: return "TIMESTAMP";
            default: return "";
-       }
+       }*/
+       return "";
     }
     string getCPPType() const {
+    /*
        switch(type) {
            case A_field_type_integer: return "int";
            case A_field_type_string: return "std::string";
@@ -116,9 +124,11 @@ public:
            case A_field_type_datetime: return "litesql::DateTime";
            default: return "";
        }
+       */
+       return "";
     }
     string getPythonType() const {
-       switch(type) {
+      /* switch(type) {
            case A_field_type_integer: return "int";
            case A_field_type_string: return "str";
            case A_field_type_float: return "float";
@@ -127,27 +137,25 @@ public:
            case A_field_type_time: return "litesql.Time";
            case A_field_type_datetime: return "litesql.DateTime";
            default: return "";
-       }
+       }*/
+       return "";
     }
 
 };
-class Param {
+class Param : public XML {
 public:
     string name;
     AT_param_type type;
-    Param(string n, AT_param_type t) : name(n), type(t) {}
+    Param(const Position& p, string n, AT_param_type t) 
+       : XML(p), name(n), type(t) {}
     
 };
-class Method {
+class Method : public XML {
 public:
     string name, returnType;
-    AT_method_const const_;
     vector<Param> params;
-    Method(string n, string rt, AT_method_const c)
-        : name(n), returnType(rt), const_(c) {}
-    bool isConst() const {
-        return const_ == A_method_const_true;
-    }
+    Method(const Position& p, string n, string rt) 
+        : XML(p), name(n), returnType(rt){}
     void param(const Param& p) {
         params.push_back(p);
     }
@@ -155,7 +163,7 @@ public:
 class Relation;
 class Relate;
 class Object;
-class RelationHandle {
+class RelationHandle : public XML {
 public:
     string name;
     Relation * relation;
@@ -163,10 +171,11 @@ public:
     Object * object;
     vector< pair<Object*,Relate*> > destObjects;
 
-    RelationHandle(string n, Relation * r, Relate * rel, Object * o) 
-        : name(n), relation(r), relate(rel), object(o) {}
+    RelationHandle(const Position& p, 
+                   string n, Relation * r, Relate * rel, Object * o) 
+        : XML(p), name(n), relation(r), relate(rel), object(o) {}
 };
-class Relate {
+class Relate : public XML {
 public:    
     string objectName;
     string fieldTypeName, fieldName;
@@ -175,9 +184,10 @@ public:
     AT_relate_limit limit;
     AT_relate_unique unique;
     string handle;
-    Object* object;
-    Relate(string on, AT_relate_limit l, AT_relate_unique u, string h) 
-        : objectName(on), limit(l), unique(u), handle(h) {
+    string remoteHandle;
+    Relate(const Position& p, 
+           string on, AT_relate_limit l, AT_relate_unique u, string h, string rh) 
+        : XML(p), objectName(on), limit(l), unique(u), handle(h), remoteHandle(rh) {
         if (hasLimit() && isUnique())
             throw logic_error("both limit and unique specified in relate: line " + 
                               toString(yylineno));
@@ -193,7 +203,20 @@ public:
     }
 
 };
-class Relation {
+class Option : public XML {
+public:
+    string name, value;
+    Option(const Position& p, const string& n, const string& v) 
+      : XML(p), name(n), value(v) {}
+};
+class IfBackend : public XML {
+public:
+    string name;
+    vector<Option*> options;
+    IfBackend(const Position& p, const string& n) 
+       : XML(p), name(n) {}
+};
+class Relation : public XML {
 public:
     string id, name;
     string table;
@@ -201,8 +224,11 @@ public:
     vector<Relate*> related;
     vector<Field*> fields;
     vector<Index*> indices;
-    Relation(string i, string n, AT_relation_unidir ud) 
-        : id(i), name(n), unidir(ud) {}
+    vector<Option*> options;
+    vector<IfBackend*> ifBackends;
+
+    Relation(const Position& p, string i, string n, AT_relation_unidir ud) 
+        : XML(p), id(i), name(n), unidir(ud) {}
     string getName() const {
         if (name.size() == 0) {
             string result;
@@ -243,24 +269,30 @@ public:
         return makeDBName(res.join("_"));
     }
 };
-class Object {
+class Object : public XML {
 public:
     string name, inherits;
+    bool temporary;
+
     vector<Field*> fields;
     vector<Method*> methods;
     vector<Index*> indices;
     vector<RelationHandle*> handles;
     map<Relation*, vector<Relate*> > relations;
-    Object* parentObject;
     vector<Object*> children;
+    vector<Option*> options;
+    vector<IfBackend*> ifBackends;
+    vector<Relate*> related;
 
-    Object(string n, string i) : name(n), inherits(i),
+    Object* parentObject;
+
+    Object(const Position& p, string n, string i, AT_object_temporary t) 
+        : XML(p), name(n), inherits(i), temporary(t == A_object_temporary_true),
         parentObject(NULL) {
         if (i.size() == 0) {
-            inherits = "";
-            fields.push_back(new Field("id", A_field_type_integer, "", 
+            fields.push_back(new Field(pos, "id", "integer", "", 
                          A_field_indexed_false, A_field_unique_false));
-            fields.push_back(new Field("type", A_field_type_string, "", 
+            fields.push_back(new Field(pos, "type", "string", "", 
                         A_field_indexed_false, A_field_unique_false));
         }
     }
@@ -274,6 +306,7 @@ public:
         
         throw litesql::Except("Unknown style: " + style);
     }
+
     int getLastFieldOffset() const {
         if (!parentObject)
             return fields.size();
@@ -304,7 +337,7 @@ public:
         return makeDBName(name + "_seq");
     }
 };
-class Database {
+class Database : public XML {
 public:
     class Sequence {
     public:
@@ -357,11 +390,18 @@ public:
     vector<Sequence*> sequences;
     vector<DBIndex*> indices;
     vector<Table*> tables;
+
+    vector<Object*> objects;
+    vector<Relation*> relations;
+    vector<Option*> options;
+    vector<IfBackend*> ifBackends;
+
     string name, include, nspace;
+
+    Database(const Position& p) : XML(p) {}
+
 };
-void init(Database& db, 
-          vector<Object*>& objects,
-          vector<Relation*>& relations);
+void init(Database& db);
 
 
 }

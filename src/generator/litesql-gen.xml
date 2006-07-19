@@ -4,46 +4,93 @@
 #include "xmlobjects.hpp"
 #include "litesql-gen-main.hpp"
 #include "litesql-gen.hpp"
-
+#include "scanner.hpp"
+#include <list>
 using namespace std;
 using namespace xml;
-vector<Object*> objects;
-vector<Relation*> relations;
-Database db;
+extern FILE* yyin;
+list<Position> posStack;
+string currentFile;
+Database* db;
 Object * obj;
 Relation * rel;
 Field * fld;
 Method * mtd;
 Index * idx;
+Option* option;
+IfBackend* ifBackend;
+Relate* relate;
+
+Position getPosition() {
+    return Position(currentFile, yylineno);
+}
+
 ]]></top>
 <start tag="database"><![CDATA[
-db.name = safe({name});
-db.include = safe({include});
-db.nspace = safe({namespace});
+db = new Database(getPosition());
+db->name = safe({name});
+db->include = safe({include});
+db->nspace = safe({namespace});
 ]]></start>
 <start tag="object"><![CDATA[
-objects.push_back(obj = new Object({name}, safe({inherits})));
+db->objects.push_back(obj = new Object(getPosition(), {name}, safe({inherits}), {temporary}));
 ]]></start>
 <end tag="object"><![CDATA[
 obj = NULL;
 ]]></end>
 <start tag="relation"><![CDATA[
-relations.push_back(rel = new Relation(safe({id}), safe({name}),{unidir}));
+db->relations.push_back(rel = new Relation(getPosition(), safe({id}), safe({name}),{unidir}));
 ]]></start>
 <end tag="relation"><![CDATA[
 rel = NULL;
 ]]></end>
+<start tag="option"><![CDATA[
+option = new Option(getPosition(), {name}, {value});
+if (ifBackend)
+    ifBackend->options.push_back(option);
+else if (obj)
+    obj->options.push_back(option);
+else if (rel)
+    rel->options.push_back(option);
+else
+    db->options.push_back(option);    
+]]></start>
+<start tag="if-backend"><![CDATA[
+ifBackend = new IfBackend(getPosition(), {name});
+if (obj)
+    obj->ifBackends.push_back(ifBackend);
+else if (rel)
+    rel->ifBackends.push_back(ifBackend);
+else
+    db->ifBackends.push_back(ifBackend);
+
+]]></start>
+<end tag="if-backend"><![CDATA[
+ifBackend = NULL;
+]]></end>
+<start tag="include"><![CDATA[
+yyin = fopen({file}, "r");
+if (!yyin) {
+    fprintf(stderr, "Could not open file %s", {file});
+    exit(-1);
+}
+posStack.push_front(getPosition());
+currentFile = {file};
+yylineno = 1;
+yypush_buffer_state(yy_create_buffer(yyin, 16834));
+
+]]></start>
 <start tag="field"><![CDATA[
 if (obj) {
-    obj->fields.push_back(fld =new Field({name}, 
+    obj->fields.push_back(fld =new Field(getPosition(), {name}, 
                                      {type},safe({default}),{indexed},{unique}));
 } else if (rel) {
-    rel->fields.push_back(fld = new Field({name}, 
+    rel->fields.push_back(fld = new Field(getPosition(), {name}, 
                          {type},safe({default}),{indexed}, {unique}));
 }
 ]]></start>
 <start tag="index"><![CDATA[
-idx = new Index({unique});
+idx = new Index(getPosition(), {unique});
 if (obj) 
     obj->indices.push_back(idx);
 else if (rel) 
@@ -54,19 +101,18 @@ idx = NULL;
 ]]></end>
 <start tag="indexfield"><![CDATA[
 if (idx)
-    idx->fields.push_back(IndexField({name}));
+    idx->fields.push_back(IndexField(getPosition(), {name}));
 ]]></start>
 <start tag="value"><![CDATA[
 if (fld) 
-    fld->value(Value({name}, {value}));
+    fld->value(Value(getPosition(), {name}, {value}));
 ]]></start>
 <end tag="field"><![CDATA[
 fld = NULL;
 ]]></end>
 <start tag="method"><![CDATA[
 if (obj) {
-    obj->methods.push_back(mtd = new Method({name}, safe({returntype}),
-                           {const}));
+    obj->methods.push_back(mtd = new Method(getPosition(), {name}, safe({returntype})));
 }
 ]]></start>
 <end tag="method"><![CDATA[
@@ -74,14 +120,17 @@ mtd = NULL;
 ]]></end>
 <start tag="param"><![CDATA[
 if (mtd) 
-    mtd->param(Param({name}, {type}));
+    mtd->param(Param(getPosition(), {name}, {type}));
 ]]></start>
 <start tag="relate"><![CDATA[
+relate = new Relate(getPosition(), {object}, {limit}, {unique}, safe({handle}), safe({remotehandle}));
 if (rel)
-    rel->related.push_back(new Relate({object}, {limit}, {unique}, safe({handle})));
+    rel->related.push_back(relate);
+else if (obj)
+    obj->related.push_back(relate);
 ]]></start>
 <end tag="database"><![CDATA[
-    generateCode(db, objects, relations);    
+    generateCode(*db);    
 ]]></end>
 <main><![CDATA[
 extern FILE * yyin;
