@@ -8,6 +8,7 @@
             <value name="Male" value="0"/>
             <value name="Female" value="1"/>
         </field>
+        <field name="dateOfBirth" type="datetime"/>
         <method name="sayHello"/>
     </object>
     <relation id="Mother" unidir="true">

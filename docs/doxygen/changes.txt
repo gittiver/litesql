@@ -11,6 +11,7 @@
 \section vercvs CVS Version
 2006 July 13
 - litesql-gen -t python: schema_ table is now the first schema item 
+- Date, DateTime, Time-classes are stored now ISO8601 YYYY-MM-DD HH:MM:SS-format
   
 2006 June 29
 - litesql-gen: index-tag inside relation-tag did not generate proper SQL

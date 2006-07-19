@@ -698,13 +698,13 @@ public:
     litesql::Field<std::string> name;
     static const Person::FieldType Age;
     litesql::Field<int> age;
-    static const Person::FieldType Pubdate;
-    litesql::Field<litesql::Date> pubdate;
 protected:
     static std::vector < std::pair< std::string, std::string > > sex_values;
 public:
     static const Person::FieldType Sex;
     litesql::Field<int> sex;
+    static const Person::FieldType DateOfBirth;
+    litesql::Field<litesql::DateTime> dateOfBirth;
     static void initValues();
 protected:
     void defaults();
