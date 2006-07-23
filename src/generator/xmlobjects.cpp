@@ -39,7 +39,24 @@ static bool isCPPReservedWord(const string& s) {
             return true;
     return false; 
 }
-
+bool validTarget(string t) {
+    if (t == "c++")
+        return true;
+    if (t == "python")
+        return true;
+    if (t == "graphviz")
+        return true;
+    return false;
+}
+bool validBackend(string t) {
+    if (t == "postgresql")
+        return true;
+    if (t == "sqlite3")
+        return true;
+    if (t == "mysql")
+        return true;
+    return false;
+}
 string validID(string s, string type="field") {
     if (s.size() == 0) 
         return "empty identifier";
@@ -73,6 +90,40 @@ string makeDBName(const string& s) {
         return "_" + md5HexDigest(s);
     return s;
 }
+void initBaseTypes(Database& db) {
+    Type* types[] = {new Type("integer", "int", "INTEGER"),
+                    new Type("float", "float", "FLOAT"),
+                    new Type("double", "double", "FLOAT"),
+                    new Type("string", "string", "TEXT"),
+                    new Type("boolean", "bool", "SMALLINT"),
+                    new Type("date", "Date", "DATE"),
+                    new Type("time", "Time", "VARCHAR(10)"),
+                    new Type("datetime", "DateTime", "TIMESTAMP")};
+
+    Type* cppTypes[] = {new Type("string", "std::string", "TEXT"),
+                    new Type("date", "litesql::Date", "DATE"),
+                    new Type("time", "litesql::Time", "VARCHAR(10)"),
+                    new Type("datetime", "litesql::DateTime", "TIMESTAMP")};
+    Type* pythonTypes[] = {new Type("double", "float", "FLOAT"),
+                    new Type("string", "str", "TEXT"),
+                    new Type("date", "litesql.Date", "DATE"),
+                    new Type("time", "litesql.Time", "VARCHAR(10)"),
+                    new Type("datetime", "litesql.DateTime", "TIMESTAMP")};
+    IfTarget* cpp = new IfTarget("c++");
+    IfTarget* python = new IfTarget("python");
+
+    for (size_t i = 0; i < sizeof(types) / sizeof(types[0]); i++)
+        db.types.push_back(types[i]);
+
+    for (size_t i = 0; i < sizeof(cppTypes) / sizeof(cppTypes[0]); i++)
+        cpp->types.push_back(cppTypes[i]);
+
+    for (size_t i = 0; i < sizeof(pythonTypes) / sizeof(pythonTypes[0]); i++)
+        python->types.push_back(pythonTypes[i]);
+
+    db.ifTargets.push_back(cpp);
+    db.ifTargets.push_back(python);
+}
 static void sanityCheck(Database& db,
                         vector<Object*>& objects,
                         vector<Relation*>& relations) {
@@ -80,8 +131,20 @@ static void sanityCheck(Database& db,
     map<string, bool> usedID;
     map<string, bool> objectName;
     string err;
+        
     if (!(err = validID(db.name,"class")).empty()) 
         throw XMLExcept(db.pos, "invalid id: database.name : " + db.name + " : " + err);
+    for (size_t i = 0; i < db.ifTargets.size(); i++) {
+        IfTarget* it = db.ifTargets[i];
+        if (!validTarget(it->name))
+            throw XMLExcept(it->pos, "invalid target : " + it->name);
+    }
+    for (size_t i = 0; i < db.ifBackends.size(); i++) {
+        IfBackend* it = db.ifBackends[i];
+        if (!validBackend(it->name))
+            throw XMLExcept(it->pos, "invalid backend : " + it->name);
+    }
+        
     for (size_t i = 0; i < objects.size(); i++) {
         Object& o = *objects[i];
         if (!(err = validID(o.name, "class")).empty())
@@ -94,6 +157,7 @@ static void sanityCheck(Database& db,
         usedField.clear();
         for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
             Field& f = *o.fields[i2];
+
             if (!(err = validID(f.name)).empty())
                 throw XMLExcept(o.pos, "invalid id: object.field.name : " + o.name + "." + f.name + " : " + err);
             if (usedField.find(f.name) != usedField.end())
@@ -180,7 +244,7 @@ static void initSchema(Database& db) {
 
         for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
             Field& f = *o.fields[i2];
-            Database::DBField* fld = new Database::DBField;
+           Database::DBField* fld = new Database::DBField;
             fld->name = f.name + "_";
             fldMap[f.name] = fld;
             fld->type = f.getSQLType();
@@ -305,7 +369,7 @@ static void initSchema(Database& db) {
     }
 
 }
-void init(Database& db) {
+void init(Database& db, Args& args) {
     vector<Object*>& objects = db.objects;
     vector<Relation*>& relations = db.relations;
 
@@ -325,12 +389,32 @@ void init(Database& db) {
         if (objMap.find(objects[i]->inherits) != objMap.end())
             objects[i]->parentObject = objMap[objects[i]->inherits];
 
+    for (size_t i = 0; i < db.ifTargets.size(); i++) {
+        IfTarget* it = db.ifTargets[i];
+        
+        if (it->name == args["target"]) {
+            addVector(it->options, db.options);
+            addVector(it->types, db.types);
+        }
+    }
+
+
+    map<string, Type*> typeMap;
+
+    for (size_t i = 0; i < db.types.size(); i++) {
+        Type* type = db.types[i];
+        typeMap[type->name] = type;
+    }
     for (size_t i = 0; i < objects.size(); i++)  {
         if (objects[i]->parentObject)
             objects[i]->parentObject->children.push_back(objects[i]);
         int objOffset = objects[i]->getLastFieldOffset();
         for (size_t i2 = 0; i2 < objects[i]->fields.size(); i2++) {
             xml::Field* fld = objects[i]->fields[i2];
+            if (typeMap.find(fld->typeName) == typeMap.end())
+                throw XMLExcept(fld->pos, "Type is invalid : " + fld->typeName);
+            fld->type = typeMap[fld->typeName];
+ 
             fld->offset = objOffset - objects[i]->fields.size() + i2;
         }
     }

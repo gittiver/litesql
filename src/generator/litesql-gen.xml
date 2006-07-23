@@ -15,10 +15,12 @@ Database* db;
 Object * obj;
 Relation * rel;
 Field * fld;
+Type* type;
 Method * mtd;
 Index * idx;
 Option* option;
 IfBackend* ifBackend;
+IfTarget* ifTarget;
 Relate* relate;
 
 Position getPosition() {
@@ -31,6 +33,7 @@ db = new Database(getPosition());
 db->name = safe({name});
 db->include = safe({include});
 db->nspace = safe({namespace});
+initBaseTypes(*db);
 ]]></start>
 <start tag="object"><![CDATA[
 db->objects.push_back(obj = new Object(getPosition(), {name}, safe({inherits}), {temporary}));
@@ -48,6 +51,8 @@ rel = NULL;
 option = new Option(getPosition(), {name}, {value});
 if (ifBackend)
     ifBackend->options.push_back(option);
+else if (ifTarget)
+    ifTarget->options.push_back(option);
 else if (obj)
     obj->options.push_back(option);
 else if (rel)
@@ -68,6 +73,13 @@ else
 <end tag="if-backend"><![CDATA[
 ifBackend = NULL;
 ]]></end>
+<start tag="if-target"><![CDATA[
+ifTarget = new IfTarget(getPosition(), {name});
+db->ifTargets.push_back(ifTarget);
+]]></start>
+<end tag="if-target"><![CDATA[
+ifTarget = NULL;
+]]></end>
 <start tag="include"><![CDATA[
 yyin = fopen({file}, "r");
 if (!yyin) {
@@ -80,6 +92,18 @@ yylineno = 1;
 yypush_buffer_state(yy_create_buffer(yyin, 16834));
 
 ]]></start>
+<start tag="type"><![CDATA[
+type = new Type(getPosition(), {name}, {class}, {sqltype});
+if (ifBackend)
+    ifBackend->types.push_back(type);
+else if (ifTarget)
+    ifTarget->types.push_back(type);
+else
+    db->types.push_back(type);
+]]></start>
+<end tag="type"><![CDATA[
+type = NULL;
+]]></end>
 <start tag="field"><![CDATA[
 if (obj) {
     obj->fields.push_back(fld =new Field(getPosition(), {name}, 
@@ -106,6 +130,8 @@ if (idx)
 <start tag="value"><![CDATA[
 if (fld) 
     fld->value(Value(getPosition(), {name}, {value}));
+else if (type)
+    type->values.push_back(Value(getPosition(), {name}, {value}));
 ]]></start>
 <end tag="field"><![CDATA[
 fld = NULL;

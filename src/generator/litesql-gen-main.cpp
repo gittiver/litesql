@@ -38,7 +38,7 @@ void generateCode(xml::Database& db) {
     if (!args)
         throw litesql::Except("no arguments");
     string target = (*args)["target"];
-    xml::init(db);
+    xml::init(db, *args);
     if (target == "c++") 
         writeCPPClasses(db, *args);
     else if (target == "python")

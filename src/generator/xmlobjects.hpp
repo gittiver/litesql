@@ -9,7 +9,7 @@
 #include "litesql/except.hpp"
 #include "litesql/string.hpp"
 #include "litesql/split.hpp"
-
+#include "args.hpp"
 extern int yylineno;
 namespace xml {
 using namespace std;
@@ -18,6 +18,22 @@ string capitalize(const string& s);
 string decapitalize(const string& s);
 string safe(const char *s);
 string makeDBName(const string& s);
+
+template <class T> 
+vector<T> joinVector(const vector<T>& v1, const vector<T>& v2) {
+        vector<T> res;
+        res.reserve(v1.size() + v2.size());
+        copy(v1.begin(), v1.end(), back_inserter(res));
+        copy(v2.begin(), v2.end(), back_inserter(res));
+        return res;
+    }
+
+template <class T> 
+void addVector(const vector<T>& from, vector<T>& to) {
+        to.reserve(to.size() + from.size());
+        copy(from.begin(), from.end(), back_inserter(to));
+    }
+    
 
 class Position {
 public:
@@ -41,6 +57,15 @@ public:
     string name, value;
     Value(const Position& p, string n, string v) : XML(p), name(n), value(v) {}
 };
+class Type : public XML {
+public:
+    string name, class_, sqlType;
+    vector<Value> values;
+    Type(string n, string c, string st) : XML(Position("", 0)),
+        name(n), class_(c), sqlType(st) {}
+    Type(const Position& p, string n, string c, string st)
+       : XML(p), name(n), class_(c), sqlType(st) {}
+};
 class IndexField : public XML {
 public:
     string name;
@@ -60,14 +85,15 @@ class Field : public XML {
 public:
     string name;
     string fieldTypeName;
-    string type;
+    string typeName;
+    Type* type;
     string default_;
     AT_field_indexed indexed;
     AT_field_unique unique;
     vector<Value> values;
     int offset;
-    Field(const Position& p, string n, AT_field_type t, string d, AT_field_indexed i, AT_field_unique u) 
-       : XML(p), name(n), fieldTypeName(capitalize(n)), type(t), default_(d), indexed(i), unique(u) {
+    Field(const Position& p, string n, string t, string d, AT_field_indexed i, AT_field_unique u) 
+       : XML(p), name(n), fieldTypeName(capitalize(n)), typeName(t), type(NULL), default_(d), indexed(i), unique(u) {
     }
     void value(const Value& v) {
         values.push_back(v);
@@ -100,45 +126,14 @@ public:
         return default_;
     }
     string getSQLType() const {
-/*       switch(type) {
-           case A_field_type_integer: return "INTEGER";
-           case A_field_type_string: return "TEXT";
-           case A_field_type_float: return "FLOAT";
-           case A_field_type_boolean: return "INTEGER";
-           case A_field_type_date: return "DATE";
-           case A_field_type_time: return "VARCHAR(10)";
-           case A_field_type_datetime: return "TIMESTAMP";
-           default: return "";
-       }*/
-       return "";
+        if (!type)
+            return "";
+        return type->sqlType;
     }
-    string getCPPType() const {
-    /*
-       switch(type) {
-           case A_field_type_integer: return "int";
-           case A_field_type_string: return "std::string";
-           case A_field_type_float: return "float";
-           case A_field_type_boolean: return "bool";
-           case A_field_type_date: return "litesql::Date";
-           case A_field_type_time: return "litesql::Time";
-           case A_field_type_datetime: return "litesql::DateTime";
-           default: return "";
-       }
-       */
-       return "";
-    }
-    string getPythonType() const {
-      /* switch(type) {
-           case A_field_type_integer: return "int";
-           case A_field_type_string: return "str";
-           case A_field_type_float: return "float";
-           case A_field_type_boolean: return "int";
-           case A_field_type_date: return "litesql.Date";
-           case A_field_type_time: return "litesql.Time";
-           case A_field_type_datetime: return "litesql.DateTime";
-           default: return "";
-       }*/
-       return "";
+    string getClass() const {
+        if (!type)
+            return "";
+        return type->class_;
     }
 
 };
@@ -213,9 +208,21 @@ class IfBackend : public XML {
 public:
     string name;
     vector<Option*> options;
+    vector<Type*> types;
     IfBackend(const Position& p, const string& n) 
        : XML(p), name(n) {}
 };
+class IfTarget : public XML {
+public:
+    string name;
+    vector<Option*> options;
+    vector<Type*> types;
+    IfTarget(const string& n)
+       : XML(Position("", 0)), name(n) {}
+    IfTarget(const Position& p, const string& n) 
+       : XML(p), name(n) {}
+};
+
 class Relation : public XML {
 public:
     string id, name;
@@ -395,13 +402,16 @@ public:
     vector<Relation*> relations;
     vector<Option*> options;
     vector<IfBackend*> ifBackends;
+    vector<IfTarget*> ifTargets;
+    vector<Type*> types;
 
     string name, include, nspace;
 
     Database(const Position& p) : XML(p) {}
 
 };
-void init(Database& db);
+void initBaseTypes(Database& db);
+void init(Database& db, Args& args);
 
 
 }

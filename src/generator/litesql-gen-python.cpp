@@ -31,7 +31,7 @@ void writeObject(Block& pre, Block& post,
         Split ftype;
         ftype.push_back(quote(fld->name));
         ftype.push_back(quote(fld->name + "_"));
-        ftype.push_back(fld->getPythonType());
+        ftype.push_back(fld->getClass());
         ftype.push_back(quote(o.getTable()));
         ftype.push_back(toString(fld->offset));
         ftype.push_back(fld->getQuotedDefaultValue());
@@ -143,7 +143,7 @@ void writeRelation(Block& pre, Block& post,
         Split ftype;
         ftype.push_back(quote(fld->name));
         ftype.push_back(quote(fld->name + "_"));
-        ftype.push_back(fld->getPythonType());
+        ftype.push_back(fld->getClass());
         ftype.push_back(quote(r.getTable()));
         ftype.push_back(toString(r.related.size() + i));
         fields.push_back("litesql.FieldType" + brackets(ftype.join(", ")));

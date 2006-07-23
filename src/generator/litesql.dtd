@@ -1,5 +1,5 @@
 <!-- top level database information -->
-<!ELEMENT database (object|relation|include|type|option|if-backend)+>
+<!ELEMENT database (object|relation|include|type|option|if-backend|if-target)+>
 <!ATTLIST database
           name ID #REQUIRED
           namespace NMTOKEN #REQUIRED
@@ -13,7 +13,7 @@
           inherits NMTOKEN #IMPLIED>
           
 <!-- Custom data type -->          
-<!ELEMENT type EMPTY>
+<!ELEMENT type (value*)>
 <!ATTLIST type
           name NMTOKEN #REQUIRED
           class CDATA #REQUIRED
@@ -24,9 +24,14 @@
 <!ATTLIST include
           file CDATA #REQUIRED>
           
-<!-- backend specific options -->          
-<!ELEMENT if-backend (option)*>
+<!-- backend specific options and types -->          
+<!ELEMENT if-backend (option|type)*>
 <!ATTLIST if-backend
+          name CDATA #IMPLIED>
+
+<!-- target specific options and types -->          
+<!ELEMENT if-target (option|type)*>
+<!ATTLIST if-target
           name CDATA #IMPLIED>
           
 <!ELEMENT option EMPTY>
@@ -38,7 +43,6 @@
 <!ATTLIST field 
           name NMTOKEN #REQUIRED
           type NMTOKEN #REQUIRED
-          sqltype CDATA #IMPLIED
           default CDATA #IMPLIED
           indexed (true|false) "false"
           unique (true|false) "false">

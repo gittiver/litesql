@@ -1,5 +1,5 @@
 /* XML processor/application API for litesql.dtd.
- * Generated 2006/07/19 22:47:47.
+ * Generated 2006/07/23 18:01:06.
  *
  * This program was generated with the FleXML XML processor generator.
  * FleXML is Copyright © 1999-2005 Kristoffer Rose.  All rights reserved.
@@ -58,6 +58,8 @@ extern void STag_include(void);
 extern void ETag_include(void);
 extern void STag_if_d_backend(void);
 extern void ETag_if_d_backend(void);
+extern void STag_if_d_target(void);
+extern void ETag_if_d_target(void);
 extern void STag_option(void);
 extern void ETag_option(void);
 extern void STag_field(void);
@@ -103,8 +105,6 @@ typedef const char* AT_method_returntype;
 #define AU_method_returntype NULL
 typedef const char* AT_param_type;
 #define AU_param_type NULL
-typedef const char* AT_field_sqltype;
-#define AU_field_sqltype NULL
 typedef const char* AT_relate_remotehandle;
 #define AU_relate_remotehandle NULL
 typedef const char* AT_indexfield_name;
@@ -134,6 +134,8 @@ typedef const char* AT_field_type;
 #define AU_field_type NULL
 typedef const char* AT_type_class;
 #define AU_type_class NULL
+typedef const char* AT_if_d_target_name;
+#define AU_if_d_target_name NULL
 typedef const char* AT_include_file;
 #define AU_include_file NULL
 typedef enum { AU_relate_owner, A_relate_owner_true,A_relate_owner_false } AT_relate_owner;
@@ -159,7 +161,6 @@ extern AT_method_name A_method_name;
 extern AT_field_default A_field_default;
 extern AT_method_returntype A_method_returntype;
 extern AT_param_type A_param_type;
-extern AT_field_sqltype A_field_sqltype;
 extern AT_relate_remotehandle A_relate_remotehandle;
 extern AT_indexfield_name A_indexfield_name;
 extern AT_option_value A_option_value;
@@ -176,6 +177,7 @@ extern AT_index_unique A_index_unique;
 extern AT_param_name A_param_name;
 extern AT_field_type A_field_type;
 extern AT_type_class A_type_class;
+extern AT_if_d_target_name A_if_d_target_name;
 extern AT_include_file A_include_file;
 extern AT_relate_owner A_relate_owner;
 extern AT_relation_name A_relation_name;

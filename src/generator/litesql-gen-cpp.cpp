@@ -81,11 +81,11 @@ void writeObjFields(Class & cl, const xml::Object & o) {
             for (size_t v = 0; v < fld.values.size(); v++) {
                 const xml::Value& value = fld.values[v];
                 string v;
-                if (fld.getCPPType() == "std::string")
+                if (fld.getClass() == "std::string")
                     v = quote(value.value);
                 else
                     v = value.value;
-                Variable val(value.name, "const " + fld.getCPPType(), v);
+                Variable val(value.name, "const " + fld.getClass(), v);
 
                 val.static_();
                 ftypeCl.variable(val);
@@ -95,7 +95,7 @@ void writeObjFields(Class & cl, const xml::Object & o) {
 
         Variable ftype(fld.fieldTypeName, ftypeClass, data);
         ftype.static_();
-        Variable field(fld.name, "litesql::Field<" + fld.getCPPType() + ">");
+        Variable field(fld.name, "litesql::Field<" + fld.getClass() + ">");
         cl.variable(ftype);
         cl.variable(field);
         if (fld.values.size() > 0) {
@@ -103,11 +103,11 @@ void writeObjFields(Class & cl, const xml::Object & o) {
             for (size_t v = 0; v < fld.values.size(); v++) {
                 const xml::Value& value = fld.values[v];
                 string v;
-                if (fld.getCPPType() == "std::string")
+                if (fld.getClass() == "std::string")
                     v = quote(value.value);
                 else
                     v = value.value;
-                Variable val(value.name, "const " + fld.getCPPType(), v);
+                Variable val(value.name, "const " + fld.getClass(), v);
 
                 val.static_();
                 valueHolder.variable(val);
@@ -167,7 +167,7 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
             cons2.body("case " + toString(p+1) + ": " 
                        + o.fields[i]->name 
                        + " = convert<const std::string&, "
-                       + o.fields[i]->getCPPType() 
+                       + o.fields[i]->getClass() 
                        + ">(rec[" + toString(p) + "]);")
                 .body("    " + o.fields[i]->name + ".setModified(false);");
 
@@ -239,9 +239,9 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
             xml::Field& field = *rel->fields[i2];
             // FIXME: default-arvoiset parametrit viimeiseksi
 
-            link.param(Variable(field.name, field.getCPPType(), 
+            link.param(Variable(field.name, field.getClass(), 
                                 field.getQuotedDefaultValue()));
-            unlink.param(Variable(field.name, field.getCPPType()));
+            unlink.param(Variable(field.name, field.getClass()));
             params.push_back(field.name);
         }
         link.body(rel->getName() + "::link(" + params.join(", ") + ");");
@@ -557,11 +557,11 @@ void writeStaticRelData(Class& cl, const xml::Relation& r) {
             for (size_t v = 0; v < fld.values.size(); v++) {
                 const xml::Value& value = fld.values[v];
                 string v;
-                if (fld.getCPPType() == "std::string")
+                if (fld.getClass() == "std::string")
                     v = quote(value.value);
                 else
                     v = value.value;
-                Variable val(value.name, "const " + fld.getCPPType(), v);
+                Variable val(value.name, "const " + fld.getClass(), v);
                 
                 val.static_();
                 ftypeCl.variable(val);
@@ -585,7 +585,7 @@ void writeStaticRelData(Class& cl, const xml::Relation& r) {
     rowcons.body("switch(rec.size()) {");
     for (int i = r.fields.size()-1; i >= 0; i--) {
         const xml::Field& fld = *r.fields[i];
-        Variable fldvar(fld.name, "litesql::Field<" + fld.getCPPType() + ">");
+        Variable fldvar(fld.name, "litesql::Field<" + fld.getClass() + ">");
         rowcl.variable(fldvar);        
 
         rowcons.body("case " + toString(fieldNum) + ":")
@@ -641,7 +641,7 @@ void writeRelMethods(xml::Database& database,
         xml::Field& fld = *r.fields[i];
         
         link.body("fields.push_back(" + fld.fieldTypeName + ".name());");
-        if (fld.getCPPType() != "std::string")
+        if (fld.getClass() != "std::string")
             link.body("values.push_back(toString(" + fld.name + "));");
         else
             link.body("values.push_back(" + fld.name + ");");
@@ -659,7 +659,7 @@ void writeRelMethods(xml::Database& database,
             xml::Field& fld = *r.fields[i];
         
             link.body("fields.push_back(" + fld.fieldTypeName + ".name());");
-            if (fld.getCPPType() != "std::string")
+            if (fld.getClass() != "std::string")
                 link.body("values.push_back(toString(" + fld.name + "));");
             else
                 link.body("values.push_back(" + fld.name + ");");
@@ -719,9 +719,9 @@ void writeRelMethods(xml::Database& database,
     }
     for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
         xml::Field& fld = *r.fields[i2];
-        link.param(Variable(fld.name, fld.getCPPType(), 
+        link.param(Variable(fld.name, fld.getClass(), 
                             fld.getQuotedDefaultValue()));
-        unlink.param(Variable(fld.name,  fld.getCPPType()));
+        unlink.param(Variable(fld.name,  fld.getClass()));
     }
     cl.method(link).method(unlink).method(del).method(getRows);
     if (r.sameTypes() == 1) {
@@ -930,7 +930,7 @@ void writeCPPClasses(xml::Database& db, Args& args) {
     report("writing persistent objects\n");
     for (size_t i = 0; i < objects.size(); i++) {
         xml::Object & o = *objects[i];
-        Class cl(o.name, o.inherits);
+        Class cl(o.name, o.getInherits("c++"));
         writeStaticObjData(cl, o);
         writeObjFields(cl, o);       
         writeObjConstructors(cl, o);

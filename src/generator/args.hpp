@@ -3,7 +3,8 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "litesql.hpp"
+#include "litesql/split.hpp"
+#include "litesql/except.hpp"
 class Args {
     class Option {
     public:
