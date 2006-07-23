@@ -365,7 +365,7 @@ extern int yylex (void);
 #undef YY_DECL
 #endif
 
-#line 1247 "litesql-gen.l"
+#line 1255 "litesql-gen.l"
 
 
 #line 372 "scanner.hpp"

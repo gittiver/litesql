@@ -42,6 +42,10 @@ string convert<const bool&, string>(const bool& value) {
 }
 
 template <>
+int convert<const char*, int>(const char* value) {
+    return atoi(value);
+}
+template <>
 int convert<const string&, int>(const string& value) {
     return strtol(value.c_str(), NULL, 10);
 }

@@ -1,6 +1,6 @@
 /* XML application for litesql.dtd.
  * Includes actions from litesql-gen.xml.
- * Generated 2006/07/23 18:01:06.
+ * Generated 2006/07/23 18:08:43.
  *
  * This program was generated with the FleXML XML processor generator.
  * FleXML is Copyright © 1999-2005 Kristoffer Rose.  All rights reserved.
@@ -285,7 +285,7 @@ void STag_method(void)
 #line 139 "litesql-gen.xml"
 
 if (obj) {
-    obj->methods.push_back(mtd = new Method(getPosition(), A_method_name, safe(A_method_returntype)));
+    obj->methods.push_back(mtd = new Method(getPosition(), A_method_name, safe(A_method_returntype), A_method_const));
 }
 
 } /* STag_method */

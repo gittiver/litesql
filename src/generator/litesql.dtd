@@ -63,6 +63,7 @@
 <!ELEMENT method (param)*>
 <!ATTLIST method 
           name NMTOKEN #REQUIRED
+          const (true|false) "false"
           returntype CDATA 'void'>
 
 <!ELEMENT param EMPTY>

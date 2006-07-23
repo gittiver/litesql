@@ -138,7 +138,7 @@ fld = NULL;
 ]]></end>
 <start tag="method"><![CDATA[
 if (obj) {
-    obj->methods.push_back(mtd = new Method(getPosition(), {name}, safe({returntype})));
+    obj->methods.push_back(mtd = new Method(getPosition(), {name}, safe({returntype}), {const}));
 }
 ]]></start>
 <end tag="method"><![CDATA[

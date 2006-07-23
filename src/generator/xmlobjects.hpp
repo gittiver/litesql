@@ -148,13 +148,19 @@ public:
 class Method : public XML {
 public:
     string name, returnType;
+    AT_method_const const_;
     vector<Param> params;
-    Method(const Position& p, string n, string rt) 
-        : XML(p), name(n), returnType(rt){}
+    Method(const Position& p, 
+         string n, string rt, AT_method_const c)
+        : XML(p), name(n), returnType(rt), const_(c) {}
+    bool isConst() const {
+        return const_ == A_method_const_true;
+    }
     void param(const Param& p) {
         params.push_back(p);
     }
 };
+
 class Relation;
 class Relate;
 class Object;
@@ -180,9 +186,10 @@ public:
     AT_relate_unique unique;
     string handle;
     string remoteHandle;
+    Object* object;
     Relate(const Position& p, 
            string on, AT_relate_limit l, AT_relate_unique u, string h, string rh) 
-        : XML(p), objectName(on), limit(l), unique(u), handle(h), remoteHandle(rh) {
+        : XML(p), objectName(on), limit(l), unique(u), handle(h), remoteHandle(rh), object(NULL) {
         if (hasLimit() && isUnique())
             throw logic_error("both limit and unique specified in relate: line " + 
                               toString(yylineno));

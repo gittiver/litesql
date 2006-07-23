@@ -433,11 +433,14 @@ void init(Database& db, Args& args) {
         for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
             Relate& relate = *rel.related[i2];
             Object* obj = objMap[relate.objectName];
+            relate.paramPos = i2;
+
             string num;
             if (same)
                 num = toString(i2 + 1);
             relate.fieldTypeName = relate.objectName + num;
             relate.fieldName = relate.objectName + toString(i2 + 1);
+            relate.object = obj;
             if (obj->relations.find(&rel) == obj->relations.end())
                 obj->relations[&rel] = vector<Relate*>();
 

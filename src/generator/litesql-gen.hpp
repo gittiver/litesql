@@ -1,5 +1,5 @@
 /* XML processor/application API for litesql.dtd.
- * Generated 2006/07/23 18:01:06.
+ * Generated 2006/07/23 18:08:43.
  *
  * This program was generated with the FleXML XML processor generator.
  * FleXML is Copyright © 1999-2005 Kristoffer Rose.  All rights reserved.
@@ -127,6 +127,7 @@ typedef const char* AT_object_inherits;
 typedef const char* AT_value_value;
 #define AU_value_value NULL
 typedef enum { AU_relate_unique, A_relate_unique_true,A_relate_unique_false } AT_relate_unique;
+typedef enum { AU_method_const, A_method_const_true,A_method_const_false } AT_method_const;
 typedef enum { AU_index_unique, A_index_unique_true,A_index_unique_false } AT_index_unique;
 typedef const char* AT_param_name;
 #define AU_param_name NULL
@@ -173,6 +174,7 @@ extern AT_field_name A_field_name;
 extern AT_object_inherits A_object_inherits;
 extern AT_value_value A_value_value;
 extern AT_relate_unique A_relate_unique;
+extern AT_method_const A_method_const;
 extern AT_index_unique A_index_unique;
 extern AT_param_name A_param_name;
 extern AT_field_type A_field_type;
