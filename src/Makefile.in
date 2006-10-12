@@ -98,7 +98,7 @@ STRIP = @STRIP@
 VERSION = @VERSION@
 pkg_config_reqs_tv = @pkg_config_reqs_tv@
 
-SUBDIRS = library generator tests examples
+SUBDIRS = library generator tests examples libxmlreader
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 

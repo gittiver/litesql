@@ -1,0 +1,88 @@
+<!-- top level database information -->
+<!ELEMENT database (object|relation|include|type|option|if-backend|if-target)+>
+<!ATTLIST database
+          name ID #REQUIRED
+          namespace NMTOKEN #REQUIRED
+          include CDATA #IMPLIED>
+          
+<!-- persistent object -->
+<!ELEMENT object (field|method|index|option|if-backend|relate)*>
+<!ATTLIST object
+          temporary (true|false) 'false'
+          name ID #REQUIRED
+          inherits NMTOKEN #IMPLIED>
+          
+<!-- Custom data type -->          
+<!ELEMENT type (value*)>
+<!ATTLIST type
+          name NMTOKEN #REQUIRED
+          class CDATA #REQUIRED
+          sqltype CDATA #REQUIRED>
+
+<!-- Include another litesql definition -->
+<!ELEMENT include EMPTY>
+<!ATTLIST include
+          file CDATA #REQUIRED>
+          
+<!-- backend specific options and types -->          
+<!ELEMENT if-backend (option|type)*>
+<!ATTLIST if-backend
+          name CDATA #IMPLIED>
+
+<!-- target specific options and types -->          
+<!ELEMENT if-target (option|type)*>
+<!ATTLIST if-target
+          name CDATA #IMPLIED>
+          
+<!ELEMENT option EMPTY>
+<!ATTLIST option
+          name CDATA #REQUIRED
+          value CDATA #REQUIRED>
+          
+<!ELEMENT field (value)*>
+<!ATTLIST field 
+          name NMTOKEN #REQUIRED
+          type NMTOKEN #REQUIRED
+          default CDATA #IMPLIED
+          indexed (true|false) "false"
+          unique (true|false) "false">
+
+<!ELEMENT index (indexfield, (indexfield)+)>
+<!ATTLIST index 
+          unique (true|false) "false">
+          
+<!ELEMENT indexfield EMPTY>
+<!ATTLIST indexfield
+          name NMTOKEN #REQUIRED>
+          
+<!ELEMENT value EMPTY>
+<!ATTLIST value
+          name NMTOKEN #REQUIRED
+          value CDATA #REQUIRED>
+
+<!ELEMENT method (param)*>
+<!ATTLIST method 
+          name NMTOKEN #REQUIRED
+          const (true|false) "false"
+          returntype CDATA 'void'>
+
+<!ELEMENT param EMPTY>
+<!ATTLIST param
+          name NMTOKEN #REQUIRED
+          type CDATA #REQUIRED>
+          
+<!ELEMENT relation (relate|field|index|if-backend|option)*>
+<!ATTLIST relation
+          name NMTOKEN #IMPLIED
+          id NMTOKEN #IMPLIED
+          unidir (true|false) "false">
+
+<!ELEMENT relate EMPTY>
+<!ATTLIST relate
+          unique (true|false) "false"
+          limit (one|many) "many"
+          owner (true|false) "false"
+          object IDREF #REQUIRED
+          handle NMTOKEN #IMPLIED
+          remotehandle NMTOKEN #IMPLIED>
+

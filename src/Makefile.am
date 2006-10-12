@@ -1,1 +1,1 @@
-SUBDIRS=library generator tests examples
+SUBDIRS=library generator tests examples libxmlreader
