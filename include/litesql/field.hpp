@@ -73,7 +73,7 @@ T load(const std::string& value) {
 template <class T>
 class Field {
     const FieldType * field; 
-    bool _modified;
+    bool _modified; // TODO: int flags
     T _value;
 public:
     Field(const FieldType & f) : field(&f), _modified(true) {}
@@ -112,6 +112,9 @@ public:
     operator string() const { return toString(value()); }
 
     operator T() const { return value(); }
+
+    bool isNULL() const { return false; }
+    void setNULL() {}
 };
 
 template <>

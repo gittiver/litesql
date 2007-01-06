@@ -10,6 +10,7 @@
 
 #include "litesql/utils.hpp"
 #include "litesql/expr.hpp"
+#include "litesql/dbtypes.hpp"
 /** \file selectquery.hpp
     contains SelectQuery-class. See \ref usage_selecting_persistents */
 namespace litesql {
