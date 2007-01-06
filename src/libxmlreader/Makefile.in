@@ -99,21 +99,22 @@ VERSION = @VERSION@
 pkg_config_reqs_tv = @pkg_config_reqs_tv@
 
 AM_CXXFLAGS = -I$(srcdir)/../../include
-noinst_LIBRARIES = libxmlreader.a
-libxmlreader_a_SOURCES = scanner.cpp xmlreader-actions.cpp xmlreader.cpp stringutils.cpp
+noinst_LTLIBRARIES = libxmlreader.la
+libxmlreader_la_SOURCES = scanner.cpp xmlreader-actions.cpp xmlreader.cpp stringutils.cpp
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-LIBRARIES =  $(noinst_LIBRARIES)
+LTLIBRARIES =  $(noinst_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libxmlreader_a_LIBADD = 
-libxmlreader_a_OBJECTS =  scanner.$(OBJEXT) xmlreader-actions.$(OBJEXT) \
-xmlreader.$(OBJEXT) stringutils.$(OBJEXT)
+libxmlreader_la_LDFLAGS = 
+libxmlreader_la_LIBADD = 
+libxmlreader_la_OBJECTS =  scanner.lo xmlreader-actions.lo xmlreader.lo \
+stringutils.lo
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -128,8 +129,8 @@ TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/scanner.P .deps/stringutils.P \
 .deps/xmlreader-actions.P .deps/xmlreader.P
-SOURCES = $(libxmlreader_a_SOURCES)
-OBJECTS = $(libxmlreader_a_OBJECTS)
+SOURCES = $(libxmlreader_la_SOURCES)
+OBJECTS = $(libxmlreader_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -142,14 +143,14 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-noinstLIBRARIES:
+mostlyclean-noinstLTLIBRARIES:
 
-clean-noinstLIBRARIES:
-	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
 
-distclean-noinstLIBRARIES:
+distclean-noinstLTLIBRARIES:
 
-maintainer-clean-noinstLIBRARIES:
+maintainer-clean-noinstLTLIBRARIES:
 
 # FIXME: We should only use cygpath when building on Windows,
 # and only if it is available.
@@ -189,10 +190,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libxmlreader.a: $(libxmlreader_a_OBJECTS) $(libxmlreader_a_DEPENDENCIES)
-	-rm -f libxmlreader.a
-	$(AR) cru libxmlreader.a $(libxmlreader_a_OBJECTS) $(libxmlreader_a_LIBADD)
-	$(RANLIB) libxmlreader.a
+libxmlreader.la: $(libxmlreader_la_OBJECTS) $(libxmlreader_la_DEPENDENCIES)
+	$(CXXLINK)  $(libxmlreader_la_LDFLAGS) $(libxmlreader_la_OBJECTS) $(libxmlreader_la_LIBADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 .cpp.obj:
@@ -319,7 +318,7 @@ install-am: all-am
 install: install-am
 uninstall-am:
 uninstall: uninstall-am
-all-am: Makefile $(LIBRARIES)
+all-am: Makefile $(LTLIBRARIES)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
@@ -335,25 +334,25 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-noinstLIBRARIES mostlyclean-compile \
+mostlyclean-am:  mostlyclean-noinstLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-noinstLIBRARIES clean-compile clean-libtool clean-tags \
-		clean-depend clean-generic mostlyclean-am
+clean-am:  clean-noinstLTLIBRARIES clean-compile clean-libtool \
+		clean-tags clean-depend clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-noinstLIBRARIES distclean-compile \
+distclean-am:  distclean-noinstLTLIBRARIES distclean-compile \
 		distclean-libtool distclean-tags distclean-depend \
 		distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-noinstLIBRARIES \
+maintainer-clean-am:  maintainer-clean-noinstLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-depend \
 		maintainer-clean-generic distclean-am
@@ -362,8 +361,8 @@ maintainer-clean-am:  maintainer-clean-noinstLIBRARIES \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-noinstLIBRARIES distclean-noinstLIBRARIES \
-clean-noinstLIBRARIES maintainer-clean-noinstLIBRARIES \
+.PHONY: mostlyclean-noinstLTLIBRARIES distclean-noinstLTLIBRARIES \
+clean-noinstLTLIBRARIES maintainer-clean-noinstLTLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
