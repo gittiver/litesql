@@ -171,7 +171,8 @@ LIBS="$LIBS ${MYSQL_LIBS}"
 
 AC_PROG_LIBTOOL
 AC_OUTPUT(Makefile include/Makefile include/litesql/Makefile src/Makefile 
-          src/library/Makefile src/generator/Makefile src/tests/Makefile src/examples/Makefile
+          src/library/Makefile src/generator/Makefile src/tests/Makefile
+          src/examples/Makefile src/libxmlreader/Makefile
           docs/Makefile docs/doxygen/Makefile rpm/Makefile pkg/Makefile debian/Makefile
           docs/doxygen/doxygen.conf rpm/litesql.spec pkg/litesql-config pkg/litesql.pc) 
 
