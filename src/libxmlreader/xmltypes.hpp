@@ -48,13 +48,15 @@ namespace xml {
 
             std::string name, class_, sqlType;
             std::vector<Value> values;
+            bool quotedValue;
 
-            Type(std::string n, std::string c, std::string st) 
-                : XML(Position("", 0)), name(n), class_(c), sqlType(st) {}
+            Type(std::string n, std::string c, std::string st, bool qv) 
+                : XML(Position("", 0)), name(n), class_(c), sqlType(st),
+                  quotedValue(qv) {}
 
             Type(const Position& p, std::string n, std::string c, 
                  std::string st)
-                : XML(p), name(n), class_(c), sqlType(st) {}
+                : XML(p), name(n), class_(c), sqlType(st), quotedValue(true) {}
     };
 
     class IndexField : public XML {
@@ -92,26 +94,19 @@ namespace xml {
                   unique(u == A_field_unique_true) {
                 }
 
-            bool isIndexed() const {
 
-                return indexed == A_field_indexed_true;
-            }
-
-            bool isUnique() const {
-
-                return unique == A_field_unique_true;
-            }
-
-
-
+            bool hasQuotedValues() const;
+            std::string getQuotedDefaultValue() const;
+            std::string getSQLType() const;
+            std::string getClass() const;
     };
 
     class Param : public XML {
         public:
 
             std::string name;
-            AT_param_type type;
-            Param(const Position& p, std::string n, AT_param_type t) 
+            std::string type;
+            Param(const Position& p, std::string n, std::string t) 
                 : XML(p), name(n), type(t) {}
 
     };
@@ -224,6 +219,18 @@ namespace xml {
                 : XML(p), id(i), name(n), unidir(ud == A_relation_unidir_true) 
                   {}
 
+            std::string getTable() const;
+            int countTypes(const std::string& obj) const;
+            int maxSameTypes() const;
+
+    };
+
+    class Check : public XML {
+        public:
+            
+            std::string function;
+
+            Check(const Position& p, std::string f) : XML(p), function(f) {}
     };
     class Object : public XML {
         public:
@@ -240,6 +247,7 @@ namespace xml {
             std::vector<Option*> options;
             std::vector<IfBackend*> ifBackends;
             std::vector<Relate*> related;
+            std::vector<Check*> checks;
             Object* parentObject;
 
             Object(const Position& p, std::string n, std::string i, AT_object_temporary t) 
@@ -248,7 +256,51 @@ namespace xml {
                   parentObject(NULL) {
                  }
 
+            int getLastFieldOffset() const;
+            void getAllFields(std::vector<Field*>& flds) const;
+            void getChildrenNames(litesql::Split& names) const;
+            const Object* getBaseObject() const;
+            std::string getTable() const;
+            std::string getSequence() const;
+
+
+
     };
+
+    class DbSequence {
+    public:
+        std::string name;
+    };
+
+    class DbTable;
+    class DbField {
+    public:
+        std::string name, type;
+        bool primaryKey, unique;
+        Field* field;
+        DbField* references; // TODO: m‰‰ritt‰minen
+        DbTable* table;
+
+        DbField() : primaryKey(false), unique(false) {}
+    };
+
+    class DbIndex {
+    public:
+        std::string name, table;
+        bool unique;
+        std::vector<DbField*> fields;
+        DbIndex() : unique(false) {}
+    };
+
+    class DbTable {
+    public:
+        std::string name;
+        std::vector<DbField*> fields;
+        std::vector<IfBackend*> ifBackends;
+        std::vector<Option*> options;
+    };
+
+
 
     class Database : public XML {
         public:
@@ -258,6 +310,10 @@ namespace xml {
             std::vector<IfBackend*> ifBackends;
             std::vector<IfTarget*> ifTargets;
             std::vector<Type*> types;
+
+            std::vector<DbSequence*> sequences;
+            std::vector<DbIndex*> indices;
+            std::vector<DbTable*> tables;
 
             std::string name, include, nspace;
 

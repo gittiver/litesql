@@ -7,5 +7,6 @@ namespace xml {
     std::string capitalize(const std::string& s);
     std::string decapitalize(const std::string& s);
     std::string safe(const char * s);
+    std::string makeDbName(const std::string& s);
 }
 #endif

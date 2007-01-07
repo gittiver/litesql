@@ -3,10 +3,8 @@
 #include <string>
 #include <list>
 #include "args.hpp"
-#include "xmlobjects.hpp"
+#include "xmlreader.hpp"
 
-extern std::list<xml::Position> posStack;
-extern std::string currentFile;
 std::string quote(const std::string& s);
 std::string brackets(const std::string& s);
 std::string sqbrackets(const std::string& s);

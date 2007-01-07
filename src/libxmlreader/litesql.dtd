@@ -11,7 +11,13 @@
           temporary (true|false) 'false'
           name ID #REQUIRED
           inherits NMTOKEN #IMPLIED>
-          
+
+<!-- Consistency check -->
+<!ELEMENT check EMPTY>
+<!ATTLIST check
+          function NMTOKEN #REQUIRED>
+
+
 <!-- Custom data type -->          
 <!ELEMENT type (value*)>
 <!ATTLIST type

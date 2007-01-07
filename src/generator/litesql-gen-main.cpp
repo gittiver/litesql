@@ -1,5 +1,6 @@
 #include <cstdio>
 #include "litesql.hpp"
+#include "xmlreader.hpp"
 #include "litesql-gen-cpp.hpp"
 #include "litesql-gen-graphviz.hpp"
 #include "litesql-gen-python.hpp"
@@ -58,11 +59,12 @@ int parseFile(const string& name, FILE** yyin) {
     int ret = yylex();
     return ret;
 }
-int litesql_gen_main(int argc, char **argv, FILE ** yyin) { 
+int main(int argc, char **argv) { 
     bool printHelp = false;
-    args = new Args(argc, argv);
     try {
-         (*args)
+        Args args(argc, argv);
+        ::args = &args;
+        args
             .option("verbose", "-v", "--verbose")
             .option("target", "-t", "--target", true, false, "c++")
             .option("help", "-h", "--help")
@@ -71,23 +73,21 @@ int litesql_gen_main(int argc, char **argv, FILE ** yyin) {
             .option("cppext", "", "--cpp-ext", true, false, "cpp")
             .option("hppext", "", "--hpp-ext", true, false, "hpp")
             .parse();
-    } catch (litesql::Except e) {
-        cerr << e << endl;
-        return -1;
-    }
-    if (args->has("help")) {
-        fprintf(stderr, help);
-        return -1;
-    }
-    if (args->has("verbose"))
-        verbose = true;
-    litesql::Split params = args->getParams();
-    if (params.size() != 1) {
-        cerr << "Usage: litesql-gen [options] <database.xml>" << endl << endl;
-        return -1;
-    }
-    try {
-        parseFile(argv[argc-1], yyin);
+        if (args->has("help")) {
+            fprintf(stderr, help);
+            return -1;
+        }
+        if (args->has("verbose"))
+            verbose = true;
+        litesql::Split params = args->getParams();
+        if (params.size() != 1) {
+            cerr << "Usage: litesql-gen [options] <database.xml>" 
+                 << endl << endl;
+            return -1;
+        }
+        Database* db = xml::parse(params[0]);
+        generateCode(*db);    
+
     } catch (litesql::Except e) {
         cerr << "Error: " << e << endl;
         return -1;

@@ -1,6 +1,6 @@
+#include "flexml-header.hpp"
 #include "xmlreader-actions.hpp"
 #include "xmltypes.hpp"
-
 #include "scanner.hpp"
 #include <list>
 
@@ -239,8 +239,11 @@ void ETag_database(void) {
 
 extern FILE * yyin;
 
-
-/* XML application entry points. */
+void STag_check(void) {
+    if (obj)
+        obj->checks.push_back(new Check(getPosition(), A_check_function));
+}
+void ETag_check(void) {}
 void ETag_include(void) {}
 void ETag_option(void) {}
 void ETag_indexfield(void) {}

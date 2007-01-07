@@ -1,4 +1,5 @@
 #include "stringutils.hpp"
+#include "md5.hpp"
 namespace xml {
 
     using namespace std;
@@ -25,5 +26,11 @@ namespace xml {
             return s;
         return "";
     }
+
+    string makeDBName(const string& s) {
+        if (s.size() > 31)
+            return "_" + md5HexDigest(s);
+    }
+
 }
 
