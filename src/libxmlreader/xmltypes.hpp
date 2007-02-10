@@ -30,70 +30,159 @@ namespace xml {
     class XML {
         public:
 
-            Position pos;
+            const Position pos;
             XML(const Position& p) : pos(p) {}
+    };
+
+    class Represent : public XML {
+        public:
+
+            const std::string as, target;
+
+            Represent(const Position& p, 
+                      const std::string& a,
+                      const std::string& t)
+                : XML(p), as(a), target(t) {}                      
+            
+    };
+
+    class Store : public XML {
+        public:
+
+            const std::string as, backend;
+
+            Store(const Position& p,
+                  const std::string& a,
+                  const std::string& b)
+                : XML(p), as(a), backend(b) {}                  
     };
 
     class Value : public XML {
         public:
 
-            std::string name, value;
+            const std::string name, value;
 
-            Value(const Position& p, std::string n, std::string v) 
+            Value(const Position& p, 
+                  const std::string& n, 
+                  const std::string& v) 
                : XML(p), name(n), value(v) {}
+    };
+
+    class Check : public XML {
+        public:
+            
+            const std::string function, param;
+
+            Check(const Position& p, 
+                  const std::string& f,
+                  const std::string& pa)
+                : XML(p), function(f), param(pa) {}
     };
 
     class Type : public XML {
         public:
 
-            std::string name, class_, sqlType;
-            std::vector<Value> values;
-            bool quotedValue;
+            const std::string name;
+            const bool quotedValue;
+            std::vector<Represent*> represents;
+            std::vector<Store*> stores;
+            std::vector<Value*> values;
+            std::vector<Check*> checks;
 
-            Type(std::string n, std::string c, std::string st, bool qv) 
-                : XML(Position("", 0)), name(n), class_(c), sqlType(st),
-                  quotedValue(qv) {}
+            Type(const std::string& n, bool qv) 
+                : XML(Position("", 0)), name(n), quotedValue(qv) {}
 
-            Type(const Position& p, std::string n, std::string c, 
-                 std::string st)
-                : XML(p), name(n), class_(c), sqlType(st), quotedValue(true) {}
+            Type(const Position& p, 
+                 const std::string& n)
+                : XML(p), name(n), quotedValue(true) {}
     };
 
     class IndexField : public XML {
         public:
 
-            std::string name;
-            IndexField(const Position& p, std::string n) : XML(p), name(n) {}
+            const std::string name;
+
+            IndexField(const Position& p, 
+                       const std::string& n) 
+                : XML(p), name(n) {}
     };
 
     class Index : public XML {
         public:
 
-            std::vector<IndexField> fields;
-            bool unique;
-            Index(const Position& p, AT_index_unique u) 
+            std::vector<IndexField*> fields;
+            const bool unique;
+
+            Index(const Position& p, 
+                  AT_index_unique u) 
               : XML(p), unique(u == A_index_unique_true) {}
+    };
+
+    class Param : public XML {
+        public:
+
+            const std::string name;
+            const std::string type;
+
+            Param(const Position& p, 
+                  const std::string& n, 
+                  const std::string& t) 
+                : XML(p), name(n), type(t) {}
+    };
+
+    class Method : public XML {
+        public:
+
+            const std::string name, returnType;
+            const bool const_;
+            std::vector<Param*> params;
+
+            Method(const Position& p, 
+                   const std::string& n, 
+                   const std::string& rt, 
+                   AT_method_const c)
+                : XML(p), name(n), returnType(rt), 
+                  const_(c == A_method_const_true) {}
+
+    };
+
+    class Interface : public XML {
+        public:
+
+            const std::string name;
+            std::vector<Method*> methods;
+
+            Interface(const Position& p, 
+                      const std::string& n)
+                : XML(p), name(n) {}
+                    
     };
 
     class Field : public XML {
         public:
 
-            std::string name;
-            std::string fieldTypeName;
-            std::string typeName;
+            const std::string name;
+            const std::string fieldTypeName;
+            const std::string typeName;
+            const std::string default_;
+            const bool indexed, unique;
             Type* type;
-            std::string default_;
-            bool indexed, unique;
-            std::vector<Value> values;
+            std::vector<Value*> values;
+            std::vector<Check*> checks;
             int offset;
 
-            Field(const Position& p, std::string n, std::string t, std::string d, AT_field_indexed i, AT_field_unique u) 
-                : XML(p), name(n), fieldTypeName(capitalize(n)), typeName(t), 
+            Field(const Position& p, 
+                  const std::string& n, 
+                  const std::string& t, 
+                  const std::string& d, 
+                  AT_field_indexed i, 
+                  AT_field_unique u) 
+                : XML(p), 
+                  name(n), 
+                  fieldTypeName(capitalize(n)), typeName(t), 
                   type(NULL), default_(d), 
                   indexed(i == A_field_indexed_true), 
-                  unique(u == A_field_unique_true) {
-                }
-
+                  unique(u == A_field_unique_true) {}
 
             bool hasQuotedValues() const;
             std::string getQuotedDefaultValue() const;
@@ -101,143 +190,112 @@ namespace xml {
             std::string getClass() const;
     };
 
-    class Param : public XML {
-        public:
-
-            std::string name;
-            std::string type;
-            Param(const Position& p, std::string n, std::string t) 
-                : XML(p), name(n), type(t) {}
-
-    };
-
-    class Method : public XML {
-        public:
-
-            std::string name, returnType;
-            bool const_;
-            std::vector<Param> params;
-
-            Method(const Position& p, 
-                    std::string n, std::string rt, AT_method_const c)
-                : XML(p), name(n), returnType(rt), 
-                const_(c == A_method_const_true) {}
-
-    };
 
     class Relation;
     class Object;
 
-
     class Relate : public XML {
         public:
 
-            std::string objectName;
+            const std::string objectName, interfaceName;
             std::string fieldTypeName, fieldName;
-            std::string getMethodName;
+            const bool limit, unique;
+            const std::string handle;
             int paramPos;
-            bool limit, unique;
-            std::string handle;
-            std::string remoteHandle;
             Object* object;
+            Interface* interface;
 
             Relate(const Position& p, 
-                    std::string on, AT_relate_limit l, AT_relate_unique u, 
-                    std::string h, std::string rh) 
-                : XML(p), objectName(on), 
-                limit(l == A_relate_limit_one), 
-                unique(u == A_relate_unique_true), 
-                handle(h), remoteHandle(rh), object(NULL) {
+                   const std::string& on, 
+                   const std::string& in,
+                   AT_relate_limit l, 
+                   AT_relate_unique u, 
+                   const std::string& h) 
+                : XML(p), objectName(on), interfaceName(in),
+                  limit(l == A_relate_limit_one), 
+                  unique(u == A_relate_unique_true), 
+                  handle(h), object(NULL), interface(NULL) {
                     if (limit && unique)
                         throw XMLExcept(p, "both limit and unique "
                                 "specified in relate");
                 }
     };
+
+    
     class RelationHandle : public XML {
         public:
 
-            std::string name;
+            const std::string name;
             Relation * relation;
             Relate * relate;
             Object * object;
             std::vector< std::pair<Object*,Relate*> > destObjects;
 
             RelationHandle(const Position& p, 
-                    std::string n, Relation * r, Relate * rel, Object * o) 
+                           const std::string& n, 
+                           Relation* r, 
+                           Relate* rel, 
+                           Object* o) 
                 : XML(p), name(n), relation(r), relate(rel), object(o) {}
     };
-
 
 
     class Option : public XML {
         public:
 
-            std::string name, value;
+            const std::string name, value, backend;
+            
 
-            Option(const Position& p, const std::string& n, const std::string& v) 
-                : XML(p), name(n), value(v) {}
+            Option(const Position& p, 
+                   const std::string& n, 
+                   const std::string& v, 
+                   const std::string& be)
+                : XML(p), name(n), value(v), backend(be) {}
     };
 
-    class IfBackend : public XML {
-        public:
-
-            std::string name;
-            std::vector<Option*> options;
-            std::vector<Type*> types;
-
-            IfBackend(const Position& p, const std::string& n) 
-                : XML(p), name(n) {}
-    };
-
-    class IfTarget : public XML {
-        public:
-
-            std::string name;
-            std::vector<Option*> options;
-            std::vector<Type*> types;
-
-            IfTarget(const std::string& n)
-                : XML(Position("", 0)), name(n) {}
-
-            IfTarget(const Position& p, const std::string& n) 
-                : XML(p), name(n) {}
-    };
 
     class Relation : public XML {
         public:
 
-            std::string id, name;
-            std::string table;
-            bool unidir;
+            const std::string id;
+            const std::string table;
+            const bool unidir;
+            std::string name;
             std::vector<Relate*> related;
             std::vector<Field*> fields;
             std::vector<Index*> indices;
             std::vector<Option*> options;
-            std::vector<IfBackend*> ifBackends;
 
-            Relation(const Position& p, std::string i, std::string n, AT_relation_unidir ud) 
+            Relation(const Position& p, 
+                     const std::string& i, 
+                     const std::string& n, 
+                     AT_relation_unidir ud) 
                 : XML(p), id(i), name(n), unidir(ud == A_relation_unidir_true) 
                   {}
 
             std::string getTable() const;
             int countTypes(const std::string& obj) const;
             int maxSameTypes() const;
-
     };
 
-    class Check : public XML {
+    class Implements : public XML {
         public:
-            
-            std::string function;
 
-            Check(const Position& p, std::string f) : XML(p), function(f) {}
+            const std::string interfaceName;
+            Interface* interface;
+
+            Implements(const Position& p, 
+                       const std::string& i)
+                : XML(p), interfaceName(i), interface(NULL) {}
     };
+
     class Object : public XML {
         public:
 
-            std::string name, inherits;
-            bool temporary;
+            const std::string name, inherits;
+            const bool temporary;
 
+            std::vector<Implements*> implements;
             std::vector<Field*> fields;
             std::vector<Method*> methods;
             std::vector<Index*> indices;
@@ -245,12 +303,13 @@ namespace xml {
             std::map<Relation*, std::vector<Relate*> > relations;
             std::vector<Object*> children;
             std::vector<Option*> options;
-            std::vector<IfBackend*> ifBackends;
-            std::vector<Relate*> related;
             std::vector<Check*> checks;
             Object* parentObject;
 
-            Object(const Position& p, std::string n, std::string i, AT_object_temporary t) 
+            Object(const Position& p, 
+                   const std::string& n, 
+                   const std::string& i, 
+                   AT_object_temporary t) 
                 : XML(p), name(n), inherits(i), 
                   temporary(t == A_object_temporary_true),
                   parentObject(NULL) {
@@ -262,9 +321,6 @@ namespace xml {
             const Object* getBaseObject() const;
             std::string getTable() const;
             std::string getSequence() const;
-
-
-
     };
 
     class DbSequence {
@@ -296,7 +352,6 @@ namespace xml {
     public:
         std::string name;
         std::vector<DbField*> fields;
-        std::vector<IfBackend*> ifBackends;
         std::vector<Option*> options;
     };
 
@@ -305,19 +360,22 @@ namespace xml {
     class Database : public XML {
         public:
             std::vector<Object*> objects;
+            std::vector<Interface*> interfaces;
             std::vector<Relation*> relations;
             std::vector<Option*> options;
-            std::vector<IfBackend*> ifBackends;
-            std::vector<IfTarget*> ifTargets;
             std::vector<Type*> types;
 
             std::vector<DbSequence*> sequences;
             std::vector<DbIndex*> indices;
             std::vector<DbTable*> tables;
 
-            std::string name, include, nspace;
+            const std::string name, include, nspace;
 
-            Database(const Position& p) : XML(p) {}
+            Database(const Position& p, 
+                     const std::string& n,
+                     const std::string& i,
+                     const std::string& ns) 
+                : XML(p), name(n), include(i), nspace(ns) {}
 
     };
 

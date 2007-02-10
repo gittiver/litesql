@@ -1,51 +1,64 @@
 <!-- top level database information -->
-<!ELEMENT database (object|relation|include|type|option|if-backend|if-target)+>
+<!ELEMENT database (object|relation|include|type|option)+>
 <!ATTLIST database
           name ID #REQUIRED
           namespace NMTOKEN #REQUIRED
           include CDATA #IMPLIED>
           
 <!-- persistent object -->
-<!ELEMENT object (field|method|index|option|if-backend|relate)*>
+<!ELEMENT object (field|method|index|option|implements|check)*>
 <!ATTLIST object
           temporary (true|false) 'false'
           name ID #REQUIRED
           inherits NMTOKEN #IMPLIED>
 
+<!-- interface -->
+<!ELEMENT interface (method)*>
+<!ATTLIST interface
+          name ID #REQUIRED>
+
+<!-- implements interface -->
+<!ELEMENT implements EMPTY>
+<!ATTLIST implements
+          interface NMTOKEN #REQUIRED>
+
 <!-- Consistency check -->
 <!ELEMENT check EMPTY>
 <!ATTLIST check
-          function NMTOKEN #REQUIRED>
-
+          function NMTOKEN #REQUIRED
+          param    CDATA   #IMPLIED>
 
 <!-- Custom data type -->          
-<!ELEMENT type (value*)>
+<!ELEMENT type ((represent)*, (store)*, (value)*, (check)*)>
 <!ATTLIST type
-          name NMTOKEN #REQUIRED
-          class CDATA #REQUIRED
-          sqltype CDATA #REQUIRED>
+          name NMTOKEN #REQUIRED>
+
+<!-- Custom data type representation -->
+<!ELEMENT represent EMPTY>
+<!ATTLIST represent
+          as      CDATA   #REQUIRED
+          target  NMTOKEN #IMPLIED>
+         
+<!-- Custom data type storage definition -->
+<!ELEMENT store EMPTY>
+<!ATTLIST store
+          as      CDATA   #REQUIRED
+          backend NMTOKEN #IMPLIED>
 
 <!-- Include another litesql definition -->
 <!ELEMENT include EMPTY>
 <!ATTLIST include
           file CDATA #REQUIRED>
-          
-<!-- backend specific options and types -->          
-<!ELEMENT if-backend (option|type)*>
-<!ATTLIST if-backend
-          name CDATA #IMPLIED>
 
-<!-- target specific options and types -->          
-<!ELEMENT if-target (option|type)*>
-<!ATTLIST if-target
-          name CDATA #IMPLIED>
-          
+<!-- Backend (specific) option -->
 <!ELEMENT option EMPTY>
 <!ATTLIST option
-          name CDATA #REQUIRED
-          value CDATA #REQUIRED>
+          name    CDATA #REQUIRED
+          value   CDATA #REQUIRED
+          backend NMTOKEN #IMPLIED>
           
-<!ELEMENT field (value)*>
+<!-- Field definition -->          
+<!ELEMENT field ((value)*,(check)*)>
 <!ATTLIST field 
           name NMTOKEN #REQUIRED
           type NMTOKEN #REQUIRED
@@ -70,14 +83,14 @@
 <!ATTLIST method 
           name NMTOKEN #REQUIRED
           const (true|false) "false"
-          returntype CDATA 'void'>
+          returntype CDATA #IMPLIED>
 
 <!ELEMENT param EMPTY>
 <!ATTLIST param
           name NMTOKEN #REQUIRED
           type CDATA #REQUIRED>
           
-<!ELEMENT relation (relate|field|index|if-backend|option)*>
+<!ELEMENT relation (relate|field|index|option|check)*>
 <!ATTLIST relation
           name NMTOKEN #IMPLIED
           id NMTOKEN #IMPLIED
@@ -87,8 +100,7 @@
 <!ATTLIST relate
           unique (true|false) "false"
           limit (one|many) "many"
-          owner (true|false) "false"
-          object IDREF #REQUIRED
+          object IDREF #IMPLIED
+          interface IDREF #IMPLIED
           handle NMTOKEN #IMPLIED
           remotehandle NMTOKEN #IMPLIED>
-

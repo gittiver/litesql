@@ -10,15 +10,14 @@ extern FILE* yyin;
 list<Position> posStack;
 string currentFile;
 Database* xmlReaderDb;
-static Object * obj;
-static Relation * rel;
-static Field * fld;
+static Object* obj;
+static Relation* rel;
+static Interface* iface;
+static Field* fld;
 static Type* type;
-static Method * mtd;
-static Index * idx;
+static Method* mtd;
+static Index* idx;
 static Option* option;
-static IfBackend* ifBackend;
-static IfTarget* ifTarget;
 static Relate* relate;
 
 Position getPosition() {
@@ -29,47 +28,51 @@ Position getPosition() {
 
 void STag_database(void) {
 
-
-    xmlReaderDb = new Database(getPosition());
-    xmlReaderDb->name = safe(A_database_name);
-    xmlReaderDb->include = safe(A_database_include);
-    xmlReaderDb->nspace = safe(A_database_namespace);
+    xmlReaderDb = new Database(getPosition(),
+                               safe(A_database_name),
+                               safe(A_database_include),
+                               safe(A_database_namespace));
 } 
 
+void ETag_database(void) {}
+
 void STag_object(void) {
+    obj = new Object(getPosition(), 
+                     A_object_name, 
+                     safe(A_object_inherits), 
+                     A_object_temporary);
 
 
-    xmlReaderDb->objects.push_back(obj = new Object(getPosition(), A_object_name, safe(A_object_inherits), A_object_temporary));
-
+    xmlReaderDb->objects.push_back(obj);
 }
 
 void ETag_object(void) {
-
 
     obj = NULL;
 }
 
 void STag_relation(void) {
+    rel = new Relation(getPosition(), 
+                       safe(A_relation_id), 
+                       safe(A_relation_name),
+                       A_relation_unidir);
 
-
-    xmlReaderDb->relations.push_back(rel = new Relation(getPosition(), safe(A_relation_id), safe(A_relation_name),A_relation_unidir));
+    xmlReaderDb->relations.push_back(rel);
 }
 
 void ETag_relation(void) {
-
 
     rel = NULL;
 }
 
 void STag_option(void) {
 
+    option = new Option(getPosition(), 
+                        A_option_name, 
+                        A_option_value,
+                        A_option_backend);
 
-    option = new Option(getPosition(), A_option_name, A_option_value);
-    if (ifBackend)
-        ifBackend->options.push_back(option);
-    else if (ifTarget)
-        ifTarget->options.push_back(option);
-    else if (obj)
+    if (obj)
         obj->options.push_back(option);
     else if (rel)
         rel->options.push_back(option);
@@ -78,41 +81,9 @@ void STag_option(void) {
 
 } 
 
-void STag_if_d_backend(void) {
-
-
-    ifBackend = new IfBackend(getPosition(), A_if_d_backend_name);
-    if (obj)
-        obj->ifBackends.push_back(ifBackend);
-    else if (rel)
-        rel->ifBackends.push_back(ifBackend);
-    else
-        xmlReaderDb->ifBackends.push_back(ifBackend);
-
-
-}
-
-void ETag_if_d_backend(void) {
-
-
-    ifBackend = NULL;
-}
-
-void STag_if_d_target(void) {
-
-
-    ifTarget = new IfTarget(getPosition(), A_if_d_target_name);
-    xmlReaderDb->ifTargets.push_back(ifTarget);
-}
-
-void ETag_if_d_target(void) {
-
-
-    ifTarget = NULL;
-} 
+void ETag_option(void) {}
 
 void STag_include(void) {
-
 
     yyin = fopen(A_include_file, "r");
     if (!yyin) {
@@ -123,19 +94,16 @@ void STag_include(void) {
     currentFile = A_include_file;
     yylineno = 1;
     yypush_buffer_state(yy_create_buffer(yyin, 16834));
-
 } 
+
+void ETag_include(void) {}
+
 
 void STag_type(void) {
 
-
-    type = new Type(getPosition(), A_type_name, A_type_class, A_type_sqltype);
-    if (ifBackend)
-        ifBackend->types.push_back(type);
-    else if (ifTarget)
-        ifTarget->types.push_back(type);
-    else
-        xmlReaderDb->types.push_back(type);
+    type = new Type(getPosition(), 
+                    A_type_name);
+    xmlReaderDb->types.push_back(type);
 }
 
 void ETag_type(void) {
@@ -177,19 +145,23 @@ void STag_indexfield(void) {
 
 
     if (idx)
-        idx->fields.push_back(IndexField(getPosition(), A_indexfield_name));
+        idx->fields.push_back(new IndexField(getPosition(), A_indexfield_name));
 
 }
+
+void ETag_indexfield(void) {}
 
 void STag_value(void) {
 
 
     if (fld) 
-        fld->values.push_back(Value(getPosition(), A_value_name, A_value_value));
+        fld->values.push_back(new Value(getPosition(), A_value_name, A_value_value));
     else if (type)
-        type->values.push_back(Value(getPosition(), A_value_name, A_value_value));
+        type->values.push_back(new Value(getPosition(), A_value_name, A_value_value));
 
 }
+
+void ETag_value(void) {}
 
 void ETag_field(void) {
 
@@ -200,10 +172,11 @@ void ETag_field(void) {
 
 void STag_method(void) {
 
-
-    if (obj) {
-        obj->methods.push_back(mtd = new Method(getPosition(), A_method_name, safe(A_method_returntype), A_method_const));
-    }
+    mtd = new Method(getPosition(), A_method_name, safe(A_method_returntype), A_method_const);
+    if (obj) 
+        obj->methods.push_back(mtd);
+    else if (iface) 
+        iface->methods.push_back(mtd);
 }
 
 void ETag_method(void) {
@@ -212,41 +185,75 @@ void ETag_method(void) {
     mtd = NULL;
 }
 
-void STag_param(void)
-{
+void STag_param(void) {
 
-
-if (mtd) 
-    mtd->params.push_back(Param(getPosition(), A_param_name, A_param_type));
+    if (mtd) 
+        mtd->params.push_back(new Param(getPosition(), 
+                                        A_param_name, 
+                                        A_param_type));
 
 }
+
+void ETag_param(void) {}
 
 void STag_relate(void) {
 
-
-    relate = new Relate(getPosition(), A_relate_object, A_relate_limit, A_relate_unique, safe(A_relate_handle), safe(A_relate_remotehandle));
+    relate = new Relate(getPosition(), 
+                        A_relate_object, 
+                        A_relate_interface,
+                        A_relate_limit, 
+                        A_relate_unique, 
+                        safe(A_relate_handle));
     if (rel)
         rel->related.push_back(relate);
-    else if (obj)
-        obj->related.push_back(relate);
 }
 
-void ETag_database(void) {
+void ETag_relate(void) {}
 
 
-} 
-
-
-extern FILE * yyin;
 
 void STag_check(void) {
     if (obj)
-        obj->checks.push_back(new Check(getPosition(), A_check_function));
+        obj->checks.push_back(new Check(getPosition(), 
+                                        A_check_function,
+                                        A_check_param));
 }
+
 void ETag_check(void) {}
-void ETag_include(void) {}
-void ETag_option(void) {}
-void ETag_indexfield(void) {}
-void ETag_value(void) {}
-void ETag_param(void) {}
-void ETag_relate(void) {}
+
+void STag_interface(void) {
+
+    iface = new Interface(getPosition(), A_interface_name);
+    xmlReaderDb->interfaces.push_back(iface);
+}
+
+void ETag_interface(void) {}
+
+void STag_implements(void) {
+
+    if (obj)
+        obj->implements.push_back(new Implements(getPosition(),
+                                                 A_implements_interface));
+}
+
+void ETag_implements(void) {}
+
+void STag_represent(void) {
+    
+    type->represents.push_back(new Represent(getPosition(),
+                                             A_represent_as,
+                                             safe(A_represent_target)));                                             
+}
+
+void ETag_represent(void) {}
+
+void STag_store(void) {
+    
+    type->stores.push_back(new Store(getPosition(),
+                                     A_store_as,
+                                     safe(A_store_backend)));
+}
+
+void ETag_store(void) {}
+
+

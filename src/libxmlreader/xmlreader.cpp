@@ -92,16 +92,6 @@ namespace xml {
 
         if (!(err = validId(db.name)).empty()) 
             throw XMLExcept(db.pos, "invalid id: database.name : " + db.name + " : " + err);
-        for (size_t i = 0; i < db.ifTargets.size(); i++) {
-            IfTarget* it = db.ifTargets[i];
-            if (!validTarget(it->name))
-                throw XMLExcept(it->pos, "invalid target : " + it->name);
-        }
-        for (size_t i = 0; i < db.ifBackends.size(); i++) {
-            IfBackend* it = db.ifBackends[i];
-            if (!validBackend(it->name))
-                throw XMLExcept(it->pos, "invalid backend : " + it->name);
-        }
 
         for (size_t i = 0; i < objects.size(); i++) {
             Object& o = *objects[i];
@@ -225,11 +215,11 @@ namespace xml {
                 litesql::Split fldNames;
                 DbIndex* index = new DbIndex;
                 for (size_t i3 = 0; i3 < idx.fields.size(); i3++) {
-                    if (fldMap.find(idx.fields[i3].name) == fldMap.end())
-                        throw XMLExcept(idx.fields[i3].pos, 
-                                "Indexfield " + o.name + "." + idx.fields[i3].name + " is invalid.");
-                    index->fields.push_back(fldMap[idx.fields[i3].name]);
-                    fldNames.push_back(idx.fields[i3].name);
+                    if (fldMap.find(idx.fields[i3]->name) == fldMap.end())
+                        throw XMLExcept(idx.fields[i3]->pos, 
+                                "Indexfield " + o.name + "." + idx.fields[i3]->name + " is invalid.");
+                    index->fields.push_back(fldMap[idx.fields[i3]->name]);
+                    fldNames.push_back(idx.fields[i3]->name);
                 }
 
                 index->name = makeDbName(tbl->name + "_" + fldNames.join("_") + "_idx");
@@ -309,11 +299,11 @@ namespace xml {
                 DbIndex* index = new DbIndex;
                 for (size_t i3 = 0; i3 < idx.fields.size(); i3++) {
                     DbField* fld = new DbField;
-                    if (fldMap.find(idx.fields[i3].name) == fldMap.end())
-                        throw XMLExcept(idx.fields[i3].pos,
-                                "Indexfield " + r.name + "." + idx.fields[i3].name + " is invalid.");
-                    index->fields.push_back(fldMap[idx.fields[i3].name]);
-                    fldNames.push_back(idx.fields[i3].name);
+                    if (fldMap.find(idx.fields[i3]->name) == fldMap.end())
+                        throw XMLExcept(idx.fields[i3]->pos,
+                                "Indexfield " + r.name + "." + idx.fields[i3]->name + " is invalid.");
+                    index->fields.push_back(fldMap[idx.fields[i3]->name]);
+                    fldNames.push_back(idx.fields[i3]->name);
                 }
 
                 index->name = makeDbName(tbl->name + "_" + fldNames.join("_") + "_idx");
