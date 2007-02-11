@@ -235,6 +235,22 @@ namespace xml {
         }
     }
 
+    static void checkInheritance(Object* o, map<string, Object*>& objMap) {
+
+        set<Object*> parents;
+
+        while (!o->inherits.empty()) {
+            if (objMap.find(o->inherits) == objMap.end())
+                throw XMLExcept(o->pos, "unknown object : object.inherits : "
+                        + o->inherits);
+            o = objMap[o->inherits];
+            if (parents.find(o) != parents.end())
+                throw XMLExcept(o->pos, "circular inheritance detected");
+            parents.insert(o);
+        }
+    }
+
+
     void sanityCheck(Database* db_) {
         Database& db = *db_;
     
@@ -261,14 +277,17 @@ namespace xml {
 
         checkOptions(db.options);
 
+        map<string, Object*> objMap;
+        for (size_t i = 0; i < db.objects.size(); i++)
+            objMap[db.objects[i]->name] = db.objects[i];
+
+
         for (size_t i = 0; i < db.objects.size(); i++) {
             Object& o = *db.objects[i];
 
             // object inherits ok?
-            if (!o.inherits.empty() &&
-                    objectNames.find(o.inherits) == objectNames.end())
-                throw XMLExcept(o.pos, "unknown object : object.inherits : "
-                        + o.inherits);
+
+            checkInheritance(db.objects[i], objMap);                        
 
             // object field names ok?
             checkNames(o.fields, validFieldId, usedNames, "object.field",
