@@ -63,6 +63,7 @@ namespace xml {
             return "does not begin with lower case letter";
         return "";
     }
+
     template <class Func>
         static void check(Func func, const string& tag, const Position& p, 
                 const std::string& value) {
@@ -71,6 +72,7 @@ namespace xml {
                 throw XMLExcept(p, "invalid value: " + tag + ": " 
                         + value + " : " + err);
         }
+
     template <class T, class Func>
         static void checkNames(vector<T*>& objects, Func& func,
                 set<string>& usedNames, string tag,
@@ -100,7 +102,7 @@ namespace xml {
                 names.insert(objects[i]->name);
         }
 
-    static void checkRelated(const string& relName,
+    static void checkRelated(Relation* r,
             vector<Relate*>& related, 
             const set<string>& objectNames,
             const set<string>& interfaceNames,
@@ -108,6 +110,7 @@ namespace xml {
 
         bool uniques = false, limits = false;
         string err;
+        bool hasInterface = false, hasObjectHandles = false;
         for (size_t i = 0; i < related.size(); i++) {
             Relate& rel = *related[i];
 
@@ -116,7 +119,7 @@ namespace xml {
                     && !rel.handle.empty())
                 throw XMLExcept(rel.pos, 
                         "invalid id: relation.relate.handle : " 
-                        + relName + "." + rel.handle + " : " + err);
+                        + r->name + "." + rel.handle + " : " + err);
 
             if (!rel.objectName.empty()) {
 
@@ -130,7 +133,7 @@ namespace xml {
                 if (objectNames.find(rel.objectName) == objectNames.end())
                     throw XMLExcept(rel.pos, "unknown object: "
                             "relation.relate.name : " 
-                            + relName + "." + rel.objectName);
+                            + r->name + "." + rel.objectName);
 
                 // object has id already?
                 string id = rel.objectName + "." + rel.handle;
@@ -138,16 +141,26 @@ namespace xml {
                     throw XMLExcept(rel.pos, "object " + rel.objectName
                             + " already has identifier "
                             + rel.handle);
-                usedNames.insert(id);                                           
+                usedNames.insert(id); 
+
+                if (!rel.handle.empty())
+                    hasObjectHandles = true;
 
             } else if (!rel.interfaceName.empty()) {
+    
+                // already has an interface?
+                if (hasInterface)
+                    throw XMLExcept(rel.pos, 
+                                    "multiple interfaces included in "
+                                    "a relation");
+                hasInterface = true;
 
                 // valid interface reference in relate?
                 if (interfaceNames.find(rel.interfaceName) 
                         == interfaceNames.end())
                     throw XMLExcept(rel.pos, "unknown interface: "
                             "relation.relate.interface : " 
-                            + relName + "." + rel.objectName);
+                            + r->name + "." + rel.objectName);
                 // interface has id already?
                 string id = rel.interfaceName + "." + rel.handle;
                 if (usedNames.find(id) != usedNames.end())
@@ -160,48 +173,78 @@ namespace xml {
                 throw XMLExcept(rel.pos, "no object or interface specified");                             
 
             if (!rel.handle.empty())
-                usedNames.insert(relName + "." + rel.handle);
+                usedNames.insert(r->name + "." + rel.handle);
 
             if (rel.unique)
                 uniques = true;
             if (rel.limit)
                 limits = true;
 
-            // only uniques or limits?
-
-            if (uniques && limits)
-                throw XMLExcept(rel.pos, "both 'unique' and 'limit' "
-                        "attributes used in relation " 
-                        + relName);
         }
+
+        // only uniques or limits?
+        if (uniques && limits)
+            throw XMLExcept(r->pos, "both 'unique' and 'limit' "
+                    "attributes used in relation " 
+                    + r->name);
+
+        // object handles and interface?
+        if (hasObjectHandles && hasInterface)
+            throw XMLExcept(r->pos, "relation handles attached to "
+                                   "objects cannot be used when "
+                                   "an interface is included in the "
+                                   "relation");
     }
 
     static void checkTypes(vector<Type*>& types) {
         for (size_t i = 0; i < types.size(); i++) {
             Type* t = types[i];
-
+            set<string> tnames;
             // represent target names ok?
             for (size_t i2 = 0; i2 < t->represents.size(); i2++) {
                 Represent* r = t->represents[i2];
                 if (!r->target.empty())
                     check(validTarget, "type.represent.target", r->pos, 
                             r->target);
+                // no duplicates?                            
+                if (tnames.find(r->target) != tnames.end())
+                    throw XMLExcept(r->pos, "type representation specified "
+                                            "twice for target : " + r->target);
+
+                tnames.insert(r->target);                            
             }
 
             // store backend names ok?
+            set<string> bnames;
             for (size_t i2 = 0; i2 < t->stores.size(); i2++) {
                 Store* s = t->stores[i2];
                 if (!s->backend.empty())
                     check(validBackend, "type.store.backend", s->pos, 
                             s->backend);
+                // no duplicates?                            
+                if (bnames.find(s->backend) != bnames.end())
+                    throw XMLExcept(s->pos, "type storage info specified "
+                                            "twice for backend : " 
+                                            + s->backend);
+
+                bnames.insert(s->backend);                           
+                           
             } 
             set<string> valueNames;
             checkNames(t->values, validId, valueNames, "type.value");
 
             // check function names ok?
-            for (size_t i2 = 0; i2 < t->checks.size(); i2++) 
+            for (size_t i2 = 0; i2 < t->checks.size(); i2++) {
                 check(validId, "type.check.function", 
                         t->checks[i2]->pos, t->checks[i2]->function);
+
+                // no triggers?
+                
+                if (t->checks[i2]->constrained)
+                    throw XMLExcept(t->checks[i2]->pos,
+                                    "check functions attached to "
+                                    "types cannot have triggers");
+            }
 
 
         }
@@ -209,11 +252,17 @@ namespace xml {
 
     static void checkOptions(vector<Option*>& options) {    
         static char* optionNames[] = {"storagetype", NULL};
-
+        
+        set<string> used;
         for (size_t i = 0; i < options.size(); i++) {
             Option* o = options[i];
             if (!inWords(o->name, optionNames))
                 throw XMLExcept(o->pos, "unknown option : " + o->name);
+
+            if (used.find(o->name) != used.end())                
+                throw XMLExcept(o->pos, "option specified twice : " + o->name);
+
+            used.insert(o->name);
 
             check(validBackend, "option.backend", o->pos, o->backend);
         }
@@ -310,12 +359,19 @@ namespace xml {
                         o.name + "." + o.methods[i2]->name);
 
             // implements references ok?                           
+            // no duplicates?
+            set<string> inames;
             for (size_t i2 = 0; i2 < o.implements.size(); i2++) {
                 string iname = o.implements[i2]->interfaceName;
                 if (interfaceNames.find(iname) == interfaceNames.end())
                     throw XMLExcept(o.implements[i2]->pos, 
                             "unknown interface : object.implements : "
                             + iname);
+                if (inames.find(iname) != inames.end())
+                    throw XMLExcept(o.implements[i2]->pos,
+                            "interface implemented twice : " + iname);
+
+                inames.insert(iname);                            
             }
 
             for (size_t i2 = 0; i2 < o.indices.size(); i2++) {
@@ -327,12 +383,20 @@ namespace xml {
                         "index.indexfield");
 
                 // index field references ok?                           
+                set<string> ifnames;
                 for (size_t i3 = 0; i3 < idx->fields.size(); i3++) {
                     IndexField* ifld = idx->fields[i3];
                     if (fieldNames.find(ifld->name) == fieldNames.end())
                         throw XMLExcept(ifld->pos, 
                                 "unknown field name "
                                 ": indexfield.name : " + ifld->name);
+
+                    // duplicates?
+                    if (ifnames.find(ifld->name) != ifnames.end())
+                        throw XMLExcept(ifld->pos,
+                                        "field indexed twice : "
+                                        + ifld->name);
+                    ifnames.insert(ifld->name);                                
                 }
             }
 
@@ -340,9 +404,15 @@ namespace xml {
             checkOptions(o.options);
 
             // check function names ok?
-            for (size_t i2 = 0; i2 < o.checks.size(); i2++) 
+            for (size_t i2 = 0; i2 < o.checks.size(); i2++)  {
                 check(validId, "object.check.function", 
                         o.checks[i2]->pos, o.checks[i2]->function);
+                if (o.checks[i2]->onLink || o.checks[i2]->onUnlink)
+                    throw XMLExcept(o.checks[i2]->pos,
+                                    "check functions attached to "
+                                    "objects cannot have onlink or onunlink "
+                                    "triggers");
+            }
         }
 
         // interface names ok?
@@ -370,9 +440,13 @@ namespace xml {
         for (size_t i = 0; i < db.relations.size(); i++) {
             Relation& r = *db.relations[i];
 
+            // relation id ok?
+            check(validId, "relation.id", r.pos, r.id);           
+
             // relation field names ok?
             checkNames(r.fields, validFieldId, usedNames, 
                     "relation.field", r.name);
+                        
 
             checkFields(r.fields);                       
             checkOptions(r.options);
@@ -395,7 +469,7 @@ namespace xml {
             bool limits = false;
             bool uniques = false;
 
-            checkRelated(r.name, 
+            checkRelated(&r, 
                     r.related, objectNames, interfaceNames, usedNames);
 
             // limit only in binary relations?
@@ -405,7 +479,17 @@ namespace xml {
                         + toString(r.related.size()) 
                         + " object(s) " + r.name);
 
+            // check function names ok?
+            for (size_t i2 = 0; i2 < r.checks.size(); i2++)  {
+                check(validId, "object.check.function", 
+                        r.checks[i2]->pos, r.checks[i2]->function);
+                if (r.checks[i2]->onUpdate || r.checks[i2]->onDelete
+                     || r.checks[i2]->onCreate)
+                    throw XMLExcept(r.checks[i2]->pos,
+                                    "check functions attached to "
+                                    "relations cannot have oncreate, ondelete "
+                                    "or onupdate triggers");
+            }
         }   
     }
-
 }

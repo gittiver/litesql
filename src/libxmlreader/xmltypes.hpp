@@ -279,6 +279,7 @@ namespace xml {
             std::vector<Field*> fields;
             std::vector<Index*> indices;
             std::vector<Option*> options;
+            std::vector<Check*> checks;
 
             Relation(const Position& p, 
                      const std::string& i, 

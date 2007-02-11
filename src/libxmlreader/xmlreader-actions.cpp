@@ -212,15 +212,18 @@ void ETag_relate(void) {}
 
 
 void STag_check(void) {
+    Check* check = new Check(getPosition(), 
+                             A_check_function,
+                             A_check_param,
+                             A_check_oncreate,
+                             A_check_ondelete,
+                             A_check_onupdate,
+                             A_check_onlink,
+                             A_check_onunlink);
     if (obj)
-        obj->checks.push_back(new Check(getPosition(), 
-                                        A_check_function,
-                                        A_check_param,
-                                        A_check_oncreate,
-                                        A_check_ondelete,
-                                        A_check_onupdate,
-                                        A_check_onlink,
-                                        A_check_onunlink));
+        obj->checks.push_back(check);
+    else if (rel)
+        rel->checks.push_back(check);
 }
 
 void ETag_check(void) {}
