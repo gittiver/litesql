@@ -1,9 +1,12 @@
+<!-- litesql XML database definition syntax -->
+
+
 <!-- top level database information -->
 <!ELEMENT database (object|relation|include|type|option)+>
 <!ATTLIST database
           name ID #REQUIRED
           namespace NMTOKEN #REQUIRED
-          include CDATA #IMPLIED>
+          include NMTOKEN #IMPLIED>
           
 <!-- persistent object -->
 <!ELEMENT object (field|method|index|option|implements|check)*>
@@ -25,6 +28,11 @@
 <!-- Consistency check -->
 <!ELEMENT check EMPTY>
 <!ATTLIST check
+          oncreate (true|false) 'false'
+          ondelete (true|false) 'false'
+          onupdate (true|false) 'false'
+          onlink   (true|false) 'false'
+          onunlink (true|false) 'false'
           function NMTOKEN #REQUIRED
           param    CDATA   #IMPLIED>
 
@@ -66,41 +74,48 @@
           indexed (true|false) "false"
           unique (true|false) "false">
 
+<!-- Index definition -->
 <!ELEMENT index (indexfield, (indexfield)+)>
 <!ATTLIST index 
           unique (true|false) "false">
-          
+
+<!-- Indexed field -->
 <!ELEMENT indexfield EMPTY>
 <!ATTLIST indexfield
           name NMTOKEN #REQUIRED>
           
+<!-- Enumerated value -->          
 <!ELEMENT value EMPTY>
 <!ATTLIST value
           name NMTOKEN #REQUIRED
           value CDATA #REQUIRED>
 
+
+<!-- Method of object or interface -->
 <!ELEMENT method (param)*>
 <!ATTLIST method 
           name NMTOKEN #REQUIRED
           const (true|false) "false"
           returntype CDATA #IMPLIED>
 
+<!-- Parameter of method -->
 <!ELEMENT param EMPTY>
 <!ATTLIST param
           name NMTOKEN #REQUIRED
           type CDATA #REQUIRED>
-          
-<!ELEMENT relation (relate|field|index|option|check)*>
+
+<!-- Relation between objects -->
+<!ELEMENT relation (relate|field|index|option)*>
 <!ATTLIST relation
           name NMTOKEN #IMPLIED
           id NMTOKEN #IMPLIED
           unidir (true|false) "false">
 
+<!-- Participation in relation -->
 <!ELEMENT relate EMPTY>
 <!ATTLIST relate
           unique (true|false) "false"
           limit (one|many) "many"
           object IDREF #IMPLIED
           interface IDREF #IMPLIED
-          handle NMTOKEN #IMPLIED
-          remotehandle NMTOKEN #IMPLIED>
+          handle NMTOKEN #IMPLIED>

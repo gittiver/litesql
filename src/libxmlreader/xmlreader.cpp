@@ -1,5 +1,5 @@
 #include "xmlreader.hpp"
-#include "xmlreader-actions.hpp"
+#include "flexml-header.hpp"
 #include "scanner.hpp"
 #include "stringutils.hpp"
 
@@ -21,7 +21,15 @@ namespace xml {
 
     using namespace std;
 
+    static bool inWords(const string& s, char* words[]) {
+        for (size_t i = 0; words[i]; i++)
+            if (s == words[i])
+                return true;
+        return false; 
+
+    }
     static bool isCPPReservedWord(const string& s) {
+
         static char* words[] = 
         {"asm","break","case","catch",
             "char","class","const","continue","default",
@@ -33,33 +41,23 @@ namespace xml {
             "this","throw","try","typedef","union","unsigned",
             "virtual","void","volatile","while",   
             // LiteSQL specific
-            "update", "del", "upcast", "upcastCopy"
+            "update", "del", "upcast", "upcastCopy", NULL
         };
+        return inWords(s, words);
+    }
 
-        for (size_t i = 0; i < sizeof(words) / sizeof(words[0]); i++)
-            if (s == words[i])
-                return true;
-        return false; 
-    }
     static bool validTarget(string t) {
-        if (t == "c++")
-            return true;
-        if (t == "python")
-            return true;
-        if (t == "graphviz")
-            return true;
-        return false;
+        static char* words[] = {"c++", "python", "graphviz", NULL};
+        return inWords(t, words);
     }
+
     static bool validBackend(string t) {
-        if (t == "postgresql")
-            return true;
-        if (t == "sqlite3")
-            return true;
-        if (t == "mysql")
-            return true;
-        return false;
+        static char* words[] = {"sqlite3", "mysql", "postgresql", NULL};
+        return inWords(t, words);
     }
+
     static string validId(string s) {
+
         if (s.size() == 0) 
             return "empty identifier";
         if (!isalpha(s[0])) 
@@ -73,7 +71,9 @@ namespace xml {
             return "is C++ reserved word";
         return "";
     }
+
     static string validFieldId(string s) {
+
         s = validId(s);
         if (!s.empty())
             return s;
@@ -81,92 +81,333 @@ namespace xml {
             return "does not begin with lower case letter";
         return "";
     }
+    template <class Func>
+    static void check(Func func, const string& tag, const Position& p, 
+                      const std::string& value) {
+        string err;                      
+        if (!(err = func(value)).empty()) 
+            throw XMLExcept(p, "invalid value: " + tag + ": " 
+                            + value + " : " + err);
+    }
+    template <class T, class Func>
+    static void checkNames(vector<T*>& objects, Func& func,
+                           set<string>& usedNames, string tag,
+                           string prefix="") {
+        for (size_t i = 0; i < objects.size(); i++) {
+            string name = objects[i]->name;
+            string err;
+            // name ok?
+            if (!(err = func(name)).empty())
+                throw XMLExcept(objects[i]->pos, 
+                                "invalid name: " + tag + " : " + name);
+            // name unique?
 
+            if (!prefix.empty())
+                name = prefix + "." + name;
+
+            if (usedNames.find(name) != usedNames.end())                                        throw XMLExcept(objects[i]->pos,
+                                "duplicate name: " + tag + " : " + name);
+                
+            usedNames.insert(name);                                
+        }
+    }
+    
+    template <class T>
+    static void addNames(vector<T*> objects, set<string>& names) {
+        for (size_t i = 0; i < objects.size(); i++)
+            names.insert(objects[i]->name);
+    }
+
+    static void checkRelated(const string& relName,
+                             vector<Relate*>& related, 
+                             const set<string>& objectNames,
+                             const set<string>& interfaceNames,
+                             set<string>& usedNames) {
+
+        bool uniques = false, limits = false;
+        string err;
+        for (size_t i = 0; i < related.size(); i++) {
+            Relate& rel = *related[i];
+            
+            // valid relation handle name?
+            if (!(err = validFieldId(rel.handle)).empty() 
+                    && !rel.handle.empty())
+                throw XMLExcept(rel.pos, 
+                        "invalid id: relation.relate.handle : " 
+                        + relName + "." + rel.handle + " : " + err);
+
+            if (!rel.objectName.empty()) {
+
+                // not both object and interface? 
+                if (!rel.interfaceName.empty())
+                    throw XMLExcept(rel.pos, "both object and interface "
+                                             "specified in "
+                                             "relation.relate");
+            
+                // valid object reference in relate?
+                if (objectNames.find(rel.objectName) == objectNames.end())
+                    throw XMLExcept(rel.pos, "unknown object: "
+                                             "relation.relate.name : " 
+                                             + relName + "." + rel.objectName);
+
+                // object has id already?
+                string id = rel.objectName + "." + rel.handle;
+                if (usedNames.find(id) != usedNames.end())
+                    throw XMLExcept(rel.pos, "object " + rel.objectName
+                                             + " already has identifier "
+                                             + rel.handle);
+                usedNames.insert(id);                                           
+
+            } else if (!rel.interfaceName.empty()) {
+
+                // valid interface reference in relate?
+                 if (interfaceNames.find(rel.interfaceName) 
+                     == interfaceNames.end())
+                    throw XMLExcept(rel.pos, "unknown interface: "
+                                             "relation.relate.interface : " 
+                                             + relName + "." + rel.objectName);
+                // interface has id already?
+                string id = rel.interfaceName + "." + rel.handle;
+                if (usedNames.find(id) != usedNames.end())
+                    throw XMLExcept(rel.pos, "interface " + rel.interfaceName
+                                             + " already has identifier "
+                                             + rel.handle);
+                usedNames.insert(id);
+                           
+            } else // object or interface specified?
+                throw XMLExcept(rel.pos, "no object or interface specified");                             
+                
+            if (!rel.handle.empty())
+                usedNames.insert(relName + "." + rel.handle);
+
+            if (rel.unique)
+                uniques = true;
+            if (rel.limit)
+                limits = true;
+
+            // only uniques or limits?
+            
+            if (uniques && limits)
+                throw XMLExcept(rel.pos, "both 'unique' and 'limit' "
+                                         "attributes used in relation " 
+                                         + relName);
+        }
+    }
+
+    static void checkTypes(vector<Type*>& types) {
+        for (size_t i = 0; i < types.size(); i++) {
+            Type* t = types[i];
+
+            // represent target names ok?
+            for (size_t i2 = 0; i2 < t->represents.size(); i2++) {
+                Represent* r = t->represents[i2];
+                if (!r->target.empty())
+                    check(validTarget, "type.represent.target", r->pos, 
+                          r->target);
+            }
+
+            // store backend names ok?
+            for (size_t i2 = 0; i2 < t->stores.size(); i2++) {
+                Store* s = t->stores[i2];
+                if (!s->backend.empty())
+                    check(validBackend, "type.store.backend", s->pos, 
+                          s->backend);
+            } 
+            set<string> valueNames;
+            checkNames(t->values, validId, valueNames, "type.value");
+
+            // check function names ok?
+            for (size_t i2 = 0; i2 < t->checks.size(); i2++) 
+                check(validId, "type.check.function", 
+                      t->checks[i2]->pos, t->checks[i2]->function);
+
+
+        }
+    }
+
+    static void checkOptions(vector<Option*>& options) {    
+        static char* optionNames[] = {"storagetype", NULL};
+
+        for (size_t i = 0; i < options.size(); i++) {
+            Option* o = options[i];
+            if (!inWords(o->name, optionNames))
+                throw XMLExcept(o->pos, "unknown option : " + o->name);
+
+            check(validBackend, "option.backend", o->pos, o->backend);
+        }
+    }
+
+    static void checkFields(vector<Field*>& fields) {
+        for (size_t i = 0; i < fields.size(); i++) {
+            Field* f = fields[i];
+
+            // value names ok?
+            set<string> names;
+            checkNames(f->values, validId, names, "field.value");
+
+            // check function names ok?
+            for (size_t i2 = 0; i2 < f->checks.size(); i2++) 
+                check(validId, "type.check.function", 
+                      f->checks[i2]->pos, f->checks[i2]->function);
+
+        }
+    }
     static void sanityCheck(Database& db,
             vector<Object*>& objects,
             vector<Relation*>& relations) {
+
         using namespace litesql;
-        map<string, bool> usedID;
-        map<string, bool> objectName;
+        set<string> usedNames, typeNames;
+        set<string> objectNames;
+        set<string> interfaceNames;
         string err;
 
-        if (!(err = validId(db.name)).empty()) 
-            throw XMLExcept(db.pos, "invalid id: database.name : " + db.name + " : " + err);
+        // database attributes ok?
+
+        check(validId, "database.name", db.pos, db.name);
+        check(validId, "database.nspace", db.pos, db.name);
+        
+        // object names ok?
+        checkNames(objects, validId, usedNames, "object");
+
+        // type names ok?
+        checkNames(db.types, validId, typeNames, "type");
+        checkTypes(db.types);
+
+        addNames(objects, objectNames);
+        addNames(db.interfaces, interfaceNames);
+
+        checkOptions(db.options);
 
         for (size_t i = 0; i < objects.size(); i++) {
             Object& o = *objects[i];
-            if (!(err = validId(o.name)).empty())
-                throw XMLExcept(o.pos, "invalid id: object.name : " + o.name + " : " + err);
-            if (usedID.find(o.name) != usedID.end())
-                throw XMLExcept(o.pos, "duplicate id: object.name : " + o.name);
-            usedID[o.name] = true;
-            objectName[o.name] = true;
-            map<string, bool> usedField;
-            usedField.clear();
-            for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
-                Field& f = *o.fields[i2];
 
-                if (!(err = validFieldId(f.name)).empty())
-                    throw XMLExcept(o.pos, "invalid id: object.field.name : " + o.name + "." + f.name + " : " + err);
-                if (usedField.find(f.name) != usedField.end())
-                    throw XMLExcept(o.pos, "duplicate id: object.field.name : " + o.name + "." + f.name);
-                usedField[f.name] = true;
+            // object inherits ok?
+            if (!o.inherits.empty() &&
+                objectNames.find(o.inherits) == objectNames.end())
+                throw XMLExcept(o.pos, "unknown object : object.inherits : "
+                                       + o.inherits);
+                              
+            // object field names ok?
+            checkNames(o.fields, validFieldId, usedNames, "object.field",
+                       o.name);
+            set<string> fieldNames;
+            addNames(o.fields, fieldNames);
+
+            checkFields(o.fields);
+
+                               
+            
+            // object method names ok?
+            checkNames(o.methods, validFieldId, usedNames, "object.method",
+                       o.name);
+
+            // object method parameter names ok?
+            for (size_t i2 = 0; i2 < o.methods.size(); i2++)
+                checkNames(o.methods[i2]->params, validFieldId, usedNames, 
+                           "object.method.param", 
+                           o.name + "." + o.methods[i2]->name);
+
+            // implements references ok?                           
+            for (size_t i2 = 0; i2 < o.implements.size(); i2++) {
+                string iname = o.implements[i2]->interfaceName;
+                if (interfaceNames.find(iname) == interfaceNames.end())
+                    throw XMLExcept(o.implements[i2]->pos, 
+                                    "unknown interface : object.implements : "
+                                    + iname);
             }
+
+            for (size_t i2 = 0; i2 < o.indices.size(); i2++) {
+                Index* idx = o.indices[i2];
+                set<string> names;
+
+                // index field names ok?
+                checkNames(idx->fields, validFieldId, names, 
+                           "index.indexfield");
+
+                // index field references ok?                           
+                for (size_t i3 = 0; i3 < idx->fields.size(); i3++) {
+                    IndexField* ifld = idx->fields[i3];
+                    if (fieldNames.find(ifld->name) == fieldNames.end())
+                        throw XMLExcept(ifld->pos, 
+                                        "unknown field name "
+                                        ": indexfield.name : " + ifld->name);
+                }
+            }
+
+
+            checkOptions(o.options);
+
+            // check function names ok?
+            for (size_t i2 = 0; i2 < o.checks.size(); i2++) 
+                check(validId, "object.check.function", 
+                      o.checks[i2]->pos, o.checks[i2]->function);
         }
+        
+        // interface names ok?
+        checkNames(db.interfaces, validId, usedNames, "interface");
+
+        for (size_t i = 0; i < db.interfaces.size(); i++) {
+            Interface& iface = *db.interfaces[i];
+
+            // interface method names ok?
+            checkNames(iface.methods, validFieldId, usedNames, 
+                       "interface.method", iface.name);
+
+            // interface method parameter names ok?
+            for (size_t i2 = 0; i2 < iface.methods.size(); i2++)
+                checkNames(iface.methods[i2]->params, validFieldId, usedNames, 
+                           "interface.method.param", 
+                           iface.name + "." + iface.methods[i2]->name);
+                      
+        }
+
+
+        // relation names ok?
+        checkNames(relations, validId, usedNames, "relation");
+
         for (size_t i = 0; i < relations.size(); i++) {
             Relation& r = *relations[i];
-            string name = r.name;
-            if (!(err = validId(name)).empty())
-                throw XMLExcept(r.pos, "invalid id: relation.name : " + name + " : " + err);
-            if (usedID.find(name) != usedID.end())
-                throw XMLExcept(r.pos, "duplicate id: relation.name : " + name);
-            usedID[name] = true;
-            map<string, bool> usedField;
-            usedField.clear();
 
+            // relation field names ok?
+            checkNames(r.fields, validFieldId, usedNames, 
+                       "relation.field", r.name);
+
+            checkFields(r.fields);                       
+            checkOptions(r.options);
+
+
+            // relation field default flags ok?
             bool defaults = false;
 
             for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
                 Field& f = *r.fields[i2];
-                if (!(err = validFieldId(f.name)).empty())
-                    throw XMLExcept(f.pos, "invalid id: relation.field.name : " + name + "." + f.name + " : " + err);
-                if (usedField.find(f.name) != usedField.end())
-                    throw XMLExcept(f.pos, "duplicate id: relation.field.name : " + name + "." + f.name);
-                usedField[f.name] = true;
                 if (f.default_.size() > 0)
                     defaults = true;
                 else if (defaults)
-                    throw XMLExcept(f.pos, "no default-value after field with default value : " + name + "." + f.name);
+                    throw XMLExcept(f.pos, "no default-value after "
+                                           "field with default value : " 
+                                           + r.name + "." + f.name);
 
             }
-            usedField.clear();
+            
             bool limits = false;
             bool uniques = false;
-            for (size_t i2 = 0; i2 < r.related.size(); i2++) {
-                Relate& rel = *r.related[i2];
-                if (!(err = validFieldId(rel.handle)).empty() && !rel.handle.empty())
-                    throw XMLExcept(rel.pos, "invalid id: relation.relate.handle : " + name + "." + rel.handle + " : " + err);
-                if (usedField.find(rel.handle) != usedField.end())
-                    throw XMLExcept(rel.pos, "duplicate id: relation.relate.handle : " + name + "." + rel.handle);
-                if (objectName.find(rel.objectName) == objectName.end())
-                    throw XMLExcept(rel.pos, "unknown object: relation.relate.name : " + name + "." + rel.objectName);
-                if (!rel.handle.empty())
-                    usedField[rel.handle] = true;
-                if (rel.unique)
-                    uniques = true;
-                if (rel.limit)
-                    limits = true;
-                if (uniques && limits)
-                    throw XMLExcept(rel.pos, "both 'unique' and 'limit' attributes used in relation " + name);
-            }
+            
+            checkRelated(r.name, 
+                         r.related, objectNames, interfaceNames, usedNames);
+
+            // limit only in binary relations?
             if (r.related.size() != 2 && limits)
-                throw XMLExcept(r.pos, "'limit' attribute used in relation of " + toString(r.related.size()) 
-                        + " object(s) " + name);
+                throw XMLExcept(r.pos, "'limit' attribute "
+                                       "used in relation of " 
+                                       + toString(r.related.size()) 
+                                       + " object(s) " + r.name);
 
         }   
     }
 
-    static void initSchema(Database& db) {
+    static void initSchema(Database& db, map<string, Type*>& typeMap) {
         vector<Object*>& objects = db.objects;
         vector<Relation*>& relations = db.relations;
 
@@ -184,7 +425,7 @@ namespace xml {
             }  else {
                 DbField *id = new DbField; 
                 id->name = "id_";
-                id->type = "INTEGER";
+                id->type = typeMap["integer"];
                 id->primaryKey = true;
                 tbl->fields.push_back(id);
             }
@@ -194,7 +435,7 @@ namespace xml {
                 DbField* fld = new DbField;
                 fld->name = f.name + "_";
                 fldMap[f.name] = fld;
-                fld->type = f.getSQLType();
+                fld->type = f.type;
                 fld->primaryKey = (f.name == "id");
                 fld->unique = f.unique;
                 fld->field = o.fields[i2];
@@ -215,9 +456,6 @@ namespace xml {
                 litesql::Split fldNames;
                 DbIndex* index = new DbIndex;
                 for (size_t i3 = 0; i3 < idx.fields.size(); i3++) {
-                    if (fldMap.find(idx.fields[i3]->name) == fldMap.end())
-                        throw XMLExcept(idx.fields[i3]->pos, 
-                                "Indexfield " + o.name + "." + idx.fields[i3]->name + " is invalid.");
                     index->fields.push_back(fldMap[idx.fields[i3]->name]);
                     fldNames.push_back(idx.fields[i3]->name);
                 }
@@ -251,7 +489,7 @@ namespace xml {
                         fld->unique = true;
                 }
                 fld->name = relate.fieldName;
-                fld->type = "INTEGER";
+                fld->type = typeMap["integer"];
                 tbl->fields.push_back(fld);
                 objFields.push_back(fld);
 
@@ -267,7 +505,7 @@ namespace xml {
                 DbField* fld = new DbField;
                 fld->name = f.name + "_";
                 fldMap[f.name] = fld;
-                fld->type = f.getSQLType();
+                fld->type = f.type;
                 fld->primaryKey = false;
                 fld->unique = f.unique;
                 fld->field = r.fields[i2];
@@ -325,6 +563,49 @@ namespace xml {
         return r.name;
     }
 
+    static void initBaseTypes(Database& db) {
+        Position p("", 0);
+        Type* intType    = new Type(p, "integer");
+        Type* floatType  = new Type(p, "float");
+        Type* doubleType = new Type(p, "double");
+        Type* stringType = new Type(p, "string");
+        Type* dateType   = new Type(p, "date");
+        Type* timeType   = new Type(p, "time");
+        Type* dateTimeType = new Type(p, "datetime");
+        Type* boolType = new Type(p, "boolean");
+
+        intType->stores.push_back(new Store(p, "INTEGER", ""));
+        floatType->stores.push_back(new Store(p, "FLOAT", ""));
+        doubleType->stores.push_back(new Store(p, "FLOAT", ""));
+        stringType->stores.push_back(new Store(p, "TEXT", ""));
+        dateType->stores.push_back(new Store(p, "DATE", ""));
+        timeType->stores.push_back(new Store(p, "TIME", ""));
+        dateTimeType->stores.push_back(new Store(p, "DATETIME", ""));
+        boolType->stores.push_back(new Store(p, "SMALLINT", ""));
+
+        intType->represents.push_back(new Represent(p, "int", "c++"));
+        floatType->represents.push_back(new Represent(p, "float", "c++"));
+        doubleType->represents.push_back(new Represent(p, "double", "c++"));
+        stringType->represents.push_back(new Represent(p, "std::string", 
+                                                       "c++"));
+        dateType->represents.push_back(new Represent(p, "litesql::Date","c++"));
+        timeType->represents.push_back(new Represent(p,"litesql::Time", "c++"));
+        dateTimeType->represents.push_back(new Represent(p,"litesql::DateTime", 
+                                                         "c++"));
+
+        intType->represents.push_back(new Represent(p, "int", "python"));
+        floatType->represents.push_back(new Represent(p, "float", "python"));
+        doubleType->represents.push_back(new Represent(p, "float", "python"));
+        stringType->represents.push_back(new Represent(p, "str", "python"));
+        dateType->represents.push_back(new Represent(p, "litesql.Date",
+                                                        "python"));
+        timeType->represents.push_back(new Represent(p,"litesql.Time", 
+                                                        "python"));
+        dateTimeType->represents.push_back(new Represent(p,"litesql.DateTime", 
+                                                           "python"));
+                                                         
+    }
+
     static void init(Database& db) {
         vector<Object*>& objects = db.objects;
         vector<Relation*>& relations = db.relations;
@@ -345,10 +626,13 @@ namespace xml {
 
         map<string, Type*> typeMap;
 
+        initBaseTypes(db);
+
         for (size_t i = 0; i < db.types.size(); i++) {
             Type* type = db.types[i];
             typeMap[type->name] = type;
         }
+
         for (size_t i = 0; i < objects.size(); i++)  {
             if (objects[i]->parentObject)
                 objects[i]->parentObject->children.push_back(objects[i]);
@@ -412,7 +696,7 @@ namespace xml {
         }
 
 
-        initSchema(db);
+        initSchema(db, typeMap);
 
     }
 

@@ -5,7 +5,7 @@
 #include <map>
 #include "litesql.hpp"
 #include "stringutils.hpp"
-#include "xmlreader-actions.hpp"
+#include "flexml-header.hpp"
 
 namespace xml {
 
@@ -72,11 +72,25 @@ namespace xml {
         public:
             
             const std::string function, param;
+            const bool onCreate, onDelete, onUpdate, onLink, onUnlink,
+                       constrained;
 
             Check(const Position& p, 
                   const std::string& f,
-                  const std::string& pa)
-                : XML(p), function(f), param(pa) {}
+                  const std::string& pa,
+                  AT_check_oncreate oc, 
+                  AT_check_ondelete od,
+                  AT_check_onupdate ou,
+                  AT_check_onlink ol,
+                  AT_check_onunlink oun)
+                : XML(p), function(f), param(pa), 
+                  onCreate(oc == A_check_oncreate_true), 
+                  onDelete(od == A_check_ondelete_true), 
+                  onUpdate(ou == A_check_onupdate_true), 
+                  onLink(ol == A_check_onlink_true), 
+                  onUnlink(oun == A_check_onunlink_true),
+                  constrained(onCreate || onDelete || onUpdate || onLink 
+                              || onUnlink) {}
     };
 
     class Type : public XML {
@@ -331,8 +345,9 @@ namespace xml {
     class DbTable;
     class DbField {
     public:
-        std::string name, type;
+        std::string name;
         bool primaryKey, unique;
+        Type* type;
         Field* field;
         DbField* references; // TODO: m‰‰ritt‰minen
         DbTable* table;

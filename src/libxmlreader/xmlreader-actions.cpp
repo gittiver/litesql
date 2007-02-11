@@ -1,5 +1,4 @@
 #include "flexml-header.hpp"
-#include "xmlreader-actions.hpp"
 #include "xmltypes.hpp"
 #include "scanner.hpp"
 #include <list>
@@ -216,7 +215,12 @@ void STag_check(void) {
     if (obj)
         obj->checks.push_back(new Check(getPosition(), 
                                         A_check_function,
-                                        A_check_param));
+                                        A_check_param,
+                                        A_check_oncreate,
+                                        A_check_ondelete,
+                                        A_check_onupdate,
+                                        A_check_onlink,
+                                        A_check_onunlink));
 }
 
 void ETag_check(void) {}

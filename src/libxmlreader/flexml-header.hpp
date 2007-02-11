@@ -1,5 +1,5 @@
 /* XML processor/application API for litesql.dtd.
- * Generated 2007/02/10 23:31:23.
+ * Generated 2007/02/11 02:57:24.
  *
  * This program was generated with the FleXML XML processor generator.
  * FleXML is Copyright (C) 1999-2005 Kristoffer Rose.  All rights reserved.
@@ -96,6 +96,7 @@ typedef int AT_relation_id;
 typedef enum { AU_relate_limit, A_relate_limit_one,A_relate_limit_many } AT_relate_limit;
 typedef int AT_object_name;
 #define AU_object_name NULL
+typedef enum { AU_check_oncreate, A_check_oncreate_true,A_check_oncreate_false } AT_check_oncreate;
 typedef int AT_interface_name;
 #define AU_interface_name NULL
 typedef enum { AU_field_indexed, A_field_indexed_true,A_field_indexed_false } AT_field_indexed;
@@ -116,8 +117,6 @@ typedef int AT_method_returntype;
 #define AU_method_returntype NULL
 typedef int AT_param_type;
 #define AU_param_type NULL
-typedef int AT_relate_remotehandle;
-#define AU_relate_remotehandle NULL
 typedef int AT_represent_target;
 #define AU_represent_target NULL
 typedef int AT_indexfield_name;
@@ -135,6 +134,7 @@ typedef int AT_database_include;
 typedef int AT_store_backend;
 #define AU_store_backend NULL
 typedef enum { AU_object_temporary, A_object_temporary_true,A_object_temporary_false } AT_object_temporary;
+typedef enum { AU_check_onupdate, A_check_onupdate_true,A_check_onupdate_false } AT_check_onupdate;
 typedef int AT_field_name;
 #define AU_field_name NULL
 typedef enum { AU_relate_unique, A_relate_unique_true,A_relate_unique_false } AT_relate_unique;
@@ -149,17 +149,20 @@ typedef int AT_store_as;
 #define AU_store_as NULL
 typedef int AT_option_backend;
 #define AU_option_backend NULL
-typedef enum { AU_index_unique, A_index_unique_true,A_index_unique_false } AT_index_unique;
 typedef int AT_param_name;
 #define AU_param_name NULL
+typedef enum { AU_index_unique, A_index_unique_true,A_index_unique_false } AT_index_unique;
 typedef int AT_field_type;
 #define AU_field_type NULL
+typedef enum { AU_check_ondelete, A_check_ondelete_true,A_check_ondelete_false } AT_check_ondelete;
 typedef int AT_include_file;
 #define AU_include_file NULL
 typedef int AT_relation_name;
 #define AU_relation_name NULL
+typedef enum { AU_check_onlink, A_check_onlink_true,A_check_onlink_false } AT_check_onlink;
 typedef int AT_relate_handle;
 #define AU_relate_handle NULL
+typedef enum { AU_check_onunlink, A_check_onunlink_true,A_check_onunlink_false } AT_check_onunlink;
 typedef enum { AU_field_unique, A_field_unique_true,A_field_unique_false } AT_field_unique;
 typedef int AT_implements_interface;
 #define AU_implements_interface NULL
@@ -178,6 +181,8 @@ extern AT_relate_limit AX_relate_limit;
 #define A_relate_limit AX_relate_limit
 extern AT_object_name AX_object_name;
 #define A_object_name (bufferstack + AX_object_name)
+extern AT_check_oncreate AX_check_oncreate;
+#define A_check_oncreate AX_check_oncreate
 extern AT_interface_name AX_interface_name;
 #define A_interface_name (bufferstack + AX_interface_name)
 extern AT_field_indexed AX_field_indexed;
@@ -200,8 +205,6 @@ extern AT_method_returntype AX_method_returntype;
 #define A_method_returntype (bufferstack + AX_method_returntype)
 extern AT_param_type AX_param_type;
 #define A_param_type (bufferstack + AX_param_type)
-extern AT_relate_remotehandle AX_relate_remotehandle;
-#define A_relate_remotehandle (bufferstack + AX_relate_remotehandle)
 extern AT_represent_target AX_represent_target;
 #define A_represent_target (bufferstack + AX_represent_target)
 extern AT_indexfield_name AX_indexfield_name;
@@ -220,6 +223,8 @@ extern AT_store_backend AX_store_backend;
 #define A_store_backend (bufferstack + AX_store_backend)
 extern AT_object_temporary AX_object_temporary;
 #define A_object_temporary AX_object_temporary
+extern AT_check_onupdate AX_check_onupdate;
+#define A_check_onupdate AX_check_onupdate
 extern AT_field_name AX_field_name;
 #define A_field_name (bufferstack + AX_field_name)
 extern AT_relate_unique AX_relate_unique;
@@ -236,18 +241,24 @@ extern AT_store_as AX_store_as;
 #define A_store_as (bufferstack + AX_store_as)
 extern AT_option_backend AX_option_backend;
 #define A_option_backend (bufferstack + AX_option_backend)
-extern AT_index_unique AX_index_unique;
-#define A_index_unique AX_index_unique
 extern AT_param_name AX_param_name;
 #define A_param_name (bufferstack + AX_param_name)
+extern AT_index_unique AX_index_unique;
+#define A_index_unique AX_index_unique
 extern AT_field_type AX_field_type;
 #define A_field_type (bufferstack + AX_field_type)
+extern AT_check_ondelete AX_check_ondelete;
+#define A_check_ondelete AX_check_ondelete
 extern AT_include_file AX_include_file;
 #define A_include_file (bufferstack + AX_include_file)
 extern AT_relation_name AX_relation_name;
 #define A_relation_name (bufferstack + AX_relation_name)
+extern AT_check_onlink AX_check_onlink;
+#define A_check_onlink AX_check_onlink
 extern AT_relate_handle AX_relate_handle;
 #define A_relate_handle (bufferstack + AX_relate_handle)
+extern AT_check_onunlink AX_check_onunlink;
+#define A_check_onunlink AX_check_onunlink
 extern AT_field_unique AX_field_unique;
 #define A_field_unique AX_field_unique
 extern AT_implements_interface AX_implements_interface;
