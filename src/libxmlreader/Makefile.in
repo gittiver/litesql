@@ -48,7 +48,7 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libxmlreader_la_LIBADD =
 am_libxmlreader_la_OBJECTS = scanner.lo xmlreader-actions.lo \
-	xmlreader.lo stringutils.lo md5.lo
+	xmlreader.lo stringutils.lo md5.lo sanitycheck.lo
 libxmlreader_la_OBJECTS = $(am_libxmlreader_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -61,14 +61,6 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
-	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libxmlreader_la_SOURCES)
 DIST_SOURCES = $(libxmlreader_la_SOURCES)
 ETAGS = etags
@@ -192,7 +184,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 AM_CXXFLAGS = -I$(srcdir)/../../include
 noinst_LTLIBRARIES = libxmlreader.la
-libxmlreader_la_SOURCES = scanner.cpp xmlreader-actions.cpp xmlreader.cpp stringutils.cpp md5.cpp md5.hpp
+libxmlreader_la_SOURCES = scanner.cpp xmlreader-actions.cpp xmlreader.cpp stringutils.cpp md5.cpp sanitycheck.cpp 
 all: all-am
 
 .SUFFIXES:
@@ -245,6 +237,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/md5.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sanitycheck.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scanner.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stringutils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xmlreader-actions.Plo@am__quote@
