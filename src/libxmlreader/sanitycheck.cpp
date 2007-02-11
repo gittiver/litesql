@@ -287,6 +287,8 @@ namespace xml {
     static void checkInheritance(Object* o, map<string, Object*>& objMap) {
 
         set<Object*> parents;
+        set<string> interfaces;
+        // also checks if interfaces are implemented several times
 
         while (!o->inherits.empty()) {
             if (objMap.find(o->inherits) == objMap.end())
@@ -296,6 +298,16 @@ namespace xml {
             if (parents.find(o) != parents.end())
                 throw XMLExcept(o->pos, "circular inheritance detected");
             parents.insert(o);
+
+            for (size_t i = 0; i < o->implements.size(); i++) {
+                string name = o->implements[i]->interfaceName;
+                if (interfaces.find(name) != interfaces.end())
+                    throw XMLExcept(o->implements[i]->pos,
+                                    "interface implemented again in subclass "
+                                    " : " + name);
+                interfaces.insert(name);
+            }
+
         }
     }
 

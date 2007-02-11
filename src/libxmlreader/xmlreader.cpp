@@ -179,105 +179,27 @@ namespace xml {
         return r.name;
     }
 
-    static void initBaseTypes(Database& db) {
-        Position p("", 0);
-        Type* intType    = new Type(p, "integer");
-        Type* floatType  = new Type(p, "float");
-        Type* doubleType = new Type(p, "double");
-        Type* stringType = new Type(p, "string");
-        Type* dateType   = new Type(p, "date");
-        Type* timeType   = new Type(p, "time");
-        Type* dateTimeType = new Type(p, "datetime");
-        Type* boolType = new Type(p, "boolean");
+    static void linkRelations(Database& db,
+                              map<string, Object*>& objMap,
+                              map<string, Interface*>& ifaceMap) {
 
-        intType->stores.push_back(new Store(p, "INTEGER", ""));
-        floatType->stores.push_back(new Store(p, "FLOAT", ""));
-        doubleType->stores.push_back(new Store(p, "FLOAT", ""));
-        stringType->stores.push_back(new Store(p, "TEXT", ""));
-        dateType->stores.push_back(new Store(p, "DATE", ""));
-        timeType->stores.push_back(new Store(p, "TIME", ""));
-        dateTimeType->stores.push_back(new Store(p, "DATETIME", ""));
-        boolType->stores.push_back(new Store(p, "SMALLINT", ""));
-
-        intType->represents.push_back(new Represent(p, "int", "c++"));
-        floatType->represents.push_back(new Represent(p, "float", "c++"));
-        doubleType->represents.push_back(new Represent(p, "double", "c++"));
-        stringType->represents.push_back(new Represent(p, "std::string", 
-                                                       "c++"));
-        dateType->represents.push_back(new Represent(p, "litesql::Date","c++"));
-        timeType->represents.push_back(new Represent(p,"litesql::Time", "c++"));
-        dateTimeType->represents.push_back(new Represent(p,"litesql::DateTime", 
-                                                         "c++"));
-
-        intType->represents.push_back(new Represent(p, "int", "python"));
-        floatType->represents.push_back(new Represent(p, "float", "python"));
-        doubleType->represents.push_back(new Represent(p, "float", "python"));
-        stringType->represents.push_back(new Represent(p, "str", "python"));
-        dateType->represents.push_back(new Represent(p, "litesql.Date",
-                                                        "python"));
-        timeType->represents.push_back(new Represent(p,"litesql.Time", 
-                                                        "python"));
-        dateTimeType->represents.push_back(new Represent(p,"litesql.DateTime", 
-                                                           "python"));
-                                                         
-    }
-
-    static void init(Database& db) {
-        vector<Object*>& objects = db.objects;
-        vector<Relation*>& relations = db.relations;
-
-
-        map<string, Object*> objMap;
-        sanityCheck(&db);
-        // make string -> Object mapping
-
-        for (size_t i = 0; i < objects.size(); i++)
-            objMap[objects[i]->name] = objects[i];
-
-        // make Object's class hierarchy mapping (parent and children)
-
-        for (size_t i = 0; i < objects.size(); i++) 
-            if (objMap.find(objects[i]->inherits) != objMap.end())
-                objects[i]->parentObject = objMap[objects[i]->inherits];
-
-        map<string, Type*> typeMap;
-
-        initBaseTypes(db);
-
-        for (size_t i = 0; i < db.types.size(); i++) {
-            Type* type = db.types[i];
-            typeMap[type->name] = type;
-        }
-
-        for (size_t i = 0; i < objects.size(); i++)  {
-            if (objects[i]->parentObject)
-                objects[i]->parentObject->children.push_back(objects[i]);
-            int objOffset = objects[i]->getLastFieldOffset();
-            for (size_t i2 = 0; i2 < objects[i]->fields.size(); i2++) {
-                xml::Field* fld = objects[i]->fields[i2];
-                if (typeMap.find(fld->typeName) == typeMap.end())
-                    throw XMLExcept(fld->pos, "Type is invalid : " + fld->typeName);
-                fld->type = typeMap[fld->typeName];
-
-                fld->offset = objOffset - objects[i]->fields.size() + i2;
-            }
-        }
-
-        // sort objects of relations alphabetically (ascii)
-
-        for (size_t i = 0; i < relations.size(); i++) {
-            sort(relations[i]->related.begin(), relations[i]->related.end(),
-                    less<Relate*>());
-        }
-
-        for (size_t i = 0; i < relations.size(); i++) {
-            Relation& rel = *relations[i];
+        for (size_t i = 0; i < db.relations.size(); i++) {
+            Relation& rel = *db.relations[i];
             bool same = rel.maxSameTypes() > 1;
             rel.name = makeRelationName(rel);
 
             for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
                 Relate& relate = *rel.related[i2];
-                Object* obj = objMap[relate.objectName];
+                Object* obj = NULL;
+                Interface* iface = NULL;
+
+                if (!relate.objectName.empty())
+                    obj = objMap[relate.objectName];
+
+                if (!relate.interfaceName.empty())
+                    iface = ifaceMap[relate.interfaceName];
+
+
                 relate.paramPos = i2;
 
                 string num;
@@ -294,30 +216,87 @@ namespace xml {
                 obj->relations[&rel].push_back(&relate);
                 if (!relate.handle.empty()) {
 
-                    // make Object's relation handles
+                    // make relation handle
 
                     RelationHandle* handle = new RelationHandle(relate.pos, 
                             relate.handle, &rel,
-                            &relate, obj);
+                            &relate, obj, iface);
+
                     for (size_t i3 = 0; i3 < rel.related.size(); i3++) {
                         if (i2 != i3) {
                             Object* o = objMap[rel.related[i3]->objectName];
                             // make RelationHandle -> (Object,Relation) mapping
-                            handle->destObjects.push_back(make_pair(o,rel.related[i3]));
+
+                            handle->destObjects
+                                  .push_back(make_pair(o,rel.related[i3]));
                         }
                     }
-                    obj->handles.push_back(handle);
+                    if (obj)
+                        obj->handles.push_back(handle);
+                    else if (iface)
+                        iface->handles.push_back(handle);
                 }
             }
         }
+    }
 
+    static void init(Database& db) {
+        vector<Object*>& objects = db.objects;
+        vector<Relation*>& relations = db.relations;
+
+
+        map<string, Object*> objMap;
+        map<string, Interface*> ifaceMap;
+
+
+        sanityCheck(&db);
+        // make string -> Object mapping
+
+        for (size_t i = 0; i < objects.size(); i++)
+            objMap[objects[i]->name] = objects[i];
+
+        // make Object's class hierarchy mapping (parent and children)
+
+        for (size_t i = 0; i < objects.size(); i++) 
+            if (objMap.find(objects[i]->inherits) != objMap.end())
+                objects[i]->parentObject = objMap[objects[i]->inherits];
+
+        map<string, Type*> typeMap;
+
+
+        for (size_t i = 0; i < db.types.size(); i++) {
+            Type* type = db.types[i];
+            typeMap[type->name] = type;
+        }
+
+        for (size_t i = 0; i < objects.size(); i++)  {
+            if (objects[i]->parentObject)
+                objects[i]->parentObject->children.push_back(objects[i]);
+            int objOffset = objects[i]->getLastFieldOffset();
+            for (size_t i2 = 0; i2 < objects[i]->fields.size(); i2++) {
+                xml::Field* fld = objects[i]->fields[i2];
+                if (typeMap.find(fld->typeName) == typeMap.end())
+                    throw XMLExcept(fld->pos, "Type is invalid : " + fld->typeName);
+                fld->type = typeMap[fld->typeName];
+                fld->offset = objOffset - objects[i]->fields.size() + i2;
+            }
+        }
+
+        // sort objects of relations alphabetically (ascii)
+
+        for (size_t i = 0; i < relations.size(); i++) {
+            sort(relations[i]->related.begin(), relations[i]->related.end(),
+                    less<Relate*>());
+        }
+
+        linkRelations(db, objMap, ifaceMap);
 
         initSchema(db, typeMap);
-
     }
 
 
     Database* parse(const string& fName) {
+
         yyin = fopen(fName.c_str(), "r");
         if (!yyin)
             throw litesql::Except("Could not open file: " + fName);

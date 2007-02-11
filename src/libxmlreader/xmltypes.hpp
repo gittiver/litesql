@@ -160,11 +160,40 @@ namespace xml {
 
     };
 
+    class Relation;
+    class Object;
+    class Relate;
+    class Interface;
+    
+
+    class RelationHandle : public XML {
+        public:
+
+            const std::string name;
+            const Relation* relation;
+            const Relate* relate;
+            const Object* object;
+            const Interface* interface;
+
+            std::vector< std::pair<Object*,Relate*> > destObjects;
+
+            RelationHandle(const Position& p, 
+                           const std::string& n, 
+                           Relation* r, 
+                           Relate* rel, 
+                           Object* o,
+                           Interface* i) 
+                : XML(p), name(n), relation(r), relate(rel), object(o),
+                  interface(i) {}
+    };
+    
     class Interface : public XML {
         public:
 
             const std::string name;
             std::vector<Method*> methods;
+            std::vector<RelationHandle*> handles;
+            std::map<Relation*, std::vector<Relate*> > relations;
 
             Interface(const Position& p, 
                       const std::string& n)
@@ -205,8 +234,21 @@ namespace xml {
     };
 
 
-    class Relation;
-    class Object;
+
+
+
+    class Option : public XML {
+        public:
+
+            const std::string name, value, backend;
+            
+
+            Option(const Position& p, 
+                   const std::string& n, 
+                   const std::string& v, 
+                   const std::string& be)
+                : XML(p), name(n), value(v), backend(be) {}
+    };
 
     class Relate : public XML {
         public:
@@ -233,38 +275,6 @@ namespace xml {
                         throw XMLExcept(p, "both limit and unique "
                                 "specified in relate");
                 }
-    };
-
-    
-    class RelationHandle : public XML {
-        public:
-
-            const std::string name;
-            Relation * relation;
-            Relate * relate;
-            Object * object;
-            std::vector< std::pair<Object*,Relate*> > destObjects;
-
-            RelationHandle(const Position& p, 
-                           const std::string& n, 
-                           Relation* r, 
-                           Relate* rel, 
-                           Object* o) 
-                : XML(p), name(n), relation(r), relate(rel), object(o) {}
-    };
-
-
-    class Option : public XML {
-        public:
-
-            const std::string name, value, backend;
-            
-
-            Option(const Position& p, 
-                   const std::string& n, 
-                   const std::string& v, 
-                   const std::string& be)
-                : XML(p), name(n), value(v), backend(be) {}
     };
 
 
@@ -391,7 +401,11 @@ namespace xml {
                      const std::string& n,
                      const std::string& i,
                      const std::string& ns) 
-                : XML(p), name(n), include(i), nspace(ns) {}
+                : XML(p), name(n), include(i), nspace(ns) {
+                initBaseTypes();
+            }
+
+            void initBaseTypes();                
 
     };
 

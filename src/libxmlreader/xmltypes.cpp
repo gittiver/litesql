@@ -88,4 +88,55 @@ namespace xml {
         return max;
     }
 
+    static void Database::initBaseTypes() {
+
+        Position p("<internal>", 0);
+        Type* intType    = new Type(p, "integer");
+        Type* floatType  = new Type(p, "float");
+        Type* doubleType = new Type(p, "double");
+        Type* stringType = new Type(p, "string");
+        Type* dateType   = new Type(p, "date");
+        Type* timeType   = new Type(p, "time");
+        Type* dateTimeType = new Type(p, "datetime");
+        Type* boolType = new Type(p, "boolean");
+
+        intType->stores.push_back(new Store(p, "INTEGER", ""));
+        floatType->stores.push_back(new Store(p, "FLOAT", ""));
+        doubleType->stores.push_back(new Store(p, "FLOAT", ""));
+        stringType->stores.push_back(new Store(p, "TEXT", ""));
+        dateType->stores.push_back(new Store(p, "DATE", ""));
+        timeType->stores.push_back(new Store(p, "TIME", ""));
+        dateTimeType->stores.push_back(new Store(p, "DATETIME", ""));
+        boolType->stores.push_back(new Store(p, "SMALLINT", ""));
+
+        intType->represents.push_back(new Represent(p, "int", "c++"));
+        floatType->represents.push_back(new Represent(p, "float", "c++"));
+        doubleType->represents.push_back(new Represent(p, "double", "c++"));
+        stringType->represents.push_back(new Represent(p, "std::string", 
+                                                       "c++"));
+        dateType->represents.push_back(new Represent(p, "litesql::Date","c++"));
+        timeType->represents.push_back(new Represent(p,"litesql::Time", "c++"));
+        dateTimeType->represents.push_back(new Represent(p,"litesql::DateTime", 
+                                                         "c++"));
+
+        intType->represents.push_back(new Represent(p, "int", "python"));
+        floatType->represents.push_back(new Represent(p, "float", "python"));
+        doubleType->represents.push_back(new Represent(p, "float", "python"));
+        stringType->represents.push_back(new Represent(p, "str", "python"));
+        dateType->represents.push_back(new Represent(p, "litesql.Date",
+                                                        "python"));
+        timeType->represents.push_back(new Represent(p,"litesql.Time", 
+                                                        "python"));
+        dateTimeType->represents.push_back(new Represent(p,"litesql.DateTime", 
+                                                           "python"));
+        types.push_back(intType);
+        types.push_back(floatType);
+        types.push_back(doubleType);
+        types.push_back(stringType);
+        types.push_back(dateType);
+        types.push_back(timeType);
+        types.push_back(dateTimeType);
+        types.push_back(boolType);
+    }
+
 }
