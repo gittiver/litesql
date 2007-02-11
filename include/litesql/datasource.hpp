@@ -99,7 +99,7 @@ public:
         \param asc ascending order 
         \return *this, methods can be chained */
     DataSource& orderByRelation(FieldType id, FieldType f, bool asc=true) {
-        sel.source(id.table());
+//        sel.source(id.table());
         sel.where(id == T::Id);
         sel.orderBy(f.fullName(), asc);
         return *this;

@@ -239,7 +239,7 @@ void ETag_interface(void) {}
 void STag_implements(void) {
 
     if (obj)
-        obj->implements.push_back(new Implements(getPosition(),
+        obj->implementations.push_back(new Implementation(getPosition(),
                                                  A_implements_interface));
 }
 

@@ -11,49 +11,14 @@
 #include <utility>
 #include <string>
 #include "litesql/string.hpp"
+#include "litesql/fieldtype.hpp"
 
 /** \file field.hpp
     contains FieldType- and Field-classes */
 namespace litesql {
 using namespace std;
 
-/** holds field name, type and table information */
-class In;
-class Like;
-class SelectQuery;
 
-class FieldType {
-    string _name, _type, _table;
-
-protected:
-    typedef vector< pair<string, string> > Values;
-private:
-    Values _values;
-public:
-
-    FieldType(const string& n, 
-              const string& t, 
-              const string& tbl,
-              const Values& vals = Values())
-        : _name(n), _type(t), _table(tbl), _values(vals) {}
-    string fullName() const { return  table() + "." + name(); }
-    string name() const { return _name; }
-    string type() const { return _type; }
-    string table() const { return _table; }
-    vector< pair<string, string> > values() { return _values; }
-    /** syntactic sugar to Expr-API, Object::field_.in(set) */
-    In in(const string& set) const;
-    /** syntactic sugar to Expr-API, Object::field_.in(sel) */
-    In in(const SelectQuery& sel) const;
-    /** syntactic sugar to Expr-API, Object::field_.like(s) */
-    Like like(const string& s);
-    bool operator==(const FieldType & fd) const {
-        return fd.fullName() == fullName();
-    }
-    bool operator!=(const FieldType & fd) const {
-        return ! (*this == fd);
-    }
-};
 
 /** convert function */
 template <class From, class To>
@@ -126,8 +91,8 @@ public:
     Field(const FieldType & f) : field(&f), _modified(true) {}
     string fullName() const { return field->fullName(); }   
     string name() const { return field->name(); }
-    string type() const { return field->type(); }
-    string table() const { return field->table(); }
+    db::Type* type() const { return field->type(); }
+    db::Table* table() const { return field->table(); }
     string value() const { return _value; }
     const FieldType & fieldType() const { return *field; } 
     bool modified() const { return _modified; }

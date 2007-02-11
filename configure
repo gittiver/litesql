@@ -6169,7 +6169,7 @@ fi
 
 if test "x${MYSQL_CONFIG}" != "xnot found"
 then
-    MYSQL_CXXFLAGS=`${MYSQL_CONFIG} --include`
+    MYSQL_CXXFLAGS=`${MYSQL_CONFIG} --cflags|sed -e 's/-^I.*\w//g'`
     MYSQL_LIBS=`${MYSQL_CONFIG} --libs`
     cat >>confdefs.h <<\_ACEOF
 #define HAVE_LIBMYSQLCLIENT 1

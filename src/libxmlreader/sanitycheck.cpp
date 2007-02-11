@@ -299,10 +299,10 @@ namespace xml {
                 throw XMLExcept(o->pos, "circular inheritance detected");
             parents.insert(o);
 
-            for (size_t i = 0; i < o->implements.size(); i++) {
-                string name = o->implements[i]->interfaceName;
+            for (size_t i = 0; i < o->implementations.size(); i++) {
+                string name = o->implementations[i]->interfaceName;
                 if (interfaces.find(name) != interfaces.end())
-                    throw XMLExcept(o->implements[i]->pos,
+                    throw XMLExcept(o->implementations[i]->pos,
                                     "interface implemented again in subclass "
                                     " : " + name);
                 interfaces.insert(name);
@@ -370,17 +370,17 @@ namespace xml {
                         "object.method.param", 
                         o.name + "." + o.methods[i2]->name);
 
-            // implements references ok?                           
+            // implementations references ok?                           
             // no duplicates?
             set<string> inames;
-            for (size_t i2 = 0; i2 < o.implements.size(); i2++) {
-                string iname = o.implements[i2]->interfaceName;
+            for (size_t i2 = 0; i2 < o.implementations.size(); i2++) {
+                string iname = o.implementations[i2]->interfaceName;
                 if (interfaceNames.find(iname) == interfaceNames.end())
-                    throw XMLExcept(o.implements[i2]->pos, 
-                            "unknown interface : object.implements : "
+                    throw XMLExcept(o.implementations[i2]->pos, 
+                            "unknown interface : object.implementations : "
                             + iname);
                 if (inames.find(iname) != inames.end())
-                    throw XMLExcept(o.implements[i2]->pos,
+                    throw XMLExcept(o.implementations[i2]->pos,
                             "interface implemented twice : " + iname);
 
                 inames.insert(iname);                            

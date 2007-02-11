@@ -112,7 +112,7 @@ AC_CHECK_PROG([MYSQL_CONFIG], [mysql_config], [${mysql_config_path}/mysql_config
 	      [not found], [${mysql_config_path}])
 if test "x${MYSQL_CONFIG}" != "xnot found"
 then
-    MYSQL_CXXFLAGS=`${MYSQL_CONFIG} --include`
+    MYSQL_CXXFLAGS=`${MYSQL_CONFIG} --cflags|sed -e 's/-[^I].*\w//g'`
     MYSQL_LIBS=`${MYSQL_CONFIG} --libs`
     AC_DEFINE([HAVE_LIBMYSQLCLIENT])
 fi

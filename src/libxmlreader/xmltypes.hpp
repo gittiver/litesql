@@ -303,24 +303,27 @@ namespace xml {
             int maxSameTypes() const;
     };
 
-    class Implements : public XML {
+    class Implementation : public XML {
         public:
 
             const std::string interfaceName;
             Interface* interface;
+            std::map<Relation*, std::vector<Relate*> > relations;
+            std::vector<RelationHandle*> handles;
 
-            Implements(const Position& p, 
+            Implementation(const Position& p, 
                        const std::string& i)
                 : XML(p), interfaceName(i), interface(NULL) {}
     };
 
+   
     class Object : public XML {
         public:
 
             const std::string name, inherits;
             const bool temporary;
 
-            std::vector<Implements*> implements;
+            std::vector<Implementation*> implementations;
             std::vector<Field*> fields;
             std::vector<Method*> methods;
             std::vector<Index*> indices;

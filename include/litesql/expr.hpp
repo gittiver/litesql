@@ -104,11 +104,11 @@ namespace litesql {
 
             Oper(const FieldType & fld, const string& o, const string& d) 
                 : field(fld), op(o), data(d), escape(true) {
-                    extraTables.push_back(fld.table());
+//                    extraTables.push_back(fld.table());
                 }
             Oper(const FieldType & fld, const string& o, const FieldType &f2) 
                 : field(fld), op(o), data(f2.fullName()), escape(false) {
-                    extraTables.push_back(fld.table());
+//                    extraTables.push_back(fld.table());
                 }
 
         public:
@@ -191,15 +191,14 @@ namespace litesql {
                 return field.fullName() + " " + op + " " + data;
             }
     };
-    class Value {};
-    class Exists : public Value {
+    class Exists  {
 
         public:
 
             Exists(const SelectQuery& s);
     };
 
-    class All : public Value {
+    class All  {
 
         public:
 
