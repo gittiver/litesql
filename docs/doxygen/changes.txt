@@ -8,7 +8,13 @@
     Manual */
 /** \page changes Changes
 
-\section vercvs CVS Version
+\section versvn SVN Version
+
+2007 Feb 14
+- lots of unrecorded changes
+- version control is under Subversion now on
+- svn version broken at the moment, working on it
+
 2006 July 19
 - litesql-gen, some internal refactoring, _broken_ at the moment
 - include-tag, support for multiple input files

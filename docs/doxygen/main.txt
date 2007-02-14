@@ -27,20 +27,21 @@ compile time.
 
 \section status Status
 
-- this a testing release
+- new features are being developed
 - no Windows support yet
-
+ 
 \section requirements Requirements
 
-- gcc-compatible C++ compiler that supports member templates
+- fairly recent C++ compiler
 - client library and header files for at least one backend: libsqlite3, libmysqlclient or libpq
 
 \subsection optionalreqs Optional
-- automake 1.4  
-- autoconf 2.59
-- flexml 1.44 (to generate code generator ;)
-- doxygen 1.4.5
+- automake 1.9.6
+- autoconf 2.61
+- flexml 1.61 (to generate code generator ;)
+- doxygen 1.5.1
 - dpkg-buildpackage (to generate debian packages)
+
 \section license License
 
 This library is distributed under the terms of \ref bsdlicense
