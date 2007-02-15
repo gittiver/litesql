@@ -1,14 +1,18 @@
 #include "flexml-header.hpp"
-#include "xmltypes.hpp"
+#include "litesql/xmltypes.hpp"
+#include "stringutils.hpp"
 #include "scanner.hpp"
 #include <list>
 
 using namespace std;
 using namespace xml;
 extern FILE* yyin;
-list<Position> posStack;
-string currentFile;
-Database* xmlReaderDb;
+
+namespace xml {
+    list<Position> posStack;
+    string currentFile;
+    Database* xmlReaderDb;
+}
 static Object* obj;
 static Relation* rel;
 static Interface* iface;
@@ -39,7 +43,7 @@ void STag_object(void) {
     obj = new Object(getPosition(), 
                      A_object_name, 
                      safe(A_object_inherits), 
-                     A_object_temporary);
+                     A_object_temporary == A_object_temporary_true);
 
 
     xmlReaderDb->objects.push_back(obj);
@@ -112,21 +116,21 @@ void ETag_type(void) {
 
 void STag_field(void) {
 
-
-    if (obj) {
-        obj->fields.push_back(fld =new Field(getPosition(), A_field_name, 
-                    A_field_type,safe(A_field_default),A_field_indexed,A_field_unique));
-    } else if (rel) {
-        rel->fields.push_back(fld = new Field(getPosition(), A_field_name, 
-                    A_field_type,safe(A_field_default),A_field_indexed, A_field_unique));
-    }
+    fld = new Field(getPosition(), A_field_name, 
+                    A_field_type,safe(A_field_default),
+                    A_field_indexed == A_field_indexed_true,
+                    A_field_unique == A_field_unique_true);
+    if (obj) 
+        obj->fields.push_back(fld);
+    else if (rel) 
+        rel->fields.push_back(fld);
 
 } 
 
 void STag_index(void) {
 
 
-    idx = new Index(getPosition(), A_index_unique);
+    idx = new Index(getPosition(), A_index_unique == A_index_unique_true);
     if (obj) 
         obj->indices.push_back(idx);
     else if (rel) 
@@ -170,7 +174,8 @@ void ETag_field(void) {
 
 void STag_method(void) {
 
-    mtd = new Method(getPosition(), A_method_name, safe(A_method_returntype), A_method_const);
+    mtd = new Method(getPosition(), A_method_name, safe(A_method_returntype), 
+                     A_method_const == A_method_const_true);
     if (obj) 
         obj->methods.push_back(mtd);
     else if (iface) 
@@ -197,10 +202,11 @@ void ETag_param(void) {}
 void STag_relate(void) {
 
     relate = new Relate(getPosition(), 
+                        rel,
                         A_relate_object, 
                         A_relate_interface,
-                        A_relate_limit, 
-                        A_relate_unique, 
+                        A_relate_limit == A_relate_limit_one, 
+                        A_relate_unique == A_relate_unique_true,  
                         safe(A_relate_handle));
     if (rel)
         rel->related.push_back(relate);
@@ -214,11 +220,11 @@ void STag_check(void) {
     Check* check = new Check(getPosition(), 
                              A_check_function,
                              A_check_param,
-                             A_check_oncreate,
-                             A_check_ondelete,
-                             A_check_onupdate,
-                             A_check_onlink,
-                             A_check_onunlink);
+                             A_check_oncreate == A_check_oncreate_true,
+                             A_check_ondelete == A_check_ondelete_true,
+                             A_check_onupdate == A_check_onupdate_true,
+                             A_check_onlink == A_check_onlink_true,
+                             A_check_onunlink == A_check_onunlink_true);
     if (obj)
         obj->checks.push_back(check);
     else if (rel)

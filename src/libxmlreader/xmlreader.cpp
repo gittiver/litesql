@@ -1,22 +1,8 @@
-#include "xmlreader.hpp"
+#include "litesql-xmlreader.hpp"
 #include "flexml-header.hpp"
 #include "scanner.hpp"
 #include "stringutils.hpp"
 #include "sanitycheck.hpp"
-
-namespace std {
-    template <>
-    struct less<xml::Relate*> {
-        bool operator()(xml::Relate const* r1, xml::Relate const* r2) {
-            if (!r1)
-                return true;
-            if (!r2)
-                return false;
-                
-            return r1->objectName < r2->objectName;
-        }
-    };
-}
 
 namespace xml {
     extern Database* xmlReaderDb;
@@ -218,9 +204,9 @@ namespace xml {
         return r;
     }
 
-    static void registerRelation(Object* obj,
-                                 Relation* rel,
+    static void registerRelation(Relation* rel,
                                  Relate* relate) {
+        Object* obj = relate->object;
 
         if (obj->relations.find(rel) == obj->relations.end())
             obj->relations[rel] = vector<Relate*>();
@@ -245,8 +231,7 @@ namespace xml {
 
         for (size_t i = 0; i < rel->related.size(); i++) {
             Relate* relate = rel->related[i];
-            Object* destObj = relate->object;
-            registerRelation(destObj, rel, relate); 
+            registerRelation(rel, relate); 
         }
        
     }
@@ -268,30 +253,18 @@ namespace xml {
                 }
             }
 
-            for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
-                Relate& relate = *rel.related[i2];
-                Object* obj = relate.object;
+            if (!rel.abstract) {
+                rel.sortRelated();
 
+                for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
+                    Relate& relate = *rel.related[i2];
 
-                relate.paramPos = i2;
+                    registerRelation(&rel, &relate);    
 
-                string num;
+                }
 
-                if (same)
-                    num = litesql::toString(i2 + 1);
+            } else {
 
-                relate.fieldTypeName = relate.objectName + num;
-                relate.fieldName = relate.objectName+ litesql::toString(i2 + 1);
-                relate.object = obj;
-
-                if (rel.abstract)
-                    continue;
-
-                registerRelation(obj, &rel, &relate);    
-
-            }
-
-            if (rel.abstract) { 
                 for (size_t i2 = 0; i2 < iface->implementations.size(); i2++) {
                     Implementation* imp = iface->implementations[i];
                     generateImplementation(db, &rel, imp);
@@ -360,8 +333,9 @@ namespace xml {
         for (size_t i = 0; i < relations.size(); i++) {
             Relation*r = relations[i];
 
-            r->sortRelated();
 
+            // Relate -> Interface 
+            // Relate -> Object        
             for (size_t i2 = 0; i2 < r->related.size(); i2++) {
                 Relate* rel = r->related[i2];
 

@@ -1,6 +1,6 @@
 #include <cstdio>
 #include "litesql.hpp"
-#include "xmlreader.hpp"
+#include "litesql-xmlreader.hpp"
 #include "litesql-gen-cpp.hpp"
 #include "litesql-gen-graphviz.hpp"
 #include "litesql-gen-python.hpp"
@@ -39,7 +39,6 @@ void generateCode(xml::Database& db) {
     if (!args)
         throw litesql::Except("no arguments");
     string target = (*args)["target"];
-    xml::init(db, *args);
     if (target == "c++") 
         writeCPPClasses(db, *args);
     else if (target == "python")
@@ -49,16 +48,7 @@ void generateCode(xml::Database& db) {
     else
         throw litesql::Except("unsupported target: " + target);
 }
-int parseFile(const string& name, FILE** yyin) {
-    *yyin = fopen(name.c_str(), "r");
-    currentFile = name;
-    if (!*yyin) {
-        string msg = "could not open file '" + name + "'";
-        throw litesql::Except(msg); // + ":" + strerror(errno));
-    }
-    int ret = yylex();
-    return ret;
-}
+
 int main(int argc, char **argv) { 
     bool printHelp = false;
     try {
@@ -73,19 +63,19 @@ int main(int argc, char **argv) {
             .option("cppext", "", "--cpp-ext", true, false, "cpp")
             .option("hppext", "", "--hpp-ext", true, false, "hpp")
             .parse();
-        if (args->has("help")) {
+        if (args.has("help")) {
             fprintf(stderr, help);
             return -1;
         }
-        if (args->has("verbose"))
+        if (args.has("verbose"))
             verbose = true;
-        litesql::Split params = args->getParams();
+        litesql::Split params = args.getParams();
         if (params.size() != 1) {
             cerr << "Usage: litesql-gen [options] <database.xml>" 
                  << endl << endl;
             return -1;
         }
-        Database* db = xml::parse(params[0]);
+        xml::Database* db = xml::parse(params[0]);
         generateCode(*db);    
 
     } catch (litesql::Except e) {

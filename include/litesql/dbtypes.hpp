@@ -8,6 +8,7 @@
 #define _litesql_dbtypes_hpp
 
 #include <string>
+#include <map>
 #include <list>
 
 namespace litesql {

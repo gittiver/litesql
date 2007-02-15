@@ -58,7 +58,7 @@ liblitesql_la_LIBADD =
 am_liblitesql_la_OBJECTS = database.lo expr.lo selectquery.lo \
 	persistent.lo split.lo string.lo backend.lo updatequery.lo \
 	field.lo datasource.lo sqlite3.lo postgresql.lo mysql.lo \
-	compatibility.lo datetime.lo
+	compatibility.lo datetime.lo dbtypes.lo
 liblitesql_la_OBJECTS = $(am_liblitesql_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -194,9 +194,9 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 AM_CXXFLAGS = -I$(srcdir)/../../include
 lib_LTLIBRARIES = liblitesql.la
-liblitesql_la_SOURCES = database.cpp expr.cpp selectquery.cpp persistent.cpp split.cpp string.cpp backend.cpp updatequery.cpp field.cpp datasource.cpp sqlite3.cpp postgresql.cpp mysql.cpp compatibility.cpp datetime.cpp
+liblitesql_la_SOURCES = database.cpp expr.cpp selectquery.cpp persistent.cpp split.cpp string.cpp backend.cpp updatequery.cpp field.cpp datasource.cpp sqlite3.cpp postgresql.cpp mysql.cpp compatibility.cpp datetime.cpp dbtypes.cpp
 EXTRA_DIST = compatibility.hpp
-liblitesql_la_LDFLAGS = -version-info 0:3:0
+liblitesql_la_LDFLAGS = -version-info `echo $(VERSION)|sed -e 's/\./:/g'`
 all: all-am
 
 .SUFFIXES:
@@ -210,9 +210,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  src/library/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/library/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  src/library/Makefile
+	  $(AUTOMAKE) --gnu  src/library/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -271,6 +271,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/database.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/datasource.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/datetime.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dbtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/field.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mysql.Plo@am__quote@

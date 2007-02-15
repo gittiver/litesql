@@ -53,7 +53,8 @@ am_litesql_gen_OBJECTS = litesql-gen-cpp.$(OBJEXT) \
 	litesql-gen-python.$(OBJEXT) litesql-gen-main.$(OBJEXT) \
 	litesql-gen-graphviz.$(OBJEXT) common.$(OBJEXT) args.$(OBJEXT)
 litesql_gen_OBJECTS = $(am_litesql_gen_OBJECTS)
-litesql_gen_DEPENDENCIES = ../library/liblitesql.la
+litesql_gen_DEPENDENCIES = ../library/liblitesql.la \
+	../libxmlreader/liblitesql-xmlreader.la
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -196,8 +197,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 AM_CXXFLAGS = -I$(srcdir)/../../include -I$(srcdir)/../libxmlreader
 litesql_gen_SOURCES = litesql-gen-cpp.cpp litesql-gen-cpp.hpp litesql-gen-python.cpp litesql-gen-python.hpp litesql-gen-main.cpp cppgenerator.hpp litesql-gen-graphviz.hpp litesql-gen-graphviz.cpp common.hpp args.hpp common.cpp args.cpp
-litesql_gen_LDFLAGS = -lxmlreader
-litesql_gen_LDADD = ../library/liblitesql.la
+litesql_gen_LDADD = ../library/liblitesql.la ../libxmlreader/liblitesql-xmlreader.la
 all: all-am
 
 .SUFFIXES:
@@ -211,9 +211,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  src/generator/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/generator/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  src/generator/Makefile
+	  $(AUTOMAKE) --gnu  src/generator/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

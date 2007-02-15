@@ -1,24 +1,38 @@
-#include "xmltypes.hpp"
+#include "litesql/xmltypes.hpp"
+#include "stringutils.hpp"
+#include "litesql/split.hpp"
+using namespace litesql;
+namespace std {
+    template <>
+    struct less<xml::Relate*> {
+        bool operator()(xml::Relate const* r1, xml::Relate const* r2) {
+            if (!r1)
+                return true;
+            if (!r2)
+                return false;
+                
+            return r1->objectName < r2->objectName;
+        }
+    };
+}
 
 namespace xml {
     using namespace std;
-    string Field::getSQLType() const {
-        if (!type)
-            return "";
 
-        return type->sqlType;
-    }
-    string Field::getClass() const {
-        if (!type)
-            return "";
+    Field::Field(const Position& p,
+            const std::string& n,
+            const std::string& t,
+            const std::string& d,
+            bool i,
+            bool u) 
+        : XML(p), name(n), fieldTypeName(capitalize(n)), typeName(t),
+          type(NULL), default_(d), indexed(i), unique(u) {}
 
-        return type->class_;
-    }
 
     bool Field::hasQuotedValues() const {
         if (!type)
             return true;
-        return type->quotedValues;
+        return type->quotedValue;
     }
     string Field::getQuotedDefaultValue() const {
         if (hasQuotedValues())
@@ -27,6 +41,15 @@ namespace xml {
             return "0";
         return default_;
     }
+    string Field::getClass(const string& target) const {
+        for (size_t i = 0; i < type->represents.size(); i++) {
+            Represent* r = type->represents[i];
+            if (r->target == target)
+                return r->as;
+        }
+        return type->name;
+    }
+
     int Object::getLastFieldOffset() const {
         if (!parentObject)
             return fields.size();
@@ -39,6 +62,7 @@ namespace xml {
             flds.push_back(fields[i]);
 
     }
+
     void Object::getChildrenNames(Split& names) const {
         for (size_t i = 0; i < children.size(); i++) {
             names.push_back(children[i]->name);
@@ -46,27 +70,25 @@ namespace xml {
         }
 
     }
-    const Object* Object::getBaseObject() const {
+    Object* Object::getBaseObject() const {
         if (!parentObject)
-            return this;
+            return const_cast<Object*>(this);
         return parentObject->getBaseObject();
     }
 
     string Object::getTable() const {
-        return makeDBName(name + "_");        
+        return makeDbName(name + "_");        
     }
     string Object::getSequence() const {
-        return makeDBName(name + "_seq");
+        return makeDbName(name + "_seq");
     }
 
     Relate* Relate::clone() const {
-        Relate* r = new Relate(pos, objectName, interfaceName,
-                               (limit == true) ? A_relate_limit_one 
-                                               : A_relate_limit_many,
-                               (unique == true) ? A_relate_unique_true
-                                                : A_relate_unique_false,
-                               handle);
+        Relate* r = new Relate(pos, relation, objectName, interfaceName,
+                 limit, unique, handle);
+
         r->paramPos = paramPos;
+        r->sameObjectPos = sameObjectPos;
         r->object = object;
         r->interface = interface;
         r->fieldTypeName = fieldTypeName;
@@ -80,7 +102,7 @@ namespace xml {
             res.push_back(related[i]->objectName);
         res.push_back(id);
 
-        return makeDBName(res.join("_"));
+        return makeDbName(res.join("_"));
 
     }
     int Relation::countTypes(const std::string& obj) const {
@@ -104,7 +126,7 @@ namespace xml {
         return max;
     }
 
-    Relation Relation::clone() const {
+    Relation* Relation::clone() const {
         Relation* r = new Relation(pos, id, name);
 
         for (size_t i = 0; i < related.size(); i++)
@@ -117,9 +139,32 @@ namespace xml {
 
         return r;
     }
-    
+
     void Relation::sortRelated() {
         sort(related.begin(), related.end(), less<Relate*>());
+
+        bool same = maxSameTypes() > 1;
+
+        map<string, int> nameCounter;
+
+        for (size_t i = 0; i < related.size(); i++) {
+            Relate& relate = *related[i];
+            string num;
+
+            if (same)
+                num = litesql::toString(i + 1);
+
+            if (nameCounter.find(relate.objectName) == nameCounter.end())
+                nameCounter[relate.objectName] = 1;
+            else
+                nameCounter[relate.objectName] += 1;
+
+            relate.fieldTypeName = relate.objectName + num;
+            relate.fieldName = relate.objectName + litesql::toString(i + 1);
+            relate.paramPos = i;
+            relate.sameObjectPos = nameCounter[relate.objectName];
+        }
+
     }
 
     void Database::initBaseTypes() {
@@ -147,22 +192,22 @@ namespace xml {
         floatType->represents.push_back(new Represent(p, "float", "c++"));
         doubleType->represents.push_back(new Represent(p, "double", "c++"));
         stringType->represents.push_back(new Represent(p, "std::string", 
-                                                       "c++"));
+                    "c++"));
         dateType->represents.push_back(new Represent(p, "litesql::Date","c++"));
         timeType->represents.push_back(new Represent(p,"litesql::Time", "c++"));
         dateTimeType->represents.push_back(new Represent(p,"litesql::DateTime", 
-                                                         "c++"));
+                    "c++"));
 
         intType->represents.push_back(new Represent(p, "int", "python"));
         floatType->represents.push_back(new Represent(p, "float", "python"));
         doubleType->represents.push_back(new Represent(p, "float", "python"));
         stringType->represents.push_back(new Represent(p, "str", "python"));
         dateType->represents.push_back(new Represent(p, "litesql.Date",
-                                                        "python"));
+                    "python"));
         timeType->represents.push_back(new Represent(p,"litesql.Time", 
-                                                        "python"));
+                    "python"));
         dateTimeType->represents.push_back(new Represent(p,"litesql.DateTime", 
-                                                           "python"));
+                    "python"));
         types.push_back(intType);
         types.push_back(floatType);
         types.push_back(doubleType);

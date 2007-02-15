@@ -1,9 +1,7 @@
 #include "litesql/split.hpp"
 #include "litesql/types.hpp"
 #include "litesql-gen-python.hpp"
-#include "litesql-gen-main.hpp"
 #include "pythongenerator.hpp"
-#include "xmlobjects.hpp"
 #include "common.hpp"
 #include <ctype.h>
 #include <cstdio>
@@ -16,22 +14,27 @@ using namespace litesql;
 static std::string pyBool(bool b) {
     return  b ? "True" : "False";
 }
+static std::string getInherits(xml::Object* o) {
+    if (o->inherits.empty())
+        return "litesql.Persistent";
+    return o->inherits;
+}
 void writeObject(Block& pre, Block& post,
-                 const xml::Database& db,
-                 const xml::Object& o) {
+                 xml::Database& db,
+                 xml::Object& o) {
     Split fieldTypes, fields;
     for (size_t i = 0; i < o.fields.size(); i++) {
         xml::Field* fld = o.fields[i];
         Split values;
         for (size_t i2 = 0; i2 < fld->values.size(); i2++) {
             values.push_back("litesql.EnumValue" + brackets(
-                        quote(fld->values[i2].name) + "," +
-                        quote(fld->values[i2].value)));
+                        quote(fld->values[i2]->name) + "," +
+                        quote(fld->values[i2]->value)));
         }
         Split ftype;
         ftype.push_back(quote(fld->name));
         ftype.push_back(quote(fld->name + "_"));
-        ftype.push_back(fld->getClass());
+        ftype.push_back(fld->getClass("python"));
         ftype.push_back(quote(o.getTable()));
         ftype.push_back(toString(fld->offset));
         ftype.push_back(fld->getQuotedDefaultValue());
@@ -57,7 +60,7 @@ void writeObject(Block& pre, Block& post,
         ftype.push_back("int");
         ftype.push_back(quote(handle->relation->getTable()));
         ftype.push_back(toString(relate->paramPos));
-        data.push_back(handle->relation->getName());
+        data.push_back(handle->relation->name);
         data.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
         handles.push_back(quote(handle->name)
                 + " : litesql.RelationHandleType" + brackets(data.join(", ")));
@@ -75,10 +78,10 @@ void writeObject(Block& pre, Block& post,
     Split relations;
     for (map<xml::Relation*, vector<xml::Relate*> >::const_iterator i =
              o.relations.begin(); i != o.relations.end(); i++) {
-        const xml::Relation * rel = i->first;
-        const vector<xml::Relate *> relates = i->second;
+        xml::Relation * rel = i->first;
+        vector<xml::Relate *> relates = i->second;
         Split params;
-        params.push_back(rel->getName());
+        params.push_back(rel->name);
 
         for (size_t i2 = 0; i2 < relates.size(); i2++)
             params.push_back(quote(relates[i2]->fieldName));
@@ -90,7 +93,7 @@ void writeObject(Block& pre, Block& post,
     for (size_t i = 0; i < children.size(); i++)
         childrenMap.push_back(quote(children[i]) + " : " + children[i]);
     post(o.name + ".subClasses = " + braces(childrenMap.join(", ")));
-    pre("class " + o.name + brackets(o.getInherits("python")) + ":");
+    pre("class " + o.name + brackets(getInherits(&o)) + ":");
     pre++;
 //    pre("className = " + quote(o.name))
     pre
@@ -131,9 +134,9 @@ void writeRelation(Block& pre, Block& post,
                     + " : litesql.FieldType"
                                    + brackets(ftype.join(", ")));
         fields.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
-        post(r.getName() + "." +
+        post(r.name + "." +
                 xml::capitalize(relate->fieldTypeName)
-                + " = " + r.getName() + ".fields" + sqbrackets(toString(i)));
+                + " = " + r.name + ".fields" + sqbrackets(toString(i)));
 
         objSet.insert(relate->objectName);
 
@@ -143,28 +146,27 @@ void writeRelation(Block& pre, Block& post,
         Split ftype;
         ftype.push_back(quote(fld->name));
         ftype.push_back(quote(fld->name + "_"));
-        ftype.push_back(fld->getClass());
+        ftype.push_back(fld->getClass("python"));
         ftype.push_back(quote(r.getTable()));
         ftype.push_back(toString(r.related.size() + i));
         fields.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
         attrs.push_back("litesql.FieldType" + brackets(ftype.join(", ")));
-        post(r.getName() + "." + xml::capitalize(fld->name) + " = "
-                + r.getName() + ".attrs"
+        post(r.name + "." + xml::capitalize(fld->name) + " = "
+                + r.name + ".attrs"
                                 + sqbrackets(toString(i)));
 
 
     }
 
-    pre("class " + r.getName() + brackets("litesql.Relation") + ":")
+    pre("class " + r.name + brackets("litesql.Relation") + ":")
       ++
       ("table = " + quote(r.getTable()))
       ("# objects = " + sqbrackets(objects.join(", ")))
       ("attrs = " + sqbrackets(attrs.join(",\n" + string(" ") * 9)))
       ("fields = " + sqbrackets(fields.join(", " + string(" ") * 10)))
       ("objectFields = " + braces(objectFields.join(",\n" + string(" ")* 16)))
-      ("unidir = " + pyBool(r.isUnidir()))
      --;
-    post(r.getName() + ".objects = " + sqbrackets(objects.join(", ")));
+    post(r.name + ".objects = " + sqbrackets(objects.join(", ")));
 }
 
 
@@ -185,14 +187,14 @@ void writeDatabase(Block& pre, Block& post,
         Split rec;
         rec.push_back(quote(db.sequences[i]->name));
         rec.push_back(quote("sequence"));
-        rec.push_back(quote(db.sequences[i]->getSQL()));
+        // FIXME: rec.push_back(quote(db.sequences[i]->getSQL()));
         sequenceSchema.push_back(brackets(rec.join(", ")));
     }
     for (size_t i = 0; i < db.tables.size(); i++) {
         Split rec;
         rec.push_back(quote(db.tables[i]->name));
         rec.push_back(quote("table"));
-        rec.push_back(quote(db.tables[i]->getSQL("\" + self.backend.getRowIDType() + \"")));
+        // FIXME: rec.push_back(quote(db.tables[i]->getSQL("\" + self.backend.getRowIDType() + \"")));
         basicSchema.push_back(brackets(rec.join(", ")));
 
     }
@@ -200,7 +202,7 @@ void writeDatabase(Block& pre, Block& post,
         Split rec;
         rec.push_back(quote(db.indices[i]->name));
         rec.push_back(quote("index"));
-        rec.push_back(quote(db.indices[i]->getSQL()));
+        // FIXME: rec.push_back(quote(db.indices[i]->getSQL()));
         basicSchema.push_back(brackets(rec.join(", ")));
     }
     report(toString(db.tables.size()) + " tables\n");
@@ -243,9 +245,9 @@ void writePython(xml::Database& db, Args& args) {
     report("writing relations\n");
     Split relationNames;
     for (size_t i = 0; i < relations.size(); i++) {
-        xml::Relation & o = *relations[i];
-        relationNames.push_back(o.getName());
-        writeRelation(pre, post, db, o);
+        xml::Relation & r = *relations[i];
+        relationNames.push_back(r.name);
+        writeRelation(pre, post, db, r);
     }
 
     report("writing persistent objects\n");

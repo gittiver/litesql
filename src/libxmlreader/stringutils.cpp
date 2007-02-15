@@ -27,7 +27,7 @@ namespace xml {
         return "";
     }
 
-    string makeDBName(const string& s) {
+    string makeDbName(const string& s) {
         if (s.size() > 31)
             return "_" + md5HexDigest(s);
     }

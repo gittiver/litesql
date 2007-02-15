@@ -1,6 +1,8 @@
 #include "litesql-gen-graphviz.hpp"
+#include "litesql/string.hpp"
 using namespace std;
 using namespace xml;
+using namespace litesql;
 void writeInheritance(FILE* f, 
                       vector<Object*>& objects) {
     for (size_t i = 0; i < objects.size(); i++) {

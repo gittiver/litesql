@@ -3,11 +3,12 @@
 #include <string>
 #include <list>
 #include "args.hpp"
-#include "xmlreader.hpp"
+#include "litesql-xmlreader.hpp"
+#include "stringutils.hpp"
 
 std::string quote(const std::string& s);
 std::string brackets(const std::string& s);
 std::string sqbrackets(const std::string& s);
 std::string braces(const std::string& s);
-
+void report(const std::string& s);
 #endif
