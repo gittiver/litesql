@@ -170,10 +170,9 @@ namespace xml {
         public:
 
             const std::string name;
-            const Relation* relation;
-            const Relate* relate;
-            const Object* object;
-            const Interface* interface;
+            Relation* relation;
+            Relate* relate;
+            Object* object;
 
             std::vector< std::pair<Object*,Relate*> > destObjects;
 
@@ -181,19 +180,19 @@ namespace xml {
                            const std::string& n, 
                            Relation* r, 
                            Relate* rel, 
-                           Object* o,
-                           Interface* i) 
-                : XML(p), name(n), relation(r), relate(rel), object(o),
-                  interface(i) {}
+                           Object* o)
+                : XML(p), name(n), relation(r), relate(rel), object(o) {}
+            
     };
-    
+   
+    class Implementation;
+
     class Interface : public XML {
         public:
 
             const std::string name;
             std::vector<Method*> methods;
-            std::vector<RelationHandle*> handles;
-            std::map<Relation*, std::vector<Relate*> > relations;
+            std::vector<Implementation*> implementations;
 
             Interface(const Position& p, 
                       const std::string& n)
@@ -253,7 +252,7 @@ namespace xml {
     class Relate : public XML {
         public:
 
-            const std::string objectName, interfaceName;
+            std::string objectName, interfaceName;
             std::string fieldTypeName, fieldName;
             const bool limit, unique;
             const std::string handle;
@@ -270,11 +269,9 @@ namespace xml {
                 : XML(p), objectName(on), interfaceName(in),
                   limit(l == A_relate_limit_one), 
                   unique(u == A_relate_unique_true), 
-                  handle(h), object(NULL), interface(NULL) {
-                    if (limit && unique)
-                        throw XMLExcept(p, "both limit and unique "
-                                "specified in relate");
-                }
+                  handle(h), object(NULL), interface(NULL) {}
+
+            Relate* clone() const;                
     };
 
 
@@ -283,7 +280,7 @@ namespace xml {
 
             const std::string id;
             const std::string table;
-            const bool unidir;
+            bool abstract;
             std::string name;
             std::vector<Relate*> related;
             std::vector<Field*> fields;
@@ -293,14 +290,14 @@ namespace xml {
 
             Relation(const Position& p, 
                      const std::string& i, 
-                     const std::string& n, 
-                     AT_relation_unidir ud) 
-                : XML(p), id(i), name(n), unidir(ud == A_relation_unidir_true) 
-                  {}
+                     const std::string& n)
+                : XML(p), id(i), name(n), abstract(false) {}
 
+            void sortRelated();
             std::string getTable() const;
             int countTypes(const std::string& obj) const;
             int maxSameTypes() const;
+            Relation* clone() const;
     };
 
     class Implementation : public XML {
@@ -308,12 +305,11 @@ namespace xml {
 
             const std::string interfaceName;
             Interface* interface;
-            std::map<Relation*, std::vector<Relate*> > relations;
-            std::vector<RelationHandle*> handles;
+            Object* object;
 
-            Implementation(const Position& p, 
+            Implementation(const Position& p, Object* o,
                        const std::string& i)
-                : XML(p), interfaceName(i), interface(NULL) {}
+                : XML(p), interfaceName(i), interface(NULL), object(o) {}
     };
 
    

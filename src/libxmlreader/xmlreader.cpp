@@ -12,6 +12,7 @@ namespace std {
                 return true;
             if (!r2)
                 return false;
+                
             return r1->objectName < r2->objectName;
         }
     };
@@ -179,65 +180,125 @@ namespace xml {
         return r.name;
     }
 
-    static void linkRelations(Database& db,
-                              map<string, Object*>& objMap,
-                              map<string, Interface*>& ifaceMap) {
+    static RelationHandle* makeRelationHandle(Relation* r,
+                                              Relate* fromRelate,
+                                              Object* obj) {
 
+        RelationHandle* handle = new RelationHandle(fromRelate->pos, 
+                       fromRelate->handle, r, fromRelate, obj);
+
+        for (size_t i3 = 0; i3 < r->related.size(); i3++) {
+            if (fromRelate != r->related[i3]) {
+                Object* o = r->related[i3]->object;
+                // make RelationHandle -> (Object,Relation) mapping
+
+                handle->destObjects
+                    .push_back(make_pair(o,r->related[i3]));
+            }
+        }
+        return handle;
+    }
+
+    static Relation* createInterfaceRelation(Relation* old, Object* o) {
+        // replaces interface parts with given object
+        Relation* r = old->clone();
+        for (size_t i = 0; i < r->related.size(); i++) {
+            Relate* rel = r->related[i];
+            if (rel->interface) {
+                rel->interface = NULL;
+                rel->interfaceName = "";
+                rel->object = o;
+                rel->objectName = o->name;
+            }
+        }
+
+        r->abstract = false;
+        r->sortRelated();
+
+        return r;
+    }
+
+    static void registerRelation(Object* obj,
+                                 Relation* rel,
+                                 Relate* relate) {
+
+        if (obj->relations.find(rel) == obj->relations.end())
+            obj->relations[rel] = vector<Relate*>();
+
+        // make Object -> Relation mapping
+
+        obj->relations[rel].push_back(relate);
+
+        if (!relate->handle.empty())
+            obj->handles.push_back(
+                    makeRelationHandle(rel, relate, obj));
+    }
+
+    static void generateImplementation(Database& db,
+                                       Relation* absRel,
+                                       Implementation* imp) {
+
+        Interface* iface = imp->interface;
+        Object* obj = imp->object;
+        Relation* rel = createInterfaceRelation(absRel, obj);
+        db.relations.push_back(rel);
+
+        for (size_t i = 0; i < rel->related.size(); i++) {
+            Relate* relate = rel->related[i];
+            Object* destObj = relate->object;
+            registerRelation(destObj, rel, relate); 
+        }
+       
+    }
+
+
+    static void linkRelations(Database& db) {
+               
         for (size_t i = 0; i < db.relations.size(); i++) {
             Relation& rel = *db.relations[i];
+            Interface* iface = NULL;
             bool same = rel.maxSameTypes() > 1;
             rel.name = makeRelationName(rel);
 
             for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
+                if (!rel.related[i2]->interfaceName.empty()) {
+                    rel.abstract = true;
+                    iface = rel.related[i2]->interface;
+                    break;
+                }
+            }
+
+            for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
                 Relate& relate = *rel.related[i2];
-                Object* obj = NULL;
-                Interface* iface = NULL;
-
-                if (!relate.objectName.empty())
-                    obj = objMap[relate.objectName];
-
-                if (!relate.interfaceName.empty())
-                    iface = ifaceMap[relate.interfaceName];
+                Object* obj = relate.object;
 
 
                 relate.paramPos = i2;
 
                 string num;
+
                 if (same)
                     num = litesql::toString(i2 + 1);
+
                 relate.fieldTypeName = relate.objectName + num;
-                relate.fieldName = relate.objectName + litesql::toString(i2 + 1);
+                relate.fieldName = relate.objectName+ litesql::toString(i2 + 1);
                 relate.object = obj;
-                if (obj->relations.find(&rel) == obj->relations.end())
-                    obj->relations[&rel] = vector<Relate*>();
 
-                // make Object -> Relation mapping
+                if (rel.abstract)
+                    continue;
 
-                obj->relations[&rel].push_back(&relate);
-                if (!relate.handle.empty()) {
+                registerRelation(obj, &rel, &relate);    
 
-                    // make relation handle
+            }
 
-                    RelationHandle* handle = new RelationHandle(relate.pos, 
-                            relate.handle, &rel,
-                            &relate, obj, iface);
-
-                    for (size_t i3 = 0; i3 < rel.related.size(); i3++) {
-                        if (i2 != i3) {
-                            Object* o = objMap[rel.related[i3]->objectName];
-                            // make RelationHandle -> (Object,Relation) mapping
-
-                            handle->destObjects
-                                  .push_back(make_pair(o,rel.related[i3]));
-                        }
-                    }
-                    if (obj)
-                        obj->handles.push_back(handle);
-                    else if (iface)
-                        iface->handles.push_back(handle);
+            if (rel.abstract) { 
+                for (size_t i2 = 0; i2 < iface->implementations.size(); i2++) {
+                    Implementation* imp = iface->implementations[i];
+                    generateImplementation(db, &rel, imp);
                 }
             }
         }
+        
     }
 
     static void init(Database& db) {
@@ -270,26 +331,49 @@ namespace xml {
         }
 
         for (size_t i = 0; i < objects.size(); i++)  {
-            if (objects[i]->parentObject)
-                objects[i]->parentObject->children.push_back(objects[i]);
-            int objOffset = objects[i]->getLastFieldOffset();
-            for (size_t i2 = 0; i2 < objects[i]->fields.size(); i2++) {
-                xml::Field* fld = objects[i]->fields[i2];
+            Object* o = objects[i];
+
+            // Interface -> Implementations mapping
+
+            for (size_t i2 = 0; i2 < o->implementations.size(); i2++) {
+                    Implementation* imp = o->implementations[i2];
+                    Interface* iface = imp->interface;
+                    iface->implementations.push_back(imp);
+            }
+
+            // Parentobject -> subclasses mapping
+            if (o->parentObject)
+                o->parentObject->children.push_back(objects[i]);
+
+            int objOffset = o->getLastFieldOffset();
+            for (size_t i2 = 0; i2 < o->fields.size(); i2++) {
+                xml::Field* fld = o->fields[i2];
                 if (typeMap.find(fld->typeName) == typeMap.end())
-                    throw XMLExcept(fld->pos, "Type is invalid : " + fld->typeName);
+                    throw XMLExcept(fld->pos, "Type is invalid : " 
+                                    + fld->typeName);
                 fld->type = typeMap[fld->typeName];
-                fld->offset = objOffset - objects[i]->fields.size() + i2;
+                fld->offset = objOffset - o->fields.size() + i2;
             }
         }
 
-        // sort objects of relations alphabetically (ascii)
 
         for (size_t i = 0; i < relations.size(); i++) {
-            sort(relations[i]->related.begin(), relations[i]->related.end(),
-                    less<Relate*>());
-        }
+            Relation*r = relations[i];
 
-        linkRelations(db, objMap, ifaceMap);
+            r->sortRelated();
+
+            for (size_t i2 = 0; i2 < r->related.size(); i2++) {
+                Relate* rel = r->related[i2];
+
+                if (!rel->objectName.empty())
+                    rel->object = objMap[rel->objectName];
+
+                if (!rel->interfaceName.empty())
+                    rel->interface = ifaceMap[rel->interfaceName];
+            }
+                
+        }
+        linkRelations(db);
 
         initSchema(db, typeMap);
     }

@@ -58,6 +58,22 @@ namespace xml {
     string Object::getSequence() const {
         return makeDBName(name + "_seq");
     }
+
+    Relate* Relate::clone() const {
+        Relate* r = new Relate(pos, objectName, interfaceName,
+                               (limit == true) ? A_relate_limit_one 
+                                               : A_relate_limit_many,
+                               (unique == true) ? A_relate_unique_true
+                                                : A_relate_unique_false,
+                               handle);
+        r->paramPos = paramPos;
+        r->object = object;
+        r->interface = interface;
+        r->fieldTypeName = fieldTypeName;
+        r->fieldName = fieldName;
+        return r;                               
+    }
+
     std::string Relation::getTable() const {
         Split res;
         for (size_t i = 0; i < related.size(); i++)
@@ -88,7 +104,25 @@ namespace xml {
         return max;
     }
 
-    static void Database::initBaseTypes() {
+    Relation Relation::clone() const {
+        Relation* r = new Relation(pos, id, name);
+
+        for (size_t i = 0; i < related.size(); i++)
+            r->related.push_back(related[i]->clone());
+
+        r->fields = fields;
+        r->indices = indices;
+        r->options = options;
+        r->checks = checks;
+
+        return r;
+    }
+    
+    void Relation::sortRelated() {
+        sort(related.begin(), related.end(), less<Relate*>());
+    }
+
+    void Database::initBaseTypes() {
 
         Position p("<internal>", 0);
         Type* intType    = new Type(p, "integer");

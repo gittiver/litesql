@@ -53,8 +53,7 @@ void ETag_object(void) {
 void STag_relation(void) {
     rel = new Relation(getPosition(), 
                        safe(A_relation_id), 
-                       safe(A_relation_name),
-                       A_relation_unidir);
+                       safe(A_relation_name));
 
     xmlReaderDb->relations.push_back(rel);
 }
@@ -239,7 +238,7 @@ void ETag_interface(void) {}
 void STag_implements(void) {
 
     if (obj)
-        obj->implementations.push_back(new Implementation(getPosition(),
+        obj->implementations.push_back(new Implementation(getPosition(), obj,
                                                  A_implements_interface));
 }
 
