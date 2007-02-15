@@ -360,11 +360,11 @@ uninstall-am: uninstall-binSCRIPTS uninstall-info-am uninstall-local
 
 
 install-data-local: litesql.pc
-	mkdir -p $(DESTDIR)$(libdir)/pkgconfig && \
-	cp -p litesql.pc $(DESTDIR)$(libdir)/pkgconfig
+	mkdir -p $(DESTDIR)/$(libdir)/pkgconfig && \
+	cp -p litesql.pc $(DESTDIR)/$(libdir)/pkgconfig
 
 uninstall-local:
-	-rm -f $(DESTDIR)$(libdir)/pkgconfig/litesql.pc
+	-rm -f $(DESTDIR)/$(libdir)/pkgconfig/litesql.pc
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
