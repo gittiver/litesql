@@ -5,9 +5,11 @@
 #include "sanitycheck.hpp"
 
 namespace xml {
-    extern Database* xmlReaderDb;
-
     using namespace std;
+
+    extern Database* xmlReaderDb;
+    extern string currentFile;
+
 
     
     static void initSchema(Database& db, map<string, Type*>& typeMap) {
@@ -70,6 +72,7 @@ namespace xml {
                 db.indices.push_back(index);
             }
         }
+
         for (size_t i = 0; i < relations.size(); i++) {
             Relation& r = *relations[i];
             DbTable* tbl = new DbTable;
@@ -77,6 +80,7 @@ namespace xml {
             tbl->name = r.getTable();
             vector<DbField*> objFields;
             map<string, DbField*> fldMap;
+
             for (size_t i2 = 0; i2 < r.related.size(); i2++) {
                 const xml::Relate& relate = *r.related[i2];
                 string extra;
@@ -243,7 +247,6 @@ namespace xml {
             Relation& rel = *db.relations[i];
             Interface* iface = NULL;
             bool same = rel.maxSameTypes() > 1;
-            rel.name = makeRelationName(rel);
 
             for (size_t i2 = 0; i2 < rel.related.size(); i2++) {
                 if (!rel.related[i2]->interfaceName.empty()) {
@@ -281,11 +284,13 @@ namespace xml {
 
         map<string, Object*> objMap;
         map<string, Interface*> ifaceMap;
-
+        for (size_t i = 0; i < relations.size(); i++)
+            if (relations[i]->name.empty())
+                relations[i]->name = makeRelationName(*relations[i]);
 
         sanityCheck(&db);
         // make string -> Object mapping
-
+        
         for (size_t i = 0; i < objects.size(); i++)
             objMap[objects[i]->name] = objects[i];
 
@@ -302,7 +307,6 @@ namespace xml {
             Type* type = db.types[i];
             typeMap[type->name] = type;
         }
-
         for (size_t i = 0; i < objects.size(); i++)  {
             Object* o = objects[i];
 
@@ -345,8 +349,21 @@ namespace xml {
                 if (!rel->interfaceName.empty())
                     rel->interface = ifaceMap[rel->interfaceName];
             }
+
+            for (size_t i2 = 0; i2 < r->fields.size(); i2++) {
+                xml::Field* fld = r->fields[i2];
+
+                if (typeMap.find(fld->typeName) == typeMap.end())
+                    throw XMLExcept(fld->pos, "Type is invalid : " 
+                                    + fld->typeName);
+                                    
+                fld->type = typeMap[fld->typeName];
+                fld->offset = r->related.size() + i2;
+            }
+
                 
         }
+
         linkRelations(db);
 
         initSchema(db, typeMap);
@@ -354,8 +371,9 @@ namespace xml {
 
 
     Database* parse(const string& fName) {
-
+        currentFile = fName;
         yyin = fopen(fName.c_str(), "r");
+
         if (!yyin)
             throw litesql::Except("Could not open file: " + fName);
 

@@ -28,17 +28,22 @@ namespace xml {
         return inWords(s, words);
     }
 
-    static bool validTarget(string t) {
+    static string validTarget(const string& t) {
         static char* words[] = {"c++", "python", "graphviz", NULL};
-        return inWords(t, words);
+        if (!inWords(t, words))
+            return "not a valid target";
+        return "";
     }
 
-    static bool validBackend(string t) {
+    static string validBackend(const string& t) {
         static char* words[] = {"sqlite3", "mysql", "postgresql", NULL};
-        return inWords(t, words);
+
+        if (!inWords(t, words))
+            return "not a valid backend";
+        return "";
     }
 
-    static string validId(string s) {
+    static string validId(const string& s) {
 
         if (s.size() == 0) 
             return "empty identifier";
@@ -54,11 +59,31 @@ namespace xml {
         return "";
     }
 
-    static string validFieldId(string s) {
+    static string validRelationId(const string& s) {
+        for (size_t i = 0; i < s.size(); i++)
+            if (!isalnum(s[i]))
+                return "illegal character : " + s[i];
+        return "";
+    }
 
-        s = validId(s);
-        if (!s.empty())
-            return s;
+    static string validTypeName(const string& s) {
+        if (s.size() == 0)
+            return "empty name";
+
+        if (!isalpha(s[0])) 
+            return "first character is not alphabet";
+
+        for (size_t i = 0; i < s.size(); i++)
+            if (!isalnum(s[i]) || !islower(s[i]))
+                return "illegal character : " + s[i];
+        return "";
+    }
+
+    static string validFieldId(const string& s) {
+
+        string err = validId(s);
+        if (!err.empty())
+            return err;
         if (toupper(s[0]) == s[0])
             return "does not begin with lower case letter";
         return "";
@@ -69,7 +94,7 @@ namespace xml {
                 const std::string& value) {
             string err;                      
             if (!(err = func(value)).empty()) 
-                throw XMLExcept(p, "invalid value: " + tag + ": " 
+                throw XMLExcept(p, "invalid value: " + tag + " : " 
                         + value + " : " + err);
         }
 
@@ -83,7 +108,8 @@ namespace xml {
                 // name ok?
                 if (!(err = func(name)).empty())
                     throw XMLExcept(objects[i]->pos, 
-                            "invalid name: " + tag + " : " + name);
+                            "invalid name: " + tag + " : " + name 
+                             + " : " + err);
                 // name unique?
 
                 if (!prefix.empty())
@@ -136,12 +162,16 @@ namespace xml {
                             + r->name + "." + rel.objectName);
 
                 // object has id already?
+                if (!rel.handle.empty()) {
                 string id = rel.objectName + "." + rel.handle;
-                if (usedNames.find(id) != usedNames.end())
-                    throw XMLExcept(rel.pos, "object " + rel.objectName
-                            + " already has identifier "
-                            + rel.handle);
-                usedNames.insert(id); 
+
+                    if (usedNames.find(id) != usedNames.end())
+                        throw XMLExcept(rel.pos, "object " + rel.objectName
+                                + " already has identifier "
+                                + rel.handle);
+
+                    usedNames.insert(id); 
+                }
 
                 if (!rel.handle.empty())
                     hasObjectHandles = true;
@@ -162,12 +192,15 @@ namespace xml {
                             "relation.relate.interface : " 
                             + r->name + "." + rel.objectName);
                 // interface has id already?
-                string id = rel.interfaceName + "." + rel.handle;
-                if (usedNames.find(id) != usedNames.end())
-                    throw XMLExcept(rel.pos, "interface " + rel.interfaceName
-                            + " already has identifier "
-                            + rel.handle);
-                usedNames.insert(id);
+                if (!rel.handle.empty()) {
+                    string id = rel.interfaceName + "." + rel.handle;
+
+                    if (usedNames.find(id) != usedNames.end())
+                        throw XMLExcept(rel.pos, "interface " + rel.interfaceName
+                                + " already has identifier "
+                                + rel.handle);
+                    usedNames.insert(id);
+                }
 
             } else // object or interface specified?
                 throw XMLExcept(rel.pos, "no object or interface specified");                             
@@ -330,7 +363,7 @@ namespace xml {
         checkNames(db.objects, validId, usedNames, "object");
 
         // type names ok?
-        checkNames(db.types, validId, typeNames, "type");
+        checkNames(db.types, validTypeName, typeNames, "type");
         checkTypes(db.types);
 
         addNames(db.objects, objectNames);
@@ -453,7 +486,7 @@ namespace xml {
             Relation& r = *db.relations[i];
 
             // relation id ok?
-            check(validId, "relation.id", r.pos, r.id);           
+            check(validRelationId, "relation.id", r.pos, r.id);           
 
             // relation field names ok?
             checkNames(r.fields, validFieldId, usedNames, 

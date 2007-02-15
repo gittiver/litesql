@@ -41,6 +41,7 @@ namespace xml {
             return "0";
         return default_;
     }
+
     string Field::getClass(const string& target) const {
         for (size_t i = 0; i < type->represents.size(); i++) {
             Represent* r = type->represents[i];

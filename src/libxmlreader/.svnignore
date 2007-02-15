@@ -1,6 +1,6 @@
 Makefile
 .deps
 .libs
-*.lo
-*.la
-scanner.l
+test-selectquery
+test-split
+*.exe
