@@ -5,3 +5,5 @@ config.status
 stamp*
 autom4te.cache
 *.tar.*
+libtool
+missing
