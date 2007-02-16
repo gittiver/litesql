@@ -108,6 +108,8 @@ namespace xml {
             Type(const Position& p, 
                  const std::string& n)
                 : XML(p), name(n), quotedValue(true) {}
+
+            std::string getClass(const std::string& target);                
     };
 
     class IndexField : public XML {
@@ -275,10 +277,15 @@ namespace xml {
 
     class Relation : public XML {
         public:
-
             const std::string id;
             const std::string table;
+
+            // true, if relation contains interfaces
             bool abstract;
+
+            // if relation is stored in a table of a persistent object
+            bool embedded;
+
             std::string name;
             std::vector<Relate*> related;
             std::vector<Field*> fields;
@@ -289,7 +296,7 @@ namespace xml {
             Relation(const Position& p, 
                      const std::string& i, 
                      const std::string& n)
-                : XML(p), id(i), name(n), abstract(false) {}
+                : XML(p), id(i), name(n), abstract(false), embedded(false) {}
 
             void sortRelated();
             std::string getTable() const;

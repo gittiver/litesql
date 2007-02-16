@@ -16,6 +16,7 @@ char* help =
 " -d DIR, --dir=DIR           write generated files to directory DIR\n"
 " --cppext=EXT                define extension for C++ source files (cpp)\n"
 " --hppext=EXT                define extension for C++ header files (hpp)\n"
+" --multiple-files            split generated code to multiple files\n"
 " -h, --help                  print help\n"
 "\n"
 "Supported targets:\n"
@@ -62,7 +63,9 @@ int main(int argc, char **argv) {
             .option("dir", "-d", "--dir", true)
             .option("cppext", "", "--cpp-ext", true, false, "cpp")
             .option("hppext", "", "--hpp-ext", true, false, "hpp")
+            .option("multifiles", "", "--multiple-files")
             .parse();
+
         if (args.has("help")) {
             fprintf(stderr, help);
             return -1;

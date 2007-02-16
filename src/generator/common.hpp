@@ -10,5 +10,6 @@ std::string quote(const std::string& s);
 std::string brackets(const std::string& s);
 std::string sqbrackets(const std::string& s);
 std::string braces(const std::string& s);
+std::string readFile(const std::string& fName);
 void report(const std::string& s);
 #endif

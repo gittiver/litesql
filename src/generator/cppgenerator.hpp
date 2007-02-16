@@ -5,9 +5,12 @@
 #include <vector>
 #include <cstdio>
 #include "litesql/string.hpp"
+#include "filestream.hpp"
+
 namespace gen {
 using namespace litesql;
 using namespace std;
+
 class Variable {
 public:
     string name, type, value;
@@ -127,7 +130,7 @@ public:
         return *this;
     }
 
-    void write(FILE * hpp, FILE * cpp, string context, int indent=0) {
+    void write(FileStream& hpp, FileStream& cpp, string context, int indent=0) {
         string ind = string(" ") * indent;
         string expl;
         string tpl;
@@ -162,20 +165,21 @@ public:
         }
         string result;
         
-        if (!isTemplateSpec)
-            fprintf(hpp, "%s%s%s%s%s%s%s(%s)%s", ind.c_str(), expl.c_str(), tpl.c_str(), inl.c_str(), sta.c_str(),
-                    ret.c_str(), name.c_str(), paramString.c_str(), cnst.c_str());
+        if (!isTemplateSpec) 
+            hpp << ind << expl << tpl << inl << sta
+                << ret << name << brackets(paramString) << cnst;
+        
         if (isDefinition) 
-            fprintf(hpp, ";\n");
+            hpp << ";\n";
         else {
             if ((isTemplate && !isTemplateSpec) || isInline) {
                 
-                fprintf(hpp, "%s {\n", cons.c_str());
+                hpp << cons << " {\n";
                 for (size_t i = 0; i < bodyLines.size(); i++) 
-                    fprintf(hpp, "%s    %s\n", ind.c_str(), bodyLines[i].c_str());
-                fprintf(hpp, "%s}\n", ind.c_str());
+                    hpp << ind << "    " << bodyLines[i] << "\n";
+                hpp << ind << "}\n";
             } else {
-                fprintf(hpp, ";\n");
+                hpp << ";\n";
                 paramString = "";
                 for (size_t i = 0; i < params.size(); i++) {
                     if (i > 0)
@@ -183,12 +187,12 @@ public:
                     paramString += params[i].paramDefinition(false);
                 }
                 ind = string(" ") * 4;
-                fprintf(cpp, "%s%s%s%s(%s)%s%s {\n", tpl.c_str(), ret.c_str(),
-                        context.c_str(), name.c_str(), paramString.c_str(),
-                        cnst.c_str(), cons.c_str());
+                cpp << tpl << ret << context << name << brackets(paramString)
+                    << cnst << cons;
+                    
                 for (size_t i = 0; i < bodyLines.size(); i++) 
-                    fprintf(cpp, "%s%s\n", ind.c_str(), bodyLines[i].c_str());            
-                fprintf(cpp, "}\n");
+                    cpp << ind << bodyLines[i] << "\n";
+                cpp << "}\n";                    
             }
         }
     }
@@ -218,7 +222,8 @@ public:
         classes.push_back(c);
         return *this;
     }
-    void write(FILE * hpp, FILE * cpp, int indent=0, string context="") {
+    void write(FileStream& hpp, FileStream& cpp, 
+               int indent=0, string context="") {
         string inh;
         string ind = string(" ") * indent;
         context += name + "::";
@@ -226,47 +231,47 @@ public:
         if (inherits != "") 
             inh = " : public " + inherits;
         string mode = "public";
-        fprintf(hpp, "%sclass %s%s {\n", ind.c_str(), name.c_str(), inh.c_str());
-        fprintf(hpp, "%spublic:\n", ind.c_str());
-        for (size_t i = 0; i < classes.size(); i++) 
-            fprintf(hpp, "%s    class %s;\n", 
-                    ind.c_str(), classes[i].name.c_str());
-        for (size_t i = 0; i < typedefs.size(); i++)
-            fprintf(hpp, "%s    %s;\n", ind.c_str(), typedefs[i].c_str());
-        for (size_t i = 0; i < classes.size(); i++) {
+        hpp << ind << "class " << name << inh << " {\n"
+            << ind << "public:\n";
 
+        for (size_t i = 0; i < classes.size(); i++) 
+            hpp << ind << "    class " << classes[i].name << ";\n";
+
+        for (size_t i = 0; i < typedefs.size(); i++)
+            hpp << ind << "    " << typedefs[i] << ";\n";
+
+        for (size_t i = 0; i < classes.size(); i++) 
             classes[i].write(hpp, cpp, indent + 4, context);
-        }
+        
         for (size_t i = 0; i < variables.size(); i++)  {
             string decl = variables[i].classDeclaration();
             if (variables[i].isProtected && mode=="public") {
                 mode = "protected";
-                fprintf(hpp, "%sprotected:\n", ind.c_str());
+                hpp << ind << "protected:\n";
             }
             if (!variables[i].isProtected && mode=="protected") {
                 mode = "public";
-                fprintf(hpp, "%spublic:\n", ind.c_str());
+                hpp << ind << "public:\n";
             }
                 
-            fprintf(hpp, "    %s%s\n", ind.c_str(), decl.c_str());
+            hpp << "    " << ind << decl;
             if (variables[i].isStatic) {
                 string def = variables[i].staticDefinition(context);
-                fprintf(cpp, "%s\n", def.c_str());
+                cpp << def << "\n";
             }
         }
         for (size_t i = 0; i < methods.size(); i++) {
             if (methods[i].isProtected && mode=="public") {
                 mode = "protected";
-                fprintf(hpp, "%sprotected:\n", ind.c_str());
+                hpp << ind << "protected:\n";
             }
             if (!methods[i].isProtected && mode=="protected") {
                 mode = "public";
-                fprintf(hpp, "%spublic:\n", ind.c_str());
+                hpp << ind << "public:\n";
             }
             methods[i].write(hpp, cpp, context, indent + 4);            
         }
-        fprintf(hpp, "%s};\n", ind.c_str());
-        
+        hpp << ind << "};\n";
     }
 };
 

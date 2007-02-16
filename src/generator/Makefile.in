@@ -51,7 +51,8 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_litesql_gen_OBJECTS = litesql-gen-cpp.$(OBJEXT) \
 	litesql-gen-python.$(OBJEXT) litesql-gen-main.$(OBJEXT) \
-	litesql-gen-graphviz.$(OBJEXT) common.$(OBJEXT) args.$(OBJEXT)
+	litesql-gen-graphviz.$(OBJEXT) common.$(OBJEXT) args.$(OBJEXT) \
+	filestream.$(OBJEXT)
 litesql_gen_OBJECTS = $(am_litesql_gen_OBJECTS)
 litesql_gen_DEPENDENCIES = ../library/liblitesql.la \
 	../libxmlreader/liblitesql-xmlreader.la
@@ -196,7 +197,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 AM_CXXFLAGS = -I$(srcdir)/../../include -I$(srcdir)/../libxmlreader
-litesql_gen_SOURCES = litesql-gen-cpp.cpp litesql-gen-cpp.hpp litesql-gen-python.cpp litesql-gen-python.hpp litesql-gen-main.cpp cppgenerator.hpp litesql-gen-graphviz.hpp litesql-gen-graphviz.cpp common.hpp args.hpp common.cpp args.cpp
+litesql_gen_SOURCES = litesql-gen-cpp.cpp litesql-gen-cpp.hpp litesql-gen-python.cpp litesql-gen-python.hpp litesql-gen-main.cpp cppgenerator.hpp litesql-gen-graphviz.hpp litesql-gen-graphviz.cpp common.hpp args.hpp common.cpp args.cpp filestream.cpp
 litesql_gen_LDADD = ../library/liblitesql.la ../libxmlreader/liblitesql-xmlreader.la
 all: all-am
 
@@ -271,6 +272,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/args.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/filestream.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-cpp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-graphviz.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-main.Po@am__quote@
