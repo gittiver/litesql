@@ -97,19 +97,21 @@ namespace xml {
 
             const std::string name;
             const bool quotedValue;
+            const bool internal;
             std::vector<Represent*> represents;
             std::vector<Store*> stores;
             std::vector<Value*> values;
             std::vector<Check*> checks;
 
             Type(const std::string& n, bool qv) 
-                : XML(Position("", 0)), name(n), quotedValue(qv) {}
+                : XML(Position("", 0)), name(n), quotedValue(qv), 
+                  internal(true) {}
 
             Type(const Position& p, 
                  const std::string& n)
-                : XML(p), name(n), quotedValue(true) {}
+                : XML(p), name(n), quotedValue(true), internal(false) {}
 
-            std::string getClass(const std::string& target);                
+            std::string getClass(const std::string& target) const;
     };
 
     class IndexField : public XML {
