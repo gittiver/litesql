@@ -3,7 +3,7 @@
 #include <list>
 #include <string>
 #include "flexml-header.hpp"
-#include "xmltypes.hpp"
+#include "litesql/xmltypes.hpp"
 namespace xml {
     extern std::list<Position> posStack;
     extern std::string currentFile;
