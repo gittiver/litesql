@@ -49,7 +49,6 @@ void generateCode(xml::Database& db) {
     else
         throw litesql::Except("unsupported target: " + target);
 }
-
 int main(int argc, char **argv) { 
     bool printHelp = false;
     try {

@@ -25,7 +25,6 @@ namespace gen {
     static void syncIfNeeded(const string& fName, const string& data) {
 
         if (data != readFile(fName)) {
-            cout << "updating " << fName << endl;
             ofstream of(fName.c_str(), ofstream::out | ofstream::trunc);
             of.write(data.c_str(), data.size());
             of.close();
@@ -36,6 +35,7 @@ namespace gen {
         for (Data::const_iterator i = data.begin(); i != data.end(); i++) {
             syncIfNeeded(i->first, i->second);                
         }
+
     }
 
 }        

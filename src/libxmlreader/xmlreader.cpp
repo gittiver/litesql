@@ -1,3 +1,4 @@
+#include "litesql/split.hpp"
 #include "litesql-xmlreader.hpp"
 #include "flexml-header.hpp"
 #include "scanner.hpp"
@@ -8,7 +9,7 @@ namespace xml {
     using namespace std;
 
     extern Database* xmlReaderDb;
-    extern string currentFile;
+    extern string currentFile, filePath;
 
 
     
@@ -370,9 +371,23 @@ namespace xml {
     }
 
 
+    static string getPath(const string& s) {
+
+        litesql::Split parts(s, "/");
+
+       if (parts.size() == 1)
+           return "";
+   
+       return parts.slice(0, parts.size() - 1).join("/") + "/";    
+    }
+
+
     Database* parse(const string& fName) {
         currentFile = fName;
         yyin = fopen(fName.c_str(), "r");
+
+        filePath = getPath(fName);
+
 
         if (!yyin)
             throw litesql::Except("Could not open file: " + fName);

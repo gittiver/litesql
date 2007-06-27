@@ -16,11 +16,14 @@ string braces(const string& s) {
 string readFile(const string& fName) {
     ifstream f(fName.c_str(), ifstream::in);
 
-    string contents;
-    char buf[1024];
 
-    while (!f.eof()) {
-        f.read(buf, 1024);
+    string contents;
+    char buf[16834];
+
+    while (f.rdstate() & (ifstream::failbit 
+                          | ifstream::eofbit 
+                          | ifstream::badbit) == 0) {
+        f.read(buf, 16834);
         contents += string(buf, f.gcount());
     }
     f.close();

@@ -10,7 +10,7 @@ extern FILE* yyin;
 
 namespace xml {
     list<Position> posStack;
-    string currentFile;
+    string currentFile, filePath;
     Database* xmlReaderDb;
 }
 static Object* obj;
@@ -87,9 +87,10 @@ void ETag_option(void) {}
 
 void STag_include(void) {
 
-    yyin = fopen(A_include_file, "r");
+    string path = filePath + A_include_file;
+    yyin = fopen(path.c_str(), "r");
     if (!yyin) {
-        fprintf(stderr, "Could not open file %s", A_include_file);
+        fprintf(stderr, "Could not open file %s", path.c_str());
         exit(-1);
     }
     posStack.push_front(getPosition());

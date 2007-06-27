@@ -188,7 +188,7 @@ public:
                 }
                 ind = string(" ") * 4;
                 cpp << tpl << ret << context << name << brackets(paramString)
-                    << cnst << cons;
+                    << cnst << cons << " {\n";
                     
                 for (size_t i = 0; i < bodyLines.size(); i++) 
                     cpp << ind << bodyLines[i] << "\n";

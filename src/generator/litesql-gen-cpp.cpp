@@ -37,6 +37,7 @@ class CPPGenerator {
     string headerText;
     FileStream cpp, hpp;
 
+
 private:
 
     
@@ -65,9 +66,11 @@ private:
 
         cpp << "#include " << quote(headerFileName) << "\n";
 
+
         string ns = "namespace " + db.nspace + " {\n";
         hpp << "\n" << ns;
         cpp << "\n" << ns;
+
     }
 
     void endUnit() {
@@ -78,6 +81,8 @@ private:
     }
 
     void writeType(xml::Type* type) {
+        if (type->internal)
+            return;
         
         Class c(className(type), "litesql::FieldType");
 
@@ -128,9 +133,9 @@ public:
 
     CPPGenerator(xml::Database& db_, Args& args_) 
         : db(db_), args(args_), multiFiles(args.has("multifiles")) {
-        if (args.has("prepend-file"))
-            headerText = readFile(args["prepend-file"]);
-    }
+            if (args.has("prepend-file"))
+                headerText = readFile(args["prepend-file"]);
+        }
 
     void run() {
         Split includes;
@@ -142,12 +147,15 @@ public:
         }
 
         unit(db.name).startUnit(includes);
-        
+       
         writeMany(db.types, "type", &CPPGenerator::writeType);
+
         writeMany(db.objects, "object", &CPPGenerator::writeObject);
+
         writeMany(db.relations, "relation", &CPPGenerator::writeRelation);
 
-        unit(db.name).endUnit();
+        unit(db.name);
+        endUnit();
         cpp.sync();
         hpp.sync();
     }
@@ -157,5 +165,6 @@ public:
 void writeCPPClasses(xml::Database& db, Args& args) {
     CPPGenerator g(db, args);
     g.run();
+
 }
 

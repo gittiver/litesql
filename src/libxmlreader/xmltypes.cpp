@@ -43,12 +43,16 @@ namespace xml {
     }
 
     string Field::getClass(const string& target) const {
-        for (size_t i = 0; i < type->represents.size(); i++) {
-            Represent* r = type->represents[i];
+        return type->getClass(target);
+    }
+
+    string Type::getClass(const string& target) const {
+        for (size_t i = 0; i < represents.size(); i++) {
+            Represent* r = represents[i];
             if (r->target == target)
                 return r->as;
         }
-        return type->name;
+        return name;
     }
 
     int Object::getLastFieldOffset() const {
@@ -171,14 +175,14 @@ namespace xml {
     void Database::initBaseTypes() {
 
         Position p("<internal>", 0);
-        Type* intType    = new Type(p, "integer");
-        Type* floatType  = new Type(p, "float");
-        Type* doubleType = new Type(p, "double");
-        Type* stringType = new Type(p, "string");
-        Type* dateType   = new Type(p, "date");
-        Type* timeType   = new Type(p, "time");
-        Type* dateTimeType = new Type(p, "datetime");
-        Type* boolType = new Type(p, "boolean");
+        Type* intType    = new Type("integer", false);
+        Type* floatType  = new Type("float", false);
+        Type* doubleType = new Type("double", false);
+        Type* stringType = new Type("string", true);
+        Type* dateType   = new Type("date", true);
+        Type* timeType   = new Type("time", true);
+        Type* dateTimeType = new Type("datetime", true);
+        Type* boolType = new Type("boolean", false);
 
         intType->stores.push_back(new Store(p, "INTEGER", ""));
         floatType->stores.push_back(new Store(p, "FLOAT", ""));

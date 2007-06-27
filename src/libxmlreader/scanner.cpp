@@ -3340,7 +3340,7 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "scanner.l"
 /* Validating XML processor for litesql.dtd.
- * Generated 2007/02/11 20:23:41.
+ * Generated 2007/06/27 20:40:34.
  *
  * This program was generated with the FleXML XML processor generator.
  * FleXML is Copyright (C) 1999-2005 Kristoffer Rose.  All rights reserved.
@@ -3413,7 +3413,8 @@ const char rcs_flexml[] =
 #define FLEXML_NEED_BUFFERLIT
 
 /* XML processor api. */
-#include "flexml-header.hpp"
+#include "scanner-globals.hpp"
+
 
 /* FleXML-provided data. */
 int pcdata_ix;
@@ -3664,10 +3665,10 @@ static int popbuffer(void)
 
 
 
-#line 354 "scanner.l"
+#line 355 "scanner.l"
 /* State names. */
 const char* *statenames=NULL;
-#line 3671 "scanner.cpp"
+#line 3672 "scanner.cpp"
 
 #define INITIAL 0
 #define PROLOG 1
@@ -3926,7 +3927,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 358 "scanner.l"
+#line 359 "scanner.l"
 
 
  /* Bypass Flex's default INITIAL state and begin by parsing the XML prolog. */
@@ -4053,7 +4054,7 @@ YY_DECL
 
  /* COMMENTS and PIs: handled uniformly for efficiency. */
 
-#line 4057 "scanner.cpp"
+#line 4058 "scanner.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -4148,52 +4149,52 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 485 "scanner.l"
+#line 486 "scanner.l"
 ENTER(INCOMMENT);
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 486 "scanner.l"
+#line 487 "scanner.l"
 ENTER(INPI);
 	YY_BREAK
 
 
 case 3:
 YY_RULE_SETUP
-#line 489 "scanner.l"
+#line 490 "scanner.l"
 LEAVE;
 	YY_BREAK
 case 4:
-#line 491 "scanner.l"
-case 5:
 #line 492 "scanner.l"
+case 5:
+#line 493 "scanner.l"
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 492 "scanner.l"
+#line 493 "scanner.l"
 SKIP;
 	YY_BREAK
 case YY_STATE_EOF(INCOMMENT):
-#line 493 "scanner.l"
+#line 494 "scanner.l"
 FAIL("EOF in comment.");
 	YY_BREAK
 
 
 case 7:
 YY_RULE_SETUP
-#line 496 "scanner.l"
+#line 497 "scanner.l"
 LEAVE;
 	YY_BREAK
 case 8:
-#line 498 "scanner.l"
+#line 499 "scanner.l"
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 498 "scanner.l"
+#line 499 "scanner.l"
 SKIP;
 	YY_BREAK
 case YY_STATE_EOF(INPI):
-#line 499 "scanner.l"
+#line 500 "scanner.l"
 FAIL("EOF in PI (processing instruction).");
 	YY_BREAK
 
@@ -4201,7 +4202,7 @@ FAIL("EOF in PI (processing instruction).");
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 504 "scanner.l"
+#line 505 "scanner.l"
 SKIP;
 	YY_BREAK
 /* PROLOG: determine root element and process it. */
@@ -4209,13 +4210,13 @@ SKIP;
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 509 "scanner.l"
+#line 510 "scanner.l"
 SET(DOCTYPE); 
 	YY_BREAK
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 510 "scanner.l"
+#line 511 "scanner.l"
 FAIL("Bad declaration %s.",yytext);
 	YY_BREAK
 
@@ -4223,125 +4224,125 @@ FAIL("Bad declaration %s.",yytext);
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 514 "scanner.l"
+#line 515 "scanner.l"
 SET(ROOT_object);
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 515 "scanner.l"
+#line 516 "scanner.l"
 SET(ROOT_include);
 	YY_BREAK
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
-#line 516 "scanner.l"
+#line 517 "scanner.l"
 SET(ROOT_represent);
 	YY_BREAK
 case 16:
 /* rule 16 can match eol */
 YY_RULE_SETUP
-#line 517 "scanner.l"
+#line 518 "scanner.l"
 SET(ROOT_check);
 	YY_BREAK
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 518 "scanner.l"
+#line 519 "scanner.l"
 SET(ROOT_interface);
 	YY_BREAK
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 519 "scanner.l"
+#line 520 "scanner.l"
 SET(ROOT_method);
 	YY_BREAK
 case 19:
 /* rule 19 can match eol */
 YY_RULE_SETUP
-#line 520 "scanner.l"
+#line 521 "scanner.l"
 SET(ROOT_indexfield);
 	YY_BREAK
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 521 "scanner.l"
+#line 522 "scanner.l"
 SET(ROOT_option);
 	YY_BREAK
 case 21:
 /* rule 21 can match eol */
 YY_RULE_SETUP
-#line 522 "scanner.l"
+#line 523 "scanner.l"
 SET(ROOT_param);
 	YY_BREAK
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 523 "scanner.l"
+#line 524 "scanner.l"
 SET(ROOT_field);
 	YY_BREAK
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 524 "scanner.l"
+#line 525 "scanner.l"
 SET(ROOT_implements);
 	YY_BREAK
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 525 "scanner.l"
+#line 526 "scanner.l"
 SET(ROOT_store);
 	YY_BREAK
 case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
-#line 526 "scanner.l"
+#line 527 "scanner.l"
 SET(ROOT_relate);
 	YY_BREAK
 case 26:
 /* rule 26 can match eol */
 YY_RULE_SETUP
-#line 527 "scanner.l"
+#line 528 "scanner.l"
 SET(ROOT_value);
 	YY_BREAK
 case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
-#line 528 "scanner.l"
+#line 529 "scanner.l"
 SET(ROOT_database);
 	YY_BREAK
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 529 "scanner.l"
+#line 530 "scanner.l"
 SET(ROOT_index);
 	YY_BREAK
 case 29:
 /* rule 29 can match eol */
 YY_RULE_SETUP
-#line 530 "scanner.l"
+#line 531 "scanner.l"
 SET(ROOT_relation);
 	YY_BREAK
 case 30:
 /* rule 30 can match eol */
 YY_RULE_SETUP
-#line 531 "scanner.l"
+#line 532 "scanner.l"
 SET(ROOT_type);
 	YY_BREAK
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 532 "scanner.l"
+#line 533 "scanner.l"
 FAIL("Bad declaration %s.",yytext);
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 533 "scanner.l"
+#line 534 "scanner.l"
 FAIL("Unexpected character `%c' in prolog.", yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(PROLOG):
 case YY_STATE_EOF(DOCTYPE):
-#line 534 "scanner.l"
+#line 535 "scanner.l"
 FAIL("EOF in prolog.");
 	YY_BREAK
 
@@ -4366,7 +4367,7 @@ FAIL("EOF in prolog.");
 case 33:
 /* rule 33 can match eol */
 YY_RULE_SETUP
-#line 558 "scanner.l"
+#line 559 "scanner.l"
 {
   AX_database_name = 0;
   AX_database_namespace = 0;
@@ -4378,42 +4379,42 @@ YY_RULE_SETUP
 case 34:
 /* rule 34 can match eol */
 YY_RULE_SETUP
-#line 566 "scanner.l"
+#line 567 "scanner.l"
 BUFFERLITERAL('\'',AX_database_name);
 	YY_BREAK
 case 35:
 /* rule 35 can match eol */
 YY_RULE_SETUP
-#line 567 "scanner.l"
+#line 568 "scanner.l"
 BUFFERLITERAL('"',AX_database_name);
 	YY_BREAK
 case 36:
 /* rule 36 can match eol */
 YY_RULE_SETUP
-#line 569 "scanner.l"
+#line 570 "scanner.l"
 BUFFERLITERAL('\'',AX_database_namespace);
 	YY_BREAK
 case 37:
 /* rule 37 can match eol */
 YY_RULE_SETUP
-#line 570 "scanner.l"
+#line 571 "scanner.l"
 BUFFERLITERAL('"',AX_database_namespace);
 	YY_BREAK
 case 38:
 /* rule 38 can match eol */
 YY_RULE_SETUP
-#line 572 "scanner.l"
+#line 573 "scanner.l"
 BUFFERLITERAL('\'',AX_database_include);
 	YY_BREAK
 case 39:
 /* rule 39 can match eol */
 YY_RULE_SETUP
-#line 573 "scanner.l"
+#line 574 "scanner.l"
 BUFFERLITERAL('"',AX_database_include);
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 575 "scanner.l"
+#line 576 "scanner.l"
 {
   if (!AX_database_name) FAIL("Required attribute `name' not set for `database' element.");
   if (!AX_database_namespace) FAIL("Required attribute `namespace' not set for `database' element.");
@@ -4422,21 +4423,21 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 580 "scanner.l"
+#line 581 "scanner.l"
 FAIL("`database' element cannot be empty.");
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 581 "scanner.l"
+#line 582 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of database element.", yytext[0]);
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 582 "scanner.l"
+#line 583 "scanner.l"
 FAIL("Bad attribute `%s' in `database' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_database):
-#line 583 "scanner.l"
+#line 584 "scanner.l"
 FAIL("EOF in attribute list of `database' element.");
 	YY_BREAK
 
@@ -4444,7 +4445,7 @@ FAIL("EOF in attribute list of `database' element.");
 case 44:
 /* rule 44 can match eol */
 YY_RULE_SETUP
-#line 587 "scanner.l"
+#line 588 "scanner.l"
 {
   LEAVE;
   ETag_database();
@@ -4457,18 +4458,21 @@ YY_RULE_SETUP
 case 45:
 /* rule 45 can match eol */
 YY_RULE_SETUP
-#line 595 "scanner.l"
+#line 596 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</database>' expected.",yytext);
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 596 "scanner.l"
+#line 597 "scanner.l"
 FAIL("Unexpected character `%c': `</database>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(S_database_2):
 case YY_STATE_EOF(E_database):
-#line 597 "scanner.l"
-FAIL("Premature EOF: `</database>' expected.");
+#line 598 "scanner.l"
+{
+yypop_buffer_state();
+if (!xml::posStack.empty()) {xml::Position p = *xml::posStack.begin(); yylineno = p.line; xml::currentFile = p.file; xml::posStack.pop_front(); } 
+if (!YY_CURRENT_BUFFER) FAIL("Premature EOF: `</database>' expected.");}
 	YY_BREAK
 
 /* <!-- Persistent object (class of objects) 
@@ -4496,7 +4500,7 @@ FAIL("Premature EOF: `</database>' expected.");
 case 47:
 /* rule 47 can match eol */
 YY_RULE_SETUP
-#line 624 "scanner.l"
+#line 628 "scanner.l"
 {
   AX_object_temporary = A_object_temporary_false;
   AX_object_name = 0;
@@ -4507,49 +4511,49 @@ YY_RULE_SETUP
 
 case 48:
 /* rule 48 can match eol */
-#line 633 "scanner.l"
+#line 637 "scanner.l"
 case 49:
 /* rule 49 can match eol */
 YY_RULE_SETUP
-#line 633 "scanner.l"
+#line 637 "scanner.l"
 A_object_temporary = A_object_temporary_true;
 	YY_BREAK
 case 50:
 /* rule 50 can match eol */
-#line 635 "scanner.l"
+#line 639 "scanner.l"
 case 51:
 /* rule 51 can match eol */
 YY_RULE_SETUP
-#line 635 "scanner.l"
+#line 639 "scanner.l"
 A_object_temporary = A_object_temporary_false;
 	YY_BREAK
 case 52:
 /* rule 52 can match eol */
 YY_RULE_SETUP
-#line 637 "scanner.l"
+#line 641 "scanner.l"
 BUFFERLITERAL('\'',AX_object_name);
 	YY_BREAK
 case 53:
 /* rule 53 can match eol */
 YY_RULE_SETUP
-#line 638 "scanner.l"
+#line 642 "scanner.l"
 BUFFERLITERAL('"',AX_object_name);
 	YY_BREAK
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 640 "scanner.l"
+#line 644 "scanner.l"
 BUFFERLITERAL('\'',AX_object_inherits);
 	YY_BREAK
 case 55:
 /* rule 55 can match eol */
 YY_RULE_SETUP
-#line 641 "scanner.l"
+#line 645 "scanner.l"
 BUFFERLITERAL('"',AX_object_inherits);
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 643 "scanner.l"
+#line 647 "scanner.l"
 {
   if (!AX_object_name) FAIL("Required attribute `name' not set for `object' element.");
   LEAVE; STag_object();pcdata_ix = 0; ENTER(S_object);
@@ -4557,7 +4561,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 647 "scanner.l"
+#line 651 "scanner.l"
 {
   if (!AX_object_name) FAIL("Required attribute `name' not set for `object' element.");
   LEAVE; STag_object(); pcdata_ix = 0; ETag_object(); popbuffer(); /* attribute */
@@ -4569,16 +4573,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 655 "scanner.l"
+#line 659 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of object element.", yytext[0]);
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 656 "scanner.l"
+#line 660 "scanner.l"
 FAIL("Bad attribute `%s' in `object' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_object):
-#line 657 "scanner.l"
+#line 661 "scanner.l"
 FAIL("EOF in attribute list of `object' element.");
 	YY_BREAK
 
@@ -4586,7 +4590,7 @@ FAIL("EOF in attribute list of `object' element.");
 case 60:
 /* rule 60 can match eol */
 YY_RULE_SETUP
-#line 661 "scanner.l"
+#line 665 "scanner.l"
 {
   LEAVE;
   ETag_object();
@@ -4600,18 +4604,18 @@ YY_RULE_SETUP
 case 61:
 /* rule 61 can match eol */
 YY_RULE_SETUP
-#line 670 "scanner.l"
+#line 674 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</object>' expected.",yytext);
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 671 "scanner.l"
+#line 675 "scanner.l"
 FAIL("Unexpected character `%c': `</object>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_object):
 case YY_STATE_EOF(S_object):
 case YY_STATE_EOF(S_object_2):
-#line 672 "scanner.l"
+#line 676 "scanner.l"
 FAIL("Premature EOF: `</object>' expected.");
 	YY_BREAK
 
@@ -4627,7 +4631,7 @@ FAIL("Premature EOF: `</object>' expected.");
 case 63:
 /* rule 63 can match eol */
 YY_RULE_SETUP
-#line 686 "scanner.l"
+#line 690 "scanner.l"
 {
   AX_interface_name = 0;
   ENTER(AL_interface); pushbuffer(0);
@@ -4637,18 +4641,18 @@ YY_RULE_SETUP
 case 64:
 /* rule 64 can match eol */
 YY_RULE_SETUP
-#line 692 "scanner.l"
+#line 696 "scanner.l"
 BUFFERLITERAL('\'',AX_interface_name);
 	YY_BREAK
 case 65:
 /* rule 65 can match eol */
 YY_RULE_SETUP
-#line 693 "scanner.l"
+#line 697 "scanner.l"
 BUFFERLITERAL('"',AX_interface_name);
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 695 "scanner.l"
+#line 699 "scanner.l"
 {
   if (!AX_interface_name) FAIL("Required attribute `name' not set for `interface' element.");
   LEAVE; STag_interface();pcdata_ix = 0; ENTER(S_interface);
@@ -4656,7 +4660,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 699 "scanner.l"
+#line 703 "scanner.l"
 {
   if (!AX_interface_name) FAIL("Required attribute `name' not set for `interface' element.");
   LEAVE; STag_interface(); pcdata_ix = 0; ETag_interface(); popbuffer(); /* attribute */
@@ -4667,16 +4671,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 706 "scanner.l"
+#line 710 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of interface element.", yytext[0]);
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 707 "scanner.l"
+#line 711 "scanner.l"
 FAIL("Bad attribute `%s' in `interface' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_interface):
-#line 708 "scanner.l"
+#line 712 "scanner.l"
 FAIL("EOF in attribute list of `interface' element.");
 	YY_BREAK
 
@@ -4684,7 +4688,7 @@ FAIL("EOF in attribute list of `interface' element.");
 case 70:
 /* rule 70 can match eol */
 YY_RULE_SETUP
-#line 712 "scanner.l"
+#line 716 "scanner.l"
 {
   LEAVE;
   ETag_interface();
@@ -4697,18 +4701,18 @@ YY_RULE_SETUP
 case 71:
 /* rule 71 can match eol */
 YY_RULE_SETUP
-#line 720 "scanner.l"
+#line 724 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</interface>' expected.",yytext);
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 721 "scanner.l"
+#line 725 "scanner.l"
 FAIL("Unexpected character `%c': `</interface>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_interface):
 case YY_STATE_EOF(S_interface_2):
 case YY_STATE_EOF(S_interface):
-#line 722 "scanner.l"
+#line 726 "scanner.l"
 FAIL("Premature EOF: `</interface>' expected.");
 	YY_BREAK
 
@@ -4723,7 +4727,7 @@ FAIL("Premature EOF: `</interface>' expected.");
 case 73:
 /* rule 73 can match eol */
 YY_RULE_SETUP
-#line 735 "scanner.l"
+#line 739 "scanner.l"
 {
   AX_implements_interface = 0;
   ENTER(AL_implements); pushbuffer(0);
@@ -4733,18 +4737,18 @@ YY_RULE_SETUP
 case 74:
 /* rule 74 can match eol */
 YY_RULE_SETUP
-#line 741 "scanner.l"
+#line 745 "scanner.l"
 BUFFERLITERAL('\'',AX_implements_interface);
 	YY_BREAK
 case 75:
 /* rule 75 can match eol */
 YY_RULE_SETUP
-#line 742 "scanner.l"
+#line 746 "scanner.l"
 BUFFERLITERAL('"',AX_implements_interface);
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 744 "scanner.l"
+#line 748 "scanner.l"
 {
   if (!AX_implements_interface) FAIL("Required attribute `interface' not set for `implements' element.");
   LEAVE; STag_implements();pcdata_ix = 0; ENTER(E_implements);
@@ -4752,7 +4756,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 748 "scanner.l"
+#line 752 "scanner.l"
 {
   if (!AX_implements_interface) FAIL("Required attribute `interface' not set for `implements' element.");
   LEAVE; STag_implements(); pcdata_ix = 0; ETag_implements(); popbuffer(); /* attribute */
@@ -4764,16 +4768,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 756 "scanner.l"
+#line 760 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of implements element.", yytext[0]);
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 757 "scanner.l"
+#line 761 "scanner.l"
 FAIL("Bad attribute `%s' in `implements' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_implements):
-#line 758 "scanner.l"
+#line 762 "scanner.l"
 FAIL("EOF in attribute list of `implements' element.");
 	YY_BREAK
 
@@ -4781,7 +4785,7 @@ FAIL("EOF in attribute list of `implements' element.");
 case 80:
 /* rule 80 can match eol */
 YY_RULE_SETUP
-#line 762 "scanner.l"
+#line 766 "scanner.l"
 {
   LEAVE;
   ETag_implements();
@@ -4795,16 +4799,16 @@ YY_RULE_SETUP
 case 81:
 /* rule 81 can match eol */
 YY_RULE_SETUP
-#line 771 "scanner.l"
+#line 775 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</implements>' expected.",yytext);
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 772 "scanner.l"
+#line 776 "scanner.l"
 FAIL("Unexpected character `%c': `</implements>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_implements):
-#line 773 "scanner.l"
+#line 777 "scanner.l"
 FAIL("Premature EOF: `</implements>' expected.");
 	YY_BREAK
 
@@ -4848,7 +4852,7 @@ FAIL("Premature EOF: `</implements>' expected.");
 case 83:
 /* rule 83 can match eol */
 YY_RULE_SETUP
-#line 815 "scanner.l"
+#line 819 "scanner.l"
 {
   AX_check_oncreate = A_check_oncreate_false;
   AX_check_ondelete = A_check_ondelete_false;
@@ -4863,121 +4867,121 @@ YY_RULE_SETUP
 
 case 84:
 /* rule 84 can match eol */
-#line 828 "scanner.l"
+#line 832 "scanner.l"
 case 85:
 /* rule 85 can match eol */
 YY_RULE_SETUP
-#line 828 "scanner.l"
+#line 832 "scanner.l"
 A_check_oncreate = A_check_oncreate_true;
 	YY_BREAK
 case 86:
 /* rule 86 can match eol */
-#line 830 "scanner.l"
+#line 834 "scanner.l"
 case 87:
 /* rule 87 can match eol */
 YY_RULE_SETUP
-#line 830 "scanner.l"
+#line 834 "scanner.l"
 A_check_oncreate = A_check_oncreate_false;
 	YY_BREAK
 case 88:
 /* rule 88 can match eol */
-#line 833 "scanner.l"
+#line 837 "scanner.l"
 case 89:
 /* rule 89 can match eol */
 YY_RULE_SETUP
-#line 833 "scanner.l"
+#line 837 "scanner.l"
 A_check_ondelete = A_check_ondelete_true;
 	YY_BREAK
 case 90:
 /* rule 90 can match eol */
-#line 835 "scanner.l"
+#line 839 "scanner.l"
 case 91:
 /* rule 91 can match eol */
 YY_RULE_SETUP
-#line 835 "scanner.l"
+#line 839 "scanner.l"
 A_check_ondelete = A_check_ondelete_false;
 	YY_BREAK
 case 92:
 /* rule 92 can match eol */
-#line 838 "scanner.l"
+#line 842 "scanner.l"
 case 93:
 /* rule 93 can match eol */
 YY_RULE_SETUP
-#line 838 "scanner.l"
+#line 842 "scanner.l"
 A_check_onupdate = A_check_onupdate_true;
 	YY_BREAK
 case 94:
 /* rule 94 can match eol */
-#line 840 "scanner.l"
+#line 844 "scanner.l"
 case 95:
 /* rule 95 can match eol */
 YY_RULE_SETUP
-#line 840 "scanner.l"
+#line 844 "scanner.l"
 A_check_onupdate = A_check_onupdate_false;
 	YY_BREAK
 case 96:
 /* rule 96 can match eol */
-#line 843 "scanner.l"
+#line 847 "scanner.l"
 case 97:
 /* rule 97 can match eol */
 YY_RULE_SETUP
-#line 843 "scanner.l"
+#line 847 "scanner.l"
 A_check_onlink = A_check_onlink_true;
 	YY_BREAK
 case 98:
 /* rule 98 can match eol */
-#line 845 "scanner.l"
+#line 849 "scanner.l"
 case 99:
 /* rule 99 can match eol */
 YY_RULE_SETUP
-#line 845 "scanner.l"
+#line 849 "scanner.l"
 A_check_onlink = A_check_onlink_false;
 	YY_BREAK
 case 100:
 /* rule 100 can match eol */
-#line 848 "scanner.l"
+#line 852 "scanner.l"
 case 101:
 /* rule 101 can match eol */
 YY_RULE_SETUP
-#line 848 "scanner.l"
+#line 852 "scanner.l"
 A_check_onunlink = A_check_onunlink_true;
 	YY_BREAK
 case 102:
 /* rule 102 can match eol */
-#line 850 "scanner.l"
+#line 854 "scanner.l"
 case 103:
 /* rule 103 can match eol */
 YY_RULE_SETUP
-#line 850 "scanner.l"
+#line 854 "scanner.l"
 A_check_onunlink = A_check_onunlink_false;
 	YY_BREAK
 case 104:
 /* rule 104 can match eol */
 YY_RULE_SETUP
-#line 852 "scanner.l"
+#line 856 "scanner.l"
 BUFFERLITERAL('\'',AX_check_function);
 	YY_BREAK
 case 105:
 /* rule 105 can match eol */
 YY_RULE_SETUP
-#line 853 "scanner.l"
+#line 857 "scanner.l"
 BUFFERLITERAL('"',AX_check_function);
 	YY_BREAK
 case 106:
 /* rule 106 can match eol */
 YY_RULE_SETUP
-#line 855 "scanner.l"
+#line 859 "scanner.l"
 ENTER(VALUE1); BUFFERSET(AX_check_param);
 	YY_BREAK
 case 107:
 /* rule 107 can match eol */
 YY_RULE_SETUP
-#line 856 "scanner.l"
+#line 860 "scanner.l"
 ENTER(VALUE2); BUFFERSET(AX_check_param);
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 858 "scanner.l"
+#line 862 "scanner.l"
 {
   if (!AX_check_function) FAIL("Required attribute `function' not set for `check' element.");
   LEAVE; STag_check();pcdata_ix = 0; ENTER(E_check);
@@ -4985,7 +4989,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 862 "scanner.l"
+#line 866 "scanner.l"
 {
   if (!AX_check_function) FAIL("Required attribute `function' not set for `check' element.");
   LEAVE; STag_check(); pcdata_ix = 0; ETag_check(); popbuffer(); /* attribute */
@@ -4999,16 +5003,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 872 "scanner.l"
+#line 876 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of check element.", yytext[0]);
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 873 "scanner.l"
+#line 877 "scanner.l"
 FAIL("Bad attribute `%s' in `check' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_check):
-#line 874 "scanner.l"
+#line 878 "scanner.l"
 FAIL("EOF in attribute list of `check' element.");
 	YY_BREAK
 
@@ -5016,7 +5020,7 @@ FAIL("EOF in attribute list of `check' element.");
 case 112:
 /* rule 112 can match eol */
 YY_RULE_SETUP
-#line 878 "scanner.l"
+#line 882 "scanner.l"
 {
   LEAVE;
   ETag_check();
@@ -5032,16 +5036,16 @@ YY_RULE_SETUP
 case 113:
 /* rule 113 can match eol */
 YY_RULE_SETUP
-#line 889 "scanner.l"
+#line 893 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</check>' expected.",yytext);
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 890 "scanner.l"
+#line 894 "scanner.l"
 FAIL("Unexpected character `%c': `</check>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_check):
-#line 891 "scanner.l"
+#line 895 "scanner.l"
 FAIL("Premature EOF: `</check>' expected.");
 	YY_BREAK
 
@@ -5057,7 +5061,7 @@ FAIL("Premature EOF: `</check>' expected.");
 case 115:
 /* rule 115 can match eol */
 YY_RULE_SETUP
-#line 905 "scanner.l"
+#line 909 "scanner.l"
 {
   AX_type_name = 0;
   ENTER(AL_type); pushbuffer(0);
@@ -5067,18 +5071,18 @@ YY_RULE_SETUP
 case 116:
 /* rule 116 can match eol */
 YY_RULE_SETUP
-#line 911 "scanner.l"
+#line 915 "scanner.l"
 BUFFERLITERAL('\'',AX_type_name);
 	YY_BREAK
 case 117:
 /* rule 117 can match eol */
 YY_RULE_SETUP
-#line 912 "scanner.l"
+#line 916 "scanner.l"
 BUFFERLITERAL('"',AX_type_name);
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 914 "scanner.l"
+#line 918 "scanner.l"
 {
   if (!AX_type_name) FAIL("Required attribute `name' not set for `type' element.");
   LEAVE; STag_type();pcdata_ix = 0; ENTER(S_type);
@@ -5086,7 +5090,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-#line 918 "scanner.l"
+#line 922 "scanner.l"
 {
   if (!AX_type_name) FAIL("Required attribute `name' not set for `type' element.");
   LEAVE; STag_type(); pcdata_ix = 0; ETag_type(); popbuffer(); /* attribute */
@@ -5098,16 +5102,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-#line 926 "scanner.l"
+#line 930 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of type element.", yytext[0]);
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-#line 927 "scanner.l"
+#line 931 "scanner.l"
 FAIL("Bad attribute `%s' in `type' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_type):
-#line 928 "scanner.l"
+#line 932 "scanner.l"
 FAIL("EOF in attribute list of `type' element.");
 	YY_BREAK
 
@@ -5115,7 +5119,7 @@ FAIL("EOF in attribute list of `type' element.");
 case 122:
 /* rule 122 can match eol */
 YY_RULE_SETUP
-#line 932 "scanner.l"
+#line 936 "scanner.l"
 {
   LEAVE;
   ETag_type();
@@ -5129,12 +5133,12 @@ YY_RULE_SETUP
 case 123:
 /* rule 123 can match eol */
 YY_RULE_SETUP
-#line 941 "scanner.l"
+#line 945 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</type>' expected.",yytext);
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 942 "scanner.l"
+#line 946 "scanner.l"
 FAIL("Unexpected character `%c': `</type>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(S_type_11):
@@ -5146,7 +5150,7 @@ case YY_STATE_EOF(S_type_4):
 case YY_STATE_EOF(S_type_3):
 case YY_STATE_EOF(S_type_1):
 case YY_STATE_EOF(S_type_6):
-#line 943 "scanner.l"
+#line 947 "scanner.l"
 FAIL("Premature EOF: `</type>' expected.");
 	YY_BREAK
 
@@ -5167,7 +5171,7 @@ FAIL("Premature EOF: `</type>' expected.");
 case 125:
 /* rule 125 can match eol */
 YY_RULE_SETUP
-#line 962 "scanner.l"
+#line 966 "scanner.l"
 {
   AX_represent_as = 0;
   AX_represent_target = 0;
@@ -5178,30 +5182,30 @@ YY_RULE_SETUP
 case 126:
 /* rule 126 can match eol */
 YY_RULE_SETUP
-#line 969 "scanner.l"
+#line 973 "scanner.l"
 ENTER(VALUE1); BUFFERSET(AX_represent_as);
 	YY_BREAK
 case 127:
 /* rule 127 can match eol */
 YY_RULE_SETUP
-#line 970 "scanner.l"
+#line 974 "scanner.l"
 ENTER(VALUE2); BUFFERSET(AX_represent_as);
 	YY_BREAK
 case 128:
 /* rule 128 can match eol */
 YY_RULE_SETUP
-#line 972 "scanner.l"
+#line 976 "scanner.l"
 BUFFERLITERAL('\'',AX_represent_target);
 	YY_BREAK
 case 129:
 /* rule 129 can match eol */
 YY_RULE_SETUP
-#line 973 "scanner.l"
+#line 977 "scanner.l"
 BUFFERLITERAL('"',AX_represent_target);
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
-#line 975 "scanner.l"
+#line 979 "scanner.l"
 {
   if (!AX_represent_as) FAIL("Required attribute `as' not set for `represent' element.");
   LEAVE; STag_represent();pcdata_ix = 0; ENTER(E_represent);
@@ -5209,7 +5213,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 979 "scanner.l"
+#line 983 "scanner.l"
 {
   if (!AX_represent_as) FAIL("Required attribute `as' not set for `represent' element.");
   LEAVE; STag_represent(); pcdata_ix = 0; ETag_represent(); popbuffer(); /* attribute */
@@ -5221,16 +5225,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
-#line 987 "scanner.l"
+#line 991 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of represent element.", yytext[0]);
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 988 "scanner.l"
+#line 992 "scanner.l"
 FAIL("Bad attribute `%s' in `represent' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_represent):
-#line 989 "scanner.l"
+#line 993 "scanner.l"
 FAIL("EOF in attribute list of `represent' element.");
 	YY_BREAK
 
@@ -5238,7 +5242,7 @@ FAIL("EOF in attribute list of `represent' element.");
 case 134:
 /* rule 134 can match eol */
 YY_RULE_SETUP
-#line 993 "scanner.l"
+#line 997 "scanner.l"
 {
   LEAVE;
   ETag_represent();
@@ -5252,16 +5256,16 @@ YY_RULE_SETUP
 case 135:
 /* rule 135 can match eol */
 YY_RULE_SETUP
-#line 1002 "scanner.l"
+#line 1006 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</represent>' expected.",yytext);
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 1003 "scanner.l"
+#line 1007 "scanner.l"
 FAIL("Unexpected character `%c': `</represent>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_represent):
-#line 1004 "scanner.l"
+#line 1008 "scanner.l"
 FAIL("Premature EOF: `</represent>' expected.");
 	YY_BREAK
 
@@ -5284,7 +5288,7 @@ FAIL("Premature EOF: `</represent>' expected.");
 case 137:
 /* rule 137 can match eol */
 YY_RULE_SETUP
-#line 1025 "scanner.l"
+#line 1029 "scanner.l"
 {
   AX_store_as = 0;
   AX_store_backend = 0;
@@ -5295,30 +5299,30 @@ YY_RULE_SETUP
 case 138:
 /* rule 138 can match eol */
 YY_RULE_SETUP
-#line 1032 "scanner.l"
+#line 1036 "scanner.l"
 ENTER(VALUE1); BUFFERSET(AX_store_as);
 	YY_BREAK
 case 139:
 /* rule 139 can match eol */
 YY_RULE_SETUP
-#line 1033 "scanner.l"
+#line 1037 "scanner.l"
 ENTER(VALUE2); BUFFERSET(AX_store_as);
 	YY_BREAK
 case 140:
 /* rule 140 can match eol */
 YY_RULE_SETUP
-#line 1035 "scanner.l"
+#line 1039 "scanner.l"
 BUFFERLITERAL('\'',AX_store_backend);
 	YY_BREAK
 case 141:
 /* rule 141 can match eol */
 YY_RULE_SETUP
-#line 1036 "scanner.l"
+#line 1040 "scanner.l"
 BUFFERLITERAL('"',AX_store_backend);
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
-#line 1038 "scanner.l"
+#line 1042 "scanner.l"
 {
   if (!AX_store_as) FAIL("Required attribute `as' not set for `store' element.");
   LEAVE; STag_store();pcdata_ix = 0; ENTER(E_store);
@@ -5326,7 +5330,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 1042 "scanner.l"
+#line 1046 "scanner.l"
 {
   if (!AX_store_as) FAIL("Required attribute `as' not set for `store' element.");
   LEAVE; STag_store(); pcdata_ix = 0; ETag_store(); popbuffer(); /* attribute */
@@ -5338,16 +5342,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-#line 1050 "scanner.l"
+#line 1054 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of store element.", yytext[0]);
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
-#line 1051 "scanner.l"
+#line 1055 "scanner.l"
 FAIL("Bad attribute `%s' in `store' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_store):
-#line 1052 "scanner.l"
+#line 1056 "scanner.l"
 FAIL("EOF in attribute list of `store' element.");
 	YY_BREAK
 
@@ -5355,7 +5359,7 @@ FAIL("EOF in attribute list of `store' element.");
 case 146:
 /* rule 146 can match eol */
 YY_RULE_SETUP
-#line 1056 "scanner.l"
+#line 1060 "scanner.l"
 {
   LEAVE;
   ETag_store();
@@ -5369,16 +5373,16 @@ YY_RULE_SETUP
 case 147:
 /* rule 147 can match eol */
 YY_RULE_SETUP
-#line 1065 "scanner.l"
+#line 1069 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</store>' expected.",yytext);
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-#line 1066 "scanner.l"
+#line 1070 "scanner.l"
 FAIL("Unexpected character `%c': `</store>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_store):
-#line 1067 "scanner.l"
+#line 1071 "scanner.l"
 FAIL("Premature EOF: `</store>' expected.");
 	YY_BREAK
 
@@ -5393,7 +5397,7 @@ FAIL("Premature EOF: `</store>' expected.");
 case 149:
 /* rule 149 can match eol */
 YY_RULE_SETUP
-#line 1080 "scanner.l"
+#line 1084 "scanner.l"
 {
   AX_include_file = 0;
   ENTER(AL_include); pushbuffer(0);
@@ -5403,18 +5407,18 @@ YY_RULE_SETUP
 case 150:
 /* rule 150 can match eol */
 YY_RULE_SETUP
-#line 1086 "scanner.l"
+#line 1090 "scanner.l"
 ENTER(VALUE1); BUFFERSET(AX_include_file);
 	YY_BREAK
 case 151:
 /* rule 151 can match eol */
 YY_RULE_SETUP
-#line 1087 "scanner.l"
+#line 1091 "scanner.l"
 ENTER(VALUE2); BUFFERSET(AX_include_file);
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
-#line 1089 "scanner.l"
+#line 1093 "scanner.l"
 {
   if (!AX_include_file) FAIL("Required attribute `file' not set for `include' element.");
   LEAVE; STag_include();pcdata_ix = 0; ENTER(E_include);
@@ -5422,7 +5426,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
-#line 1093 "scanner.l"
+#line 1097 "scanner.l"
 {
   if (!AX_include_file) FAIL("Required attribute `file' not set for `include' element.");
   LEAVE; STag_include(); pcdata_ix = 0; ETag_include(); popbuffer(); /* attribute */
@@ -5434,16 +5438,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
-#line 1101 "scanner.l"
+#line 1105 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of include element.", yytext[0]);
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
-#line 1102 "scanner.l"
+#line 1106 "scanner.l"
 FAIL("Bad attribute `%s' in `include' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_include):
-#line 1103 "scanner.l"
+#line 1107 "scanner.l"
 FAIL("EOF in attribute list of `include' element.");
 	YY_BREAK
 
@@ -5451,7 +5455,7 @@ FAIL("EOF in attribute list of `include' element.");
 case 156:
 /* rule 156 can match eol */
 YY_RULE_SETUP
-#line 1107 "scanner.l"
+#line 1111 "scanner.l"
 {
   LEAVE;
   ETag_include();
@@ -5465,16 +5469,16 @@ YY_RULE_SETUP
 case 157:
 /* rule 157 can match eol */
 YY_RULE_SETUP
-#line 1116 "scanner.l"
+#line 1120 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</include>' expected.",yytext);
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
-#line 1117 "scanner.l"
+#line 1121 "scanner.l"
 FAIL("Unexpected character `%c': `</include>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_include):
-#line 1118 "scanner.l"
+#line 1122 "scanner.l"
 FAIL("Premature EOF: `</include>' expected.");
 	YY_BREAK
 
@@ -5503,7 +5507,7 @@ FAIL("Premature EOF: `</include>' expected.");
 case 159:
 /* rule 159 can match eol */
 YY_RULE_SETUP
-#line 1145 "scanner.l"
+#line 1149 "scanner.l"
 {
   AX_option_name = 0;
   AX_option_value = 0;
@@ -5515,42 +5519,42 @@ YY_RULE_SETUP
 case 160:
 /* rule 160 can match eol */
 YY_RULE_SETUP
-#line 1153 "scanner.l"
+#line 1157 "scanner.l"
 ENTER(VALUE1); BUFFERSET(AX_option_name);
 	YY_BREAK
 case 161:
 /* rule 161 can match eol */
 YY_RULE_SETUP
-#line 1154 "scanner.l"
+#line 1158 "scanner.l"
 ENTER(VALUE2); BUFFERSET(AX_option_name);
 	YY_BREAK
 case 162:
 /* rule 162 can match eol */
 YY_RULE_SETUP
-#line 1156 "scanner.l"
+#line 1160 "scanner.l"
 ENTER(VALUE1); BUFFERSET(AX_option_value);
 	YY_BREAK
 case 163:
 /* rule 163 can match eol */
 YY_RULE_SETUP
-#line 1157 "scanner.l"
+#line 1161 "scanner.l"
 ENTER(VALUE2); BUFFERSET(AX_option_value);
 	YY_BREAK
 case 164:
 /* rule 164 can match eol */
 YY_RULE_SETUP
-#line 1159 "scanner.l"
+#line 1163 "scanner.l"
 BUFFERLITERAL('\'',AX_option_backend);
 	YY_BREAK
 case 165:
 /* rule 165 can match eol */
 YY_RULE_SETUP
-#line 1160 "scanner.l"
+#line 1164 "scanner.l"
 BUFFERLITERAL('"',AX_option_backend);
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 1162 "scanner.l"
+#line 1166 "scanner.l"
 {
   if (!AX_option_name) FAIL("Required attribute `name' not set for `option' element.");
   if (!AX_option_value) FAIL("Required attribute `value' not set for `option' element.");
@@ -5559,7 +5563,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-#line 1167 "scanner.l"
+#line 1171 "scanner.l"
 {
   if (!AX_option_name) FAIL("Required attribute `name' not set for `option' element.");
   if (!AX_option_value) FAIL("Required attribute `value' not set for `option' element.");
@@ -5574,16 +5578,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 1178 "scanner.l"
+#line 1182 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of option element.", yytext[0]);
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-#line 1179 "scanner.l"
+#line 1183 "scanner.l"
 FAIL("Bad attribute `%s' in `option' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_option):
-#line 1180 "scanner.l"
+#line 1184 "scanner.l"
 FAIL("EOF in attribute list of `option' element.");
 	YY_BREAK
 
@@ -5591,7 +5595,7 @@ FAIL("EOF in attribute list of `option' element.");
 case 170:
 /* rule 170 can match eol */
 YY_RULE_SETUP
-#line 1184 "scanner.l"
+#line 1188 "scanner.l"
 {
   LEAVE;
   ETag_option();
@@ -5607,16 +5611,16 @@ YY_RULE_SETUP
 case 171:
 /* rule 171 can match eol */
 YY_RULE_SETUP
-#line 1195 "scanner.l"
+#line 1199 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</option>' expected.",yytext);
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
-#line 1196 "scanner.l"
+#line 1200 "scanner.l"
 FAIL("Unexpected character `%c': `</option>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_option):
-#line 1197 "scanner.l"
+#line 1201 "scanner.l"
 FAIL("Premature EOF: `</option>' expected.");
 	YY_BREAK
 
@@ -5654,7 +5658,7 @@ FAIL("Premature EOF: `</option>' expected.");
 case 173:
 /* rule 173 can match eol */
 YY_RULE_SETUP
-#line 1233 "scanner.l"
+#line 1237 "scanner.l"
 {
   AX_field_name = 0;
   AX_field_type = 0;
@@ -5668,78 +5672,78 @@ YY_RULE_SETUP
 case 174:
 /* rule 174 can match eol */
 YY_RULE_SETUP
-#line 1243 "scanner.l"
+#line 1247 "scanner.l"
 BUFFERLITERAL('\'',AX_field_name);
 	YY_BREAK
 case 175:
 /* rule 175 can match eol */
 YY_RULE_SETUP
-#line 1244 "scanner.l"
+#line 1248 "scanner.l"
 BUFFERLITERAL('"',AX_field_name);
 	YY_BREAK
 case 176:
 /* rule 176 can match eol */
 YY_RULE_SETUP
-#line 1246 "scanner.l"
+#line 1250 "scanner.l"
 BUFFERLITERAL('\'',AX_field_type);
 	YY_BREAK
 case 177:
 /* rule 177 can match eol */
 YY_RULE_SETUP
-#line 1247 "scanner.l"
+#line 1251 "scanner.l"
 BUFFERLITERAL('"',AX_field_type);
 	YY_BREAK
 case 178:
 /* rule 178 can match eol */
 YY_RULE_SETUP
-#line 1249 "scanner.l"
+#line 1253 "scanner.l"
 ENTER(VALUE1); BUFFERSET(AX_field_default);
 	YY_BREAK
 case 179:
 /* rule 179 can match eol */
 YY_RULE_SETUP
-#line 1250 "scanner.l"
+#line 1254 "scanner.l"
 ENTER(VALUE2); BUFFERSET(AX_field_default);
 	YY_BREAK
 case 180:
 /* rule 180 can match eol */
-#line 1253 "scanner.l"
+#line 1257 "scanner.l"
 case 181:
 /* rule 181 can match eol */
 YY_RULE_SETUP
-#line 1253 "scanner.l"
+#line 1257 "scanner.l"
 A_field_indexed = A_field_indexed_true;
 	YY_BREAK
 case 182:
 /* rule 182 can match eol */
-#line 1255 "scanner.l"
+#line 1259 "scanner.l"
 case 183:
 /* rule 183 can match eol */
 YY_RULE_SETUP
-#line 1255 "scanner.l"
+#line 1259 "scanner.l"
 A_field_indexed = A_field_indexed_false;
 	YY_BREAK
 case 184:
 /* rule 184 can match eol */
-#line 1258 "scanner.l"
+#line 1262 "scanner.l"
 case 185:
 /* rule 185 can match eol */
 YY_RULE_SETUP
-#line 1258 "scanner.l"
+#line 1262 "scanner.l"
 A_field_unique = A_field_unique_true;
 	YY_BREAK
 case 186:
 /* rule 186 can match eol */
-#line 1260 "scanner.l"
+#line 1264 "scanner.l"
 case 187:
 /* rule 187 can match eol */
 YY_RULE_SETUP
-#line 1260 "scanner.l"
+#line 1264 "scanner.l"
 A_field_unique = A_field_unique_false;
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
-#line 1262 "scanner.l"
+#line 1266 "scanner.l"
 {
   if (!AX_field_name) FAIL("Required attribute `name' not set for `field' element.");
   if (!AX_field_type) FAIL("Required attribute `type' not set for `field' element.");
@@ -5748,7 +5752,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
-#line 1267 "scanner.l"
+#line 1271 "scanner.l"
 {
   if (!AX_field_name) FAIL("Required attribute `name' not set for `field' element.");
   if (!AX_field_type) FAIL("Required attribute `type' not set for `field' element.");
@@ -5762,16 +5766,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
-#line 1277 "scanner.l"
+#line 1281 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of field element.", yytext[0]);
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
-#line 1278 "scanner.l"
+#line 1282 "scanner.l"
 FAIL("Bad attribute `%s' in `field' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_field):
-#line 1279 "scanner.l"
+#line 1283 "scanner.l"
 FAIL("EOF in attribute list of `field' element.");
 	YY_BREAK
 
@@ -5779,7 +5783,7 @@ FAIL("EOF in attribute list of `field' element.");
 case 192:
 /* rule 192 can match eol */
 YY_RULE_SETUP
-#line 1283 "scanner.l"
+#line 1287 "scanner.l"
 {
   LEAVE;
   ETag_field();
@@ -5794,12 +5798,12 @@ YY_RULE_SETUP
 case 193:
 /* rule 193 can match eol */
 YY_RULE_SETUP
-#line 1293 "scanner.l"
+#line 1297 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</field>' expected.",yytext);
 	YY_BREAK
 case 194:
 YY_RULE_SETUP
-#line 1294 "scanner.l"
+#line 1298 "scanner.l"
 FAIL("Unexpected character `%c': `</field>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_field):
@@ -5807,7 +5811,7 @@ case YY_STATE_EOF(S_field_1):
 case YY_STATE_EOF(S_field_5):
 case YY_STATE_EOF(S_field_3):
 case YY_STATE_EOF(S_field):
-#line 1295 "scanner.l"
+#line 1299 "scanner.l"
 FAIL("Premature EOF: `</field>' expected.");
 	YY_BREAK
 
@@ -5821,7 +5825,7 @@ FAIL("Premature EOF: `</field>' expected.");
 case 195:
 /* rule 195 can match eol */
 YY_RULE_SETUP
-#line 1307 "scanner.l"
+#line 1311 "scanner.l"
 {
   AX_index_unique = A_index_unique_false;
   ENTER(AL_index); pushbuffer(0);
@@ -5830,46 +5834,46 @@ YY_RULE_SETUP
 
 case 196:
 /* rule 196 can match eol */
-#line 1314 "scanner.l"
+#line 1318 "scanner.l"
 case 197:
 /* rule 197 can match eol */
 YY_RULE_SETUP
-#line 1314 "scanner.l"
+#line 1318 "scanner.l"
 A_index_unique = A_index_unique_true;
 	YY_BREAK
 case 198:
 /* rule 198 can match eol */
-#line 1316 "scanner.l"
+#line 1320 "scanner.l"
 case 199:
 /* rule 199 can match eol */
 YY_RULE_SETUP
-#line 1316 "scanner.l"
+#line 1320 "scanner.l"
 A_index_unique = A_index_unique_false;
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
-#line 1318 "scanner.l"
+#line 1322 "scanner.l"
 {
   LEAVE; STag_index();pcdata_ix = 0; ENTER(S_index);
  }
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
-#line 1321 "scanner.l"
+#line 1325 "scanner.l"
 FAIL("`index' element cannot be empty.");
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-#line 1322 "scanner.l"
+#line 1326 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of index element.", yytext[0]);
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-#line 1323 "scanner.l"
+#line 1327 "scanner.l"
 FAIL("Bad attribute `%s' in `index' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_index):
-#line 1324 "scanner.l"
+#line 1328 "scanner.l"
 FAIL("EOF in attribute list of `index' element.");
 	YY_BREAK
 
@@ -5877,7 +5881,7 @@ FAIL("EOF in attribute list of `index' element.");
 case 204:
 /* rule 204 can match eol */
 YY_RULE_SETUP
-#line 1328 "scanner.l"
+#line 1332 "scanner.l"
 {
   LEAVE;
   ETag_index();
@@ -5892,17 +5896,17 @@ YY_RULE_SETUP
 case 205:
 /* rule 205 can match eol */
 YY_RULE_SETUP
-#line 1338 "scanner.l"
+#line 1342 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</index>' expected.",yytext);
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-#line 1339 "scanner.l"
+#line 1343 "scanner.l"
 FAIL("Unexpected character `%c': `</index>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(S_index_3):
 case YY_STATE_EOF(E_index):
-#line 1340 "scanner.l"
+#line 1344 "scanner.l"
 FAIL("Premature EOF: `</index>' expected.");
 	YY_BREAK
 
@@ -5918,7 +5922,7 @@ FAIL("Premature EOF: `</index>' expected.");
 case 207:
 /* rule 207 can match eol */
 YY_RULE_SETUP
-#line 1354 "scanner.l"
+#line 1358 "scanner.l"
 {
   AX_indexfield_name = 0;
   ENTER(AL_indexfield); pushbuffer(0);
@@ -5928,18 +5932,18 @@ YY_RULE_SETUP
 case 208:
 /* rule 208 can match eol */
 YY_RULE_SETUP
-#line 1360 "scanner.l"
+#line 1364 "scanner.l"
 BUFFERLITERAL('\'',AX_indexfield_name);
 	YY_BREAK
 case 209:
 /* rule 209 can match eol */
 YY_RULE_SETUP
-#line 1361 "scanner.l"
+#line 1365 "scanner.l"
 BUFFERLITERAL('"',AX_indexfield_name);
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-#line 1363 "scanner.l"
+#line 1367 "scanner.l"
 {
   if (!AX_indexfield_name) FAIL("Required attribute `name' not set for `indexfield' element.");
   LEAVE; STag_indexfield();pcdata_ix = 0; ENTER(E_indexfield);
@@ -5947,7 +5951,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-#line 1367 "scanner.l"
+#line 1371 "scanner.l"
 {
   if (!AX_indexfield_name) FAIL("Required attribute `name' not set for `indexfield' element.");
   LEAVE; STag_indexfield(); pcdata_ix = 0; ETag_indexfield(); popbuffer(); /* attribute */
@@ -5960,16 +5964,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 212:
 YY_RULE_SETUP
-#line 1376 "scanner.l"
+#line 1380 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of indexfield element.", yytext[0]);
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
-#line 1377 "scanner.l"
+#line 1381 "scanner.l"
 FAIL("Bad attribute `%s' in `indexfield' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_indexfield):
-#line 1378 "scanner.l"
+#line 1382 "scanner.l"
 FAIL("EOF in attribute list of `indexfield' element.");
 	YY_BREAK
 
@@ -5977,7 +5981,7 @@ FAIL("EOF in attribute list of `indexfield' element.");
 case 214:
 /* rule 214 can match eol */
 YY_RULE_SETUP
-#line 1382 "scanner.l"
+#line 1386 "scanner.l"
 {
   LEAVE;
   ETag_indexfield();
@@ -5992,16 +5996,16 @@ YY_RULE_SETUP
 case 215:
 /* rule 215 can match eol */
 YY_RULE_SETUP
-#line 1392 "scanner.l"
+#line 1396 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</indexfield>' expected.",yytext);
 	YY_BREAK
 case 216:
 YY_RULE_SETUP
-#line 1393 "scanner.l"
+#line 1397 "scanner.l"
 FAIL("Unexpected character `%c': `</indexfield>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_indexfield):
-#line 1394 "scanner.l"
+#line 1398 "scanner.l"
 FAIL("Premature EOF: `</indexfield>' expected.");
 	YY_BREAK
 
@@ -6016,7 +6020,7 @@ FAIL("Premature EOF: `</indexfield>' expected.");
 case 217:
 /* rule 217 can match eol */
 YY_RULE_SETUP
-#line 1407 "scanner.l"
+#line 1411 "scanner.l"
 {
   AX_value_name = 0;
   AX_value_value = 0;
@@ -6027,30 +6031,30 @@ YY_RULE_SETUP
 case 218:
 /* rule 218 can match eol */
 YY_RULE_SETUP
-#line 1414 "scanner.l"
+#line 1418 "scanner.l"
 BUFFERLITERAL('\'',AX_value_name);
 	YY_BREAK
 case 219:
 /* rule 219 can match eol */
 YY_RULE_SETUP
-#line 1415 "scanner.l"
+#line 1419 "scanner.l"
 BUFFERLITERAL('"',AX_value_name);
 	YY_BREAK
 case 220:
 /* rule 220 can match eol */
 YY_RULE_SETUP
-#line 1417 "scanner.l"
+#line 1421 "scanner.l"
 ENTER(VALUE1); BUFFERSET(AX_value_value);
 	YY_BREAK
 case 221:
 /* rule 221 can match eol */
 YY_RULE_SETUP
-#line 1418 "scanner.l"
+#line 1422 "scanner.l"
 ENTER(VALUE2); BUFFERSET(AX_value_value);
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
-#line 1420 "scanner.l"
+#line 1424 "scanner.l"
 {
   if (!AX_value_name) FAIL("Required attribute `name' not set for `value' element.");
   if (!AX_value_value) FAIL("Required attribute `value' not set for `value' element.");
@@ -6059,7 +6063,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-#line 1425 "scanner.l"
+#line 1429 "scanner.l"
 {
   if (!AX_value_name) FAIL("Required attribute `name' not set for `value' element.");
   if (!AX_value_value) FAIL("Required attribute `value' not set for `value' element.");
@@ -6073,16 +6077,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 224:
 YY_RULE_SETUP
-#line 1435 "scanner.l"
+#line 1439 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of value element.", yytext[0]);
 	YY_BREAK
 case 225:
 YY_RULE_SETUP
-#line 1436 "scanner.l"
+#line 1440 "scanner.l"
 FAIL("Bad attribute `%s' in `value' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_value):
-#line 1437 "scanner.l"
+#line 1441 "scanner.l"
 FAIL("EOF in attribute list of `value' element.");
 	YY_BREAK
 
@@ -6090,7 +6094,7 @@ FAIL("EOF in attribute list of `value' element.");
 case 226:
 /* rule 226 can match eol */
 YY_RULE_SETUP
-#line 1441 "scanner.l"
+#line 1445 "scanner.l"
 {
   LEAVE;
   ETag_value();
@@ -6105,16 +6109,16 @@ YY_RULE_SETUP
 case 227:
 /* rule 227 can match eol */
 YY_RULE_SETUP
-#line 1451 "scanner.l"
+#line 1455 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</value>' expected.",yytext);
 	YY_BREAK
 case 228:
 YY_RULE_SETUP
-#line 1452 "scanner.l"
+#line 1456 "scanner.l"
 FAIL("Unexpected character `%c': `</value>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_value):
-#line 1453 "scanner.l"
+#line 1457 "scanner.l"
 FAIL("Premature EOF: `</value>' expected.");
 	YY_BREAK
 
@@ -6135,7 +6139,7 @@ FAIL("Premature EOF: `</value>' expected.");
 case 229:
 /* rule 229 can match eol */
 YY_RULE_SETUP
-#line 1472 "scanner.l"
+#line 1476 "scanner.l"
 {
   AX_method_name = 0;
   AX_method_const = A_method_const_false;
@@ -6147,48 +6151,48 @@ YY_RULE_SETUP
 case 230:
 /* rule 230 can match eol */
 YY_RULE_SETUP
-#line 1480 "scanner.l"
+#line 1484 "scanner.l"
 BUFFERLITERAL('\'',AX_method_name);
 	YY_BREAK
 case 231:
 /* rule 231 can match eol */
 YY_RULE_SETUP
-#line 1481 "scanner.l"
+#line 1485 "scanner.l"
 BUFFERLITERAL('"',AX_method_name);
 	YY_BREAK
 case 232:
 /* rule 232 can match eol */
-#line 1484 "scanner.l"
+#line 1488 "scanner.l"
 case 233:
 /* rule 233 can match eol */
 YY_RULE_SETUP
-#line 1484 "scanner.l"
+#line 1488 "scanner.l"
 A_method_const = A_method_const_true;
 	YY_BREAK
 case 234:
 /* rule 234 can match eol */
-#line 1486 "scanner.l"
+#line 1490 "scanner.l"
 case 235:
 /* rule 235 can match eol */
 YY_RULE_SETUP
-#line 1486 "scanner.l"
+#line 1490 "scanner.l"
 A_method_const = A_method_const_false;
 	YY_BREAK
 case 236:
 /* rule 236 can match eol */
 YY_RULE_SETUP
-#line 1488 "scanner.l"
+#line 1492 "scanner.l"
 ENTER(VALUE1); BUFFERSET(AX_method_returntype);
 	YY_BREAK
 case 237:
 /* rule 237 can match eol */
 YY_RULE_SETUP
-#line 1489 "scanner.l"
+#line 1493 "scanner.l"
 ENTER(VALUE2); BUFFERSET(AX_method_returntype);
 	YY_BREAK
 case 238:
 YY_RULE_SETUP
-#line 1491 "scanner.l"
+#line 1495 "scanner.l"
 {
   if (!AX_method_name) FAIL("Required attribute `name' not set for `method' element.");
   LEAVE; STag_method();pcdata_ix = 0; ENTER(S_method);
@@ -6196,7 +6200,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 239:
 YY_RULE_SETUP
-#line 1495 "scanner.l"
+#line 1499 "scanner.l"
 {
   if (!AX_method_name) FAIL("Required attribute `name' not set for `method' element.");
   LEAVE; STag_method(); pcdata_ix = 0; ETag_method(); popbuffer(); /* attribute */
@@ -6209,16 +6213,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 240:
 YY_RULE_SETUP
-#line 1504 "scanner.l"
+#line 1508 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of method element.", yytext[0]);
 	YY_BREAK
 case 241:
 YY_RULE_SETUP
-#line 1505 "scanner.l"
+#line 1509 "scanner.l"
 FAIL("Bad attribute `%s' in `method' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_method):
-#line 1506 "scanner.l"
+#line 1510 "scanner.l"
 FAIL("EOF in attribute list of `method' element.");
 	YY_BREAK
 
@@ -6226,7 +6230,7 @@ FAIL("EOF in attribute list of `method' element.");
 case 242:
 /* rule 242 can match eol */
 YY_RULE_SETUP
-#line 1510 "scanner.l"
+#line 1514 "scanner.l"
 {
   LEAVE;
   ETag_method();
@@ -6241,18 +6245,18 @@ YY_RULE_SETUP
 case 243:
 /* rule 243 can match eol */
 YY_RULE_SETUP
-#line 1520 "scanner.l"
+#line 1524 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</method>' expected.",yytext);
 	YY_BREAK
 case 244:
 YY_RULE_SETUP
-#line 1521 "scanner.l"
+#line 1525 "scanner.l"
 FAIL("Unexpected character `%c': `</method>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_method):
 case YY_STATE_EOF(S_method_2):
 case YY_STATE_EOF(S_method):
-#line 1522 "scanner.l"
+#line 1526 "scanner.l"
 FAIL("Premature EOF: `</method>' expected.");
 	YY_BREAK
 
@@ -6271,7 +6275,7 @@ FAIL("Premature EOF: `</method>' expected.");
 case 245:
 /* rule 245 can match eol */
 YY_RULE_SETUP
-#line 1539 "scanner.l"
+#line 1543 "scanner.l"
 {
   AX_param_name = 0;
   AX_param_type = 0;
@@ -6282,30 +6286,30 @@ YY_RULE_SETUP
 case 246:
 /* rule 246 can match eol */
 YY_RULE_SETUP
-#line 1546 "scanner.l"
+#line 1550 "scanner.l"
 BUFFERLITERAL('\'',AX_param_name);
 	YY_BREAK
 case 247:
 /* rule 247 can match eol */
 YY_RULE_SETUP
-#line 1547 "scanner.l"
+#line 1551 "scanner.l"
 BUFFERLITERAL('"',AX_param_name);
 	YY_BREAK
 case 248:
 /* rule 248 can match eol */
 YY_RULE_SETUP
-#line 1549 "scanner.l"
+#line 1553 "scanner.l"
 ENTER(VALUE1); BUFFERSET(AX_param_type);
 	YY_BREAK
 case 249:
 /* rule 249 can match eol */
 YY_RULE_SETUP
-#line 1550 "scanner.l"
+#line 1554 "scanner.l"
 ENTER(VALUE2); BUFFERSET(AX_param_type);
 	YY_BREAK
 case 250:
 YY_RULE_SETUP
-#line 1552 "scanner.l"
+#line 1556 "scanner.l"
 {
   if (!AX_param_name) FAIL("Required attribute `name' not set for `param' element.");
   if (!AX_param_type) FAIL("Required attribute `type' not set for `param' element.");
@@ -6314,7 +6318,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-#line 1557 "scanner.l"
+#line 1561 "scanner.l"
 {
   if (!AX_param_name) FAIL("Required attribute `name' not set for `param' element.");
   if (!AX_param_type) FAIL("Required attribute `type' not set for `param' element.");
@@ -6327,16 +6331,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 252:
 YY_RULE_SETUP
-#line 1566 "scanner.l"
+#line 1570 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of param element.", yytext[0]);
 	YY_BREAK
 case 253:
 YY_RULE_SETUP
-#line 1567 "scanner.l"
+#line 1571 "scanner.l"
 FAIL("Bad attribute `%s' in `param' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_param):
-#line 1568 "scanner.l"
+#line 1572 "scanner.l"
 FAIL("EOF in attribute list of `param' element.");
 	YY_BREAK
 
@@ -6344,7 +6348,7 @@ FAIL("EOF in attribute list of `param' element.");
 case 254:
 /* rule 254 can match eol */
 YY_RULE_SETUP
-#line 1572 "scanner.l"
+#line 1576 "scanner.l"
 {
   LEAVE;
   ETag_param();
@@ -6358,16 +6362,16 @@ YY_RULE_SETUP
 case 255:
 /* rule 255 can match eol */
 YY_RULE_SETUP
-#line 1581 "scanner.l"
+#line 1585 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</param>' expected.",yytext);
 	YY_BREAK
 case 256:
 YY_RULE_SETUP
-#line 1582 "scanner.l"
+#line 1586 "scanner.l"
 FAIL("Unexpected character `%c': `</param>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_param):
-#line 1583 "scanner.l"
+#line 1587 "scanner.l"
 FAIL("Premature EOF: `</param>' expected.");
 	YY_BREAK
 
@@ -6399,7 +6403,7 @@ FAIL("Premature EOF: `</param>' expected.");
 case 257:
 /* rule 257 can match eol */
 YY_RULE_SETUP
-#line 1613 "scanner.l"
+#line 1617 "scanner.l"
 {
   AX_relation_name = 0;
   AX_relation_id = 0;
@@ -6410,37 +6414,37 @@ YY_RULE_SETUP
 case 258:
 /* rule 258 can match eol */
 YY_RULE_SETUP
-#line 1620 "scanner.l"
+#line 1624 "scanner.l"
 BUFFERLITERAL('\'',AX_relation_name);
 	YY_BREAK
 case 259:
 /* rule 259 can match eol */
 YY_RULE_SETUP
-#line 1621 "scanner.l"
+#line 1625 "scanner.l"
 BUFFERLITERAL('"',AX_relation_name);
 	YY_BREAK
 case 260:
 /* rule 260 can match eol */
 YY_RULE_SETUP
-#line 1623 "scanner.l"
+#line 1627 "scanner.l"
 BUFFERLITERAL('\'',AX_relation_id);
 	YY_BREAK
 case 261:
 /* rule 261 can match eol */
 YY_RULE_SETUP
-#line 1624 "scanner.l"
+#line 1628 "scanner.l"
 BUFFERLITERAL('"',AX_relation_id);
 	YY_BREAK
 case 262:
 YY_RULE_SETUP
-#line 1626 "scanner.l"
+#line 1630 "scanner.l"
 {
   LEAVE; STag_relation();pcdata_ix = 0; ENTER(S_relation);
  }
 	YY_BREAK
 case 263:
 YY_RULE_SETUP
-#line 1629 "scanner.l"
+#line 1633 "scanner.l"
 {
   LEAVE; STag_relation(); pcdata_ix = 0; ETag_relation(); popbuffer(); /* attribute */
   switch (YY_START) {
@@ -6451,16 +6455,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 264:
 YY_RULE_SETUP
-#line 1636 "scanner.l"
+#line 1640 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of relation element.", yytext[0]);
 	YY_BREAK
 case 265:
 YY_RULE_SETUP
-#line 1637 "scanner.l"
+#line 1641 "scanner.l"
 FAIL("Bad attribute `%s' in `relation' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_relation):
-#line 1638 "scanner.l"
+#line 1642 "scanner.l"
 FAIL("EOF in attribute list of `relation' element.");
 	YY_BREAK
 
@@ -6468,7 +6472,7 @@ FAIL("EOF in attribute list of `relation' element.");
 case 266:
 /* rule 266 can match eol */
 YY_RULE_SETUP
-#line 1642 "scanner.l"
+#line 1646 "scanner.l"
 {
   LEAVE;
   ETag_relation();
@@ -6482,18 +6486,18 @@ YY_RULE_SETUP
 case 267:
 /* rule 267 can match eol */
 YY_RULE_SETUP
-#line 1651 "scanner.l"
+#line 1655 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</relation>' expected.",yytext);
 	YY_BREAK
 case 268:
 YY_RULE_SETUP
-#line 1652 "scanner.l"
+#line 1656 "scanner.l"
 FAIL("Unexpected character `%c': `</relation>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_relation):
 case YY_STATE_EOF(S_relation_2):
 case YY_STATE_EOF(S_relation):
-#line 1653 "scanner.l"
+#line 1657 "scanner.l"
 FAIL("Premature EOF: `</relation>' expected.");
 	YY_BREAK
 
@@ -6527,7 +6531,7 @@ FAIL("Premature EOF: `</relation>' expected.");
 case 269:
 /* rule 269 can match eol */
 YY_RULE_SETUP
-#line 1685 "scanner.l"
+#line 1689 "scanner.l"
 {
   AX_relate_unique = A_relate_unique_false;
   AX_relate_limit = A_relate_limit_many;
@@ -6540,86 +6544,86 @@ YY_RULE_SETUP
 
 case 270:
 /* rule 270 can match eol */
-#line 1696 "scanner.l"
+#line 1700 "scanner.l"
 case 271:
 /* rule 271 can match eol */
 YY_RULE_SETUP
-#line 1696 "scanner.l"
+#line 1700 "scanner.l"
 A_relate_unique = A_relate_unique_true;
 	YY_BREAK
 case 272:
 /* rule 272 can match eol */
-#line 1698 "scanner.l"
+#line 1702 "scanner.l"
 case 273:
 /* rule 273 can match eol */
 YY_RULE_SETUP
-#line 1698 "scanner.l"
+#line 1702 "scanner.l"
 A_relate_unique = A_relate_unique_false;
 	YY_BREAK
 case 274:
 /* rule 274 can match eol */
-#line 1701 "scanner.l"
+#line 1705 "scanner.l"
 case 275:
 /* rule 275 can match eol */
 YY_RULE_SETUP
-#line 1701 "scanner.l"
+#line 1705 "scanner.l"
 A_relate_limit = A_relate_limit_one;
 	YY_BREAK
 case 276:
 /* rule 276 can match eol */
-#line 1703 "scanner.l"
+#line 1707 "scanner.l"
 case 277:
 /* rule 277 can match eol */
 YY_RULE_SETUP
-#line 1703 "scanner.l"
+#line 1707 "scanner.l"
 A_relate_limit = A_relate_limit_many;
 	YY_BREAK
 case 278:
 /* rule 278 can match eol */
 YY_RULE_SETUP
-#line 1705 "scanner.l"
+#line 1709 "scanner.l"
 BUFFERLITERAL('\'',AX_relate_object);
 	YY_BREAK
 case 279:
 /* rule 279 can match eol */
 YY_RULE_SETUP
-#line 1706 "scanner.l"
+#line 1710 "scanner.l"
 BUFFERLITERAL('"',AX_relate_object);
 	YY_BREAK
 case 280:
 /* rule 280 can match eol */
 YY_RULE_SETUP
-#line 1708 "scanner.l"
+#line 1712 "scanner.l"
 BUFFERLITERAL('\'',AX_relate_interface);
 	YY_BREAK
 case 281:
 /* rule 281 can match eol */
 YY_RULE_SETUP
-#line 1709 "scanner.l"
+#line 1713 "scanner.l"
 BUFFERLITERAL('"',AX_relate_interface);
 	YY_BREAK
 case 282:
 /* rule 282 can match eol */
 YY_RULE_SETUP
-#line 1711 "scanner.l"
+#line 1715 "scanner.l"
 BUFFERLITERAL('\'',AX_relate_handle);
 	YY_BREAK
 case 283:
 /* rule 283 can match eol */
 YY_RULE_SETUP
-#line 1712 "scanner.l"
+#line 1716 "scanner.l"
 BUFFERLITERAL('"',AX_relate_handle);
 	YY_BREAK
 case 284:
 YY_RULE_SETUP
-#line 1714 "scanner.l"
+#line 1718 "scanner.l"
 {
   LEAVE; STag_relate();pcdata_ix = 0; ENTER(E_relate);
  }
 	YY_BREAK
 case 285:
 YY_RULE_SETUP
-#line 1717 "scanner.l"
+#line 1721 "scanner.l"
 {
   LEAVE; STag_relate(); pcdata_ix = 0; ETag_relate(); popbuffer(); /* attribute */
   switch (YY_START) {
@@ -6630,16 +6634,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 286:
 YY_RULE_SETUP
-#line 1724 "scanner.l"
+#line 1728 "scanner.l"
 FAIL("Unexpected character `%c' in attribute list of relate element.", yytext[0]);
 	YY_BREAK
 case 287:
 YY_RULE_SETUP
-#line 1725 "scanner.l"
+#line 1729 "scanner.l"
 FAIL("Bad attribute `%s' in `relate' element start tag.",yytext);
 	YY_BREAK
 case YY_STATE_EOF(AL_relate):
-#line 1726 "scanner.l"
+#line 1730 "scanner.l"
 FAIL("EOF in attribute list of `relate' element.");
 	YY_BREAK
 
@@ -6647,7 +6651,7 @@ FAIL("EOF in attribute list of `relate' element.");
 case 288:
 /* rule 288 can match eol */
 YY_RULE_SETUP
-#line 1730 "scanner.l"
+#line 1734 "scanner.l"
 {
   LEAVE;
   ETag_relate();
@@ -6661,16 +6665,16 @@ YY_RULE_SETUP
 case 289:
 /* rule 289 can match eol */
 YY_RULE_SETUP
-#line 1739 "scanner.l"
+#line 1743 "scanner.l"
 FAIL("Unexpected end-tag `%s': `</relate>' expected.",yytext);
 	YY_BREAK
 case 290:
 YY_RULE_SETUP
-#line 1740 "scanner.l"
+#line 1744 "scanner.l"
 FAIL("Unexpected character `%c': `</relate>' expected.",yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(E_relate):
-#line 1741 "scanner.l"
+#line 1745 "scanner.l"
 FAIL("Premature EOF: `</relate>' expected.");
 	YY_BREAK
 
@@ -6678,12 +6682,12 @@ FAIL("Premature EOF: `</relate>' expected.");
 
 case 291:
 YY_RULE_SETUP
-#line 1747 "scanner.l"
+#line 1751 "scanner.l"
 {SET(PROLOG); yyless(0); CLEANUP; return -1;}
 	YY_BREAK
 case YY_STATE_EOF(EPILOG):
-#line 1748 "scanner.l"
-SUCCEED;
+#line 1752 "scanner.l"
+{ if (xml::posStack.empty()) { SUCCEED; } else FAIL("Premature </database>."); };
 	YY_BREAK
 
 /* CHARACTER DATA. */
@@ -6691,89 +6695,89 @@ SUCCEED;
 /* Non-defined standard entities... */
 case 292:
 YY_RULE_SETUP
-#line 1755 "scanner.l"
+#line 1759 "scanner.l"
 BUFFERPUTC('&');
 	YY_BREAK
 case 293:
 YY_RULE_SETUP
-#line 1756 "scanner.l"
+#line 1760 "scanner.l"
 BUFFERPUTC('<');
 	YY_BREAK
 case 294:
 YY_RULE_SETUP
-#line 1757 "scanner.l"
+#line 1761 "scanner.l"
 BUFFERPUTC('>');
 	YY_BREAK
 case 295:
 YY_RULE_SETUP
-#line 1758 "scanner.l"
+#line 1762 "scanner.l"
 BUFFERPUTC('\'');
 	YY_BREAK
 case 296:
 YY_RULE_SETUP
-#line 1759 "scanner.l"
+#line 1763 "scanner.l"
 BUFFERPUTC('"');
 	YY_BREAK
 /* Character entities. */
 case 297:
 YY_RULE_SETUP
-#line 1762 "scanner.l"
+#line 1766 "scanner.l"
 BUFFERPUTC((unsigned char)atoi(yytext+2));
 	YY_BREAK
 case 298:
 YY_RULE_SETUP
-#line 1763 "scanner.l"
+#line 1767 "scanner.l"
 BUFFERPUTC((unsigned char)strtol(yytext+3,NULL,16));
 	YY_BREAK
 
 
 case 299:
 /* rule 299 can match eol */
-#line 1768 "scanner.l"
+#line 1772 "scanner.l"
 case 300:
 /* rule 300 can match eol */
-#line 1769 "scanner.l"
+#line 1773 "scanner.l"
 case 301:
 /* rule 301 can match eol */
-#line 1770 "scanner.l"
+#line 1774 "scanner.l"
 case 302:
 /* rule 302 can match eol */
 YY_RULE_SETUP
-#line 1770 "scanner.l"
+#line 1774 "scanner.l"
 BUFFERPUTC('\n');
 	YY_BREAK
 
 
 case 303:
 YY_RULE_SETUP
-#line 1774 "scanner.l"
+#line 1778 "scanner.l"
 ENTER(CDATA);
 	YY_BREAK
 case 304:
 YY_RULE_SETUP
-#line 1775 "scanner.l"
+#line 1779 "scanner.l"
 FAIL("Unexpected `]""]>' in character data.");
 	YY_BREAK
 
 
 case 305:
 YY_RULE_SETUP
-#line 1779 "scanner.l"
+#line 1783 "scanner.l"
 BUFFERDONE; LEAVE;
 	YY_BREAK
 case YY_STATE_EOF(VALUE1):
-#line 1780 "scanner.l"
+#line 1784 "scanner.l"
 FAIL("EOF in literal (\"'\" expected).");
 	YY_BREAK
 
 
 case 306:
 YY_RULE_SETUP
-#line 1784 "scanner.l"
+#line 1788 "scanner.l"
 BUFFERDONE; LEAVE;
 	YY_BREAK
 case YY_STATE_EOF(VALUE2):
-#line 1785 "scanner.l"
+#line 1789 "scanner.l"
 FAIL("EOF in literal (`\"' expected).");
 	YY_BREAK
 
@@ -6781,29 +6785,29 @@ FAIL("EOF in literal (`\"' expected).");
 case 307:
 /* rule 307 can match eol */
 YY_RULE_SETUP
-#line 1789 "scanner.l"
+#line 1793 "scanner.l"
 BUFFERPUTC(yytext[0]);
 	YY_BREAK
 case 308:
 YY_RULE_SETUP
-#line 1790 "scanner.l"
+#line 1794 "scanner.l"
 FAIL("Spurious `%c' in character data.",yytext[0]);
 	YY_BREAK
 
 
 case 309:
 YY_RULE_SETUP
-#line 1794 "scanner.l"
+#line 1798 "scanner.l"
 LEAVE;
 	YY_BREAK
 /* "]""]"		BUFFERPUTC(yytext[0]); BUFFERPUTC(yytext[1]); */
 case 310:
 YY_RULE_SETUP
-#line 1796 "scanner.l"
+#line 1800 "scanner.l"
 BUFFERPUTC(yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(CDATA):
-#line 1797 "scanner.l"
+#line 1801 "scanner.l"
 FAIL("EOF in CDATA section.");
 	YY_BREAK
 
@@ -6814,16 +6818,16 @@ FAIL("EOF in CDATA section.");
 case 311:
 /* rule 311 can match eol */
 YY_RULE_SETUP
-#line 1804 "scanner.l"
+#line 1808 "scanner.l"
 FAIL("Syntax error on character `%c'.", yytext[0]);
 	YY_BREAK
 
 case 312:
 YY_RULE_SETUP
-#line 1807 "scanner.l"
+#line 1811 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 6827 "scanner.cpp"
+#line 6831 "scanner.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(ROOT_database):
 case YY_STATE_EOF(S_database):
@@ -7855,7 +7859,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 1807 "scanner.l"
+#line 1811 "scanner.l"
 
 
 
@@ -7935,12 +7939,12 @@ static int fail(const char* fmt, ...)
     va_list ap; va_start(ap, fmt);
 #ifdef FLEXML_yylineno
     used = sprintf(flexml_err_msg,
-		   "Invalid XML (XML input line %d, state %d): ",
-		   yylineno, YY_START);
+		   "Invalid XML (XML input line %d, state %d, file \"%s\"): ",
+		   yylineno, YY_START, xml::currentFile.c_str());
 #else
     used = sprintf(flexml_err_msg,
-		   "Invalid XML (state %d): ",
-		   YY_START);
+		   "Invalid XML (state %d, file \"%s\"): ",
+		   YY_START, xml::currentFile.c_str());
 #endif
     chars_left = flexml_max_err_msg_size - used - 1;
     vsnprintf(flexml_err_msg + used, chars_left, fmt, ap);

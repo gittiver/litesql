@@ -12,12 +12,12 @@
         <method name="sayHello"/>
     </object>
 
-        <include file="personfields.xml"/>
-    <relation id="Mother" unidir="true">
+    <include file="included.xml"/>
+    <relation id="Mother">
         <relate object="Person" limit="many" handle="mother"/>
         <relate object="Person" limit="one"/>
     </relation>
-    <relation id="Father" unidir="true">
+    <relation id="Father">
         <relate object="Person" limit="many" handle="father"/>
         <relate object="Person" limit="one"/>
     </relation>
@@ -25,7 +25,7 @@
         <relate object="Person" handle="siblings"/>
         <relate object="Person"/>
     </relation>
-    <relation id="Children" unidir="true">
+    <relation id="Children">
         <relate object="Person" handle="children"/>
         <relate object="Person"/>
     </relation>
