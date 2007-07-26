@@ -20,9 +20,8 @@ string readFile(const string& fName) {
     string contents;
     char buf[16834];
 
-    while (f.rdstate() & (ifstream::failbit 
-                          | ifstream::eofbit 
-                          | ifstream::badbit) == 0) {
+
+    while (!f.eof() && !f.fail()) {
         f.read(buf, 16834);
         contents += string(buf, f.gcount());
     }

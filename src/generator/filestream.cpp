@@ -25,6 +25,7 @@ namespace gen {
     static void syncIfNeeded(const string& fName, const string& data) {
 
         if (data != readFile(fName)) {
+            report("Updating " + fName + "\n");
             ofstream of(fName.c_str(), ofstream::out | ofstream::trunc);
             of.write(data.c_str(), data.size());
             of.close();
