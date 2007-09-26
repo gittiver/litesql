@@ -61,7 +61,7 @@ static int addToArray(void** array, size_t* size, size_t elemSize, void** elem) 
     }
 
     *elem = &((char*)*array)[((*size)-1)*elemSize];    
-    memset(*elem, 0, sizeof(elemSize));
+    memset(*elem, 0, elemSize);
     return 0;
 }
 
@@ -114,7 +114,7 @@ static int parseFldDefNodes(Parser* p, xmlNode* node, void* ptr) {
     lsqlFldDef* fld = (lsqlFldDef*) ptr;
     XmlParseDef defs[] = {
         {"value", (void**) &fld->values, &fld->valuesSize,
-            sizeof(lsqlFldDef), parseValueDef },
+            sizeof(lsqlValueDef), parseValueDef },
         {"check", (void**) &fld->checks, &fld->checksSize,
             sizeof(lsqlFldCheckDef), parseFldCheckDef },
         {NULL, NULL, NULL, 0, NULL} };
@@ -213,7 +213,7 @@ static int parseRelateDef(Parser* p, xmlNode* node, void* ptr) {
     lsqlRelateDef* r = (lsqlRelateDef*) ptr;
 
     ret |= getAttr(&r->objectName, node, "object");
-    ret |= getAttr(&r->handleName, node, "handle");
+    ret |= getAttr(&r->handleName, node, "handle"); 
 
     return ret;   
 }
@@ -257,10 +257,10 @@ static int parseDbDefNodes(Parser* p, xmlNode* node, void* ptr) {
 
     int ret;
     XmlParseDef defs[] = {
-        {"object", (void**) &p->db->objects, &p->db->objectsSize,
-            sizeof(lsqlObjDef), parseObjDef }, 
+/*        {"object", (void**) &p->db->objects, &p->db->objectsSize,
+            sizeof(lsqlObjDef), parseObjDef },  */
         {"relation", (void**) &p->db->relations, &p->db->relationsSize,
-            sizeof(lsqlRelDef), parseRelDef },  
+           sizeof(lsqlRelDef), parseRelDef },   
         {NULL, NULL, NULL, 0, NULL} };
     
     ret = parseDefs(p, node, defs);
