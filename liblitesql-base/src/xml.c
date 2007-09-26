@@ -66,11 +66,11 @@ static int addToArray(void** array, size_t* size, size_t elemSize, void** elem) 
 }
 
 static int forNodes(Parser* p, void* ctx, xmlNode* first, 
-                    int (*func)(Parser*, void*, xmlNode*)) {
+                    int (*func)(Parser*, xmlNode*, void*)) {
 
     xmlNode* node = first;
     while (node != NULL) {
-        int ret = func(p, ctx, node);
+        int ret = func(p, node, ctx);
         if (ret) 
             return ret;
         
@@ -98,9 +98,43 @@ static int parseDefs(Parser* p, xmlNode* node, XmlParseDef* defs) {
     }
     return 0;
 }
+static int parseValueDef(Parser* p, xmlNode* node, void* ptr) {
+    /* TODO: */
+    return 0;
+}
 
+static int parseFldCheckDef(Parser* p, xmlNode* node, void* ptr) {
+    /* TODO: */
+    return 0;
+}
+
+
+static int parseFldDefNodes(Parser* p, xmlNode* node, void* ptr) {
+
+    lsqlFldDef* fld = (lsqlFldDef*) ptr;
+    XmlParseDef defs[] = {
+        {"value", (void**) &fld->values, &fld->valuesSize,
+            sizeof(lsqlFldDef), parseValueDef },
+        {"check", (void**) &fld->checks, &fld->checksSize,
+            sizeof(lsqlFldCheckDef), parseFldCheckDef },
+        {NULL, NULL, NULL, 0, NULL} };
+
+    return parseDefs(p, node, defs);    
+}
 static int parseFldDef(Parser* p, xmlNode* node, void* ptr) { 
-    printf("TODO: parseFldDef\n");
+    int ret = 0;
+    lsqlFldDef* fld = (lsqlFldDef*) ptr;
+
+    ret = forNodes(p, fld, node->children, parseFldDefNodes);
+    if (ret)
+        return ret;
+
+    ret |= getAttr(&fld->name, node, "name");
+    ret |= getAttr(&fld->typeName, node, "type");
+    ret |= getAttr(&fld->defaultValue, node, "default");
+    ret |= getBool(&fld->indexed, node, "indexed");
+    ret |= getBool(&fld->unique, node, "unique");
+
     return 0;
 }
 static int parseMtdDef(Parser* p, xmlNode* node, void* ptr) { 
@@ -134,12 +168,12 @@ static int parseObjCheckDef(Parser* p, xmlNode* node, void* ptr) {
     return 0;
 
 }
-static int parseObjDefNodes(Parser* p, void* ctx, xmlNode* node) {
+static int parseObjDefNodes(Parser* p, xmlNode* node, void* ptr) {
 
-    lsqlObjDef* obj = (lsqlObjDef*) ctx;
+    lsqlObjDef* obj = (lsqlObjDef*) ptr;
     XmlParseDef defs[] = {
         {"field", (void**) &obj->fields, &obj->fieldsSize,
-            sizeof(lsqlFldDef), parseFldDef },
+            sizeof(lsqlFldDef), parseFldDef }, 
         {"method", (void**) &obj->methods, &obj->methodsSize,
             sizeof(lsqlMtdDef), parseMtdDef },
         {"index", (void**) &obj->indices, &obj->indicesSize,
@@ -174,12 +208,22 @@ static int parseObjDef(Parser* p, xmlNode* node, void* ptr) {
     return ret;
 }
 
-static int parseRelDefNodes(Parser* p, void* ctx, xmlNode* node) {
+static int parseRelateDef(Parser* p, xmlNode* node, void* ptr) {
+    int ret = 0;
+    lsqlRelateDef* r = (lsqlRelateDef*) ptr;
 
-    lsqlObjDef* rel = (lsqlObjDef*) ctx;
+    ret |= getAttr(&r->objectName, node, "object");
+    ret |= getAttr(&r->handleName, node, "handle");
+
+    return ret;   
+}
+
+static int parseRelDefNodes(Parser* p, xmlNode* node, void* ptr) {
+
+    lsqlRelDef* rel = (lsqlRelDef*) ptr;
     XmlParseDef defs[] = {
-/*Ã       {"relate", (void**) &rel->relates, &rel->relatesSize,
-            sizeof(lsqlRelateDef), parseRelateDef },  TODO*/
+        {"relate", (void**) &rel->relates, &rel->relatesSize,
+            sizeof(lsqlRelateDef), parseRelateDef },  
         {"field", (void**) &rel->fields, &rel->fieldsSize,
             sizeof(lsqlFldDef), parseFldDef },
         {"index", (void**) &rel->indices, &rel->indicesSize,
@@ -195,8 +239,7 @@ static int parseRelDefNodes(Parser* p, void* ctx, xmlNode* node) {
 static int parseRelDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlObjDef* rel = (lsqlObjDef*) ptr;
-
-    ret = forNodes(p, rel, node->children, parseObjDefNodes);
+    ret = forNodes(p, rel, node->children, parseRelDefNodes);
     if (ret)
         return ret;
 
@@ -210,14 +253,14 @@ static int parseRelDef(Parser* p, xmlNode* node, void* ptr) {
 }
 
 
-static int parseDbDefNodes(Parser* p, void* ctx, xmlNode* node) {
+static int parseDbDefNodes(Parser* p, xmlNode* node, void* ptr) {
 
     int ret;
     XmlParseDef defs[] = {
         {"object", (void**) &p->db->objects, &p->db->objectsSize,
-            sizeof(lsqlObjDef), parseObjDef },
+            sizeof(lsqlObjDef), parseObjDef }, 
         {"relation", (void**) &p->db->relations, &p->db->relationsSize,
-            sizeof(lsqlRelDef), parseRelDef },
+            sizeof(lsqlRelDef), parseRelDef },  
         {NULL, NULL, NULL, 0, NULL} };
     
     ret = parseDefs(p, node, defs);
