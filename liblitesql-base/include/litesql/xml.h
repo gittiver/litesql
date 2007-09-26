@@ -27,7 +27,7 @@ typedef struct {
 } lsqlStoreDef;
 
 typedef struct {
-    lsqlString function_name;
+    lsqlString functionName;
     lsqlString param;
     int (*function)(lsqlString* value, lsqlString* param);
 } lsqlFldCheckDef;
@@ -110,14 +110,17 @@ typedef struct {
     lsqlString name;
 
     lsqlString type;
+
+    lsqlBool isConst;
+
 } lsqlParamDef;
 
 typedef struct  {
     lsqlString name;
 
-    lsqlString returnype;
+    lsqlString returnType;
 
-    lsqlBool const_;
+    lsqlBool isConst;
 
     lsqlParamDef* params;
     size_t paramsSize;
