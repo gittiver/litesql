@@ -151,7 +151,7 @@ typedef struct {
 } lsqlIdxDef;
 
 typedef struct {
-} lsql_handleDef;
+} lsqlHandleDef;
 
 
 struct lsqlObjDef;
@@ -163,13 +163,20 @@ typedef struct {
 
     lsqlBool unique;
     
-    lsqlString handle_name;
+    lsqlString handleName;
 
-    lsqlString remote_handle;
+    lsqlString remoteHandle;
 
-    lsql_handleDef* handle;
+    lsqlHandleDef* handle;
 
 } lsqlRelateDef;
+
+typedef struct {
+
+    lsqlString interfaceName;
+
+    lsqlIfaceDef* interface;
+} lsqlImplDef;
 
 typedef struct lsqlObjDef {
     lsqlString name;
@@ -188,7 +195,7 @@ typedef struct lsqlObjDef {
     lsqlOptionDef* options;
     size_t optionsSize;
 
-    lsqlFldCheckDef* checks;
+    lsqlObjCheckDef* checks;
     size_t checksSize;
 
     lsqlRelateDef* relates;
@@ -197,7 +204,7 @@ typedef struct lsqlObjDef {
     lsqlTableDef* table;
     struct lsqlObjDef* parent;
 
-    lsqlIfaceDef* implements;
+    lsqlImplDef* implements;
     size_t implementsSize;
 
 } lsqlObjDef;
