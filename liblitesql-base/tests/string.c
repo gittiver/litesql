@@ -28,6 +28,18 @@ int main(int argc, char** argv) {
 
     free(m);
 
+    m = (char*) malloc(123321);
+    for (i = 0; i < 123320; i++)
+        m[i] = 'b';
+    m[123320] = '\0';
+
+    lsqlStringNew(&s);
+    lsqlStringCopy(&s, m);
+
+    assert( lsqlStringSize(&s) == 123320 );
+    lsqlStringDelete(&s);
+
+    free(m); 
 
 
     return 0;

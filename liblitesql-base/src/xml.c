@@ -234,7 +234,7 @@ static int parseImplDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlImplDef* impl = (lsqlImplDef*) ptr;
 
-    ret |= getAttr(&impl->interfaceName, "name");    
+    ret |= getAttr(&impl->interfaceName, node, "name");    
 
     return ret;
 

@@ -6,12 +6,11 @@ static int readSize(lsqlString* s) {
 
     unsigned char* p = s->data;
     unsigned int b = 0;
-// TODO: rikki
     while (1) {
-
+        printf("readSize %x\n", *p);
         size |= ((*p) & 0x7f) << b;
-
-        if ((*p) & 0x80 == 0)
+        printf("size: %d\n", size);
+        if (((*p) & 0x80) == 0)
             break;
         p++; 
         b += 7;
@@ -23,18 +22,19 @@ static int readSize(lsqlString* s) {
 
 static void writeSize(lsqlString* s, size_t size) {
     
-    unsigned int b = 7;
     unsigned char c = 0;
     unsigned char* p = s->data;
 
-    for (; size; p++, b += 7) {
-
+    for (; size; p++) {
+        printf("Size now %d\n", size); 
         c = size & 0x7f;
 
-        size >>= b;
+        size >>= 7;
         if (size)
             c |= 0x80;
 
+        printf("Writing %x\n", c);
+        printf("Size left to store %d\n", size);
         *p = c;                
     }
 }
@@ -56,10 +56,12 @@ static int stringSize(size_t dataSize) {
 static unsigned char* dataStart(lsqlString* s) {
     unsigned char* p = s->data;
 
-    while (*p & 0x80)
+    while (*p & 0x80) {
+        printf("datastart %x\n", *p);
         p++;
+    }
 
-    return p;
+    return ++p;
 }
 
 int lsqlStringNew(lsqlString* s) {
