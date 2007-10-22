@@ -8,13 +8,17 @@ extern "C" {
 #endif
 
 typedef struct {
-    char* data;
-    size_t size, used;
+    unsigned char* data;
 } lsqlString;
 
 int lsqlStringNew(lsqlString* s);
+
 int lsqlStringCopy(lsqlString* dst, const char* src);
+
 int lsqlStringCat(lsqlString* dst, lsqlString* src);
+
+size_t lsqlStringSize(lsqlString* dst);
+
 void lsqlStringDelete(lsqlString* s);
 
 #ifdef __cplusplus
