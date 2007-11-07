@@ -4,12 +4,14 @@
 #include <libxml/tree.h>
 
 
-typedef struct {
+typedef struct Parser {
+    struct Parser* parent;
+    const char* path;
+
     xmlParserCtxtPtr ctxt;
     xmlDocPtr doc;
     xmlNode* root;
 
-    lsqlDbDef* db;
 } Parser;
 
 typedef struct {
@@ -67,7 +69,6 @@ static int addToArray(void** array, size_t* size, size_t elemSize, void** elem) 
 
 static int forNodes(Parser* p, void* ctx, xmlNode* first, 
                     int (*func)(Parser*, xmlNode*, void*)) {
-
     xmlNode* node = first;
     while (node != NULL) {
         int ret = func(p, node, ctx);
@@ -81,15 +82,14 @@ static int forNodes(Parser* p, void* ctx, xmlNode* first,
 
 static int parseDefs(Parser* p, xmlNode* node, XmlParseDef* defs) {
     size_t i;
+
     for (i = 0; defs[i].name; i++) {
 
-        printf("testing %s == %s\n", defs[i].name, node->name);
         if (xmlStrcmp(node->name, (const xmlChar*) defs[i].name) == 0) {
             void* ptr = NULL;
 
             int ret = addToArray(defs[i].array, defs[i].size, 
                                  defs[i].elemSize, &ptr);
-            printf("%d \n", ret);
             if (ret)
                 return ret;
 
@@ -270,7 +270,7 @@ static int parseObjDefNodes(Parser* p, xmlNode* node, void* ptr) {
         {"option", (void**) &obj->options, &obj->optionsSize,
             sizeof(lsqlOptionDef), parseOptionDef },
         {"implements", (void**) &obj->implements, &obj->implementsSize,
-            sizeof(lsqlIfaceDef), parseImplDef },
+            sizeof(lsqlImplDef), parseImplDef },
         {"check", (void**) &obj->checks, &obj->checksSize,
             sizeof(lsqlObjCheckDef), parseObjCheckDef },
         {NULL, NULL, NULL, 0, NULL} };
@@ -292,7 +292,6 @@ static int parseObjDef(Parser* p, xmlNode* node, void* ptr) {
     ret |= getAttr(&obj->name, node, "name");
     ret |= getBool(&obj->temporary, node, "temporary");
     ret |= getAttr(&obj->inherits, node, "inherits");
-    printf("Parsing obj def %s\n", node->name);
 
     return ret;
 }
@@ -327,29 +326,144 @@ static int parseRelDefNodes(Parser* p, xmlNode* node, void* ptr) {
 }
 static int parseRelDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
-    lsqlObjDef* rel = (lsqlObjDef*) ptr;
-    ret = forNodes(p, rel, node->children, parseRelDefNodes);
+    lsqlRelDef* rel = (lsqlRelDef*) ptr;
+    ret = forNodes(p, ptr, node->children, parseRelDefNodes);
     if (ret)
         return ret;
 
 
-/*Ã   ret |= getAttr(&obj->name, node, "name");
-    ret |= getBool(&obj->temporary, node, "temporary");
-    ret |= getAttr(&obj->inherits, node, "inherits");
-    printf("Parsing rel def %s\n", node->name);
-*/
+    ret |= getAttr(&rel->name, node, "name"); 
+    ret |= getBool(&rel->id, node, "id");
+
+    return ret;
+}
+static int parseIfaceDefNodes(Parser* p, xmlNode* node, void* ptr) {
+
+    lsqlIfaceDef* iface = (lsqlIfaceDef*) ptr;
+    XmlParseDef defs[] = {
+        {"method", (void**) &iface->methods, &iface->methodsSize,
+            sizeof(lsqlMtdDef), parseMtdDef },  
+        {NULL, NULL, NULL, 0, NULL} };
+    
+
+    return parseDefs(p, node, defs);
+
+}
+static int parseIfaceDef(Parser* p, xmlNode* node, void* ptr) {
+    int ret = 0;
+    lsqlIfaceDef* iface = (lsqlIfaceDef*) ptr;
+    ret = forNodes(p, ptr, node->children, parseIfaceDefNodes);
+    if (ret)
+        return ret;
+    ret |= getAttr(&iface->name, node, "name");
+
+    return ret;
+}
+
+static int parseReprDef(Parser* p, xmlNode* node, void* ptr) {
+    int ret = 0;
+    lsqlReprDef* repr = (lsqlReprDef*) ptr;
+
+    ret |= getAttr(&repr->as, node, "as");
+    ret |= getAttr(&repr->target, node, "target");
+
+    return ret;
+}
+
+static int parseStoreDef(Parser* p, xmlNode* node, void* ptr) {
+    int ret = 0;
+    lsqlStoreDef* store = (lsqlStoreDef*) ptr;
+
+    ret |= getAttr(&store->as, node, "store");
+    ret |= getAttr(&store->backend, node, "backend");
+
     return ret;
 }
 
 
+static int parseTypeDefNodes(Parser* p, xmlNode* node, void* ptr) {
+
+    lsqlTypeDef* type = (lsqlTypeDef*) ptr;
+    XmlParseDef defs[] = {
+        { "represent", (void**) &type->representations, 
+                                &type->representationsSize,
+           sizeof(lsqlReprDef), parseReprDef },  
+        { "store", (void**) &type->stores, &type->storesSize,
+          sizeof(lsqlStoreDef), parseStoreDef },
+        { "value", (void**) &type->values, &type->valuesSize,
+          sizeof(lsqlValueDef), parseValueDef },
+        { "check", (void**) &type->checks, &type->checksSize,
+          sizeof(lsqlFldCheckDef), parseFldCheckDef },
+        {NULL, NULL, NULL, 0, NULL} };
+    
+
+    return parseDefs(p, node, defs);
+}
+
+
+static int parseTypeDef(Parser* p, xmlNode* node, void* ptr) {
+    int ret = 0;
+    lsqlTypeDef* type = (lsqlTypeDef*) ptr;
+    ret = forNodes(p, ptr, node->children, parseTypeDefNodes);
+    if (ret)
+        return ret;
+    ret |= getAttr(&type->name, node, "name");
+
+    return ret;
+}
+
+static int isAlreadyParsed(Parser* p, const char* path) {
+    if (strcmp(path, p->path) == 0)
+        return 1;
+    if (p->parent)
+        return isAlreadyParsed(p->parent, path);
+    return 0;
+}
+
+static int prepareParsing(Parser* p, const char* path, Parser* parent) {
+
+    memset(p, 0, sizeof(Parser));
+    p->path = path;
+    p->ctxt = xmlNewParserCtxt();
+
+    if (p->ctxt == NULL) 
+        return LSQL_MEMORY;
+
+    p->doc = xmlCtxtReadFile(p->ctxt, path, NULL, 
+                                 XML_PARSE_DTDATTR | XML_PARSE_DTDVALID
+                                 | XML_PARSE_COMPACT | XML_PARSE_NOENT);
+    if (p->ctxt->valid == 0 || p->doc == NULL) 
+        return LSQL_XML;
+
+    
+    p->root = xmlDocGetRootElement(p->doc);
+    p->parent = parent;
+
+    return 0;
+}
+
+static void finishParsing(Parser* p) {
+
+    xmlFreeDoc(p->doc);
+    xmlFreeParserCtxt(p->ctxt);
+}
+
 static int parseDbDefNodes(Parser* p, xmlNode* node, void* ptr) {
 
     int ret;
+    lsqlDbDef* db = (lsqlDbDef*) ptr;
+
     XmlParseDef defs[] = {
-        {"object", (void**) &p->db->objects, &p->db->objectsSize,
+        {"object", (void**) &db->objects, &db->objectsSize,
             sizeof(lsqlObjDef), parseObjDef },  
-        {"relation", (void**) &p->db->relations, &p->db->relationsSize,
+        {"relation", (void**) &db->relations, &db->relationsSize,
            sizeof(lsqlRelDef), parseRelDef },   
+        {"interface", (void**) &db->interfaces, &db->interfacesSize,
+           sizeof(lsqlIfaceDef), parseIfaceDef }, 
+        {"type", (void**) &db->types, &db->typesSize,
+           sizeof(lsqlTypeDef), parseTypeDef },
+        {"option", (void**) &db->options, &db->optionsSize,
+            sizeof(lsqlOptionDef), parseOptionDef },
         {NULL, NULL, NULL, 0, NULL} };
     
     ret = parseDefs(p, node, defs);
@@ -357,40 +471,38 @@ static int parseDbDefNodes(Parser* p, xmlNode* node, void* ptr) {
         return ret;
     
     if (xmlStrcmp(node->name, (const xmlChar*) "include") == 0) {
-        /* TODO: */
-        
+        Parser p2;
+        char* path = (char*) xmlGetProp(node, (unsigned char*) "file");
+        if (isAlreadyParsed(p, path)) 
+            return LSQL_LOOP;
+
+        ret = prepareParsing(&p2, path, p); 
+        if (!ret) 
+            ret |= forNodes(&p2, db, p2.root->children, 
+                            parseDbDefNodes);
+
+        finishParsing(&p2);
     }
-    return 0;
+    return ret;
 }
+
 
 int lsqlOpenDbDef(lsqlDbDef* def, const char* path) {
     int ret;
-
+    
     LIBXML_TEST_VERSION
     Parser parser; 
 
-    memset(&parser, 0, sizeof(Parser));
-    parser.ctxt = xmlNewParserCtxt();
-    parser.db = def;
-
-    if (parser.ctxt == NULL) 
-        return LSQL_MEMORY;
-
-    parser.doc = xmlCtxtReadFile(parser.ctxt, path, NULL, 
-                                 XML_PARSE_DTDATTR | XML_PARSE_DTDVALID
-                                 | XML_PARSE_COMPACT | XML_PARSE_NOENT);
-
-    if (parser.ctxt->valid == 0) {
-        ret = LSQL_XML;
+    ret = prepareParsing(&parser, path, NULL);
+    if (ret)
         goto finish;
-    }
+
     memset(def, 0, sizeof(lsqlDbDef));
 
     lsqlStringNew(&def->name);
     lsqlStringNew(&def->namespace_);
     lsqlStringNew(&def->include);
 
-    parser.root = xmlDocGetRootElement(parser.doc);
 
     ret |= getAttr(&def->name, parser.root, "name");
     ret |= getAttr(&def->namespace_, parser.root, "namespace");
@@ -398,14 +510,11 @@ int lsqlOpenDbDef(lsqlDbDef* def, const char* path) {
 
     
 
-    ret |= forNodes(&parser, NULL, parser.root->children, parseDbDefNodes);
+    ret |= forNodes(&parser, def, parser.root->children, parseDbDefNodes);
 
 
 finish:
-
-    xmlFreeDoc(parser.doc);
-    xmlFreeParserCtxt(parser.ctxt);
-    xmlCleanupParser();
+    finishParsing(&parser);
     return ret;
 }
 
@@ -413,4 +522,5 @@ void lsqlCloseDbDef(lsqlDbDef* def) {
     lsqlStringDelete(&def->name);
     lsqlStringDelete(&def->namespace_);
     lsqlStringDelete(&def->include);
+    xmlCleanupParser();
 }

@@ -1,15 +1,15 @@
 #include "litesql.h"
 #include <string.h>
 
+/** decodes the variable length size information from the beginning of the
+ * string, returns the length of the string data in bytes */
 static int readSize(lsqlString* s) {
     size_t size = 0;
 
     unsigned char* p = s->data;
     unsigned int b = 0;
     while (1) {
-        printf("readSize %x\n", *p);
         size |= ((*p) & 0x7f) << b;
-        printf("size: %d\n", size);
         if (((*p) & 0x80) == 0)
             break;
         p++; 
@@ -20,25 +20,28 @@ static int readSize(lsqlString* s) {
     return size;
 }
 
+/* encodes the size information in the beginning of the string data */
 static void writeSize(lsqlString* s, size_t size) {
     
     unsigned char c = 0;
     unsigned char* p = s->data;
 
     for (; size; p++) {
-        printf("Size now %d\n", size); 
         c = size & 0x7f;
 
+        /** each byte contains 7 bits of size information and an additional
+         * bit to indicate that the next byte contains the next 7 bits
+         * of the size information */
         size >>= 7;
         if (size)
             c |= 0x80;
 
-        printf("Writing %x\n", c);
-        printf("Size left to store %d\n", size);
         *p = c;                
     }
 }
 
+/* returns the size of the length information field in bytes 
+ * e.g. how many bytes is required to encode the given size number */
 static int stringSize(size_t dataSize) {
 
     if (dataSize < 1 << 7)
@@ -49,17 +52,17 @@ static int stringSize(size_t dataSize) {
         return 3 + dataSize;
     else if (dataSize < 1 << 28)
         return 4 + dataSize;
-    else 
+    else  /* 35 bits should be big enough to encode the length of a string */
         return 5 + dataSize;
 }
 
 static unsigned char* dataStart(lsqlString* s) {
     unsigned char* p = s->data;
 
-    while (*p & 0x80) {
-        printf("datastart %x\n", *p);
+    /* the last byte of the size information is guaranteed to have its
+     * most significant bit zero */
+    while (*p & 0x80) 
         p++;
-    }
 
     return ++p;
 }

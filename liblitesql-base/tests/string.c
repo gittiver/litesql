@@ -10,7 +10,6 @@ int main(int argc, char** argv) {
     lsqlStringNew(&s);
 
     lsqlStringCopy(&s, "test");
-    printf("%d\n", lsqlStringSize(&s));
     assert( lsqlStringSize(&s) == 4 );
 
     lsqlStringDelete(&s);

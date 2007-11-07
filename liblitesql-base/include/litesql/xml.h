@@ -249,6 +249,9 @@ typedef struct {
     lsqlRelDef* relations;
     size_t relationsSize;
 
+    lsqlTypeDef* types;
+    size_t typesSize;
+
     lsqlTableDef* tables;
     size_t tablesSize;
 

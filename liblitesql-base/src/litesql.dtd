@@ -22,7 +22,7 @@
         The file to be included from the generated code, 
         in target-independent format, that is, no file extension. 
 -->
-<!ELEMENT database (object|relation|include|type|option)+>
+<!ELEMENT database (object|relation|interface|include|type|option)+>
 <!ATTLIST database
           name ID #REQUIRED
           namespace NMTOKEN #REQUIRED
@@ -391,7 +391,7 @@
         Id is appended to the name of the table.
    
 -->
-<!ELEMENT relation (relate|field|index|option)*>
+<!ELEMENT relation (relate, (relate|field|index|option)+)>
 <!ATTLIST relation
           name NMTOKEN #IMPLIED
           id NMTOKEN #IMPLIED>

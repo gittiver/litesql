@@ -6,9 +6,10 @@
 #include "litesql/string.h"
 #include "litesql/split.h"
 
-#define LSQL_ERROR  -1
-#define LSQL_MEMORY -2
-#define LSQL_XML    -3
+#define LSQL_ERROR  1
+#define LSQL_MEMORY 2
+#define LSQL_XML    4
+#define LSQL_LOOP   8
 
 #ifdef __cplusplus
 extern "C" {
