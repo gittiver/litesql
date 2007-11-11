@@ -75,15 +75,19 @@ int lsqlStringNew(lsqlString* s) {
 int lsqlStringCopy(lsqlString* dst, const char* src) {
 
     size_t size = strlen(src);
+    size_t total = stringSize(size);
 
 
-    dst->data = lsqlRealloc(dst->data, stringSize(size));
+    dst->data = lsqlRealloc(dst->data, total + 1);
 
     if (dst->data == NULL)
         return LSQL_MEMORY;
 
     writeSize(dst, size);
     memcpy(dataStart(dst), src, size);
+
+    /* to ensure compatibility with C string functions */
+    dst->data[total] = '\0';
 
     return 0;
 }
@@ -95,7 +99,7 @@ int lsqlStringCat(lsqlString* dst, lsqlString* src) {
 
 size_t lsqlStringSize(lsqlString* s) {
 
-    if (!s)
+    if (!s->data)
         return 0;
 
     return readSize(s);
@@ -107,4 +111,13 @@ void lsqlStringDelete(lsqlString* s) {
     memset(s, 0, sizeof(lsqlString));
 }
 
+const char* lsqlStringPtr(lsqlString* s) {
+    return (const char*) dataStart(s); 
+}
+
+int lsqlStringCmp(lsqlString* s, const char* s2) {
+    if (!s->data)
+        return -1;
+    return strcmp(lsqlStringPtr(s), s2);
+}
 

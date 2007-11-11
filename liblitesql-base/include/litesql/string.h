@@ -21,6 +21,10 @@ size_t lsqlStringSize(lsqlString* dst);
 
 void lsqlStringDelete(lsqlString* s);
 
+const char* lsqlStringPtr(lsqlString* s);
+
+int lsqlStringCmp(lsqlString* s1, const char* s2);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

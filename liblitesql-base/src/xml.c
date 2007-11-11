@@ -1,13 +1,15 @@
 #include "litesql.h"
-#include <string.h>
+#include "processxml.h"
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#include <string.h>
 
 typedef struct Parser {
     struct Parser* parent;
     const char* path;
-
+    lsqlErrCallback errCb;
+    
     xmlParserCtxtPtr ctxt;
     xmlDocPtr doc;
     xmlNode* root;
@@ -333,7 +335,7 @@ static int parseRelDef(Parser* p, xmlNode* node, void* ptr) {
 
 
     ret |= getAttr(&rel->name, node, "name"); 
-    ret |= getBool(&rel->id, node, "id");
+    ret |= getAttr(&rel->id, node, "id");
 
     return ret;
 }
@@ -432,8 +434,10 @@ static int prepareParsing(Parser* p, const char* path, Parser* parent) {
     p->doc = xmlCtxtReadFile(p->ctxt, path, NULL, 
                                  XML_PARSE_DTDATTR | XML_PARSE_DTDVALID
                                  | XML_PARSE_COMPACT | XML_PARSE_NOENT);
-    if (p->ctxt->valid == 0 || p->doc == NULL) 
+    if (p->ctxt->valid == 0 || p->doc == NULL) {        
         return LSQL_XML;
+    }
+    
 
     
     p->root = xmlDocGetRootElement(p->doc);
@@ -487,17 +491,21 @@ static int parseDbDefNodes(Parser* p, xmlNode* node, void* ptr) {
 }
 
 
-int lsqlOpenDbDef(lsqlDbDef* def, const char* path) {
+int lsqlOpenDbDef(lsqlDbDef* def, const char* path, 
+                  lsqlErrCallback errCb) {
     int ret;
     
     LIBXML_TEST_VERSION
     Parser parser; 
 
+    parser.errCb = errCb;
+
+    memset(def, 0, sizeof(lsqlDbDef));
+
     ret = prepareParsing(&parser, path, NULL);
     if (ret)
         goto finish;
 
-    memset(def, 0, sizeof(lsqlDbDef));
 
     lsqlStringNew(&def->name);
     lsqlStringNew(&def->namespace_);
@@ -515,6 +523,10 @@ int lsqlOpenDbDef(lsqlDbDef* def, const char* path) {
 
 finish:
     finishParsing(&parser);
+
+    if (!ret)
+        return lsqlProcessDbDef(def, errCb);
+
     return ret;
 }
 

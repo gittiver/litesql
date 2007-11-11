@@ -7,9 +7,15 @@
 extern "C" {
 #endif
 
-   
+typedef struct {
+
+    lsqlString* xmlFile;
+    unsigned int line;
+} lsqlXmlPos;
+
 
 typedef struct {
+    lsqlXmlPos pos;
     lsqlString name;
     lsqlString value;
     lsqlString backend;
@@ -17,27 +23,32 @@ typedef struct {
 
 
 typedef struct {
+    lsqlXmlPos pos;
     lsqlString as;
     lsqlString target;
 } lsqlReprDef;
 
 typedef struct {
+    lsqlXmlPos pos;
     lsqlString as;
     lsqlString backend;
 } lsqlStoreDef;
 
 typedef struct {
+    lsqlXmlPos pos;
     lsqlString functionName;
     lsqlString param;
     int (*function)(lsqlString* value, lsqlString* param);
 } lsqlFldCheckDef;
 
 typedef struct {
+    lsqlXmlPos pos;
     lsqlString name;
     lsqlString value;
 } lsqlValueDef;
 
 typedef struct {
+    lsqlXmlPos pos;
     lsqlString name;
 
     lsqlValueDef* values;
@@ -55,24 +66,24 @@ typedef struct {
 } lsqlTypeDef;
 
 typedef struct {
-
     lsqlString name;
     lsqlTypeDef* type;
 } lsqlTableFldDef;
 
 typedef struct {
-
     lsqlTableFldDef* fields;
     size_t fieldsSize;
 
 } lsqlTableDef;
 
 typedef struct {
+
     lsqlString name;
 } lsqlSequenceDef;
 
 
 typedef struct {
+    lsqlXmlPos pos;
     lsqlBool onCreate;
     lsqlBool onDelete;
     lsqlBool onUpdate;
@@ -88,6 +99,7 @@ typedef struct {
 } lsqlObjCheckDef;
 
 typedef struct {
+    lsqlXmlPos pos;
     lsqlString name;
     lsqlString dbName;
     lsqlString typeName;
@@ -107,15 +119,19 @@ typedef struct {
 } lsqlFldDef;
 
 typedef struct {
+    lsqlXmlPos pos;
     lsqlString name;
 
     lsqlString type;
+    lsqlString defaultValue;
 
     lsqlBool isConst;
 
 } lsqlParamDef;
 
 typedef struct  {
+    lsqlXmlPos pos;
+
     lsqlString name;
 
     lsqlString returnType;
@@ -130,6 +146,8 @@ typedef struct  {
 struct lsqlObjDef;
 
 typedef struct {
+    lsqlXmlPos pos;
+
     lsqlString name;
 
     lsqlMtdDef* methods;
@@ -142,11 +160,15 @@ typedef struct {
 
 
 typedef struct {
+    lsqlXmlPos pos;
+
     lsqlString name;
     lsqlFldDef* field;
 } lsqlIdxFldDef;
 
 typedef struct {
+    lsqlXmlPos pos;
+
     lsqlBool unique;
 
     lsqlIdxFldDef* fields;
@@ -159,6 +181,7 @@ typedef struct {
 
 struct lsqlObjDef;
 typedef struct {
+    lsqlXmlPos pos;
 
     lsqlString objectName;
 
@@ -175,6 +198,7 @@ typedef struct {
 } lsqlRelateDef;
 
 typedef struct {
+    lsqlXmlPos pos;
 
     lsqlString interfaceName;
 
@@ -182,6 +206,8 @@ typedef struct {
 } lsqlImplDef;
 
 typedef struct lsqlObjDef {
+    lsqlXmlPos pos;
+
     lsqlString name;
     lsqlBool temporary;
     lsqlString inherits;
@@ -213,6 +239,8 @@ typedef struct lsqlObjDef {
 } lsqlObjDef;
 
 typedef struct {
+    lsqlXmlPos pos;
+
     lsqlString name;
     lsqlString id;
 
@@ -258,9 +286,13 @@ typedef struct {
     lsqlSequenceDef* sequences;
     size_t sequencesSize;
 
+    lsqlString* xmlFiles;
+    size_t xmlFilesSize;
 } lsqlDbDef;
 
-int lsqlOpenDbDef(lsqlDbDef* def, const char* path);
+typedef void (*lsqlErrCallback)(const char*);
+
+int lsqlOpenDbDef(lsqlDbDef* def, const char* path, lsqlErrCallback errCb);
 void lsqlCloseDbDef(lsqlDbDef* def);
 
 #ifdef __cplusplus
