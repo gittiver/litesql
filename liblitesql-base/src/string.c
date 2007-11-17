@@ -172,7 +172,7 @@ void lsqlStringDelete(lsqlString* s) {
 
 const char* lsqlStringPtr(const lsqlString* s) {
     if (!s->data)
-        return "NULL";
+        return "(null)";
     return (const char*) dataStart(s); 
 }
 

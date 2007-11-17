@@ -27,6 +27,12 @@ typedef struct {
     int (*parseFunc)(Parser*, xmlNode*, void*);
 } XmlParseDef;
 
+typedef struct {
+    void* array;
+    size_t size;
+    size_t elemSize;
+    void (*freeFunc)(void*);
+} FreeDef;
 
 static void setPos(lsqlXmlPos* pos, Parser* p,  xmlNode* node) {
     pos->xmlFile = p->currentFile;
@@ -484,6 +490,7 @@ static int prepareParsing(Parser* p, lsqlDbDef* db, lsqlErrCallback errCb,
                      sizeof(lsqlString), (void**) &pathName);
     lsqlStringNew(pathName);
     lsqlStringCopy(pathName, path);
+    printf("path %s\n", lsqlStringPtr(pathName));
     p->currentFile = pathName;
 
     return ret;
@@ -504,13 +511,13 @@ static int parseDbDefNodes(Parser* p, xmlNode* node, void* ptr) {
         {"object", (void**) &db->objects, &db->objectsSize,
             sizeof(lsqlObjDef), parseObjDef },  
         {"relation", (void**) &db->relations, &db->relationsSize,
-           sizeof(lsqlRelDef), parseRelDef },   
+           sizeof(lsqlRelDef), parseRelDef },    
         {"interface", (void**) &db->interfaces, &db->interfacesSize,
            sizeof(lsqlIfaceDef), parseIfaceDef }, 
         {"type", (void**) &db->types, &db->typesSize,
            sizeof(lsqlTypeDef), parseTypeDef },
         {"option", (void**) &db->options, &db->optionsSize,
-            sizeof(lsqlOptionDef), parseOptionDef },
+            sizeof(lsqlOptionDef), parseOptionDef }, 
         {NULL, NULL, NULL, 0, NULL} };
     
     ret = parseDefs(p, node, defs);
@@ -527,6 +534,7 @@ static int parseDbDefNodes(Parser* p, xmlNode* node, void* ptr) {
                      lsqlStringPtr(p->currentFile),
                      node->line, path);
             p->errCb(buf);
+            xmlFree(path);
             return LSQL_LOOP;
         }
         ret = prepareParsing(&p2, db, p->errCb, path, p); 
@@ -535,6 +543,7 @@ static int parseDbDefNodes(Parser* p, xmlNode* node, void* ptr) {
                             parseDbDefNodes);
 
         finishParsing(&p2);
+        xmlFree(path);
     }
     return ret;
 }
@@ -572,10 +581,237 @@ finish:
 
     return ret;
 }
+static void freeMany(FreeDef* defs) {
+    FreeDef* def = defs;
+    while (def->freeFunc) {
+        size_t i;
+        for (i = 0; i < def->size; i++) {
+            void* ptr = def->array + i * def->elemSize;
+            def->freeFunc(ptr);
 
-void lsqlCloseDbDef(lsqlDbDef* def) {
+        }
+
+        lsqlFree(def->array);
+        def++;
+    }
+}
+
+static void freeValueDef(void* ptr) {
+    lsqlValueDef* def = (lsqlValueDef*) ptr;
     lsqlStringDelete(&def->name);
-    lsqlStringDelete(&def->namespace_);
-    lsqlStringDelete(&def->include);
+    lsqlStringDelete(&def->value);
+
+}
+static void freeFldCheckDef(void* ptr) {
+    lsqlFldCheckDef* def = (lsqlFldCheckDef*) ptr;
+    lsqlStringDelete(&def->functionName);
+    lsqlStringDelete(&def->param);
+}
+
+static void freeFldDef(void* ptr) {
+    lsqlFldDef* def = (lsqlFldDef*) ptr;
+    FreeDef defs[] = {
+        {(void*) def->values, def->valuesSize,
+            sizeof(lsqlValueDef), freeValueDef },
+        {(void*) def->checks, def->checksSize,
+            sizeof(lsqlFldCheckDef), freeFldCheckDef },
+        {NULL, 0, 0, NULL}
+    };
+    freeMany(defs);
+    lsqlStringDelete(&def->name);
+    lsqlStringDelete(&def->dbName);
+    lsqlStringDelete(&def->typeName);
+    lsqlStringDelete(&def->defaultValue);
+     
+}
+static void freeParamDef(void* ptr) {
+    lsqlParamDef* def = (lsqlParamDef*) ptr;
+    lsqlStringDelete(&def->name);
+    lsqlStringDelete(&def->type);
+    lsqlStringDelete(&def->defaultValue);
+}
+
+static void freeMtdDef(void* ptr) {
+    lsqlMtdDef* def = (lsqlMtdDef*) ptr;
+    FreeDef defs[] = {
+        {(void*) def->params, def->paramsSize,
+            sizeof(lsqlParamDef), freeParamDef },
+        {NULL, 0, 0, NULL}
+    };
+    freeMany(defs);
+    lsqlStringDelete(&def->name);
+    lsqlStringDelete(&def->returnType);
+}
+static void freeRelateDef(void* ptr) {
+    lsqlRelateDef* def = (lsqlRelateDef*) ptr;
+    lsqlStringDelete(&def->objectName);
+    lsqlStringDelete(&def->interfaceName);
+    lsqlStringDelete(&def->handleName);
+    lsqlStringDelete(&def->remoteHandle);
+}
+static void freeIdxFldDef(void* ptr) {
+    lsqlIdxFldDef* def = (lsqlIdxFldDef*) ptr;
+    lsqlStringDelete(&def->name);
+}
+
+static void freeIdxDef(void* ptr) {
+    lsqlIdxDef* def = (lsqlIdxDef*) ptr;
+    FreeDef defs[] = {
+        {(void*) def->fields, def->fieldsSize,
+            sizeof(lsqlIdxFldDef), freeIdxFldDef },
+        {NULL, 0, 0, NULL}
+    };
+    freeMany(defs);
+}
+static void freeObjCheckDef(void* ptr) {
+    lsqlObjCheckDef* def = (lsqlObjCheckDef*) ptr;
+    lsqlStringDelete(&def->functionName);
+    lsqlStringDelete(&def->param);
+}
+static void freeImplDef(void* ptr) {
+    lsqlImplDef* def = (lsqlImplDef*) ptr;
+    lsqlStringDelete(&def->interfaceName);
+    
+}
+static void freeOptionDef(void* ptr) {
+    lsqlOptionDef* def = (lsqlOptionDef*) ptr;
+    lsqlStringDelete(&def->name);
+    lsqlStringDelete(&def->value);
+    lsqlStringDelete(&def->backend);
+}
+
+static void freeObjDef(void* ptr) {
+    lsqlObjDef* def = (lsqlObjDef*) ptr;
+
+    FreeDef defs[] = {
+        {(void*) def->fields, def->fieldsSize, 
+            sizeof(lsqlFldDef), freeFldDef },
+        {(void*) def->methods, def->methodsSize,
+            sizeof(lsqlMtdDef), freeMtdDef },
+        {(void*) def->indices, def->indicesSize,
+            sizeof(lsqlIdxDef), freeIdxDef },
+        {(void*) def->options, def->optionsSize,
+            sizeof(lsqlOptionDef), freeOptionDef },
+        {(void*) def->checks, def->checksSize,
+            sizeof(lsqlObjCheckDef), freeObjCheckDef },
+        {(void*) def->relates, def->relatesSize,
+            sizeof(lsqlRelateDef), freeRelateDef },
+        {(void*) def->implements, def->implementsSize,
+            sizeof(lsqlImplDef), freeImplDef },
+        {NULL, 0, 0, NULL}
+    };
+    freeMany(defs);
+    lsqlStringDelete(&def->name);
+    lsqlStringDelete(&def->inherits);
+}
+
+static void freeRelDef(void* ptr) {
+    lsqlRelDef* def = (lsqlRelDef*) ptr;
+
+    FreeDef defs[] = {
+        {(void*) def->fields, def->fieldsSize, 
+            sizeof(lsqlFldDef), freeFldDef },
+       {(void*) def->indices, def->indicesSize,
+            sizeof(lsqlIdxDef), freeIdxDef },
+        {(void*) def->options, def->optionsSize,
+            sizeof(lsqlOptionDef), freeOptionDef },
+       {(void*) def->relates, def->relatesSize,
+            sizeof(lsqlRelateDef), freeRelateDef },
+       {NULL, 0, 0, NULL}
+    };
+    freeMany(defs);
+    lsqlStringDelete(&def->name);
+    lsqlStringDelete(&def->id);
+}
+
+static void freeIfaceDef(void* ptr) {
+    lsqlIfaceDef* def = (lsqlIfaceDef*) ptr;
+
+    FreeDef defs[] = {
+        {(void*) def->methods, def->methodsSize,
+            sizeof(lsqlMtdDef), freeMtdDef },
+        {NULL, 0, 0, NULL}
+    };
+    freeMany(defs);
+    lsqlStringDelete(&def->name);
+    lsqlFree(def->implementations);
+}
+
+static void freeReprDef(void* ptr) {
+    lsqlReprDef* def = (lsqlReprDef*) ptr;
+    lsqlStringDelete(&def->as);
+    lsqlStringDelete(&def->target);
+
+}
+static void freeStoreDef(void* ptr) {
+    lsqlStoreDef* def = (lsqlStoreDef*) ptr;
+    lsqlStringDelete(&def->as);
+    lsqlStringDelete(&def->backend);
+}
+
+static void freeTypeDef(void* ptr) {
+    lsqlTypeDef* def = (lsqlTypeDef*) ptr;
+    FreeDef defs[] = {
+        {(void*) def->values, def->valuesSize, 
+            sizeof(lsqlValueDef), freeValueDef },
+        {(void*) def->representations, def->representationsSize,
+            sizeof(lsqlReprDef), freeReprDef },
+        {(void*) def->stores, def->storesSize,
+            sizeof(lsqlStoreDef), freeStoreDef },
+        {(void*) def->checks, def->checksSize,
+            sizeof(lsqlFldCheckDef), freeFldCheckDef },
+        {NULL, 0, 0, NULL}
+    };
+    freeMany(defs);
+    lsqlStringDelete(&def->name);
+}
+
+
+static void freeTableFldDef(void* ptr) {
+    lsqlTableFldDef* def = (lsqlTableFldDef*) ptr;
+    lsqlStringDelete(&def->name);
+}
+
+static void freeTableDef(void* ptr) {
+    lsqlTableDef* def = (lsqlTableDef*) ptr;
+    FreeDef defs[] = {
+        {(void*) def->fields, def->fieldsSize, 
+            sizeof(lsqlTableFldDef), freeTableFldDef },
+        {NULL, 0, 0, NULL}
+    };
+    freeMany(defs);
+    lsqlStringDelete(&def->name);
+}
+
+static void freeSequenceDef(void* ptr) {
+    lsqlSequenceDef* def = (lsqlSequenceDef*) ptr;
+    lsqlStringDelete(&def->name);
+}
+
+void lsqlCloseDbDef(lsqlDbDef* db) {
+    FreeDef defs[]= {
+        {(void*) db->objects, db->objectsSize, 
+            sizeof(lsqlObjDef), freeObjDef },  
+        {(void*) db->relations, db->relationsSize,
+            sizeof(lsqlRelDef), freeRelDef },   
+        {(void*) db->interfaces, db->interfacesSize,
+            sizeof(lsqlIfaceDef), freeIfaceDef }, 
+        {(void*) db->types, db->typesSize,
+            sizeof(lsqlTypeDef), freeTypeDef },
+        {(void*) db->options, db->optionsSize,
+            sizeof(lsqlOptionDef), freeOptionDef },
+        {(void*) db->tables, db->tablesSize,
+            sizeof(lsqlTableDef), freeTableDef },
+        {(void*) db->sequences, db->sequencesSize,
+            sizeof(lsqlSequenceDef), freeSequenceDef },
+        {(void*) db->xmlFiles, db->xmlFilesSize,
+            sizeof(lsqlString), lsqlStringDelete },
+        {NULL, 0, 0, NULL}
+    };
+
+    freeMany(defs);
+    lsqlStringDelete(&db->name);
+    lsqlStringDelete(&db->namespace_);
+    lsqlStringDelete(&db->include);
     xmlCleanupParser();
 }

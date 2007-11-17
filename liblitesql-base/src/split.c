@@ -8,6 +8,7 @@ int lsqlSplitNew(lsqlSplit* s) {
 
 void lsqlSplitDelete(lsqlSplit* s) {
     size_t i;
+
     for (i = 0; i < s->partsSize; i++)
         lsqlStringDelete(&s->parts[i]);
 

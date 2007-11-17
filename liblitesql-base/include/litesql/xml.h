@@ -71,6 +71,8 @@ typedef struct {
 } lsqlTableFldDef;
 
 typedef struct {
+    lsqlString name;
+
     lsqlTableFldDef* fields;
     size_t fieldsSize;
 

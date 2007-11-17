@@ -76,16 +76,19 @@ static int checkInterface(Context* ctx, void* ptr) {
     return 0;            
 }
 
+lsqlString* getRelateName(lsqlRelateDef* r) {
+    if (lsqlStringSize(&r->objectName) == 0)
+        return &r->interfaceName;
+
+    return &r->objectName;
+}
+
 static int compareRelate(const void* p1, const void* p2) {
     lsqlRelateDef* r1 = (lsqlRelateDef*) p1;
     lsqlRelateDef* r2 = (lsqlRelateDef*) p2;
 
-    lsqlString* s1 = &r1->objectName;
-    lsqlString* s2 = &r2->objectName;
-    if (lsqlStringSize(s1) == 0)
-        s1 = &r1->interfaceName;
-    if (lsqlStringSize(s2) == 0)
-        s2 = &r2->interfaceName;
+    lsqlString* s1 = getRelateName(r1);
+    lsqlString* s2 = getRelateName(r2);
     return lsqlStringCmp2(s1, s2);
 
 }
@@ -98,6 +101,18 @@ static int checkRelation(Context* ctx, void* ptr) {
           compareRelate);
 
     if (empty(&r->name)) {
+        size_t i;
+        int ret;
+        lsqlSplit s;
+        ret = lsqlSplitNew(&s);
+        if (ret)
+            return ret;
+        for (i = 0; i < r->relatesSize; i++)
+            lsqlSplitAdd2(&s, getRelateName(&r->relates[i]));
+        lsqlSplitAdd2(&s, &r->id); 
+        lsqlSplitJoin(&s, &r->name, ""); 
+        lsqlSplitDelete(&s);
+
         
     }
 
