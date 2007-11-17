@@ -1,9 +1,11 @@
 CFLAGS += -Wall -ggdb  -I../include `xml2-config --cflags` -ansi
 LDFLAGS += `xml2-config --libs` -L../src -llitesql-base
-OBJS=string.o
-all: string
+all: string split
 
-string: $(OBJS) string.o
+string: string.o
+	$(CC) $^ -o $@  $(LDFLAGS) 
+
+split: split.o
 	$(CC) $^ -o $@  $(LDFLAGS) 
 
 clean:

@@ -93,6 +93,7 @@ int lsqlStringResize(lsqlString* dst, size_t size) {
     origStart = dataStart(dst);
     oldSize = readSize(dst);
     dst->data = lsqlRealloc(dst->data, total + 1);
+    dst->data[total] = '\0';
 
     if (!dst->data) 
         return LSQL_MEMORY;
@@ -104,8 +105,8 @@ int lsqlStringResize(lsqlString* dst, size_t size) {
             oldSize = size;
         memmove(newStart, origStart, oldSize);
     }
-
     writeSize(dst, size);
+
     return 0;
 }
 

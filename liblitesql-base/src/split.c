@@ -11,6 +11,7 @@ void lsqlSplitDelete(lsqlSplit* s) {
     for (i = 0; i < s->partsSize; i++)
         lsqlStringDelete(&s->parts[i]);
 
+    lsqlFree(s->parts);
     memset(s, 0, sizeof(lsqlSplit));    
 }
 
@@ -48,6 +49,7 @@ int lsqlSplitResize(lsqlSplit* s, size_t size) {
             if (ret)
                 return ret;
         }
+    s->used = size;
     return 0;
         
 }
@@ -57,7 +59,16 @@ static size_t mapIndex(const lsqlSplit* s, int i) {
     return i;
 }
 
-int lsqlSplitCopy(lsqlSplit* s, int i, const lsqlString* src) {
+int lsqlSplitCopy(lsqlSplit* s, int i, const char* src) {
+    size_t idx = mapIndex(s, i);
+
+    if (idx >= s->used)
+        return LSQL_ERROR;
+
+    return lsqlStringCopy(&s->parts[idx], src);
+}
+
+int lsqlSplitCopy2(lsqlSplit* s, int i, const lsqlString* src) {
     size_t idx = mapIndex(s, i);
 
     if (idx >= s->used)
@@ -65,19 +76,15 @@ int lsqlSplitCopy(lsqlSplit* s, int i, const lsqlString* src) {
 
     return lsqlStringCopy2(&s->parts[idx], src);
 }
-
-int lsqlSplitJoin(const lsqlSplit* s,
-                   lsqlString* dst,
-                   const lsqlString* delim) {
-    size_t delimSize = lsqlStringSize(delim);
+static int join(const lsqlSplit* s, lsqlString* dst, const char* delimPtr, 
+                size_t delimSize) {
     size_t size = (s->used - 1) * delimSize;
     size_t i;
     char* ptr;
-    const char* delimPtr = lsqlStringPtr(delim);
 
     for (i = 0; i < s->used; i++)
         size += lsqlStringSize(&s->parts[i]);
-    
+       
     lsqlStringResize(dst, size);
 
     ptr = (char*) lsqlStringPtr(dst);
@@ -94,6 +101,16 @@ int lsqlSplitJoin(const lsqlSplit* s,
     }
     return 0;
 }
+int lsqlSplitJoin(const lsqlSplit* s,
+                  lsqlString* dst,
+                  const char* delim) {
+    return join(s, dst, delim, strlen(delim));
+}
+int lsqlSplitJoin2(const lsqlSplit* s,
+                   lsqlString* dst,
+                   const lsqlString* delim) {
+    return join(s, dst, lsqlStringPtr(delim), lsqlStringSize(delim));
+}
 
 int lsqlSplitSlice(lsqlSplit* dst, const lsqlSplit* src,
                     int start, int end) {
@@ -101,22 +118,20 @@ int lsqlSplitSlice(lsqlSplit* dst, const lsqlSplit* src,
     size_t i2 = mapIndex(src, end);
     size_t elems, i;
     int ret;
-
-    if (i1 >= src->used || i2 >= i1) 
+    if (i1 >= src->used || i1 >= i2) 
         return lsqlSplitResize(dst, 0);
 
     if (i2 > src->used) 
         i2 = src->used;
 
     elems = i2 - i1;
-
     ret = lsqlSplitResize(dst, elems);
 
     if (ret)
         return ret;
 
     for (i = 0; i < elems; i++) {
-        ret = lsqlSplitCopy(dst, i, &src->parts[i1 + i]);
+        ret = lsqlSplitCopy2(dst, i, &src->parts[i1 + i]);
         if (ret)
             return ret;
     }
@@ -124,17 +139,34 @@ int lsqlSplitSlice(lsqlSplit* dst, const lsqlSplit* src,
     return 0;
 }
 
-int lsqlSplitAdd(lsqlSplit* dst, const lsqlString* src) {
+static int addOne(lsqlSplit* dst) {
     int ret;
+
     if (dst->used == dst->partsSize) {
         ret = lsqlSplitReserve(dst, 1 + (dst->partsSize * 2));
         if (ret)
             return ret;
-
     }
+    ret = lsqlSplitResize(dst, dst->used + 1);
+    if (ret)
+        return ret;
 
-    dst->used++;
+    return 0;
+}
+int lsqlSplitAdd(lsqlSplit* dst, const char* src) {
+    int ret = addOne(dst);
+    if (ret)
+        return ret;
+
     return lsqlSplitCopy(dst, dst->used - 1, src);
+
+}
+int lsqlSplitAdd2(lsqlSplit* dst, const lsqlString* src) {
+    int ret = addOne(dst);
+    if (ret)
+        return ret;
+
+    return lsqlSplitCopy2(dst, dst->used - 1, src);
 
 }
 

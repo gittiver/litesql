@@ -21,16 +21,22 @@ int lsqlSplitReserve(lsqlSplit* s, size_t size);
 
 int lsqlSplitResize(lsqlSplit* s, size_t size);
 
-int lsqlSplitCopy(lsqlSplit* s, int i, const lsqlString* src);
+int lsqlSplitCopy(lsqlSplit* s, int i, const char* src);
+int lsqlSplitCopy2(lsqlSplit* s, int i, const lsqlString* src);
         
 int lsqlSplitJoin(const lsqlSplit* s, 
+                  lsqlString* dst, 
+                  const char* delim);
+
+int lsqlSplitJoin2(const lsqlSplit* s, 
                   lsqlString* dst, 
                   const lsqlString* delim);
 
 int lsqlSplitSlice(lsqlSplit* dst, const lsqlSplit* src,  
                    int start, int end);
 
-int lsqlSplitAdd(lsqlSplit* dst, const lsqlString* src);
+int lsqlSplitAdd(lsqlSplit* dst, const char* src);
+int lsqlSplitAdd2(lsqlSplit* dst, const lsqlString* src);
 
 int lsqlSplitSize(const lsqlSplit* s);
 
