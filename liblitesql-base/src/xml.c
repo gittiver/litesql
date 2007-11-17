@@ -13,6 +13,8 @@ typedef struct Parser {
     xmlParserCtxtPtr ctxt;
     xmlDocPtr doc;
     xmlNode* root;
+    lsqlString* currentFile;
+    lsqlDbDef* db;
 
 } Parser;
 
@@ -25,14 +27,19 @@ typedef struct {
 } XmlParseDef;
 
 
-
+static void setPos(lsqlXmlPos* pos, Parser* p,  xmlNode* node) {
+    pos->xmlFile = p->currentFile;
+    pos->line = node->line;
+}
 static int getAttr(lsqlString* dst, xmlNode* node, const char* attr) {
     xmlChar* data = xmlGetProp(node, (unsigned char*) attr);
+
+    lsqlStringNew(dst);
     if (!data)
         return 0;
-
     if (lsqlStringCopy(dst, (char*) data)) {
         xmlFree(data);
+        lsqlStringDelete(dst);
         return -1;
     }
     
@@ -103,6 +110,7 @@ static int parseDefs(Parser* p, xmlNode* node, XmlParseDef* defs) {
 static int parseValueDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlValueDef* def = (lsqlValueDef*) ptr;
+    setPos(&def->pos, p, node);
 
     ret |= getAttr(&def->name, node, "name");
     ret |= getAttr(&def->value, node, "value");
@@ -113,6 +121,7 @@ static int parseValueDef(Parser* p, xmlNode* node, void* ptr) {
 static int parseFldCheckDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlFldCheckDef* chk = (lsqlFldCheckDef*) ptr;
+    setPos(&chk->pos, p, node);
 
     ret |= getAttr(&chk->functionName, node, "function");
     ret |= getAttr(&chk->param, node, "param");
@@ -136,6 +145,7 @@ static int parseFldDefNodes(Parser* p, xmlNode* node, void* ptr) {
 static int parseFldDef(Parser* p, xmlNode* node, void* ptr) { 
     int ret = 0;
     lsqlFldDef* fld = (lsqlFldDef*) ptr;
+    setPos(&fld->pos, p, node);
 
     ret = forNodes(p, fld, node->children, parseFldDefNodes);
     if (ret)
@@ -152,10 +162,13 @@ static int parseFldDef(Parser* p, xmlNode* node, void* ptr) {
 static int parseParamDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlParamDef* param = (lsqlParamDef*) ptr;
+    setPos(&param->pos, p, node);
 
     ret |= getAttr(&param->name, node, "name");
     ret |= getAttr(&param->type, node, "type");
+    ret |= getAttr(&param->defaultValue, node, "default");
     ret |= getBool(&param->isConst, node, "const");
+
 
     return ret;
 }
@@ -176,6 +189,7 @@ static int parseMtdDefNodes(Parser* p, xmlNode* node, void* ptr) {
 static int parseMtdDef(Parser* p, xmlNode* node, void* ptr) { 
     int ret = 0;
     lsqlMtdDef* mtd = (lsqlMtdDef*) ptr;
+    setPos(&mtd->pos, p, node);
 
     ret = forNodes(p, mtd, node->children, parseMtdDefNodes);
     if (ret)
@@ -192,6 +206,8 @@ static int parseMtdDef(Parser* p, xmlNode* node, void* ptr) {
 static int parseIdxFldDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlIdxFldDef* fld = (lsqlIdxFldDef*) ptr;
+    setPos(&fld->pos, p, node);
+
     ret |= getAttr(&fld->name, node, "name");
 
     return ret;
@@ -209,6 +225,7 @@ static int parseIdxDefNodes(Parser* p, xmlNode* node, void* ptr) {
 static int parseIdxDef(Parser* p, xmlNode* node, void* ptr) { 
     int ret = 0;
     lsqlIdxDef* idx = (lsqlIdxDef*) ptr;
+    setPos(&idx->pos, p, node);
 
     ret = forNodes(p, idx, node->children, parseIdxDefNodes);
 
@@ -225,6 +242,7 @@ static int parseOptionDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
 
     lsqlOptionDef* opt = (lsqlOptionDef*) ptr;
+    setPos(&opt->pos, p, node);
 
     ret |= getAttr(&opt->name, node, "name");
     ret |= getAttr(&opt->value, node, "value");
@@ -235,6 +253,7 @@ static int parseOptionDef(Parser* p, xmlNode* node, void* ptr) {
 static int parseImplDef(Parser* p, xmlNode* node, void* ptr) { 
     int ret = 0;
     lsqlImplDef* impl = (lsqlImplDef*) ptr;
+    setPos(&impl->pos, p, node);
 
     ret |= getAttr(&impl->interfaceName, node, "name");    
 
@@ -244,6 +263,7 @@ static int parseImplDef(Parser* p, xmlNode* node, void* ptr) {
 static int parseObjCheckDef(Parser* p, xmlNode* node, void* ptr) { 
     int ret = 0;
     lsqlObjCheckDef* chk = (lsqlObjCheckDef*) ptr;
+    setPos(&chk->pos, p, node);
 
     ret |= getAttr(&chk->functionName, node, "function");
     ret |= getAttr(&chk->param, node, "param");
@@ -262,6 +282,7 @@ static int parseObjCheckDef(Parser* p, xmlNode* node, void* ptr) {
 static int parseObjDefNodes(Parser* p, xmlNode* node, void* ptr) {
 
     lsqlObjDef* obj = (lsqlObjDef*) ptr;
+
     XmlParseDef defs[] = {
         {"field", (void**) &obj->fields, &obj->fieldsSize,
             sizeof(lsqlFldDef), parseFldDef }, 
@@ -285,6 +306,8 @@ static int parseObjDefNodes(Parser* p, xmlNode* node, void* ptr) {
 static int parseObjDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlObjDef* obj = (lsqlObjDef*) ptr;
+    
+    setPos(&obj->pos, p, node);
 
     ret = forNodes(p, obj, node->children, parseObjDefNodes);
     if (ret)
@@ -301,6 +324,8 @@ static int parseObjDef(Parser* p, xmlNode* node, void* ptr) {
 static int parseRelateDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlRelateDef* r = (lsqlRelateDef*) ptr;
+    setPos(&r->pos, p, node);
+
 
     ret |= getAttr(&r->objectName, node, "object");
     ret |= getAttr(&r->handleName, node, "handle"); 
@@ -329,6 +354,8 @@ static int parseRelDefNodes(Parser* p, xmlNode* node, void* ptr) {
 static int parseRelDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlRelDef* rel = (lsqlRelDef*) ptr;
+    setPos(&rel->pos, p, node);
+
     ret = forNodes(p, ptr, node->children, parseRelDefNodes);
     if (ret)
         return ret;
@@ -354,6 +381,8 @@ static int parseIfaceDefNodes(Parser* p, xmlNode* node, void* ptr) {
 static int parseIfaceDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlIfaceDef* iface = (lsqlIfaceDef*) ptr;
+    setPos(&iface->pos, p, node);
+
     ret = forNodes(p, ptr, node->children, parseIfaceDefNodes);
     if (ret)
         return ret;
@@ -365,6 +394,7 @@ static int parseIfaceDef(Parser* p, xmlNode* node, void* ptr) {
 static int parseReprDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlReprDef* repr = (lsqlReprDef*) ptr;
+    setPos(&repr->pos, p, node);
 
     ret |= getAttr(&repr->as, node, "as");
     ret |= getAttr(&repr->target, node, "target");
@@ -375,6 +405,7 @@ static int parseReprDef(Parser* p, xmlNode* node, void* ptr) {
 static int parseStoreDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlStoreDef* store = (lsqlStoreDef*) ptr;
+    setPos(&store->pos, p, node);
 
     ret |= getAttr(&store->as, node, "store");
     ret |= getAttr(&store->backend, node, "backend");
@@ -406,6 +437,8 @@ static int parseTypeDefNodes(Parser* p, xmlNode* node, void* ptr) {
 static int parseTypeDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlTypeDef* type = (lsqlTypeDef*) ptr;
+    setPos(&type->pos, p, node);
+
     ret = forNodes(p, ptr, node->children, parseTypeDefNodes);
     if (ret)
         return ret;
@@ -422,10 +455,14 @@ static int isAlreadyParsed(Parser* p, const char* path) {
     return 0;
 }
 
-static int prepareParsing(Parser* p, const char* path, Parser* parent) {
-
+static int prepareParsing(Parser* p, lsqlDbDef* db, lsqlErrCallback errCb,
+                          const char* path, Parser* parent) {
+    int ret = 0;
+    lsqlString* pathName;
     memset(p, 0, sizeof(Parser));
     p->path = path;
+    p->db = db;
+    p->errCb = errCb;
     p->ctxt = xmlNewParserCtxt();
 
     if (p->ctxt == NULL) 
@@ -442,8 +479,13 @@ static int prepareParsing(Parser* p, const char* path, Parser* parent) {
     
     p->root = xmlDocGetRootElement(p->doc);
     p->parent = parent;
+    ret = addToArray((void**) &p->db->xmlFiles, &p->db->xmlFilesSize, 
+                     sizeof(lsqlString), (void**) &pathName);
+    lsqlStringNew(pathName);
+    lsqlStringCopy(pathName, path);
+    p->currentFile = pathName;
 
-    return 0;
+    return ret;
 }
 
 static void finishParsing(Parser* p) {
@@ -477,10 +519,16 @@ static int parseDbDefNodes(Parser* p, xmlNode* node, void* ptr) {
     if (xmlStrcmp(node->name, (const xmlChar*) "include") == 0) {
         Parser p2;
         char* path = (char*) xmlGetProp(node, (unsigned char*) "file");
-        if (isAlreadyParsed(p, path)) 
+        if (isAlreadyParsed(p, path))  {
+            char buf[1024];
+            /* TODO: korvaa snprintf */
+            snprintf(buf, 1024, "%s:%d, '%s' already included",
+                     lsqlStringPtr(p->currentFile),
+                     node->line, path);
+            p->errCb(buf);
             return LSQL_LOOP;
-
-        ret = prepareParsing(&p2, path, p); 
+        }
+        ret = prepareParsing(&p2, db, p->errCb, path, p); 
         if (!ret) 
             ret |= forNodes(&p2, db, p2.root->children, 
                             parseDbDefNodes);
@@ -498,18 +546,12 @@ int lsqlOpenDbDef(lsqlDbDef* def, const char* path,
     LIBXML_TEST_VERSION
     Parser parser; 
 
-    parser.errCb = errCb;
 
     memset(def, 0, sizeof(lsqlDbDef));
-
-    ret = prepareParsing(&parser, path, NULL);
+    ret = prepareParsing(&parser, def, errCb, path, NULL);
     if (ret)
         goto finish;
 
-
-    lsqlStringNew(&def->name);
-    lsqlStringNew(&def->namespace_);
-    lsqlStringNew(&def->include);
 
 
     ret |= getAttr(&def->name, parser.root, "name");

@@ -26,6 +26,11 @@ static void writeSize(lsqlString* s, size_t size) {
     unsigned char c = 0;
     unsigned char* p = s->data;
 
+    if (!size) {
+        *p = 0;
+        return;
+    }
+
     for (; size; p++) {
         c = size & 0x7f;
 
@@ -35,7 +40,6 @@ static void writeSize(lsqlString* s, size_t size) {
         size >>= 7;
         if (size)
             c |= 0x80;
-
         *p = c;                
     }
 }
@@ -82,7 +86,7 @@ int lsqlStringCopy(lsqlString* dst, const char* src) {
 
     if (dst->data == NULL)
         return LSQL_MEMORY;
-
+    
     writeSize(dst, size);
     memcpy(dataStart(dst), src, size);
 

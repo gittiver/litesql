@@ -12,6 +12,11 @@ int main(int argc, char** argv) {
     lsqlStringCopy(&s, "test");
     assert( lsqlStringSize(&s) == 4 );
 
+
+    lsqlStringDelete(&s);
+
+    lsqlStringNew(&s);
+    assert( lsqlStringSize(&s) == 0 );
     lsqlStringDelete(&s);
 
     m = (char*) malloc(1024);
