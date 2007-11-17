@@ -3,7 +3,7 @@
 
 /** decodes the variable length size information from the beginning of the
  * string, returns the length of the string data in bytes */
-static int readSize(lsqlString* s) {
+static int readSize(const lsqlString* s) {
     size_t size = 0;
 
     unsigned char* p = s->data;
@@ -60,7 +60,7 @@ static int stringSize(size_t dataSize) {
         return 5 + dataSize;
 }
 
-static unsigned char* dataStart(lsqlString* s) {
+static unsigned char* dataStart(const lsqlString* s) {
     unsigned char* p = s->data;
 
     /* the last byte of the size information is guaranteed to have its
@@ -75,6 +75,40 @@ int lsqlStringNew(lsqlString* s) {
     memset(s, 0, sizeof(lsqlString));
     return 0;
 }
+
+int lsqlStringResize(lsqlString* dst, size_t size) {
+    size_t total = stringSize(size);
+    size_t oldSize;
+    unsigned char* origStart, *newStart;
+
+    if (!dst->data) {
+        dst->data = lsqlMalloc(total + 1);
+        if (!dst->data)
+            return LSQL_MEMORY;
+        writeSize(dst, size);
+        dst->data[total] = '\0';
+
+    }
+
+    origStart = dataStart(dst);
+    oldSize = readSize(dst);
+    dst->data = lsqlRealloc(dst->data, total + 1);
+
+    if (!dst->data) 
+        return LSQL_MEMORY;
+    
+    newStart = dataStart(dst);
+
+    if (origStart != newStart) {
+        if (oldSize > size)
+            oldSize = size;
+        memmove(newStart, origStart, oldSize);
+    }
+
+    writeSize(dst, size);
+    return 0;
+}
+
 
 int lsqlStringCopy(lsqlString* dst, const char* src) {
 
@@ -96,12 +130,32 @@ int lsqlStringCopy(lsqlString* dst, const char* src) {
     return 0;
 }
 
-int lsqlStringCat(lsqlString* dst, lsqlString* src) {
+int lsqlStringCopy2(lsqlString* dst, const lsqlString* src) {
+    size_t size, total;
+
+    if (!src->data) {
+        dst->data = NULL;
+        return 0;
+    }
+    size = readSize(src);
+    total = stringSize(size);
+
+    dst->data = lsqlRealloc(dst->data, total + 1);
+
+    if (dst->data == NULL)
+        return LSQL_MEMORY;
+
+    memcpy(dst->data, src->data, total + 1);
+
+    return 0;
+}
+
+int lsqlStringCat(lsqlString* dst, const lsqlString* src) {
     /* TODO: strcat */
     return 0;
 }
 
-size_t lsqlStringSize(lsqlString* s) {
+size_t lsqlStringSize(const lsqlString* s) {
 
     if (!s->data)
         return 0;
@@ -115,13 +169,25 @@ void lsqlStringDelete(lsqlString* s) {
     memset(s, 0, sizeof(lsqlString));
 }
 
-const char* lsqlStringPtr(lsqlString* s) {
+const char* lsqlStringPtr(const lsqlString* s) {
+    if (!s->data)
+        return "NULL";
     return (const char*) dataStart(s); 
 }
 
-int lsqlStringCmp(lsqlString* s, const char* s2) {
+int lsqlStringCmp(const lsqlString* s, const char* s2) {
     if (!s->data)
         return -1;
     return strcmp(lsqlStringPtr(s), s2);
+}
+
+int lsqlStringCmp2(const lsqlString* s1, const lsqlString* s2) {
+    if (s1->data == s2->data)
+        return 0;
+    if (s2->data == NULL)
+        return 1;
+
+
+    return lsqlStringCmp(s1, lsqlStringPtr(s2));
 }
 

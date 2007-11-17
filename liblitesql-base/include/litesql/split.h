@@ -10,6 +10,7 @@ extern "C" {
 typedef struct {
     lsqlString* parts;
     size_t partsSize;
+    size_t used;
 } lsqlSplit; 
 
 int lsqlSplitNew(lsqlSplit* s);
@@ -22,18 +23,18 @@ int lsqlSplitResize(lsqlSplit* s, size_t size);
 
 int lsqlSplitCopy(lsqlSplit* s, int i, const lsqlString* src);
         
-void lsqlSplitJoin(const lsqlSplit* s, 
-                     lsqlString* src, 
-                     const lsqlString* delim);
+int lsqlSplitJoin(const lsqlSplit* s, 
+                  lsqlString* dst, 
+                  const lsqlString* delim);
 
-void lsqlSplitSlice(lsqlSplit* dst, const lsqlSplit* src,  
-                      int start, int end);
+int lsqlSplitSlice(lsqlSplit* dst, const lsqlSplit* src,  
+                   int start, int end);
 
-void lsqlSplitInsert(lsqlSplit* dst, const lsqlSplit* src, int i);
+int lsqlSplitAdd(lsqlSplit* dst, const lsqlString* src);
 
 int lsqlSplitSize(const lsqlSplit* s);
 
-int lsqlSplitElem(lsqlSplit* dst, const lsqlString* src, int i);
+lsqlString* lsqlSplitElem(lsqlSplit* dst, int i);
 #ifdef __cplusplus
 }
 #endif 

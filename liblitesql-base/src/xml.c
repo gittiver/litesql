@@ -2,6 +2,7 @@
 #include "processxml.h"
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <stdlib.h>
 
 #include <string.h>
 

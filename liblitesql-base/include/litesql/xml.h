@@ -184,8 +184,10 @@ typedef struct {
     lsqlXmlPos pos;
 
     lsqlString objectName;
+    lsqlString interfaceName;
 
     struct lsqlObjDef* object;
+    struct lsqlIfaceDef* interface;
 
     lsqlBool unique;
     
