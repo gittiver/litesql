@@ -9,8 +9,9 @@ int lsqlSplitNew(lsqlSplit* s) {
 void lsqlSplitDelete(lsqlSplit* s) {
     size_t i;
 
-    for (i = 0; i < s->partsSize; i++)
+    for (i = 0; i < s->used; i++) 
         lsqlStringDelete(&s->parts[i]);
+
 
     lsqlFree(s->parts);
     memset(s, 0, sizeof(lsqlSplit));    

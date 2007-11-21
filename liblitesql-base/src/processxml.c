@@ -49,7 +49,7 @@ static int checkNodes(Context* ctx, void* array, size_t arraySize,
     size_t i;
     for (i = 0; i < arraySize; i++) {
 
-        void* ptr = array + elemSize * i;
+        void* ptr = ((char*) array) + elemSize * i;
         int ret = func(ctx, ptr);
         if (ret)
             return ret;
@@ -109,7 +109,8 @@ static int checkRelation(Context* ctx, void* ptr) {
             return ret;
         for (i = 0; i < r->relatesSize; i++)
             lsqlSplitAdd2(&s, getRelateName(&r->relates[i]));
-        lsqlSplitAdd2(&s, &r->id); 
+       
+        /*lsqlSplitAdd2(&s, &r->id); */
         lsqlSplitJoin(&s, &r->name, ""); 
         lsqlSplitDelete(&s);
 
@@ -151,7 +152,7 @@ static int checkUnique(Context* ctx, GetPropertyDef* defs,
     while (def->name) {
         size_t i;
         for (i = 0; i < def->arraySize; i++) {
-            void* ptr = def->array + i * def->elemSize;
+            void* ptr = ((char*) def->array) + i * def->elemSize;
             lsqlXmlPos* pos2 = def->getPos(ptr);
             lsqlString* prop2 = def->getProperty(ptr);
             if (lsqlStringCmp2(prop, prop2) == 0) {
@@ -179,7 +180,7 @@ static int areUnique(Context* ctx, GetPropertyDef* defs) {
         int ret;
         size_t i;
         for (i = 0; i < def->arraySize; i++) {
-            void* ptr = def->array + i * def->elemSize;
+            void* ptr = ((char*) def->array) + i * def->elemSize;
             lsqlXmlPos* pos = def->getPos(ptr);
             lsqlString* prop = def->getProperty(ptr);
             ret = checkUnique(ctx, defs, def->name, pos, prop);
@@ -211,7 +212,6 @@ int lsqlProcessDbDef(lsqlDbDef* db, lsqlErrCallback errCb) {
     Context ctx; 
     ctx.db = db;
     ctx.errCb = errCb;
-    
     ret |= checkNodes(&ctx, (void*) db->options, db->optionsSize, 
                       sizeof(lsqlOptionDef), checkOption);
     ret |= checkNodes(&ctx, (void*) db->interfaces, db->interfacesSize,
