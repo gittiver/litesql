@@ -16,7 +16,7 @@
 */
 #include "litesql.h"
 #include <stdlib.h>
-
+#include <stdio.h>
 typedef struct {
     lsqlDbDef* db;
     lsqlErrCallback errCb;
@@ -252,6 +252,9 @@ int lsqlProcessDbDef(lsqlDbDef* db, lsqlErrCallback errCb) {
                       sizeof(lsqlTypeDef), checkType);
 
     ret |= checkUniqueness(&ctx);
+
+
+
     return ret;
 }
 

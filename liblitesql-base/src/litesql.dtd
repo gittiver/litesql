@@ -52,7 +52,7 @@
         is being defined inherits all the fields, relations, interfaces and
         methods from the parent.
 -->
-<!ELEMENT object (field|method|index|option|implements|check)*>
+<!ELEMENT object (field|method|index|option|implements|trigger)*>
 <!ATTLIST object
           temporary (true|false) 'false'
           name ID #REQUIRED
@@ -85,55 +85,58 @@
 <!ATTLIST implements
           interface NMTOKEN #REQUIRED>
 
-<!-- Consistency check 
+<!-- Triggered function call
 
-     An assertion which is verified upon specified triggers.
-     It can be defined for data types, specific fields, relation operations
-     and object-wide operations.
+     A bound function that is called when specified database operations are
+     executed.  It can be defined for data types, specific fields, relation
+     operations and object-wide operations.
 
-     If no triggers are specified for the consistency check,
-     it is executed for every operation.
+     It can be used to implement consistency checks. If no events are
+     specified for the trigger, the associated function is called upon
+     every database operation.
 
      onCreate
 
-        If true, the check function is executed when the object is created.
-        Can only be used with object-wide checks.
+        If true, the function is called when the object is created.
+        Can only be used with object-wide triggers.
 
      
      onDelete
 
-        If true, the check function is executed when the object is deleted.
-        Can only be used with object-wise checks.
+        If true, the function is called when the object is deleted.
+        Can only be used with object-wide triggers.
 
 
      onUpdate
         
-        If true, the check function is executed when data is being updated.
+        If true, the function is called when data is being updated.
 
      
      onLink
 
-        If true, the check function is executed upon linkage.
+        If true, the function is called upon linkage.
         Can only be used with relation operations.
 
 
      onUnlink
 
-        If true, the check function is executed upon unlinkage.
+        If true, the  function is called upon unlinkage.
         Can only be used with relation operations.
     
 
      function
 
-        Name of the check function.
+        Name of the  function.
 
      
      param
 
-        Additional parameter supplied to the check function.
+        Additional parameter supplied to the  function.
+        Note: the function's first argument is always
+        the type of the event.
 -->     
-<!ELEMENT check EMPTY>
-<!ATTLIST check
+<!ELEMENT trigger EMPTY>
+<!ATTLIST trigger
           onCreate (true|false) 'false'
           onDelete (true|false) 'false'
           onUpdate (true|false) 'false'
@@ -151,7 +154,7 @@
      
         Name of the data type.
 -->          
-<!ELEMENT type ((represent)*, (store)*, (value)*, (check)*)>
+<!ELEMENT type ((represent)*, (store)*, (value)*, (trigger)*)>
 <!ATTLIST type
           name NMTOKEN #REQUIRED>
 
@@ -267,7 +270,7 @@
         
         If true, an uniqueness constraint is added to the table.    
 -->          
-<!ELEMENT field ((value)*,(check)*)>
+<!ELEMENT field ((value)*,(trigger)*)>
 <!ATTLIST field 
           name NMTOKEN #REQUIRED
           type NMTOKEN #REQUIRED
@@ -430,6 +433,13 @@
          Can not be used if an interface is included in the relation
          because the handle would possibly point to multiple types
          of objects. 
+
+     
+     owner 
+
+         Indicates the owner of the relation and thus defines
+         the relation as composition. The related objects will be
+         deleted when the owner of the relation is deleted.
 -->
 <!ELEMENT relate EMPTY>
 <!ATTLIST relate
@@ -437,4 +447,5 @@
           limit (one|many) "many"
           object IDREF #IMPLIED
           interface IDREF #IMPLIED
-          handle NMTOKEN #IMPLIED>
+          handle NMTOKEN #IMPLIED
+          owner (true|false) "false">

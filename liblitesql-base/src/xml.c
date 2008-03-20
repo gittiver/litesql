@@ -85,20 +85,7 @@ static int getBool(lsqlBool* dst, xmlNode* node, const char* attr) {
 }
 
 
-static int addToArray(void** array, size_t* size, size_t elemSize, void** elem) {
 
-    (*size)++;
-    *array = realloc(*array, elemSize * (*size));
-   
-    if (!*array) {
-        *elem = NULL;
-        return LSQL_MEMORY;
-    }
-
-    *elem = &((char*)*array)[((*size)-1)*elemSize];    
-    memset(*elem, 0, elemSize);
-    return 0;
-}
 
 static int forNodes(Parser* p, void* ctx, xmlNode* first, 
                     int (*func)(Parser*, xmlNode*, void*)) {
@@ -121,8 +108,8 @@ static int parseDefs(Parser* p, xmlNode* node, XmlParseDef* defs) {
         if (xmlStrcmp(node->name, (const xmlChar*) defs[i].name) == 0) {
             void* ptr = NULL;
 
-            int ret = addToArray(defs[i].array, defs[i].size, 
-                                 defs[i].elemSize, &ptr);
+            int ret = lsqlAddToArray(defs[i].array, defs[i].size, 
+                                    defs[i].elemSize, &ptr);
             if (ret)
                 return ret;
 
@@ -142,9 +129,9 @@ static int parseValueDef(Parser* p, xmlNode* node, void* ptr) {
     return ret;
 }
 
-static int parseFldCheckDef(Parser* p, xmlNode* node, void* ptr) {
+static int parseFldTriggerDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
-    lsqlFldCheckDef* chk = (lsqlFldCheckDef*) ptr;
+    lsqlFldTriggerDef* chk = (lsqlFldTriggerDef*) ptr;
     setPos(&chk->pos, p, node);
 
     ret |= getAttr(&chk->functionName, node, "function");
@@ -160,8 +147,8 @@ static int parseFldDefNodes(Parser* p, xmlNode* node, void* ptr) {
     XmlParseDef defs[] = {
         {"value", (void**) &fld->values, &fld->valuesSize,
             sizeof(lsqlValueDef), parseValueDef },
-        {"check", (void**) &fld->checks, &fld->checksSize,
-            sizeof(lsqlFldCheckDef), parseFldCheckDef },
+        {"check", (void**) &fld->triggers, &fld->triggersSize,
+            sizeof(lsqlFldTriggerDef), parseFldTriggerDef },
         {NULL, NULL, NULL, 0, NULL} };
 
     return parseDefs(p, node, defs);    
@@ -284,9 +271,9 @@ static int parseImplDef(Parser* p, xmlNode* node, void* ptr) {
     return ret;
 
 }
-static int parseObjCheckDef(Parser* p, xmlNode* node, void* ptr) { 
+static int parseObjTriggerDef(Parser* p, xmlNode* node, void* ptr) { 
     int ret = 0;
-    lsqlObjCheckDef* chk = (lsqlObjCheckDef*) ptr;
+    lsqlObjTriggerDef* chk = (lsqlObjTriggerDef*) ptr;
     setPos(&chk->pos, p, node);
 
     ret |= getAttr(&chk->functionName, node, "function");
@@ -318,8 +305,8 @@ static int parseObjDefNodes(Parser* p, xmlNode* node, void* ptr) {
             sizeof(lsqlOptionDef), parseOptionDef },
         {"implements", (void**) &obj->implements, &obj->implementsSize,
             sizeof(lsqlImplDef), parseImplDef },
-        {"check", (void**) &obj->checks, &obj->checksSize,
-            sizeof(lsqlObjCheckDef), parseObjCheckDef },
+        {"check", (void**) &obj->triggers, &obj->triggersSize,
+            sizeof(lsqlObjTriggerDef), parseObjTriggerDef },
         {NULL, NULL, NULL, 0, NULL} };
     
 
@@ -342,6 +329,10 @@ static int parseObjDef(Parser* p, xmlNode* node, void* ptr) {
     ret |= getBool(&obj->temporary, node, "temporary");
     ret |= getAttr(&obj->inherits, node, "inherits");
 
+    /* allocate a table for the object */
+    ret |= lsqlAddToArray((void**) &p->db->tables, &p->db->tablesSize, 
+                      sizeof(lsqlTableDef), (void**) &obj->table);
+ 
     return ret;
 }
 
@@ -352,7 +343,11 @@ static int parseRelateDef(Parser* p, xmlNode* node, void* ptr) {
 
 
     ret |= getAttr(&r->objectName, node, "object");
+    ret |= getBool(&r->unique, node, "unique");
     ret |= getAttr(&r->handleName, node, "handle"); 
+    ret |= getBool(&r->owner, node, "owner");
+
+
 
     return ret;   
 }
@@ -389,7 +384,7 @@ static int parseRelDef(Parser* p, xmlNode* node, void* ptr) {
     ret |= getAttr(&rel->name, node, "name"); 
     ret |= getAttr(&rel->id, node, "id");
 
-    ret |= addToArray((void**) &p->db->tables, &p->db->tablesSize, 
+    ret |= lsqlAddToArray((void**) &p->db->tables, &p->db->tablesSize, 
                       sizeof(lsqlTableDef), (void**) &rel->table);
     
     lsqlStringNew(&rel->table->name);
@@ -464,8 +459,8 @@ static int parseTypeDefNodes(Parser* p, xmlNode* node, void* ptr) {
           sizeof(lsqlStoreDef), parseStoreDef },
         { "value", (void**) &type->values, &type->valuesSize,
           sizeof(lsqlValueDef), parseValueDef },
-        { "check", (void**) &type->checks, &type->checksSize,
-          sizeof(lsqlFldCheckDef), parseFldCheckDef },
+        { "check", (void**) &type->triggers, &type->triggersSize,
+          sizeof(lsqlFldTriggerDef), parseFldTriggerDef },
         {NULL, NULL, NULL, 0, NULL} };
     
 
@@ -518,7 +513,7 @@ static int prepareParsing(Parser* p, lsqlDbDef* db, lsqlErrCallback errCb,
     
     p->root = xmlDocGetRootElement(p->doc);
     p->parent = parent;
-    ret = addToArray((void**) &p->db->xmlFiles, &p->db->xmlFilesSize, 
+    ret = lsqlAddToArray((void**) &p->db->xmlFiles, &p->db->xmlFilesSize, 
                      sizeof(lsqlString), (void**) &pathName);
     lsqlStringNew(pathName);
     lsqlStringCopy(pathName, path);
@@ -634,8 +629,8 @@ static void freeValueDef(void* ptr) {
     lsqlStringDelete(&def->value);
 
 }
-static void freeFldCheckDef(void* ptr) {
-    lsqlFldCheckDef* def = (lsqlFldCheckDef*) ptr;
+static void freeFldTriggerDef(void* ptr) {
+    lsqlFldTriggerDef* def = (lsqlFldTriggerDef*) ptr;
     lsqlStringDelete(&def->functionName);
     lsqlStringDelete(&def->param);
 }
@@ -645,8 +640,8 @@ static void freeFldDef(void* ptr) {
     FreeDef defs[] = {
         {(void*) def->values, def->valuesSize,
             sizeof(lsqlValueDef), freeValueDef },
-        {(void*) def->checks, def->checksSize,
-            sizeof(lsqlFldCheckDef), freeFldCheckDef },
+        {(void*) def->triggers, def->triggersSize,
+            sizeof(lsqlFldTriggerDef), freeFldTriggerDef },
         {NULL, 0, 0, NULL}
     };
     freeMany(defs);
@@ -695,8 +690,8 @@ static void freeIdxDef(void* ptr) {
     };
     freeMany(defs);
 }
-static void freeObjCheckDef(void* ptr) {
-    lsqlObjCheckDef* def = (lsqlObjCheckDef*) ptr;
+static void freeObjTriggerDef(void* ptr) {
+    lsqlObjTriggerDef* def = (lsqlObjTriggerDef*) ptr;
     lsqlStringDelete(&def->functionName);
     lsqlStringDelete(&def->param);
 }
@@ -724,8 +719,8 @@ static void freeObjDef(void* ptr) {
             sizeof(lsqlIdxDef), freeIdxDef },
         {(void*) def->options, def->optionsSize,
             sizeof(lsqlOptionDef), freeOptionDef },
-        {(void*) def->checks, def->checksSize,
-            sizeof(lsqlObjCheckDef), freeObjCheckDef },
+        {(void*) def->triggers, def->triggersSize,
+            sizeof(lsqlObjTriggerDef), freeObjTriggerDef },
         {(void*) def->relates, def->relatesSize,
             sizeof(lsqlRelateDef), freeRelateDef },
         {(void*) def->implements, def->implementsSize,
@@ -790,8 +785,8 @@ static void freeTypeDef(void* ptr) {
             sizeof(lsqlReprDef), freeReprDef },
         {(void*) def->stores, def->storesSize,
             sizeof(lsqlStoreDef), freeStoreDef },
-        {(void*) def->checks, def->checksSize,
-            sizeof(lsqlFldCheckDef), freeFldCheckDef },
+        {(void*) def->triggers, def->triggersSize,
+            sizeof(lsqlFldTriggerDef), freeFldTriggerDef },
         {NULL, 0, 0, NULL}
     };
     freeMany(defs);
@@ -819,7 +814,10 @@ static void freeSequenceDef(void* ptr) {
     lsqlSequenceDef* def = (lsqlSequenceDef*) ptr;
     lsqlStringDelete(&def->name);
 }
-
+static void freeString(void* ptr) {
+    lsqlString* s = (lsqlString*) ptr;
+    lsqlStringDelete(s);
+}
 void lsqlCloseDbDef(lsqlDbDef* db) {
     FreeDef defs[]= {
         {(void*) db->objects, db->objectsSize, 
@@ -837,7 +835,7 @@ void lsqlCloseDbDef(lsqlDbDef* db) {
         {(void*) db->sequences, db->sequencesSize,
             sizeof(lsqlSequenceDef), freeSequenceDef },
         {(void*) db->xmlFiles, db->xmlFilesSize,
-            sizeof(lsqlString), lsqlStringDelete },
+            sizeof(lsqlString), freeString },
         {NULL, 0, 0, NULL}
     };
 

@@ -55,7 +55,7 @@ typedef struct {
     lsqlString functionName;
     lsqlString param;
     int (*function)(lsqlString* value, lsqlString* param);
-} lsqlFldCheckDef;
+} lsqlFldTriggerDef;
 
 typedef struct {
     lsqlXmlPos pos;
@@ -76,8 +76,8 @@ typedef struct {
     lsqlStoreDef* stores;
     size_t storesSize;
 
-    lsqlFldCheckDef* checks;
-    size_t checksSize;
+    lsqlFldTriggerDef* triggers;
+    size_t triggersSize;
 
 } lsqlTypeDef;
 
@@ -114,7 +114,7 @@ typedef struct {
 
     int (*function)(void* obj, lsqlString* param);
 
-} lsqlObjCheckDef;
+} lsqlObjTriggerDef;
 
 typedef struct {
     lsqlXmlPos pos;
@@ -130,8 +130,8 @@ typedef struct {
     lsqlValueDef* values;
     size_t valuesSize;
 
-    lsqlFldCheckDef* checks;
-    size_t checksSize;
+    lsqlFldTriggerDef* triggers;
+    size_t triggersSize;
 
     size_t offset;
 } lsqlFldDef;
@@ -211,6 +211,8 @@ typedef struct {
     
     lsqlString handleName;
 
+    lsqlBool owner;
+
     lsqlString remoteHandle;
 
     lsqlHandleDef* handle;
@@ -244,8 +246,8 @@ typedef struct lsqlObjDef {
     lsqlOptionDef* options;
     size_t optionsSize;
 
-    lsqlObjCheckDef* checks;
-    size_t checksSize;
+    lsqlObjTriggerDef* triggers;
+    size_t triggersSize;
 
     lsqlRelateDef* relates;
     size_t relatesSize;
