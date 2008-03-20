@@ -15,11 +15,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _litesql_processxml_h_
-#define _litesql_processxml_h_
+#ifndef _litesql_checkxml_h_
+#define _litesql_checkxml_h_
 
 /** internal header */
 
-int lsqlProcessDbDef(lsqlDbDef* def, lsqlErrCallback errCb);
+int lsqlCheckDbDef(lsqlDbDef* def, lsqlErrCallback errCb);
 
 #endif

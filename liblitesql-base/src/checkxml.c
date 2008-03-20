@@ -157,10 +157,14 @@ static lsqlXmlPos* getObjPos(void* ptr) {
 
 static lsqlString* getRelName(void* ptr) {
     lsqlRelDef* rel = (lsqlRelDef*) ptr;
-    if (lsqlStringSize(&rel->name) == 0) {
-
-    }
     return &rel->name;
+}
+
+static lsqlString* getOptionName(void* ptr) {
+    return &((lsqlOptionDef*) ptr)->name;
+}
+static lsqlXmlPos* getOptionPos(void* ptr) {
+    return &((lsqlOptionDef*) ptr)->pos;
 }
 static lsqlString* getRelTableName(void* ptr) {
     lsqlRelDef* rel = (lsqlRelDef*) ptr;
@@ -228,6 +232,8 @@ static int checkUniqueness(Context* ctx) {
                      sizeof(lsqlObjDef), getObjPos, getObjName },
         {"relation.name", (void*) db->relations, db->relationsSize, 
                      sizeof(lsqlRelDef), getRelPos, getRelName },
+        {"option.name", (void*) db->options, db->optionsSize,
+                     sizeof(lsqlOptionDef), getOptionPos, getOptionName },
         {NULL, NULL, 0, 0, NULL}
     };
     err = areUnique(ctx, defs);
@@ -235,7 +241,7 @@ static int checkUniqueness(Context* ctx) {
     return err;
 }
 
-int lsqlProcessDbDef(lsqlDbDef* db, lsqlErrCallback errCb) {
+int lsqlCheckDbDef(lsqlDbDef* db, lsqlErrCallback errCb) {
     int ret = 0;
     Context ctx; 
     ctx.db = db;

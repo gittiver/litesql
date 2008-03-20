@@ -253,6 +253,7 @@ typedef struct lsqlObjDef {
     size_t relatesSize;
 
     lsqlTableDef* table;
+    lsqlSequenceDef* sequence;
     struct lsqlObjDef* parent;
 
     lsqlImplDef* implements;

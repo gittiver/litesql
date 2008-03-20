@@ -1,6 +1,6 @@
 CFLAGS += -Wall -ggdb  -I../include `xml2-config --cflags` -ansi
 LDFLAGS += `xml2-config --libs`
-OBJS=memory.o xml.o string.o processxml.o split.o internal.o
+OBJS=memory.o xml.o string.o processxml.o split.o internal.o checkxml.o
 all: liblitesql-base test 
 
 liblitesql-base: $(OBJS)

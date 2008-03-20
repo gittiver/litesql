@@ -16,7 +16,9 @@
 */
 
 #include "litesql.h"
+#include "checkxml.h"
 #include "processxml.h"
+#include "internal.h"
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <stdlib.h>
@@ -329,9 +331,14 @@ static int parseObjDef(Parser* p, xmlNode* node, void* ptr) {
     ret |= getBool(&obj->temporary, node, "temporary");
     ret |= getAttr(&obj->inherits, node, "inherits");
 
-    /* allocate a table for the object */
+    /* table for the object */
     ret |= lsqlAddToArray((void**) &p->db->tables, &p->db->tablesSize, 
                       sizeof(lsqlTableDef), (void**) &obj->table);
+
+    /* sequence for the object */
+    ret |= lsqlAddToArray((void**) &p->db->sequences, &p->db->sequencesSize,
+                          sizeof(lsqlSequenceDef), (void**) &obj->sequence);
+
  
     return ret;
 }
@@ -384,6 +391,7 @@ static int parseRelDef(Parser* p, xmlNode* node, void* ptr) {
     ret |= getAttr(&rel->name, node, "name"); 
     ret |= getAttr(&rel->id, node, "id");
 
+    /* table for the relation */
     ret |= lsqlAddToArray((void**) &p->db->tables, &p->db->tablesSize, 
                       sizeof(lsqlTableDef), (void**) &rel->table);
     
@@ -603,7 +611,10 @@ int lsqlOpenDbDef(lsqlDbDef* def, const char* path,
 finish:
     finishParsing(&parser);
 
-    if (!ret)
+    if (!ret) 
+        ret = lsqlCheckDbDef(def, errCb);
+        
+    if (!ret) 
         return lsqlProcessDbDef(def, errCb);
 
     return ret;
