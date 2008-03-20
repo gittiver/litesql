@@ -1,3 +1,20 @@
+/*  LiteSQL - C++ Object Persistence Framework
+    Copyright (C) 2008  Tero Laitinen
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "litesql.h"
 #include "processxml.h"
 #include <libxml/parser.h>
@@ -361,6 +378,7 @@ static int parseRelDefNodes(Parser* p, xmlNode* node, void* ptr) {
 static int parseRelDef(Parser* p, xmlNode* node, void* ptr) {
     int ret = 0;
     lsqlRelDef* rel = (lsqlRelDef*) ptr;
+    lsqlString s;
     setPos(&rel->pos, p, node);
 
     ret = forNodes(p, ptr, node->children, parseRelDefNodes);
@@ -370,6 +388,20 @@ static int parseRelDef(Parser* p, xmlNode* node, void* ptr) {
 
     ret |= getAttr(&rel->name, node, "name"); 
     ret |= getAttr(&rel->id, node, "id");
+
+    ret |= addToArray((void**) &p->db->tables, &p->db->tablesSize, 
+                      sizeof(lsqlTableDef), (void**) &rel->table);
+    
+    lsqlStringNew(&rel->table->name);
+    lsqlStringCopy2(&rel->table->name, &rel->name);
+    lsqlStringNew(&s);
+    lsqlStringCopy(&s, "_");
+    lsqlStringCopy(&rel->table->name, lsqlStringPtr(&rel->name));
+    lsqlStringCat(&rel->table->name, &s);
+    lsqlStringCat(&rel->table->name, &rel->id);
+    lsqlStringDelete(&s);
+
+
 
     return ret;
 }

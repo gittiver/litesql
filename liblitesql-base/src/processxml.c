@@ -1,3 +1,19 @@
+/*  LiteSQL - C++ Object Persistence Framework
+    Copyright (C) 2008  Tero Laitinen
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #include "litesql.h"
 #include <stdlib.h>
 
@@ -75,8 +91,11 @@ static int checkInterface(Context* ctx, void* ptr) {
 
     return 0;            
 }
-
-lsqlString* getRelateName(lsqlRelateDef* r) {
+static int checkObject(Context* ctx, void *ptr) {
+    lsqlObjDef* o = (lsqlObjDef*) ptr;
+    return 0;
+}
+static lsqlString* getRelateName(lsqlRelateDef* r) {
     if (lsqlStringSize(&r->objectName) == 0)
         return &r->interfaceName;
 
@@ -110,7 +129,7 @@ static int checkRelation(Context* ctx, void* ptr) {
         for (i = 0; i < r->relatesSize; i++)
             lsqlSplitAdd2(&s, getRelateName(&r->relates[i]));
        
-        /*lsqlSplitAdd2(&s, &r->id); */
+        lsqlSplitAdd2(&s, &r->id); 
         lsqlSplitJoin(&s, &r->name, ""); 
         lsqlSplitDelete(&s);
 
@@ -123,6 +142,10 @@ static int checkRelation(Context* ctx, void* ptr) {
                    lsqlStringPtr(&r->name));
 
     return 0;            
+}
+static int checkType(Context* ctx, void* ptr) {
+    lsqlTypeDef* t = (lsqlTypeDef*) ptr;
+    return 0;
 }
 
 static lsqlString* getObjName(void* ptr) {
@@ -139,6 +162,11 @@ static lsqlString* getRelName(void* ptr) {
     }
     return &rel->name;
 }
+static lsqlString* getRelTableName(void* ptr) {
+    lsqlRelDef* rel = (lsqlRelDef*) ptr;
+    return &rel->table->name;
+}
+
 static lsqlXmlPos* getRelPos(void* ptr) {
     return &((lsqlRelDef*) ptr)->pos;
 }
@@ -216,8 +244,12 @@ int lsqlProcessDbDef(lsqlDbDef* db, lsqlErrCallback errCb) {
                       sizeof(lsqlOptionDef), checkOption);
     ret |= checkNodes(&ctx, (void*) db->interfaces, db->interfacesSize,
                       sizeof(lsqlIfaceDef), checkInterface);
+    ret |= checkNodes(&ctx, (void*) db->objects, db->objectsSize,
+                      sizeof(lsqlObjDef), checkObject);
     ret |= checkNodes(&ctx, (void*) db->relations, db->relationsSize,
                       sizeof(lsqlRelDef), checkRelation);
+    ret |= checkNodes(&ctx, (void*) db->types, db->typesSize,
+                      sizeof(lsqlTypeDef), checkType);
 
     ret |= checkUniqueness(&ctx);
     return ret;
