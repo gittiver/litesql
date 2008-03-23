@@ -394,7 +394,7 @@
         Id is appended to the name of the table.
    
 -->
-<!ELEMENT relation (relate, (relate|field|index|option)+)>
+<!ELEMENT relation (relate|field|index|option)+)>
 <!ATTLIST relation
           name NMTOKEN #IMPLIED
           id NMTOKEN #IMPLIED>

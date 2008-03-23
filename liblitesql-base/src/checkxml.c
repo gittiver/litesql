@@ -33,7 +33,7 @@ typedef struct {
 static int matches(lsqlString* s, const char** words) {
     const char** word = words;
     for (; *word; word++)
-        if (lsqlStringCmp(s, *word))
+        if (lsqlStringCmp(s, *word) == 0)
             return 1;
 
     return 0;
@@ -74,11 +74,34 @@ static int checkNodes(Context* ctx, void* array, size_t arraySize,
 }
 
 static int checkOption(Context* ctx, void* ptr) {
+    char* validOptions[] = {
+        "storageEngine",
+        NULL
+    };
 
+    char* validStorageEngines[] = {
+        "myisam", "innodb", "merge", "memory", "berkeleydb", 
+        "federated", "archive", "csv", "blackhole" 
+    };
     lsqlOptionDef* o = (lsqlOptionDef*) ptr;
 
     if (empty(&o->name)) 
         return err(LSQL_XMLDATA, ctx, &o->pos, "option.name cannot be empty");
+    if (!matches(&o->name, validOptions)) 
+        return err2(LSQL_XMLDATA, ctx, &o->pos, 
+                   "option.name is not a valid option", 
+                   lsqlStringPtr(&o->name));
+
+    if (lsqlStringCmp(&o->name, "storageEngine") == 0) {
+        if (!matches(&o->value, validStorageEngines))
+            return err2(LSQL_XMLDATA, ctx, &o->pos, 
+                       "option.value is not a valid storage engine : ",
+                       lsqlStringPtr(&o->value));
+        if (lsqlStringCmp(&o->backend, "mysql") != 0)
+            return err(LSQL_XMLDATA, ctx, &o->pos,
+                       "option.backend, storageEngine-option is only "
+                       "supported by mysql-backend");
+    }
 
     return 0;            
 }
@@ -93,7 +116,11 @@ static int checkInterface(Context* ctx, void* ptr) {
 }
 static int checkObject(Context* ctx, void *ptr) {
     lsqlObjDef* o = (lsqlObjDef*) ptr;
-    return 0;
+    int ret = 0;
+    ret |= checkNodes(&ctx, (void*) o->options, o->optionsSize, 
+                      sizeof(lsqlOptionDef), checkOption);
+ 
+    return ret;
 }
 static lsqlString* getRelateName(lsqlRelateDef* r) {
     if (lsqlStringSize(&r->objectName) == 0)
@@ -114,14 +141,17 @@ static int compareRelate(const void* p1, const void* p2) {
 static int checkRelation(Context* ctx, void* ptr) {
 
     lsqlRelDef* r = (lsqlRelDef*) ptr;
+    int ret = 0;
 
+    ret |= checkNodes(&ctx, (void*) r->options, r->optionsSize, 
+                      sizeof(lsqlOptionDef), checkOption);
+    if (r->relatesSize == 0)
 
     qsort(r->relates, r->relatesSize, sizeof(lsqlRelateDef),
           compareRelate);
 
     if (empty(&r->name)) {
         size_t i;
-        int ret;
         lsqlSplit s;
         ret = lsqlSplitNew(&s);
         if (ret)
@@ -141,7 +171,7 @@ static int checkRelation(Context* ctx, void* ptr) {
                    "relation.name not a valid identifier", 
                    lsqlStringPtr(&r->name));
 
-    return 0;            
+    return ret;            
 }
 static int checkType(Context* ctx, void* ptr) {
     lsqlTypeDef* t = (lsqlTypeDef*) ptr;

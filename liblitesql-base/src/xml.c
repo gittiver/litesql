@@ -259,6 +259,7 @@ static int parseOptionDef(Parser* p, xmlNode* node, void* ptr) {
 
     ret |= getAttr(&opt->name, node, "name");
     ret |= getAttr(&opt->value, node, "value");
+    ret |= getAttr(&opt->backend, node, "backend");
 
     return ret;
 
