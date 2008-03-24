@@ -48,7 +48,7 @@ static int validId(lsqlString* s) {
 
 static int err(int errcode, Context* ctx, lsqlXmlPos* pos, const char* msg) {
     char buf[1024];
-    snprintf(buf, 1024, "%s:%d, %s", lsqlStringPtr(pos->xmlFile),
+    lsqlSnprintf(buf, 1024, "%s:%d, %s", lsqlStringPtr(pos->xmlFile),
              pos->line, msg);
     ctx->errCb(buf);
     return errcode;
@@ -56,7 +56,7 @@ static int err(int errcode, Context* ctx, lsqlXmlPos* pos, const char* msg) {
 static int err2(int errcode, Context* ctx, lsqlXmlPos* pos, const char* msg,
                 const char* data) {
     char buf[1024];
-    snprintf(buf, 1024, "%s '%s'", msg, data);
+    lsqlSnprintf(buf, 1024, "%s '%s'", msg, data);
     return err(errcode, ctx, pos, buf);
 }
 static int checkNodes(Context* ctx, void* array, size_t arraySize,
@@ -221,7 +221,7 @@ static int checkUnique(Context* ctx, GetPropertyDef* defs,
                 num++;
                 if (num > 1) {
                     char buf[1024];
-                    snprintf(buf, 1024, "'%s' defined again in %s "
+                    lsqlSnprintf(buf, 1024, "'%s' defined again in %s "
                                         "(first: %s:%d in %s)",
                                         lsqlStringPtr(prop), def->name,
                                         lsqlStringPtr(pos->xmlFile),

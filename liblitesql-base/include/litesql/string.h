@@ -47,6 +47,7 @@ int lsqlStringCmp(const lsqlString* s1, const char* s2);
 
 int lsqlStringCmp2(const lsqlString* s1, const lsqlString* s2);
 
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

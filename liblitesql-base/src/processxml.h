@@ -14,14 +14,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef _litesql_h_
-#define _litesql_h_
 
-#include "litesql/memory.h"
-#include "litesql/base.h"
-#include "litesql/split.h"
-#include "litesql/string.h"
-#include "litesql/xml.h"
-#include "litesql/portable.h"
+#ifndef _litesql_processxml_h_
+#define _litesql_processxml_h_
+
+#include "litesql.h"
+
+/** internal header */
+
+int lsqlProcessDbDef(lsqlDbDef* def, lsqlErrCallback errCb);
 
 #endif

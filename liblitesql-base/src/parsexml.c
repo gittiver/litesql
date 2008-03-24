@@ -565,8 +565,7 @@ static int parseDbDefNodes(Parser* p, xmlNode* node, void* ptr) {
         char* path = (char*) xmlGetProp(node, (unsigned char*) "file");
         if (isAlreadyParsed(p, path))  {
             char buf[1024];
-            /* TODO: korvaa snprintf */
-            snprintf(buf, 1024, "%s:%d, '%s' already included",
+            lsqlSnprintf(buf, 1024, "%s:%d, '%s' already included",
                      lsqlStringPtr(p->currentFile),
                      node->line, path);
             p->errCb(buf);

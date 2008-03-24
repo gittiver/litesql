@@ -14,14 +14,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef _litesql_h_
-#define _litesql_h_
+#ifndef _litesql_portable_h
+#define _litesql_portable_h
 
-#include "litesql/memory.h"
-#include "litesql/base.h"
-#include "litesql/split.h"
-#include "litesql/string.h"
-#include "litesql/xml.h"
-#include "litesql/portable.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int lsqlSnprintf(char* str, size_t size, const char* format, ...);
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif
