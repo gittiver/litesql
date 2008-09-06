@@ -202,189 +202,311 @@
             <xs:attribute name="temporary" type="xs:boolean"/>
         </xs:complexType>
 
+        <!-- check: the identifiers within the object's namespace are unique -->
         <xs:key name="objIdKey">
-            <xs:selector xpath="./field|./method|./trigger|./field/trigger|./relate"/>
+            <xs:selector xpath="./field|./method|./trigger|./field/trigger|./relate|./reserve"/>
             <xs:field xpath="@name"/>
         </xs:key>
+
+        <!-- key for field names -->
         <xs:key name="objFldKey">
             <xs:selector xpath="./field"/>
             <xs:field xpath="@name"/>
         </xs:key>
+
+        <!-- check: multi-field indexes must correctly reference object's fields -->
         <xs:keyref name="objIndexFldRef" refer="objFldKey">
             <xs:selector xpath="./index/indexfield"/>
             <xs:field xpath="@name"/>
         </xs:keyref>
     </xs:element>
 
+    <!-- a dummy element to reserve names that cannot be used 
+         (C++ reserved words, python reserved words, etc.)-->
     <xs:element name="reserve">
         <xs:complexType>
+            <!-- the reserved word -->
             <xs:attribute name="name" type="anyId" use="required"/>
         </xs:complexType>
     </xs:element>
 
+    <!-- interface, used to define methods and relations for a
+         group of objects -->
     <xs:element name="interface">
         <xs:complexType>
             <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <!-- methods the object that implements the interface
+                     must provide -->
                 <xs:element ref="method"/>
             </xs:sequence>
+            <!-- name of the interface -->
             <xs:attribute name="name" type="capitalId" use="required"/> 
         </xs:complexType>
+
+        <!-- key for interface's methods -->
         <xs:key name="mtdKey">
             <xs:selector xpath="./method"/>
             <xs:field xpath="@name"/>
         </xs:key>
     </xs:element>
 
+    <!-- specifies implementation of an interface -->
     <xs:element name="implements">
         <xs:complexType>
+            <!-- the interface that the object implements -->
             <xs:attribute name="interface" type="capitalId" use="required"/>
         </xs:complexType>
     </xs:element>
 
+    <!-- defines method call to be executed on certain event -->
     <xs:element name="trigger">
         <xs:complexType>
+            <!-- name of the trigger (method) -->
             <xs:attribute name="name" type="id" use="required"/>
+
+            <!-- type of the event that triggers the call -->
             <xs:attribute name="event" type="objectTriggerType" use="required"/>
         </xs:complexType>
     </xs:element>
 
+    <!-- used defined data type -->
     <xs:element name="type">
         <xs:complexType>
             <xs:sequence maxOccurs="unbounded">
+
+                <!-- how the type is represented in certain programming
+                     language (target) -->
                 <xs:element name="represent">
                     <xs:complexType>
+
+                        <!-- the programming language specific data type -->
                         <xs:attribute name="as" type="xs:string" 
                                       use="required"/>
+
+                        <!-- one of the supported targets -->
                         <xs:attribute name="target" type="targetType"/>
                     </xs:complexType>
                 </xs:element>
+
+                <!-- how the type is stored in certain database backend -->
                 <xs:element name="store">
                     <xs:complexType>
+
+                        <!-- database backend specific data type -->
                         <xs:attribute name="as" type="xs:string" 
                                       use="required"/>
+
+                        <!-- one of the supported database backends -->
                         <xs:attribute name="backend" type="backendType"/>
                     </xs:complexType>
                 </xs:element>
+
+                <!-- set of enumerated values related to the type -->
                 <xs:element ref="value"/>
             </xs:sequence>
+
+            <!-- name of the type -->
             <xs:attribute name="name" type="anyId" use="required"/>
         </xs:complexType>
+
+        <!-- check: the type representation must be unambiguous -->
         <xs:key name="representTargetKey">
             <xs:selector xpath="./represent"/>
             <xs:field xpath="@target"/>
         </xs:key>
+
+        <!-- check: how the type is stored must be unambiguous -->
         <xs:key name="storeBackendKey">
             <xs:selector xpath="./store"/>
             <xs:field xpath="@backend"/>
         </xs:key>
+
+        <!-- check: enumerated values must have unique names -->
         <xs:key name="typeValueNameKey">
             <xs:selector xpath="./value"/>
             <xs:field xpath="@name"/>
         </xs:key>
     </xs:element>
 
+    <!-- enumerated value -->
     <xs:element name="value">
         <xs:complexType>
+
+            <!-- name of the enumerated value -->
             <xs:attribute name="name" type="anyId"/>
+
+            <!-- value of the enumerated value -->
             <xs:attribute name="value" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 
+    <!-- database backend specific option -->
     <xs:element name="option">
         <xs:complexType>
+
+            <!-- name of the option -->
             <xs:attribute name="name" type="xs:string" 
                           use="required"/>
+
+            <!-- value of the option -->
             <xs:attribute name="value" type="xs:string" 
                           use="required"/>
+
+            <!-- one of the supported database backends -->
             <xs:attribute name="backend" type="backendType"/>
         </xs:complexType>
     </xs:element>
     
+    <!-- field definition, either of an object or of a relation -->
     <xs:element name="field">
         <xs:complexType>
             <xs:sequence>
+                <!-- enumerated values -->
                 <xs:element ref="value" minOccurs="0" maxOccurs="unbounded"/>
+
+                <!-- triggers -->
                 <xs:element name="trigger" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
+                        <!-- name of the trigger (method) -->
                         <xs:attribute name="name" type="id" use="required"/>
+
+                        <!-- event that triggers the method call -->
                         <xs:attribute name="event" type="fieldTriggerType" 
                                       use="required"/>
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
+
+            <!-- name of the field -->
             <xs:attribute name="name" type="id" use="required"/>
+
+            <!-- type of the field -->
             <xs:attribute name="type" type="anyId" use="required"/>
+
+            <!-- default value of the field -->
             <xs:attribute name="default" type="xs:string"/>
+
+            <!-- when true, an index is created for the field -->
             <xs:attribute name="indexed" type="xs:boolean"/>
+
+            <!-- when true, an uniqueness constraint is created for the field -->
             <xs:attribute name="unique" type="xs:boolean"/>
-            <xs:attribute name="onModify" type="id"/>
         </xs:complexType>
+
+        <!-- check: enumerated values' names must be unique -->
         <xs:key name="fldValueNameKey">
             <xs:selector xpath="./value"/>
             <xs:field xpath="@name"/>
         </xs:key>
-
     </xs:element>
 
+    <!-- multi-field index -->
     <xs:element name="index">
         <xs:complexType>
             <xs:sequence minOccurs="2" maxOccurs="unbounded">
+
+                <!-- field to build the index on -->
                 <xs:element name="indexfield">
                     <xs:complexType>
+                        <!-- name of the field -->
                         <xs:attribute name="name" type="id" use="required"/>
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
+
+            <!-- when true, the built index is unique -->
             <xs:attribute name="unique" type="xs:boolean" use="required"/>
         </xs:complexType>
     </xs:element>
 
+    <!-- method definition -->
     <xs:element name="method">
         <xs:complexType>
             <xs:sequence minOccurs="0" maxOccurs="unbounded">
+
+                <!-- parameter of the method -->
                 <xs:element name="param">
                     <xs:complexType>
+
+                        <!-- name of the parameter -->
                         <xs:attribute name="name" type="anyId" use="required"/>
+
+                        <!-- type of the parameter -->
                         <xs:attribute name="type" type="xs:string" 
                                       use="required"/>
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
+
+            <!-- name of the method -->
             <xs:attribute name="name" type="anyId" use="required"/>
+
+            <!-- when true (and when implementable), the method does not alter the fields of the object -->
             <xs:attribute name="const" type="xs:boolean"/>
+
+            <!-- the type of the returned data structure -->
             <xs:attribute name="returnType" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 
+    <!-- relation between two or more objects, possibly with additional information (relation fields).
+         Also, a relation between one interface and one or more objects can be defined. -->
     <xs:element name="relation">
         <xs:complexType>
             <xs:sequence>
+                <!-- specifies the objects in the relation -->
                 <xs:element ref="relate" minOccurs="2" maxOccurs="unbounded"/>
+
+                <!-- relation fields, i.e. additional information (e.g order field, time, etc.) -->
                 <xs:element ref="field" minOccurs="0" maxOccurs="unbounded"/>
+
+                <!-- indexes on the relation -->
                 <xs:element ref="index" minOccurs="0" maxOccurs="unbounded"/>
+
+                <!-- backend specific options for the table of the relation -->
                 <xs:element ref="option" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
+
+            <!-- name of the relation -->
             <xs:attribute name="name" type="capitalId" use="required"/>
+
+            <!-- id suffix used to distinguish similar relations -->
             <xs:attribute name="id" type="alnum"/>
+
+            <!-- when true, the relation is unidirectional -->
             <xs:attribute name="unidir" type="xs:boolean"/>
         </xs:complexType>
+
+        <!-- key for relation's fields -->
         <xs:key name="relFldKey">
             <xs:selector xpath="./field"/>
             <xs:field xpath="@name"/>
         </xs:key>
+
+        <!-- check: multi-field index must correctly reference relation's fields -->
         <xs:keyref name="relIndexFldRef" refer="relFldKey">
             <xs:selector xpath="./index/indexfield"/>
             <xs:field xpath="@name"/>
         </xs:keyref>
-
     </xs:element>
 
+    <!-- participation in a relation -->
     <xs:element name="relate">
         <xs:complexType>
+            <!-- the object's name -->
             <xs:attribute name="object" type="capitalId"/>
+
+            <!-- or an interface's name -->
             <xs:attribute name="interface" type="capitalId"/>
+
+            <!-- when true, adds an uniqueness constraint on the referencing field -->
             <xs:attribute name="unique" type="xs:boolean"/>
+
+            <!-- adds a relation handle for the object, facilitates the usage of the relation -->
             <xs:attribute name="handle" type="id"/>
+
+            <!-- when true, specifies the owner of the relation. when the owning object is deleted,
+                 all referencing objects will be deleted as well -->                
             <xs:attribute name="owner" type="xs:boolean"/>
         </xs:complexType>
     </xs:element>
