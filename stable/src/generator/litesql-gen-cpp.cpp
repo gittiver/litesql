@@ -20,7 +20,7 @@ string brackets(string s) {
     return "(" + s + ")";
 }
 static bool validID(string s) {
-    static char* words[] = 
+    static const char* words[] = 
         {"asm","break","case","catch",
          "char","class","const","continue","default",
          "delete","do","double","else","enum","extern",
