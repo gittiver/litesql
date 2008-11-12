@@ -1,0 +1,19 @@
+/* LiteSQL - Documentation - Future
+ * 
+ * By Tero Laitinen 
+ * 
+ * See LICENSE for copyright information. */
+/* \file future.txt
+    Manual */
+
+/** \page future The Future
+
+The library is now in testing and no new features will be added until a stable
+version is reached. 
+
+\section todolist Current "To Do"-List:
+- writing extensive unit testers 
+- ensuring that library compiles on different platforms and compilers
+- documenting
+*/
+
