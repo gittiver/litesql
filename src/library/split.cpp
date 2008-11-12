@@ -8,6 +8,7 @@
 #include <string>
 #include <string.h>
 #include <cstring>
+#include <cstdlib>
 
 namespace litesql {    
 using namespace std;

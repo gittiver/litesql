@@ -32,7 +32,7 @@ class Persistent {
 protected:
     typedef map<string, vector<pair<FieldType, string> > > Updates;
     /** executed when object is created into database */    
-    string Persistent::insert(Record& tables, 
+    string insert(Record& tables, 
                               Records& fieldRecs,
                               Records& values,
                               const string& sequence);

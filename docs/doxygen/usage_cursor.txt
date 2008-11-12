@@ -20,7 +20,7 @@ Cursor<Person> cur2 = select<Person>(db).cursor();
 
 Iterating through the result set:
 \code
-for (;!cur.rowsLeft(); cur++)
+for (;cur.rowsLeft(); cur++)
     cout << (*cur).name << endl;
 \endcode
 
