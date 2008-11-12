@@ -1,0 +1,21 @@
+/* LiteSQL - Documentation - Contributors
+ * 
+ * By Tero Laitinen 
+ * 
+ * See LICENSE for copyright information. */
+/* \file documentation.txt
+    Manual */
+/** \page contributors Contributors
+
+(in alphabetical order)
+
+Michel Loiseleur
+- Fixed memory leaks in transaction routines of all backends.
+
+Eric McDonald
+- Renoved autotools related files.
+- Wrote a lot of versioning and packaging improvements.
+
+Axel Schmidt 
+- Made LiteSQL compile with VC++ (fixed some related bugs).
+*/
