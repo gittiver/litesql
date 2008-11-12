@@ -43,7 +43,7 @@ public:
     vector<T> dump();
     /** returns current record */
     T operator*();
-    /** returns true if there are no records left in result set */
+    /** returns true if there are records left in the result set */
     inline bool rowsLeft() { return !done; }
 };
 

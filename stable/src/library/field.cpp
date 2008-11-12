@@ -3,6 +3,7 @@
  * By Tero Laitinen 
  * 
  * See LICENSE for copyright information. */
+#include <cstdlib>
 #include "compatibility.hpp"
 #include "litesql.hpp"
 namespace litesql {

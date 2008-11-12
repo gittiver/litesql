@@ -8,6 +8,7 @@
 #include "litesql/utils.hpp"
 #include "litesql/field.hpp"
 #include <ctype.h>
+#include <cstdlib>
 
 namespace litesql {
 using namespace std;    

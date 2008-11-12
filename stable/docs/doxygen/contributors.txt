@@ -16,6 +16,9 @@ Eric McDonald
 - Renoved autotools related files.
 - Wrote a lot of versioning and packaging improvements.
 
+Heiko Nardmann
+- Fixed compilation issues which prevented LiteSQL from compiling on GCC 4.x
+
 Axel Schmidt 
 - Made LiteSQL compile with VC++ (fixed some related bugs).
 */
