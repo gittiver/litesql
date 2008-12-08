@@ -13,6 +13,11 @@
 #include "litesql/types.hpp"
 namespace litesql {
     using namespace std;
+
+    class Backend {
+    public:
+    };
+
     /** An abstract base class for interfacing with relational databases */
     class Backend {
         public:

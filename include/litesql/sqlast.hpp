@@ -1,22 +1,18 @@
 #ifndef _litesql_sqlast_hpp_
 #define _litesql_sqlast_hpp_
-
+#include "litesql/sql.hpp"
 namespace litesql {
     namespace sql {
 
-        /** AST visitor base class */
-        class Visitor {
-        public:
-            virtual void visitX(X* x);
 
-        };
+        class Translator;
 
         /** Abstract syntax tree node */
         class AST {
         public:
             virtual ~AST() {}
             virtual std::string toString() const=0;
-            virtual void accept(Visitor& v) = 0;
+            virtual SQL* translate(Translator& t) = 0;
         };
 
         /** Raw SQL-injection */
@@ -298,7 +294,72 @@ namespace litesql {
         /** DROP INDEX statement */
         class DropIndex : public Stmt {
         };
+
+        /** AST translator base class */
+        class Translator {
+        public:
+            virtual SQL* trnsRaw(Raw*);
+            virtual SQL* trnsSelect(Select*);
+            virtual SQL* trnsResult(Result*);
+            virtual SQL* trnsSources(Sources*);
+            virtual SQL* trnsFromSource(FromSource*);
+            virtual SQL* trnsFromSelect(FromSelect*);
+            virtual SQL* trnsCrossJoin(CrossJoin*);
+            virtual SQL* trnsInnerJoin(InnerJoin*);
+            virtual SQL* trnsLeftOuterJoin(LeftOuterJoin*);
+            virtual SQL* trnsRightOuterJoin(RightOuterJoin*);
+            virtual SQL* trnsFullOuterJoin(FullOuterJoin*);
+            virtual SQL* trnsUnion(Union*);
+            virtual SQL* trnsIntersect(Intersect*);
+            virtual SQL* trnsExcept(Except*);
+            virtual SQL* trnsOrderBy(OrderBy*);
+            virtual SQL* trnsNot(Not*);
+            virtual SQL* trnsUnaryMinus(UnaryMinus*);
+            virtual SQL* trnsEq(Eq*);
+            virtual SQL* trnsNeq(Neq*);
+            virtual SQL* trnsLt(Lt*);
+            virtual SQL* trnsLtEq(LtEq*);
+            virtual SQL* trnsGt(Gt*);
+            virtual SQL* trnsGtEq(GtEq*);
+            virtual SQL* trnsOr(Or*);
+            virtual SQL* trnsAnd(And*);
+            virtual SQL* trnsLike(Like*);
+            virtual SQL* trnsRegExp(RegExp*);
+            virtual SQL* trnsIsNull(IsNull*);
+            virtual SQL* trnsIn(In*);
+            virtual SQL* trnsConcat(Concat*);
+            virtual SQL* trnsMod(Mod*);
+            virtual SQL* trnsDiv(Div*);
+            virtual SQL* trnsMul(Mul*);
+            virtual SQL* trnsAdd(Add*);
+            virtual SQL* trnsSub(Sub*);
+            virtual SQL* trnsList(List*);
+            virtual SQL* trnsValueExpr(ValueExpr*);
+            virtual SQL* trnsFieldExpr(FieldExpr*);
+            virtual SQL* trnsFromSequence(FromSequence*);
+            virtual SQL* trnsInsert(Insert*);
+            virtual SQL* trnsToTable(ToTable*);
+            virtual SQL* trnsAssign(Assign*);
+            virtual SQL* trnsUpdate(Update*);
+            virtual SQL* trnsDelete(Delete*);
+            virtual SQL* trnsCreateTable(CreateTable*);
+            virtual SQL* trnsDropTable(DropTable*);
+            virtual SQL* trnsField(Field*);
+            virtual SQL* trnsFieldConstraint(FieldConstraint*);
+            virtual SQL* trnsFieldPrimaryKey(FieldPrimaryKey*);
+            virtual SQL* trnsFieldUnique(FieldUnique*);
+            virtual SQL* trnsFieldCheck(FieldCheck*);
+            virtual SQL* trnsFieldDefault(FieldDefault*);
+            virtual SQL* trnsFieldReference(FieldReference*);
+            virtual SQL* trnsCascade(Cascade*);
+            virtual SQL* trnsSetNull(SetNull*);
+            virtual SQL* trnsTablePrimaryKey(TablePrimaryKey*);
+            virtual SQL* trnsCreateIndex(CreateIndex*);
+            virtual SQL* trnsDropIndex(DropIndex*);
+        };
+
     }
 }
 
 #endif
+
