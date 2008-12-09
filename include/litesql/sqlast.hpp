@@ -67,64 +67,64 @@ namespace litesql {
         class Translator {
         public:
             virtual ~Translator() {}
-            virtual sql::SQL* translateRaw(Raw*)=0;
-            virtual sql::SQL* translateSelect(Select*)=0;
-            virtual sql::SQL* translateResult(Result*)=0;
-            virtual sql::SQL* translateSources(Sources*)=0;
-            virtual sql::SQL* translateFromSource(FromSource*)=0;
-            virtual sql::SQL* translateFromSelect(FromSelect*)=0;
-            virtual sql::SQL* translateCrossJoin(CrossJoin*)=0;
-            virtual sql::SQL* translateInnerJoin(InnerJoin*)=0;
-            virtual sql::SQL* translateLeftOuterJoin(LeftOuterJoin*)=0;
-            virtual sql::SQL* translateRightOuterJoin(RightOuterJoin*)=0;
-            virtual sql::SQL* translateFullOuterJoin(FullOuterJoin*)=0;
-            virtual sql::SQL* translateUnion(Union*)=0;
-            virtual sql::SQL* translateIntersect(Intersect*)=0;
-            virtual sql::SQL* translateExcept(Except*)=0;
-            virtual sql::SQL* translateOrderBy(OrderBy*)=0;
-            virtual sql::SQL* translateNot(Not*)=0;
-            virtual sql::SQL* translateUnaryMinus(UnaryMinus*)=0;
-            virtual sql::SQL* translateEq(Eq*)=0;
-            virtual sql::SQL* translateNeq(Neq*)=0;
-            virtual sql::SQL* translateLt(Lt*)=0;
-            virtual sql::SQL* translateLtEq(LtEq*)=0;
-            virtual sql::SQL* translateGt(Gt*)=0;
-            virtual sql::SQL* translateGtEq(GtEq*)=0;
-            virtual sql::SQL* translateOr(Or*)=0;
-            virtual sql::SQL* translateAnd(And*)=0;
-            virtual sql::SQL* translateLike(Like*)=0;
-            virtual sql::SQL* translateRegExp(RegExp*)=0;
-            virtual sql::SQL* translateIsNull(IsNull*)=0;
-            virtual sql::SQL* translateIn(In*)=0;
-            virtual sql::SQL* translateConcat(Concat*)=0;
-            virtual sql::SQL* translateMod(Mod*)=0;
-            virtual sql::SQL* translateDiv(Div*)=0;
-            virtual sql::SQL* translateMul(Mul*)=0;
-            virtual sql::SQL* translateAdd(Add*)=0;
-            virtual sql::SQL* translateSub(Sub*)=0;
-            virtual sql::SQL* translateList(List*)=0;
-            virtual sql::SQL* translateValueExpr(ValueExpr*)=0;
-            virtual sql::SQL* translateFieldExpr(FieldExpr*)=0;
-            virtual sql::SQL* translateFromSequence(FromSequence*)=0;
-            virtual sql::SQL* translateInsert(Insert*)=0;
-            virtual sql::SQL* translateToTable(ToTable*)=0;
-            virtual sql::SQL* translateAssign(Assign*)=0;
-            virtual sql::SQL* translateUpdate(Update*)=0;
-            virtual sql::SQL* translateDelete(Delete*)=0;
-            virtual sql::SQL* translateCreateTable(CreateTable*)=0;
-            virtual sql::SQL* translateDropTable(DropTable*)=0;
-            virtual sql::SQL* translateField(Field*)=0;
-            virtual sql::SQL* translateFieldConstraint(FieldConstraint*)=0;
-            virtual sql::SQL* translateFieldPrimaryKey(FieldPrimaryKey*)=0;
-            virtual sql::SQL* translateFieldUnique(FieldUnique*)=0;
-            virtual sql::SQL* translateFieldCheck(FieldCheck*)=0;
-            virtual sql::SQL* translateFieldDefault(FieldDefault*)=0;
-            virtual sql::SQL* translateFieldReference(FieldReference*)=0;
-            virtual sql::SQL* translateCascade(Cascade*)=0;
-            virtual sql::SQL* translateSetNull(SetNull*)=0;
-            virtual sql::SQL* translateTablePrimaryKey(TablePrimaryKey*)=0;
-            virtual sql::SQL* translateCreateIndex(CreateIndex*)=0;
-            virtual sql::SQL* translateDropIndex(DropIndex*)=0;
+            virtual sql::SQL* translate(Raw*)=0;
+            virtual sql::SQL* translate(Select*)=0;
+            virtual sql::SQL* translate(Result*)=0;
+            virtual sql::SQL* translate(Sources*)=0;
+            virtual sql::SQL* translate(FromSource*)=0;
+            virtual sql::SQL* translate(FromSelect*)=0;
+            virtual sql::SQL* translate(CrossJoin*)=0;
+            virtual sql::SQL* translate(InnerJoin*)=0;
+            virtual sql::SQL* translate(LeftOuterJoin*)=0;
+            virtual sql::SQL* translate(RightOuterJoin*)=0;
+            virtual sql::SQL* translate(FullOuterJoin*)=0;
+            virtual sql::SQL* translate(Union*)=0;
+            virtual sql::SQL* translate(Intersect*)=0;
+            virtual sql::SQL* translate(Except*)=0;
+            virtual sql::SQL* translate(OrderBy*)=0;
+            virtual sql::SQL* translate(Not*)=0;
+            virtual sql::SQL* translate(UnaryMinus*)=0;
+            virtual sql::SQL* translate(Eq*)=0;
+            virtual sql::SQL* translate(Neq*)=0;
+            virtual sql::SQL* translate(Lt*)=0;
+            virtual sql::SQL* translate(LtEq*)=0;
+            virtual sql::SQL* translate(Gt*)=0;
+            virtual sql::SQL* translate(GtEq*)=0;
+            virtual sql::SQL* translate(Or*)=0;
+            virtual sql::SQL* translate(And*)=0;
+            virtual sql::SQL* translate(Like*)=0;
+            virtual sql::SQL* translate(RegExp*)=0;
+            virtual sql::SQL* translate(IsNull*)=0;
+            virtual sql::SQL* translate(In*)=0;
+            virtual sql::SQL* translate(Concat*)=0;
+            virtual sql::SQL* translate(Mod*)=0;
+            virtual sql::SQL* translate(Div*)=0;
+            virtual sql::SQL* translate(Mul*)=0;
+            virtual sql::SQL* translate(Add*)=0;
+            virtual sql::SQL* translate(Sub*)=0;
+            virtual sql::SQL* translate(List*)=0;
+            virtual sql::SQL* translate(ValueExpr*)=0;
+            virtual sql::SQL* translate(FieldExpr*)=0;
+            virtual sql::SQL* translate(FromSequence*)=0;
+            virtual sql::SQL* translate(Insert*)=0;
+            virtual sql::SQL* translate(ToTable*)=0;
+            virtual sql::SQL* translate(Assign*)=0;
+            virtual sql::SQL* translate(Update*)=0;
+            virtual sql::SQL* translate(Delete*)=0;
+            virtual sql::SQL* translate(CreateTable*)=0;
+            virtual sql::SQL* translate(DropTable*)=0;
+            virtual sql::SQL* translate(Field*)=0;
+            virtual sql::SQL* translate(FieldConstraint*)=0;
+            virtual sql::SQL* translate(FieldPrimaryKey*)=0;
+            virtual sql::SQL* translate(FieldUnique*)=0;
+            virtual sql::SQL* translate(FieldCheck*)=0;
+            virtual sql::SQL* translate(FieldDefault*)=0;
+            virtual sql::SQL* translate(FieldReference*)=0;
+            virtual sql::SQL* translate(Cascade*)=0;
+            virtual sql::SQL* translate(SetNull*)=0;
+            virtual sql::SQL* translate(TablePrimaryKey*)=0;
+            virtual sql::SQL* translate(CreateIndex*)=0;
+            virtual sql::SQL* translate(DropIndex*)=0;
         };
 
 
@@ -142,18 +142,21 @@ namespace litesql {
         class ASTBase : public Base {
         public:
             virtual sql::SQL* translate(Translator& translator) {
-                return translator.translate(reinterpret_cast<T*>(this));
+                return translator.translate(static_cast<T*>(this));
             }
         };
-
 
         /** Raw sql::SQL-injection */
         class Raw : public ASTBase<AST, Raw> { 
         public:
         };
 
+        /** abstract statement */
+        class Stmt : public AST {
+        };
+
         /** sql::SQL SELECT statement */
-        class Select : public ASTBase<Stmt, Raw> {
+        class Select : public ASTBase<Stmt, Select> {
         public:
         };
 
@@ -331,7 +334,7 @@ namespace litesql {
 
 
         /** The sequence used in the INSERT-operation */
-        class FromSequence : public ASTBase<Ast, FromSequence> {
+        class FromSequence : public ASTBase<AST, FromSequence> {
         };
 
         /** Atomic multi-table insert that will assign rows with
