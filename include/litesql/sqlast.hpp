@@ -2,41 +2,169 @@
 #define _litesql_sqlast_hpp_
 #include "litesql/sql.hpp"
 namespace litesql {
-    namespace sql {
+    namespace ast {
 
+        class Raw;
+        class Select;
+        class Result;
+        class Sources;
+        class FromSource;
+        class FromSelect;
+        class CrossJoin;
+        class InnerJoin;
+        class LeftOuterJoin;
+        class RightOuterJoin;
+        class FullOuterJoin;
+        class Union;
+        class Intersect;
+        class Except;
+        class OrderBy;
+        class Not;
+        class UnaryMinus;
+        class Eq;
+        class Neq;
+        class Lt;
+        class LtEq;
+        class Gt;
+        class GtEq;
+        class Or;
+        class And;
+        class Like;
+        class RegExp;
+        class IsNull;
+        class In;
+        class Concat;
+        class Mod;
+        class Div;
+        class Mul;
+        class Add;
+        class Sub;
+        class List;
+        class ValueExpr;
+        class FieldExpr;
+        class FromSequence;
+        class Insert;
+        class ToTable;
+        class Assign;
+        class Update;
+        class Delete;
+        class CreateTable;
+        class DropTable;
+        class Field;
+        class FieldConstraint;
+        class FieldPrimaryKey;
+        class FieldUnique;
+        class FieldCheck;
+        class FieldDefault;
+        class FieldReference;
+        class Cascade;
+        class SetNull;
+        class TablePrimaryKey;
+        class CreateIndex;
+        class DropIndex;
 
-        class Translator;
+        /** AST translator base class */
+        class Translator {
+        public:
+            virtual ~Translator() {}
+            virtual sql::SQL* translateRaw(Raw*)=0;
+            virtual sql::SQL* translateSelect(Select*)=0;
+            virtual sql::SQL* translateResult(Result*)=0;
+            virtual sql::SQL* translateSources(Sources*)=0;
+            virtual sql::SQL* translateFromSource(FromSource*)=0;
+            virtual sql::SQL* translateFromSelect(FromSelect*)=0;
+            virtual sql::SQL* translateCrossJoin(CrossJoin*)=0;
+            virtual sql::SQL* translateInnerJoin(InnerJoin*)=0;
+            virtual sql::SQL* translateLeftOuterJoin(LeftOuterJoin*)=0;
+            virtual sql::SQL* translateRightOuterJoin(RightOuterJoin*)=0;
+            virtual sql::SQL* translateFullOuterJoin(FullOuterJoin*)=0;
+            virtual sql::SQL* translateUnion(Union*)=0;
+            virtual sql::SQL* translateIntersect(Intersect*)=0;
+            virtual sql::SQL* translateExcept(Except*)=0;
+            virtual sql::SQL* translateOrderBy(OrderBy*)=0;
+            virtual sql::SQL* translateNot(Not*)=0;
+            virtual sql::SQL* translateUnaryMinus(UnaryMinus*)=0;
+            virtual sql::SQL* translateEq(Eq*)=0;
+            virtual sql::SQL* translateNeq(Neq*)=0;
+            virtual sql::SQL* translateLt(Lt*)=0;
+            virtual sql::SQL* translateLtEq(LtEq*)=0;
+            virtual sql::SQL* translateGt(Gt*)=0;
+            virtual sql::SQL* translateGtEq(GtEq*)=0;
+            virtual sql::SQL* translateOr(Or*)=0;
+            virtual sql::SQL* translateAnd(And*)=0;
+            virtual sql::SQL* translateLike(Like*)=0;
+            virtual sql::SQL* translateRegExp(RegExp*)=0;
+            virtual sql::SQL* translateIsNull(IsNull*)=0;
+            virtual sql::SQL* translateIn(In*)=0;
+            virtual sql::SQL* translateConcat(Concat*)=0;
+            virtual sql::SQL* translateMod(Mod*)=0;
+            virtual sql::SQL* translateDiv(Div*)=0;
+            virtual sql::SQL* translateMul(Mul*)=0;
+            virtual sql::SQL* translateAdd(Add*)=0;
+            virtual sql::SQL* translateSub(Sub*)=0;
+            virtual sql::SQL* translateList(List*)=0;
+            virtual sql::SQL* translateValueExpr(ValueExpr*)=0;
+            virtual sql::SQL* translateFieldExpr(FieldExpr*)=0;
+            virtual sql::SQL* translateFromSequence(FromSequence*)=0;
+            virtual sql::SQL* translateInsert(Insert*)=0;
+            virtual sql::SQL* translateToTable(ToTable*)=0;
+            virtual sql::SQL* translateAssign(Assign*)=0;
+            virtual sql::SQL* translateUpdate(Update*)=0;
+            virtual sql::SQL* translateDelete(Delete*)=0;
+            virtual sql::SQL* translateCreateTable(CreateTable*)=0;
+            virtual sql::SQL* translateDropTable(DropTable*)=0;
+            virtual sql::SQL* translateField(Field*)=0;
+            virtual sql::SQL* translateFieldConstraint(FieldConstraint*)=0;
+            virtual sql::SQL* translateFieldPrimaryKey(FieldPrimaryKey*)=0;
+            virtual sql::SQL* translateFieldUnique(FieldUnique*)=0;
+            virtual sql::SQL* translateFieldCheck(FieldCheck*)=0;
+            virtual sql::SQL* translateFieldDefault(FieldDefault*)=0;
+            virtual sql::SQL* translateFieldReference(FieldReference*)=0;
+            virtual sql::SQL* translateCascade(Cascade*)=0;
+            virtual sql::SQL* translateSetNull(SetNull*)=0;
+            virtual sql::SQL* translateTablePrimaryKey(TablePrimaryKey*)=0;
+            virtual sql::SQL* translateCreateIndex(CreateIndex*)=0;
+            virtual sql::SQL* translateDropIndex(DropIndex*)=0;
+        };
+
 
         /** Abstract syntax tree node */
         class AST {
         public:
             virtual ~AST() {}
             virtual std::string toString() const=0;
-            virtual SQL* translate(Translator& t) = 0;
+            virtual sql::SQL* translate(Translator& t) = 0;
         };
 
-        /** Raw SQL-injection */
-        class Raw {
+        /** AST base template which generates 
+          a translate method */
+        template <class Base, class T>
+        class ASTBase : public Base {
         public:
-            virtual void accept(Visitor& v);
+            virtual sql::SQL* translate(Translator& translator) {
+                return translator.translate(reinterpret_cast<T*>(this));
+            }
         };
 
-        /** SQL SELECT statement */
-        class Select : public Stmt {
+
+        /** Raw sql::SQL-injection */
+        class Raw : public ASTBase<AST, Raw> { 
         public:
-            virtual void accept(Visitor& v);
+        };
+
+        /** sql::SQL SELECT statement */
+        class Select : public ASTBase<Stmt, Raw> {
+        public:
         };
 
         /** SELECT result set field or expression */
-        class Result : public AST {
+        class Result : public ASTBase<AST, Result> {
         public:
-            virtual void accept(Visitor& v);            
         };
 
         /** FROM-expression in SELECT-clause */
-        class Sources : public AST {
+        class Sources : public ASTBase<AST, Sources> {
         public:
-            virtual void accept(Visitor& v);            
         };
 
         /** Single FROM-source in SELECT-clause */
@@ -44,11 +172,11 @@ namespace litesql {
         };
 
         /** FROM (table)-expression in SELECT-clause */
-        class FromTable : public FromSource {
+        class FromTable : public ASTBase<FromSource, FromTable> {
         };
 
         /** FROM (select)-expression in SELECT-clause */
-        class FromSelect : public FromSource {
+        class FromSelect : public ASTBase<FromSource, FromSelect> {
         };
 
         /** Base class for joins */
@@ -56,23 +184,23 @@ namespace litesql {
         };
 
         /** CROSS JOIN */
-        class CrossJoin : public Join {
+        class CrossJoin : public ASTBase<Join, CrossJoin> {
         };
 
         /** INNER JOIN _ ON _ */
-        class InnerJoin : public Join {
+        class InnerJoin : public ASTBase<Join, InnerJoin> {
         };
 
         /** LEFT OUTER JOIN _ ON _ */
-        class LeftOuterJoin : public Join {
+        class LeftOuterJoin : public ASTBase<Join, LeftOuterJoin> {
         };
 
         /** RIGHT OUTER JOIN _ ON _ */
-        class RightOuterJoin : public Join {
+        class RightOuterJoin : public ASTBase<Join, RightOuterJoin> {
         };
 
         /** FULL OUTER JOIN _ ON _ */
-        class FullOuterJoin : public Join {
+        class FullOuterJoin : public ASTBase<Join, FullOuterJoin> {
         };
 
         /** Base class for compound operations */
@@ -80,19 +208,19 @@ namespace litesql {
         };
 
         /** UNION SELECT _ */
-        class Union : public CompoundOp {
+        class Union : public ASTBase<CompoundOp, Union> {
         };
 
         /** INTERSECT SELECT _ */
-        class Intersect : public CompoundOp {
+        class Intersect : public ASTBase<CompoundOp, Intersect> {
         };
 
         /** EXCEPT SELECT _ */
-        class Except : public CompoundOp {
+        class Except : public ASTBase<CompoundOp, Except> {
         };
         
         /** ORDER BY-part of SELECT-statement */
-        class OrderBy : public AST {
+        class OrderBy : public ASTBase<AST, OrderBy> {
 
         };
 
@@ -106,11 +234,11 @@ namespace litesql {
         };
 
         /** NOT (_) */
-        class Not : public UnOp {
+        class Not : public ASTBase<UnOp, Not> {
         };
 
         /** -(_) */
-        class UnaryMinus : public UnOp {
+        class UnaryMinus : public ASTBase<UnOp, UnaryMinus> {
         };
 
         /** Base class for binary operator expressions */
@@ -118,153 +246,153 @@ namespace litesql {
         };
 
         /** _ = _ */
-        class Eq : public BinOp {
+        class Eq : public ASTBase<BinOp, Eq> {
         };
 
         /** _ <> _ */
-        class Neq : public BinOp {
+        class Neq : public ASTBase<BinOp, Neq> {
         };
 
         /** _ < _ */
-        class Lt : public BinOp {
+        class Lt : public ASTBase<BinOp, Lt> {
         };
 
         /** _ <= _ */
-        class LtEq : public BinOp {
+        class LtEq : public ASTBase<BinOp, LtEq> {
         };
 
         /** _ > _ */
-        class Gt : public BinOp {
+        class Gt : public ASTBase<BinOp, Gt> {
         };
 
         /** _ >= _ */
-        class GtEq : public BinOp {
+        class GtEq : public ASTBase<BinOp, GtEq> {
         };
 
         /** (_) OR (_) */
-        class Or : public BinOp {
+        class Or : public ASTBase<BinOp, Or> {
         };
 
         /** (_) AND (_) */
-        class And : public BinOp {
+        class And : public ASTBase<BinOp, And> {
         };
 
         /** _ LIKE _ */
-        class Like : public BinOp {
+        class Like : public ASTBase<BinOp, Like> {
         };
 
         /** _ REGEXP _ */
-        class RegExp : public BinOp {
+        class RegExp : public ASTBase<BinOp, RegExp> {
         };
 
         /** _ IS NULL */
-        class IsNull : public BinOp {
+        class IsNull : public ASTBase<BinOp, IsNull> {
         };
 
         /** _ IN (_) */
-        class In : public BinOp {
+        class In : public ASTBase<BinOp, In> {
         };
 
         /** _ || _ */
-        class Concat : public BinOp {
+        class Concat : public ASTBase<BinOp, Concat> {
         };
 
         /** _ % _ */
-        class Mod : public BinOp {
+        class Mod : public ASTBase<BinOp, Mod> {
         };
 
         /** _ / _ */
-        class Div : public BinOp {
+        class Div : public ASTBase<BinOp, Div> {
         };
 
         /** _ * _ */
-        class Mul : public BinOp {
+        class Mul : public ASTBase<BinOp, Mul> {
         };
 
         /** _ + _ */
-        class Add : public BinOp {
+        class Add : public ASTBase<BinOp, Add> {
         };
 
         /** _ - _ */
-        class Sub : public BinOp {
+        class Sub : public ASTBase<BinOp, Sub> {
         };
 
         /** Converts a list of values to a list expression */
-        class List : public BinOp {
+        class List : public ASTBase<BinOp, List> {
         };
 
         /** Converts a value (int, string, whatever) to an expression */
-        class ValueExpr : public Expr {
+        class ValueExpr : public ASTBase<BinOp, ValueExpr> {
         };
 
         /** Value of a field of the result set-expression */
-        class FieldExpr : public Expr {
+        class FieldExpr : public ASTBase<BinOp, FieldExpr> {
         };
 
 
         /** The sequence used in the INSERT-operation */
-        class FromSequence : public AST {
+        class FromSequence : public ASTBase<Ast, FromSequence> {
         };
 
         /** Atomic multi-table insert that will assign rows with
             same new unique identifier to multiple tables */
-        class Insert : public Stmt {
+        class Insert : public ASTBase<Stmt, Insert> {
         };
 
         /** Insertion to one table */
-        class ToTable : public AST {
+        class ToTable : public ASTBase<AST, ToTable> {
         };
 
         /** Assignment to a field */
-        class Assign : public AST {
+        class Assign : public ASTBase<AST, Assign> {
         };
 
         /** UPDATE statement */
-        class Update : public Stmt {
+        class Update : public ASTBase<Stmt, Update> {
         };
 
         /** DELETE statement */
-        class Delete : public Stmt {
+        class Delete : public ASTBase<Stmt, Delete> {
         };
 
         /** CREATE TABLE statement */
-        class CreateTable : public Stmt {
+        class CreateTable : public ASTBase<Stmt, CreateTable> {
         };
 
         /** DROP TABLE statement */
-        class DropTable : public Stmt {
+        class DropTable : public ASTBase<Stmt, DropTable> {
         };
 
         /** Field definition to be used in CREATE table statement */
-        class Field : public AST {
+        class Field : public ASTBase<AST, Field> {
         };
 
         /** Base class for field constraints */
-        class FieldConstraint : public AST {
+        class FieldConstraint : public ASTBase<AST, FieldConstraint> {
         };
 
         /** NOT NULL constraint for a field */
-        class FieldNotNull : public FieldConstraint {
+        class FieldNotNull : public ASTBase<FieldConstraint, FieldNotNull> {
         };
 
         /** PRIMARY KEY constraint for a field */
-        class FieldPrimaryKey : public FieldConstraint {
+        class FieldPrimaryKey : public ASTBase<FieldConstraint, FieldPrimaryKey> {
         };
 
         /** UNIQUE constraint for a field */
-        class FieldUnique : public FieldConstraint {
+        class FieldUnique : public ASTBase<FieldConstraint, FieldUnique> {
         };
 
         /** CHECK constraint for a field */
-        class FieldCheck : public FieldConstraint {
+        class FieldCheck : public ASTBase<FieldConstraint, FieldCheck> {
         };
 
         /** DEFAULT value for a field */
-        class FieldDefault : public FieldConstraint {
+        class FieldDefault : public ASTBase<FieldConstraint, FieldDefault> {
         };
 
         /** FOREIGN KEY reference for a field */
-        class FieldReference : public FieldConstraint {
+        class FieldReference : public ASTBase<FieldConstraint, FieldReference> {
         };
 
         /** Base class for actions */
@@ -272,11 +400,11 @@ namespace litesql {
         };
 
         /** CASCADE action (when a referenced row is deleted) */
-        class Cascade : public Action {
+        class Cascade : public ASTBase<Action, Cascade> {
         };
 
         /** SET NULL action (when a referenced row is deleted) */
-        class SetNull : public Action {
+        class SetNull : public ASTBase<Action, SetNull> {
         };
 
         /** Base class for table specific constraints */
@@ -284,79 +412,18 @@ namespace litesql {
         };
 
         /** multiple field PRIMARY KEY constraint */
-        class TablePrimaryKey : public TableConstraint {
+        class TablePrimaryKey : public ASTBase<TableConstraint, 
+                                               TablePrimaryKey> {
         };        
 
         /** CREATE INDEX statement */
-        class CreateIndex : public Stmt {
+        class CreateIndex : public ASTBase<Stmt, CreateIndex> {
         };
 
         /** DROP INDEX statement */
-        class DropIndex : public Stmt {
+        class DropIndex : public ASTBase<Stmt, DropIndex> {
         };
 
-        /** AST translator base class */
-        class Translator {
-        public:
-            virtual SQL* trnsRaw(Raw*);
-            virtual SQL* trnsSelect(Select*);
-            virtual SQL* trnsResult(Result*);
-            virtual SQL* trnsSources(Sources*);
-            virtual SQL* trnsFromSource(FromSource*);
-            virtual SQL* trnsFromSelect(FromSelect*);
-            virtual SQL* trnsCrossJoin(CrossJoin*);
-            virtual SQL* trnsInnerJoin(InnerJoin*);
-            virtual SQL* trnsLeftOuterJoin(LeftOuterJoin*);
-            virtual SQL* trnsRightOuterJoin(RightOuterJoin*);
-            virtual SQL* trnsFullOuterJoin(FullOuterJoin*);
-            virtual SQL* trnsUnion(Union*);
-            virtual SQL* trnsIntersect(Intersect*);
-            virtual SQL* trnsExcept(Except*);
-            virtual SQL* trnsOrderBy(OrderBy*);
-            virtual SQL* trnsNot(Not*);
-            virtual SQL* trnsUnaryMinus(UnaryMinus*);
-            virtual SQL* trnsEq(Eq*);
-            virtual SQL* trnsNeq(Neq*);
-            virtual SQL* trnsLt(Lt*);
-            virtual SQL* trnsLtEq(LtEq*);
-            virtual SQL* trnsGt(Gt*);
-            virtual SQL* trnsGtEq(GtEq*);
-            virtual SQL* trnsOr(Or*);
-            virtual SQL* trnsAnd(And*);
-            virtual SQL* trnsLike(Like*);
-            virtual SQL* trnsRegExp(RegExp*);
-            virtual SQL* trnsIsNull(IsNull*);
-            virtual SQL* trnsIn(In*);
-            virtual SQL* trnsConcat(Concat*);
-            virtual SQL* trnsMod(Mod*);
-            virtual SQL* trnsDiv(Div*);
-            virtual SQL* trnsMul(Mul*);
-            virtual SQL* trnsAdd(Add*);
-            virtual SQL* trnsSub(Sub*);
-            virtual SQL* trnsList(List*);
-            virtual SQL* trnsValueExpr(ValueExpr*);
-            virtual SQL* trnsFieldExpr(FieldExpr*);
-            virtual SQL* trnsFromSequence(FromSequence*);
-            virtual SQL* trnsInsert(Insert*);
-            virtual SQL* trnsToTable(ToTable*);
-            virtual SQL* trnsAssign(Assign*);
-            virtual SQL* trnsUpdate(Update*);
-            virtual SQL* trnsDelete(Delete*);
-            virtual SQL* trnsCreateTable(CreateTable*);
-            virtual SQL* trnsDropTable(DropTable*);
-            virtual SQL* trnsField(Field*);
-            virtual SQL* trnsFieldConstraint(FieldConstraint*);
-            virtual SQL* trnsFieldPrimaryKey(FieldPrimaryKey*);
-            virtual SQL* trnsFieldUnique(FieldUnique*);
-            virtual SQL* trnsFieldCheck(FieldCheck*);
-            virtual SQL* trnsFieldDefault(FieldDefault*);
-            virtual SQL* trnsFieldReference(FieldReference*);
-            virtual SQL* trnsCascade(Cascade*);
-            virtual SQL* trnsSetNull(SetNull*);
-            virtual SQL* trnsTablePrimaryKey(TablePrimaryKey*);
-            virtual SQL* trnsCreateIndex(CreateIndex*);
-            virtual SQL* trnsDropIndex(DropIndex*);
-        };
 
     }
 }
