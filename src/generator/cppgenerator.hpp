@@ -6,6 +6,7 @@
 #include <cstdio>
 #include "litesql/string.hpp"
 #include "filestream.hpp"
+#include "compatibility.hpp"
 
 namespace gen {
 using namespace litesql;

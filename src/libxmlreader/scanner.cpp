@@ -3394,7 +3394,9 @@ const char rcs_flexml[] =
  "$" "Id: flexml.pl,v 1.61 2006/09/13 16:34:33 wdowling Exp $";
 
 /* ANSI headers. */
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif // #ifdef HAVE_UNISTD_H
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -7371,8 +7373,10 @@ static void yy_load_buffer_state  (void)
 	yyfree((void *) b  );
 }
 
-#ifndef __cplusplus
+#ifndef __cplusplus 
 extern int isatty (int );
+#else
+extern "C" int isatty (int );
 #endif /* __cplusplus */
     
 /* Initializes or reinitializes a buffer.
@@ -7439,7 +7443,7 @@ extern int isatty (int );
 void yypush_buffer_state (YY_BUFFER_STATE new_buffer )
 {
     	if (new_buffer == NULL)
-		return;
+			return;
 
 	yyensure_buffer_stack();
 

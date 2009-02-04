@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "litesql/xmltypes.hpp"
 #include "stringutils.hpp"
 #include "litesql/split.hpp"

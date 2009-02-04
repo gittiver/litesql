@@ -12,7 +12,9 @@ namespace litesql {
 TimeStruct::TimeStruct(time_t t) {
     if (!t)
         t = time(NULL);
-    gmtime_r(&t, &mytm);
+#ifndef WIN32
+	gmtime_r(&t, &mytm);
+#endif
 }
 int TimeStruct::day() const {
     return mytm.tm_mday;
@@ -67,8 +69,10 @@ TimeStruct& TimeStruct::setSec(int sec) {
     return *this;
 }
 TimeStruct& TimeStruct::setTimeStamp(time_t t) {
-    gmtime_r(&t, &mytm);
-    return *this;
+#ifndef WIN32
+	gmtime_r(&t, &mytm);
+#endif
+	return *this;
 }
 void Date::setDate(int year, int month, int day) {
     // setTimeStamp() also calls this
