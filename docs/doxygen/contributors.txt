@@ -9,6 +9,10 @@
 
 (in alphabetical order)
 
+Gulliver
+- Added CMake support 
+- Wrote fixes that add compatibility with Visual Studio Libraries
+
 Michel Loiseleur
 - Fixed memory leaks in transaction routines of all backends.
 
