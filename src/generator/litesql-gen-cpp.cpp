@@ -139,8 +139,8 @@ void writeObjFields(Class & cl, const xml::Object & o) {
                 .constructor("litesql::FieldType(n,t,tbl,vals)");
 
             ftypeCl.method(cons);
-            for (size_t v = 0; v < fld.values.size(); v++) {
-                const xml::Value& value = fld.values[v];
+            for (size_t i = 0; i < fld.values.size(); i++) {
+                const xml::Value& value = fld.values[i];
                 string v;
                 if (fld.getCPPType() == "std::string")
                     v = quote(value.value);
@@ -161,8 +161,8 @@ void writeObjFields(Class & cl, const xml::Object & o) {
         cl.variable(field);
         if (fld.values.size() > 0) {
             Class valueHolder(xml::capitalize(fld.name));
-            for (size_t v = 0; v < fld.values.size(); v++) {
-                const xml::Value& value = fld.values[v];
+            for (size_t i = 0; i < fld.values.size(); i++) {
+                const xml::Value& value = fld.values[i];
                 string v;
                 if (fld.getCPPType() == "std::string")
                     v = quote(value.value);
@@ -615,8 +615,8 @@ void writeStaticRelData(Class& cl, const xml::Relation& r) {
                 .constructor("litesql::FieldType(n,t,tbl,vals)");
             
             ftypeCl.method(cons);
-            for (size_t v = 0; v < fld.values.size(); v++) {
-                const xml::Value& value = fld.values[v];
+            for (size_t i = 0; i < fld.values.size(); i++) {
+                const xml::Value& value = fld.values[i];
                 string v;
                 if (fld.getCPPType() == "std::string")
                     v = quote(value.value);

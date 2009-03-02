@@ -4,7 +4,7 @@
  * 
  * See LICENSE for copyright information. */
 #include "compatibility.hpp"
-#include "litesql/mysql.hpp"
+#include "mysql.hpp"
 #ifdef HAVE_LIBMYSQLCLIENT
 #include <string>
 namespace litesql {

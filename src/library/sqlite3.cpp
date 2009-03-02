@@ -6,7 +6,7 @@
  * 
  * See LICENSE for copyright information. */
 #include "compatibility.hpp"
-#include "litesql/sqlite3.hpp"
+#include "sqlite3.hpp"
 #include <string>
 #ifdef HAVE_LIBSQLITE3
 #ifdef _MSC_VER
@@ -52,6 +52,9 @@ Record SQLite3::Cursor::fetchOne() {
         case SQLITE_BUSY: case SQLITE_LOCKED:
             usleep(5000);
             busy = true;
+            break;
+        case SQLITE_ROW:
+            busy = false;
             break;
         }
     } while (busy);

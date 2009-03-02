@@ -5,6 +5,7 @@
 #include <vector>
 #include <cstdio>
 #include "litesql/string.hpp"
+#include "compatibility.hpp"
 namespace gen {
 using namespace litesql;
 using namespace std;

@@ -14,25 +14,7 @@ namespace litesql {
 using namespace std;
 
 void Database::openDatabase() {
-#ifdef HAVE_LIBMYSQLCLIENT
-    if (backendType == "mysql") {
-        backend = new MySQL(connInfo);
-        return;
-    }
-#endif
-#ifdef HAVE_LIBPQ
-    if (backendType == "postgresql") {
-        backend = new PostgreSQL(connInfo);
-        return;
-    }
-#endif
-#ifdef HAVE_LIBSQLITE3
-    if (backendType == "sqlite3") {
-        backend = new SQLite3(connInfo);
-        return;
-    }
-#endif
-    throw DatabaseError("Unknown backend: " + backendType);
+   backend = Backend::getBackend(backendType,connInfo);
 }
 void Database::storeSchemaItem(const SchemaItem& s) const {
     delete_("schema_", 

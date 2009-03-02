@@ -84,6 +84,7 @@ public:
         \return new row id */
     virtual string groupInsert(Record tables, Records fields, Records values,
                                string sequence) const;
+    static Backend* getBackend(string type,string connInfo);
 };
 
 }
