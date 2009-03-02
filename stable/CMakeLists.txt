@@ -25,14 +25,11 @@ IF (WIN32)
 	SET(CMAKE_DL_LIBS "")
 ENDIF (WIN32)
 
-SET(HAVE_LIBSQLITE 1)
-
 add_subdirectory(src)
-  
+ 
 # Our project is called 'minimal' this is how it will be called in
     # visual studio, and in our makefiles. 
 PROJECT( ${PROJECT_NAME} )
-
     
 # We define the include paths here, our minimal source dir is one, 
 INCLUDE_DIRECTORIES(include)
