@@ -4,7 +4,7 @@
  * 
  * See LICENSE for copyright information. */
 #include "compatibility.hpp"
-#include "litesql/postgresql.hpp"
+#include "postgresql.hpp"
 #ifdef HAVE_LIBPQ
 #include <string>
 namespace litesql {

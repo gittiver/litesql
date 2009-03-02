@@ -7,6 +7,22 @@
 #include "litesql/split.hpp"
 #include <time.h>
 using namespace std;
+
+#ifdef WIN32
+struct tm * 
+localtime_r (const time_t *timer, struct tm *result) 
+{ 
+   struct tm *local_result; 
+   local_result = localtime (timer); 
+
+   if (local_result == NULL || result == NULL) 
+     return NULL; 
+
+   memcpy (result, local_result, sizeof (result)); 
+   return result; 
+} 
+#endif // WIN32
+
 namespace litesql {
 
 TimeStruct::TimeStruct(time_t t) {
@@ -116,7 +132,7 @@ string Date::asString(string format) const {
     Split data(format, "%");
     TimeStruct ts(value);
     string res = data[0];
-    for (int i = 1; i < data.size(); i++) {
+    for (size_t i = 1; i < data.size(); i++) {
         string rest = data[i].substr(1, data[i].size());
         switch(data[i][0]) {
         case 'd':
@@ -167,7 +183,7 @@ Time& Time::setSecs(int secs) {
 string Time::asString(string format) const {
     Split data(format, "%");
     string res = data[0];
-    for (int i = 1; i < data.size(); i++) {
+    for (size_t i = 1; i < data.size(); i++) {
         string rest = data[i].substr(1, data[i].size());
         switch(data[i][0]) {
         case 'h':
@@ -234,7 +250,7 @@ string DateTime::asString(string format) const {
     Split data(format, "%");
     TimeStruct ts(value);
     string res = data[0];
-    for (int i = 1; i < data.size(); i++) {
+    for (size_t i = 1; i < data.size(); i++) {
         string rest = data[i].substr(1, data[i].size());
         switch(data[i][0]) {
         case 'd':

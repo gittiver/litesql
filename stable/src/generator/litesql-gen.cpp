@@ -2017,7 +2017,9 @@ const char rcs_flexml[] =
  "$" "Id: flexml.pl,v 1.44 2005/02/23 23:08:16 mquinson Exp $";
 
 /* ANSI headers. */
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>

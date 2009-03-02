@@ -8,8 +8,14 @@
 #include "litesql/backend.hpp"
 #include "litesql/string.hpp"
 #include "litesql/types.hpp"
-namespace litesql {
+
+#include "mysql.hpp"
+#include "postgresql.hpp"
+#include "sqlite3.hpp"
+
+using namespace litesql;
 using namespace std;    
+
 string Backend::groupInsert(Record tables, Records fields, Records values,
                    string sequence) const {
     string id = values[0][0];
@@ -37,4 +43,27 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
     }
     return id;
 }
+
+Backend* Backend::getBackend(string backendType,string connInfo)
+{
+   Backend* backend;
+#ifdef HAVE_LIBMYSQLCLIENT
+    if (backendType == "mysql") {
+        backend = new MySQL(connInfo);
+    } else
+#endif
+#ifdef HAVE_LIBPQ
+    if (backendType == "postgresql") {
+        backend = new PostgreSQL(connInfo);
+    } else
+#endif
+#ifdef HAVE_LIBSQLITE3
+    if (backendType == "sqlite3") {
+        backend = new SQLite3(connInfo);
+    } else
+#endif
+    {
+       throw DatabaseError("Unknown backend: " + backendType);
+    }  
+    return backend;
 }

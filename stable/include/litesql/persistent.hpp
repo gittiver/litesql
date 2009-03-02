@@ -33,9 +33,9 @@ protected:
     typedef map<string, vector<pair<FieldType, string> > > Updates;
     /** executed when object is created into database */    
     string insert(Record& tables, 
-                              Records& fieldRecs,
-                              Records& values,
-                              const string& sequence);
+                  Records& fieldRecs,
+                  Records& values,
+                  const string& sequence);
     void update(Updates& updates); 
     template <class T>
     void updateField(litesql::Persistent::Updates& updates, 
