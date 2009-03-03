@@ -99,7 +99,7 @@ VERSION = @VERSION@
 pkg_config_reqs_tv = @pkg_config_reqs_tv@
 
 litesqlincludedir = $(includedir)/litesql
-litesqlinclude_HEADERS = backend.hpp     except.hpp  operations.hpp  selectquery.hpp  types.hpp  cursor.hpp      expr.hpp    persistent.hpp  split.hpp        updatequery.hpp  database.hpp    field.hpp   postgresql.hpp  sqlite3.hpp      utils.hpp  datasource.hpp  mysql.hpp   relation.hpp    string.hpp datetime.hpp
+litesqlinclude_HEADERS = backend.hpp     except.hpp  operations.hpp  selectquery.hpp  types.hpp  cursor.hpp      expr.hpp    persistent.hpp  split.hpp        updatequery.hpp  database.hpp    field.hpp      utils.hpp  datasource.hpp   relation.hpp    string.hpp datetime.hpp
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
