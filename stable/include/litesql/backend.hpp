@@ -12,10 +12,10 @@
 #include <memory>
 #include "litesql/types.hpp"
 namespace litesql {
-using namespace std;
-/** An abstract base class for interfacing with relational databases */
-class Backend {
-public:
+	using namespace std;
+	/** An abstract base class for interfacing with relational databases */
+	class Backend {
+	public:
     /** An abstract base class for cursors that iterate result sets
         returned by relational database */
     class Cursor {
@@ -84,6 +84,13 @@ public:
         \return new row id */
     virtual string groupInsert(Record tables, Records fields, Records values,
                                string sequence) const;
+
+    /** returns a backend according to Backendtype in type, parameters are specific to backend and are separated by semicolon.
+
+      \param type type of the database backend (supported are : "mysql","postgresql","sqlite3"
+      \param connInfo database connection specific parameters (parameters are separated by semicolon)
+       @throw DatabaseError if no backend is found
+      */
     static Backend* getBackend(string type,string connInfo);
 };
 

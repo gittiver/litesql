@@ -75,7 +75,7 @@ SQLite3::Cursor::~Cursor() {
     }
 }
 SQLite3::SQLite3(string connInfo) : db(NULL), transaction(false) {
-    Split params(connInfo);
+    Split params(connInfo,";");
     string database;
     for (size_t i = 0; i < params.size(); i++) {
         Split param(params[i], "=");
