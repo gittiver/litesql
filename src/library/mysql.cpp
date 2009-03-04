@@ -87,7 +87,7 @@ MySQL::Cursor::~Cursor() {
     mysql_close(&conn);
 }
 MySQL::MySQL(string connInfo) {
-    Split params(connInfo);
+    Split params(connInfo,";");
     host = "localhost";
     int port = 0;
     for (size_t i = 0; i < params.size(); i++) {

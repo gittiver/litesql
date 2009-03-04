@@ -63,7 +63,7 @@ PostgreSQL::Cursor::~Cursor() {
     delete pq.execute("CLOSE "+name+";");
 }
 PostgreSQL::PostgreSQL(string connInfo) : conn(NULL), transaction(false) {
-    Split params(connInfo);
+    Split params(connInfo,";");
     connInfo = "";
     for (size_t i = 0; i < params.size(); i++) {
         Split param(params[i], "=");
