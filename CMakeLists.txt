@@ -1,4 +1,5 @@
-
+enable_language(C)
+enable_language(CXX)
 SET(PROJECT_NAME "litesql")
 
 SET(PROJECT_VERSION_MAJOR 0)
@@ -7,9 +8,10 @@ SET(PROJECT_VERSION_PATCH 4)
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH} )
 
 
-OPTION(WITH_SQLITE3 "help string describing option" ON)
-OPTION(WITH_MYSQL "help string describing option" OFF)
-OPTION(WITH_POSTGRES "help string describing option" OFF)
+OPTION(WITH_SQLITE3 "build with sqlite3 backend(sources integrated)" ON)
+OPTION(WITH_MYSQL "build with mysql Backend" OFF)
+OPTION(WITH_POSTGRES "build with postgres backend" OFF)
+OPTION(WITH_DOCS "generate Documentation" OFF)
 
 IF (WIN32)
 	SET(CMAKE_FIND_LIBRARY_PREFIXES "")
