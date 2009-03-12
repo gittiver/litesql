@@ -11,6 +11,7 @@ SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 OPTION(WITH_SQLITE3 "build with sqlite3 backend(sources integrated)" ON)
 OPTION(WITH_MYSQL "build with mysql Backend" OFF)
 OPTION(WITH_POSTGRES "build with postgres backend" OFF)
+OPTION(WITH_ODBC "build with ODBC Backend" ON)
 OPTION(WITH_DOCS "generate Documentation" OFF)
 
 IF (WIN32)
