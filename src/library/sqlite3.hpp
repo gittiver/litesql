@@ -9,13 +9,16 @@
 #ifndef _litesql_sqlite3_hpp
 #define _litesql_sqlite3_hpp
 #ifdef HAVE_LIBSQLITE3
-#include <sqlite3.h>
+//#include <sqlite3.h>
 #include "litesql/except.hpp"
 #include "litesql/types.hpp"
 #include "litesql/string.hpp"
 #include "litesql/backend.hpp"
 
 #include <string>
+struct sqlite3;
+struct sqlite3_stmt;
+
 namespace litesql {
 using namespace std;
 /** SQLite3 - backend */
