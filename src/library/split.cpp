@@ -12,7 +12,7 @@
 
 namespace litesql {    
 using namespace std;
-Split::Split(string s, string delim) {
+Split::Split(const string& s, const string& delim) {
     char * buf = strdup((char*) s.c_str());
     char * ptr = buf;
     int len = delim.size();
@@ -46,7 +46,7 @@ Split Split::slice(int start, int end) const {
         data.push_back(this->operator[](i));
     return data;
 }
-string Split::join(string delim) const {
+string Split::join(const string& delim) const {
     string res;
     for (const_iterator i = begin(); i != end(); i++) {
         if (i != begin())
