@@ -15,7 +15,10 @@ using namespace std;
 
 void Database::openDatabase() {
    backend = Backend::getBackend(backendType,connInfo);
+   if (backend==NULL)
+      throw DatabaseError("Unknown backend: " + backendType);
 }
+
 void Database::storeSchemaItem(const SchemaItem& s) const {
     delete_("schema_", 
             RawExpr("name_='" + s.name 
