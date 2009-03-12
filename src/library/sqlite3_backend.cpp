@@ -6,7 +6,9 @@
  * 
  * See LICENSE for copyright information. */
 #include "compatibility.hpp"
-#include "litesql/sqlite3.hpp"
+#include "sqlite3.hpp"
+#include <sqlite3.h>
+
 #include <string>
 #ifdef HAVE_LIBSQLITE3
 #ifdef _MSC_VER
@@ -18,8 +20,25 @@
 #endif
 #endif
 
-namespace litesql {
+using namespace litesql;
 using namespace std;
+
+/*
+class Registrar : public Backend::Creator {
+public:
+   Registrar()
+   {
+      Backend::registrate("sqlite3",this);
+   }
+   
+   Backend* create(const string& connInfo)
+   {
+      return new SQLite3(connInfo);
+   };
+};
+
+SQLite3::Creator* SQLite3::creator = new Registrar();
+*/
 
 size_t SQLite3::Result::fieldNum() const {
     return flds.size();
@@ -75,7 +94,7 @@ SQLite3::Cursor::~Cursor() {
     }
 }
 SQLite3::SQLite3(string connInfo) : db(NULL), transaction(false) {
-    Split params(connInfo);
+    Split params(connInfo,";");
     string database;
     for (size_t i = 0; i < params.size(); i++) {
         Split param(params[i], "=");
@@ -181,5 +200,5 @@ SQLite3::~SQLite3() {
     if (db)
         sqlite3_close(db);
 }
-}
+
 #endif

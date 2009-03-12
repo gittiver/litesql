@@ -86,6 +86,13 @@ namespace litesql {
               \return new row id */
             virtual string groupInsert(Record tables, Records fields, Records values,
                     string sequence) const;
+    /** returns a backend according to Backendtype in type, parameters are specific to backend and are separated by semicolon.
+      \param type type of the database backend (supported are : "mysql","postgresql","sqlite3","odbc"
+      \param connInfo database connection specific parameters (parameters are separated by semicolon)
+       @throw DatabaseError if no backend is found
+      */
+    static Backend* getBackend(const string& type,string connInfo);
+      
     };
 }
 

@@ -4,7 +4,7 @@
  * 
  * See LICENSE for copyright information. */
 #include "compatibility.hpp"
-#include "litesql/postgresql.hpp"
+#include "postgresql.hpp"
 #ifdef HAVE_LIBPQ
 #include <string>
 namespace litesql {
@@ -45,7 +45,7 @@ void PostgreSQL::Cursor::setCacheSize(int v) {
 PostgreSQL::Cursor::Cursor(const PostgreSQL& p, string q) 
     : pq(p), name("cursor" + toString(sid++)), cachePos(0) {
     pq.begin();
-    pq.execute("DECLARE \"" + name + "\" CURSOR FOR "+ q);
+    delete pq.execute("DECLARE \"" + name + "\" CURSOR FOR "+ q);
 }
 Record PostgreSQL::Cursor::fetchOne() {
     if (cache.size() == 0 || cachePos >= cache.size()) {
@@ -60,10 +60,10 @@ Record PostgreSQL::Cursor::fetchOne() {
     return cache[cachePos++];
 }
 PostgreSQL::Cursor::~Cursor() {
-    pq.execute("CLOSE "+name+";");
+    delete pq.execute("CLOSE "+name+";");
 }
 PostgreSQL::PostgreSQL(string connInfo) : conn(NULL), transaction(false) {
-    Split params(connInfo);
+    Split params(connInfo,";");
     connInfo = "";
     for (size_t i = 0; i < params.size(); i++) {
         Split param(params[i], "=");

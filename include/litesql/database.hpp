@@ -11,9 +11,6 @@
 #include "litesql/types.hpp"
 #include "litesql/expr.hpp"
 #include "litesql/backend.hpp"
-#include "litesql/mysql.hpp"
-#include "litesql/postgresql.hpp"
-#include "litesql/sqlite3.hpp"
 #include "litesql/cursor.hpp"
 /** \file database.hpp
     Database-class
