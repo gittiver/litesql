@@ -9,7 +9,7 @@ long long int strtoll(const char *nptr, char **endptr, int base) {
 #ifndef HAVE_STRTOF
 float strtof (const char *nptr, char **endptr) {
 #ifdef HAVE_ATOF
-    return atof(nptr);
+    return (float) atof(nptr);
 #endif
 }
 #endif

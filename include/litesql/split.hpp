@@ -20,7 +20,7 @@ public:
     Split(std::vector<std::string> data) 
         : std::vector<std::string>(data) {}
     /** from string. Split to parts using delimeter */
-    Split(std::string s, std::string delim=" ");
+    Split(const std::string& s, const std::string& delim=" ");
     /** returns a part of strings 
      \param start starting index
      \param end ending index
@@ -28,7 +28,7 @@ public:
      Split then.*/
     Split slice(int start, int end) const;
     /** returns strings joined with delimiter */
-    std::string join(std::string delim) const;
+    std::string join(const std::string& delim) const;
     /** adds contents of another split to the end */
     Split & extend(const Split & s);
 };
