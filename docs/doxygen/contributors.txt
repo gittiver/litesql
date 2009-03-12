@@ -9,7 +9,7 @@
 
 (in alphabetical order)
 
-Gulliver
+Frank Landgraf
 - Added CMake support 
 - Wrote fixes that add compatibility with Visual Studio Libraries
 
