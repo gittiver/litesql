@@ -17,4 +17,4 @@ IF (WIN32)
 ENDIF (WIN32)
 
 
-INCLUDE_DIRECTORIES(../../include ../../win32 ../library ../libxmlreader)
+INCLUDE_DIRECTORIES(../library ../libxmlreader)

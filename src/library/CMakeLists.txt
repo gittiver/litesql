@@ -14,7 +14,7 @@ add_library(  ${LIBNAME}
 				compatibility.cpp 
 				datetime.cpp
 )
- 
+
 IF (WITH_SQLITE3)
 add_library(  ${LIBNAME}_sqlite
 				sqlite3_backend.cpp 
@@ -22,56 +22,28 @@ add_library(  ${LIBNAME}_sqlite
 				sqlite3.hpp
 				sqlite3.h
 				sqlite3ext.h
-)
-set_property(TARGET ${LIBNAME}_sqlite PROPERTY COMPILE_DEFINITIONS HAVE_LIBSQLITE3)
-set_property(TARGET ${LIBNAME} APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBSQLITE3)
+  ) 
 ENDIF (WITH_SQLITE3)
 
 IF (WITH_MYSQL)
-add_library(  ${LIBNAME}_mysql
-				mysql.cpp 
-)
-set_property(TARGET ${LIBNAME}_mysql PROPERTY COMPILE_DEFINITIONS HAVE_LIBMYSQLCLIENT)
-set_property(TARGET ${LIBNAME} APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBMYSQLCLIENT)
+  add_library(  ${LIBNAME}_mysql
+        				mysql.cpp
+   
+  )
 ENDIF (WITH_MYSQL)
 
 IF (WITH_POSTGRES)
-add_library(  ${LIBNAME}_postgresql
+  add_library(  ${LIBNAME}_postgresql
 				postgresql.cpp 
-)
-set_property(TARGET ${LIBNAME}_postgresql PROPERTY COMPILE_DEFINITIONS HAVE_LIBPQ)
-set_property(TARGET ${LIBNAME} APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBPQ)
+  )
 ENDIF (WITH_POSTGRES)
 
 IF (WITH_ODBC)
-add_library(  ${LIBNAME}_odbc
-				odbc_backend.cpp 
-				odbc_backend.hpp 
-)
-set_property(TARGET ${LIBNAME}_odbc PROPERTY COMPILE_DEFINITIONS HAVE_ODBC)
-set_property(TARGET ${LIBNAME} APPEND PROPERTY COMPILE_DEFINITIONS HAVE_ODBC)
+  add_library(  ${LIBNAME}_odbc
+      				odbc_backend.cpp 
+		      		odbc_backend.hpp 
+  )
 ENDIF (WITH_ODBC)
 
-IF (WIN32)
-	set_property(TARGET ${LIBNAME}            APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS)
-   
-   IF (WITH_SQLITE3)
-	   set_property(TARGET ${LIBNAME}_sqlite     APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS HAVE_LIBSQLITE3)
-	ENDIF (WITH_SQLITE3)
-	
-	IF (WITH_MYSQL)
-	set_property(TARGET ${LIBNAME}_mysql      APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS HAVE_LIBSQLITE3)
-	ENDIF (WITH_MYSQL)
-	
-	IF (WITH_POSTGRES)
-	set_property(TARGET ${LIBNAME}_postgresql APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS HAVE_LIBSQLITE3)
-   ENDIF (WITH_POSTGRES)
-
-   IF (WITH_ODBC)
-   set_property(TARGET ${LIBNAME}_odbc APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS HAVE_ODBC)
-   ENDIF (WITH_ODBC)
-	
-ENDIF (WIN32)
-
-INCLUDE_DIRECTORIES(../../include ../../win32 ../../src/library)
+INCLUDE_DIRECTORIES(../../src/library)
 

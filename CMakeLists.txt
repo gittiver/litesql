@@ -1,5 +1,14 @@
 enable_language(C)
 enable_language(CXX)
+
+# Include all the necessary files for macros
+INCLUDE (${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake)
+INCLUDE (${CMAKE_ROOT}/Modules/CheckIncludeFile.cmake)
+INCLUDE (${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake)
+INCLUDE (${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake)
+INCLUDE (${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
+INCLUDE (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
+
 SET(PROJECT_NAME "litesql")
 
 SET(PROJECT_VERSION_MAJOR 0)
@@ -7,12 +16,40 @@ SET(PROJECT_VERSION_MINOR 4)
 SET(PROJECT_VERSION_PATCH 0)
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH} )
 
+# check for mysql
+#set(MYSQL_INCLUDE_DIR "C:/Programme/mysql" CACHE PATH "path to mysql include dir")
+INCLUDE(CMakeUserFindMySQL.txt)
 
+OPTION(WITH_MYSQL "build with mysql Backend" ${MYSQL_FOUND})
+OPTION(MYSQL_LIBRARY " ")
+OPTION(MYSQL_INCLUDE_DIR " ")
 OPTION(WITH_SQLITE3 "build with sqlite3 backend(sources integrated)" ON)
-OPTION(WITH_MYSQL "build with mysql Backend" OFF)
 OPTION(WITH_POSTGRES "build with postgres backend" OFF)
 OPTION(WITH_ODBC "build with ODBC Backend" ON)
 OPTION(WITH_DOCS "generate Documentation" OFF)
+
+
+IF (WITH_SQLITE3)
+  set_property(GLOBAL APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBSQLITE3)
+ENDIF (WITH_SQLITE3)
+
+IF (WITH_MYSQL)
+  set_property(GLOBAL APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBMYSQLCLIENT)
+ENDIF (WITH_MYSQL)
+
+IF (WITH_POSTGRES)
+  set_property(GLOBAL APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBPQ)
+ENDIF (WITH_POSTGRES)
+
+IF (WITH_ODBC)
+  set_property(GLOBAL APPEND PROPERTY COMPILE_DEFINITIONS HAVE_ODBC)
+  message(ODBC is not supported yet)
+ENDIF (WITH_ODBC)
+
+if (WITH_DOCS)
+  add_subdirectory(docs/doxygen)
+endif(WITH_DOCS)
+
 
 IF (WIN32)
 	SET(CMAKE_FIND_LIBRARY_PREFIXES "")
@@ -26,17 +63,39 @@ IF (WIN32)
 	SET(CMAKE_EXECUTABLE_SUFFIX ".exe")          # .exe
 	SET(CMAKE_LINK_LIBRARY_SUFFIX ".lib")
 	SET(CMAKE_DL_LIBS "")
+	set_property(GLOBAL APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS)
 ENDIF (WIN32)
+
+check_include_files(dlfcn.h HAVE_DLFCN_H)
+check_include_files(inttypes.h HAVE_INTTYPES_H)
+check_include_files(memory.h HAVE_MEMORY_H)
+check_include_files(stdint.h HAVE_STDINT_H)
+check_include_files(stdlib.h HAVE_STDLIB_H)
+check_include_files(strings.h HAVE_STRINGS_H)
+check_include_files(string.h HAVE_STRING_H)
+check_include_files(sys/stat.h HAVE_SYS_STAT_H)
+check_include_files(sys/types.h HAVE_SYS_TYPES_H)
+check_include_files(unistd.h HAVE_UNISTD_H)
+
+check_function_exists(gettimeofday HAVE_GETTIMEOFDAY)
+check_function_exists(atof HAVE_ATOF)
+check_function_exists(strtoll HAVE_STRTOLL)
+check_function_exists(strtof  HAVE_STRTOF)
+check_function_exists(localtime_r HAVE_LOCALTIME_R)
+
+
+# create config.h
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
+# set include directories
+get_filename_component(CONFIG_INCLUDE ${CMAKE_CURRENT_BINARY_DIR}/config.h PATH)
+INCLUDE_DIRECTORIES(include ${CONFIG_INCLUDE})
 
 add_subdirectory(src)
  
 # Our project is called 'minimal' this is how it will be called in
     # visual studio, and in our makefiles. 
 PROJECT( ${PROJECT_NAME} )
-    
-# We define the include paths here, our minimal source dir is one, 
-INCLUDE_DIRECTORIES(include)
-
 
 INCLUDE(InstallRequiredSystemLibraries)
 
