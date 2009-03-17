@@ -23,4 +23,4 @@ IF (WIN32)
 ENDIF (WIN32)
 
 
-INCLUDE_DIRECTORIES(../../include ../../win32 ../library)
+INCLUDE_DIRECTORIES(../library)

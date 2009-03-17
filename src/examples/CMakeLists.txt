@@ -21,10 +21,10 @@ add_custom_command(
  
 add_executable(example example.cpp exampledatabase.cpp exampledatabase.hpp exampledatabase.xml exampledatabase.dot)
 
-target_link_libraries (example litesql_sqlite litesql_odbc litesql)
+target_link_libraries (example litesql_sqlite litesql)
 
 IF (WIN32)
-	set_property(TARGET example PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS YY_NEVER_INTERACTIVE YY_NO_UNISTD_H)
+	set_property(TARGET example APPEND PROPERTY COMPILE_DEFINITIONS YY_NEVER_INTERACTIVE YY_NO_UNISTD_H)
 ENDIF (WIN32)
 
-INCLUDE_DIRECTORIES(../../include ../../win32 ../library)
+INCLUDE_DIRECTORIES(../library)
