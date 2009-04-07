@@ -1,6 +1,17 @@
 enable_language(C)
 enable_language(CXX)
 
+if (NOT MSVC)
+   list(APPEND CMAKE_CXX_FLAGS "-Wall -Wunused-variable -Wno-long-long")
+   #-pedantic 
+   list(APPEND CMAKE_C_FLAGS "-Wall -Wunused-variable -Wno-long-long")
+else(NOT MSVC)
+#   list(APPEND CMAKE_CXX_FLAGS_DEBUG " /W4")
+#   list(APPEND CMAKE_C_FLAGS_DEBUG " /W4")
+endif(NOT MSVC)
+
+ 
+
 # Include all the necessary files for macros
 INCLUDE (${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CheckIncludeFile.cmake)
@@ -8,6 +19,17 @@ INCLUDE (${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
+
+INCLUDE (${CMAKE_ROOT}/Modules/FindLibXml2.cmake)
+mark_as_advanced(LIBXML2_FOUND LIBXML2_INCLUDE_DIR LIBXML2_LIBRARIES LIBXML2_DEFINITIONS LIBXML2_XMLLINT_EXECUTABLE)
+
+if (MSVC AND NOT LIBXML2_FOUND)
+   set(LIBXML2_LIBRARIES libxml2_a.lib zlib.lib iconv_a.lib ws2_32.lib)
+   set(LIBXML2_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/win32/include)
+   
+   link_directories(${CMAKE_CURRENT_SOURCE_DIR}/win32/lib/)
+endif (MSVC AND NOT LIBXML2_FOUND)
+	
 
 SET(PROJECT_NAME "litesql")
 
@@ -24,6 +46,7 @@ OPTION(WITH_DOCS "generate Documentation" OFF)
 
 INCLUDE(cmake/FindMySQL.cmake)
 INCLUDE(cmake/FindPostgreSQL.cmake)
+
 
 IF (WITH_SQLITE3)
   set_property(GLOBAL APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBSQLITE3)
@@ -66,6 +89,7 @@ IF (WIN32)
 	SET(CMAKE_LINK_LIBRARY_SUFFIX ".lib")
 	SET(CMAKE_DL_LIBS "")
 	set_property(GLOBAL APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS)
+   link_directories(${CMAKE_CURRENT_SOURCE_DIR}/win32/lib/)
 ENDIF (WIN32)
 
 check_include_files(dlfcn.h HAVE_DLFCN_H)
@@ -87,20 +111,25 @@ check_function_exists(localtime_r HAVE_LOCALTIME_R)
 
 
 # create config.h
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake 
+		${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 # set include directories
 get_filename_component(CONFIG_INCLUDE ${CMAKE_CURRENT_BINARY_DIR}/config.h PATH)
 INCLUDE_DIRECTORIES(include ${CONFIG_INCLUDE})
 
-install(DIRECTORY include DESTINATION . FILES_MATCHING PATTERN "*.hpp" PATTERN .svn EXCLUDE)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include)
+install(DIRECTORY include DESTINATION . 
+	COMPONENT devel 
+	FILES_MATCHING PATTERN "*.hpp" 
+	PATTERN .svn EXCLUDE 
+	)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h 
+	DESTINATION include/litesql 
+	COMPONENT devel)
 
 add_subdirectory(src)
  
 PROJECT( ${PROJECT_NAME} )
-
-INCLUDE(InstallRequiredSystemLibraries)
 
 SET(CPACK_GENERATOR TGZ ZIP)
 IF(WIN32 AND NOT CYGWIN)
@@ -123,8 +152,8 @@ IF(WIN32 AND NOT UNIX)
   #  SET(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
   SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\${PROJECT_NAME}.exe")
   SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} ${PROJECT_NAME}")
-  SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
-  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.my-personal-home-page.com")
+  SET(CPACK_NSIS_HELP_LINK "http://litesql.sourceforge.net/")
+  SET(CPACK_NSIS_URL_INFO_ABOUT "http://litesql.sourceforge.net/")
   SET(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")
   SET(CPACK_NSIS_MODIFY_PATH ON)
 ELSE(WIN32 AND NOT UNIX)
@@ -133,4 +162,6 @@ ELSE(WIN32 AND NOT UNIX)
   SET(CPACK_SOURCE_STRIP_FILES "")
 ENDIF(WIN32 AND NOT UNIX)
 SET(CPACK_PACKAGE_EXECUTABLES ${PROJECT_NAME}-gen ${PROJECT_NAME}-gen)
+
+INCLUDE(InstallRequiredSystemLibraries)
 INCLUDE(CPack)
