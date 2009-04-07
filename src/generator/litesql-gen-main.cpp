@@ -28,6 +28,7 @@ void report(const string& msg) {
     if (verbose)
         cout << msg;
 }
+
 void generateCode(xml::Database& db,
                   vector<xml::Object*>& objects,
                   vector<xml::Relation*>& relations) {

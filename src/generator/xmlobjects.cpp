@@ -25,7 +25,7 @@ string validID(string s, string type="field") {
     if (!isalpha(s[0])) 
         return "first character is not alphabet";
     for (size_t i = 1; i < s.size(); i++)
-        if (!isalnum(s[i]) && !s[i] != '_')
+        if (!isalnum(s[i]) && !(s[i] != '_'))
             return "illegal character : " + s[i];
     if (s[s.size()-1] == '_')
         return "ends with an underscore";

@@ -14,14 +14,21 @@ add_executable(litesql-gen
 					xmlobjects.hpp 
 					litesql-gen-graphviz.hpp 
 					litesql-gen-graphviz.cpp
+					objectmodel.hpp
 )
+# for new parser					
+# xmlparser.cpp xmlparser.hpp
+#					objectmodel.cpp objectmodel.hpp
 
 target_link_libraries (litesql-gen litesql)
+# for new parser ${LIBXML2_LIBRARIES}
 
-IF (WIN32)
-	set_property(TARGET litesql-gen PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS YY_NEVER_INTERACTIVE YY_NO_UNISTD_H)
-ENDIF (WIN32)
+if (MSVC)
+   set_property(TARGET litesql-gen APPEND 
+                  PROPERTY LINK_FLAGS /NODEFAULTLIB:MSVCRT 
+	               PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS YY_NEVER_INTERACTIVE YY_NO_UNISTD_H)
+endif(MSVC)
 
 install(TARGETS litesql-gen RUNTIME DESTINATION bin COMPONENT generator)
 
-INCLUDE_DIRECTORIES(../library)
+INCLUDE_DIRECTORIES(../library ${LIBXML2_INCLUDE_DIR})

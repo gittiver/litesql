@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include "compatibility.hpp"
 #include "litesql.hpp"
+
 namespace litesql {
 using namespace std;
 In FieldType::in(const string& set) const {

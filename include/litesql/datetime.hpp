@@ -112,6 +112,6 @@ std::string convert<const DateTime&, std::string>(const DateTime& value);
 ostream& operator << (ostream& os, const Date& d);
 ostream& operator << (ostream& os, const Time& d);
 ostream& operator << (ostream& os, const DateTime& d);
-};
+}
 
 #endif
