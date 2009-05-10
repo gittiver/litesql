@@ -8,16 +8,21 @@
 #define _litesql_except_hpp
 #include <iostream>
 #include <string>
+#include <exception>
 #include "litesql/utils.hpp"
 /** \file except.hpp
     contains litesql's exception classes */
 namespace litesql {
 /** base class for exceptions */
-class Except  {
+	class Except : public std::exception  {
 private:
     std::string msg;
 public: 
-    Except(std::string m)  : msg(m) {}
+    Except(std::string m) throw()  : msg(m) {}
+    virtual ~Except(void) throw() {}
+	virtual const char* what() const throw() {
+		return msg.c_str();
+	}
     friend std::ostream &operator<<(std::ostream &os, Except &e) {
         os << e.msg;
         return os;
