@@ -15,7 +15,7 @@
 
 add_executable(example example.cpp exampledatabase.cpp exampledatabase.hpp exampledatabase.xml)
 
-target_link_libraries (example litesql_sqlite litesql_odbc litesql)
+target_link_libraries (example litesql_sqlite litesql)
 
 IF (WIN32)
 	set_property(TARGET example PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS YY_NEVER_INTERACTIVE YY_NO_UNISTD_H)
