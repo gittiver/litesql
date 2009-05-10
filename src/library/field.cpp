@@ -5,6 +5,7 @@
  * See LICENSE for copyright information. */
 #include "compatibility.hpp"
 #include "litesql.hpp"
+#include <stdlib.h>
 namespace litesql {
 using namespace std;
 In FieldType::in(const string& set) const {
