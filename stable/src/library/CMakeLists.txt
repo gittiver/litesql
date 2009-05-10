@@ -14,7 +14,6 @@ add_library(  ${LIBNAME}
 				compatibility.cpp 
 				datetime.cpp
 )
- 
 IF (WITH_SQLITE3)
 add_library(  ${LIBNAME}_sqlite
 				sqlite3_backend.cpp 
@@ -25,6 +24,11 @@ add_library(  ${LIBNAME}_sqlite
 )
 set_property(TARGET ${LIBNAME}_sqlite PROPERTY COMPILE_DEFINITIONS HAVE_LIBSQLITE3)
 set_property(TARGET ${LIBNAME} APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBSQLITE3)
+    target_link_libraries(${LIBNAME} ${LIBNAME}_sqlite)
+    if (NOT WIN32)
+        target_link_libraries(${LIBNAME}_sqlite dl pthread)
+    endif(NOT WIN32)
+
 ENDIF (WITH_SQLITE3)
 
 IF (WITH_MYSQL)
@@ -44,6 +48,7 @@ set_property(TARGET ${LIBNAME} APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBPQ)
 ENDIF (WITH_POSTGRES)
 
 IF (WITH_ODBC)
+    message("ASFASEF")
 add_library(  ${LIBNAME}_odbc
 				odbc_backend.cpp 
 				odbc_backend.hpp 
