@@ -1,6 +1,6 @@
 /* LiteSQL 
  * 
- * By Tero Laitinen 
+ * The list of contributors at http://litesql.sf.net/ 
  * 
  * See LICENSE for copyright information. */
 #ifndef _litesql_types_hpp

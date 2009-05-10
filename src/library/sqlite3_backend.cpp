@@ -1,6 +1,6 @@
 /* LiteSQL - SQLite3-backend implementation
  * 
- * By Tero Laitinen 
+ * The list of contributors at http://litesql.sf.net/ 
  * 
  * Few windows specific bugs fixed by Axel Schmidt.
  * 

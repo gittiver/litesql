@@ -1,6 +1,6 @@
 /* LiteSQL - MySQL-backend implementation
  * 
- * By Tero Laitinen 
+ * The list of contributors at http://litesql.sf.net/ 
  * 
  * See LICENSE for copyright information. */
 #include "compatibility.hpp"

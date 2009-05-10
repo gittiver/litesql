@@ -11,8 +11,6 @@
         <field name="dateOfBirth" type="datetime"/>
         <method name="sayHello"/>
     </object>
-
-    <include file="included.xml"/>
     <relation id="Mother">
         <relate object="Person" limit="many" handle="mother"/>
         <relate object="Person" limit="one"/>

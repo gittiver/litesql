@@ -1,5 +1,7 @@
 enable_language(C)
 enable_language(CXX)
+cmake_minimum_required(VERSION 2.6)
+
 SET(PROJECT_NAME "litesql")
 
 SET(PROJECT_VERSION_MAJOR 0)
