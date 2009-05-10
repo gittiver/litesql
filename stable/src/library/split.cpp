@@ -1,6 +1,6 @@
 /* LiteSQL - Split implementation
  * 
- * By Tero Laitinen 
+ * The list of contributors at http://litesql.sf.net/ 
  * 
  * See LICENSE for copyright information. */
 #include "compatibility.hpp"
@@ -13,22 +13,38 @@
 namespace litesql {    
 using namespace std;
 Split::Split(const string& s, const string& delim) {
-    char * buf = strdup((char*) s.c_str());
-    char * ptr = buf;
-    int len = delim.size();
-    vector<char*> pointers;
-    pointers.push_back(ptr);
-    while((ptr = strstr(ptr, delim.c_str()))) {
-        *ptr = '\0';
-        ptr += len;
-        pointers.push_back(ptr);
-    }
-    for (vector<char*>::iterator i = pointers.begin();
-         i != pointers.end();
-         ++i)
-        push_back(string(*i));
+    string::const_iterator i;
+    string::const_iterator m = delim.begin();
+    string::const_iterator b = s.begin();
 
-    free(buf);
+    if (delim.empty()) {
+        push_back(s);
+        return;
+    }
+
+
+    for (i = s.begin(); i != s.end(); i++) {
+        if (*m == *i) {
+            m++;
+
+            if (m == delim.end()) {
+                string ne;
+                ne.resize(i - delim.size() - b + 1);
+                copy(b, i - delim.size() + 1, ne.begin());
+
+                push_back(ne);
+                m = delim.begin();
+                b = i + 1;
+            }
+
+        } else 
+            m = delim.begin();
+
+    }
+    string ne;
+    ne.resize(s.end() - b);
+    copy(b, s.end(), ne.begin());
+    push_back(ne);
 }
 Split Split::slice(int start, int end) const {
     vector<string> data;
