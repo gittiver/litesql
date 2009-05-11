@@ -1,7 +1,7 @@
-/* LiteSQL 
- * 
- * By Tero Laitinen 
- * 
+/* LiteSQL
+ *
+ * The list of contributors at http://litesql.sf.net/
+ *
  * See LICENSE for copyright information. */
 
 #ifndef _litesql_datetime_hpp
@@ -52,7 +52,7 @@ public:
     Date& setMonth(int m);
     Date& setYear(int y);
     Date& setTimeStamp(time_t t);
-    string asString(string format="%d.%m.%y") const;
+    string asString(string format="%u") const;
 };
 /** holds time of day */
 class Time {
@@ -65,7 +65,7 @@ public:
     int min() const;
     int sec() const;
     int secs() const;
-    string asString(string format="%h:%M:%s") const;
+    string asString(string format="%u") const;
 
     Time& setHour(int d);
     Time& setMin(int m);
@@ -85,7 +85,7 @@ public:
     int sec() const;
     time_t timeStamp() const;
     TimeStruct timeStruct() const;
-    string asString(string format="%d.%m.%y %h:%M:%s") const;
+    string asString(string format="%u") const;
 
     DateTime& setDay(int d);
     DateTime& setMonth(int m);

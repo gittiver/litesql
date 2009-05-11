@@ -1,27 +1,13 @@
 /* LiteSQL - Date and time classes
- * 
- * By Tero Laitinen 
- * 
+ *
+ * The list of contributors at http://litesql.sf.net/
+ *
  * See LICENSE for copyright information. */
 #include "litesql/datetime.hpp"
 #include "litesql/split.hpp"
+#include "compatibility.hpp"
 #include <time.h>
 using namespace std;
-
-#ifdef WIN32
-struct tm * 
-localtime_r (const time_t *timer, struct tm *result) 
-{ 
-   struct tm *local_result; 
-   local_result = localtime (timer); 
-
-   if (local_result == NULL || result == NULL) 
-     return NULL; 
-
-   memcpy (result, local_result, sizeof (result)); 
-   return result; 
-} 
-#endif // WIN32
 
 namespace litesql {
 
@@ -129,6 +115,11 @@ Date& Date::setTimeStamp(time_t t) {
     return *this;
 }
 string Date::asString(string format) const {
+    if (format == "%u") {
+        char buf[32];
+        snprintf(buf, 32, "%lu", value);
+        return buf;
+    }
     Split data(format, "%");
     TimeStruct ts(value);
     string res = data[0];
@@ -181,6 +172,11 @@ Time& Time::setSecs(int secs) {
     return *this;
 }
 string Time::asString(string format) const {
+    if (format == "%u") {
+        char buf[32];
+        snprintf(buf, 32, "%d", value);
+        return buf;
+    }
     Split data(format, "%");
     string res = data[0];
     for (size_t i = 1; i < data.size(); i++) {
@@ -247,6 +243,11 @@ DateTime& DateTime::setSec(int s) {
     return *this;
 }
 string DateTime::asString(string format) const {
+    if (format == "%u") {
+        char buf[32];
+        snprintf(buf, 32, "%lu", value);
+        return buf;
+    }
     Split data(format, "%");
     TimeStruct ts(value);
     string res = data[0];
