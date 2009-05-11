@@ -28,6 +28,11 @@ if (MSVC AND NOT LIBXML2_FOUND)
    set(LIBXML2_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/win32/include)
    
    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/win32/lib/)
+   
+#   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/win32/ DESTINATION . 
+#	            COMPONENT devel 
+#	            PATTERN .svn EXCLUDE 
+#	)
 endif (MSVC AND NOT LIBXML2_FOUND)
 	
 
@@ -41,12 +46,16 @@ SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 OPTION(WITH_MYSQL "build with mysql Backend" ${MYSQL_FOUND})
 OPTION(WITH_SQLITE3 "build with sqlite3 backend(sources integrated)" ON)
 OPTION(WITH_POSTGRES "build with postgres backend" OFF)
-OPTION(WITH_ODBC "build with ODBC Backend" ON)
+#OPTION(WITH_ODBC "build with ODBC Backend" ON)
 OPTION(WITH_DOCS "generate Documentation" OFF)
+OPTION(WITH_TESTS "enable testing" ON)
 
 INCLUDE(cmake/FindMySQL.cmake)
 INCLUDE(cmake/FindPostgreSQL.cmake)
 
+if(WITH_TESTS)
+  ENABLE_TESTING()
+endif(WITH_TESTS)
 
 IF (WITH_SQLITE3)
   set_property(GLOBAL APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBSQLITE3)
@@ -88,6 +97,7 @@ IF (WIN32)
 	SET(CMAKE_EXECUTABLE_SUFFIX ".exe")          # .exe
 	SET(CMAKE_LINK_LIBRARY_SUFFIX ".lib")
 	SET(CMAKE_DL_LIBS "")
+	SET(CMAKE_DEBUG_POSTFIX "d") 
 	set_property(GLOBAL APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS)
    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/win32/lib/)
 ENDIF (WIN32)
