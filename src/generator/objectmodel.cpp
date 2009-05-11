@@ -402,12 +402,21 @@ void MyParser::onEndElement(const xmlChar *fullname)
    history.pop_back();
 }
 
-ObjectModel::~ObjectModel()
-{
-}
-
 bool ObjectModel::loadFromFile(const std::string& filename)
 {
+     std::vector<xml::Object* > objects;
+   std::vector<xml::Relation* > relations;
+   xml::Database db;   
+ 
    MyParser parser(this);
-   return parser.parseFile(filename);
+   bool successfulParsed = parser.parseFile(filename);
+   if (!successfulParsed)
+   {
+      return false;
+   }
+   else
+   {
+      xml::init(db,objects,relations);
+      return true;
+   }
 }

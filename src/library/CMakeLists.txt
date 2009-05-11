@@ -1,19 +1,20 @@
 set(LIBNAME litesql)
-
-add_library(  ${LIBNAME}
-				database.cpp 
-				expr.cpp 
-				selectquery.cpp 
-				persistent.cpp 
-				split.cpp 
-				string.cpp 
-				backend.cpp 
-				updatequery.cpp 
-				field.cpp 
-				datasource.cpp 
-				compatibility.cpp 
-				datetime.cpp
+set(litesql_SOURCES	database.cpp 
+			expr.cpp 
+			selectquery.cpp 
+			persistent.cpp 
+			split.cpp 
+			string.cpp 
+			backend.cpp 
+			updatequery.cpp 
+			field.cpp 
+			datasource.cpp 
+			compatibility.hpp 
+			compatibility.cpp 
+			datetime.cpp
 )
+
+add_library(  ${LIBNAME} ${litesql_SOURCES})
 
 install(TARGETS ${LIBNAME} 
 			RUNTIME DESTINATION lib 
@@ -32,6 +33,7 @@ IF (WITH_SQLITE3)
 			RUNTIME DESTINATION lib 
 			ARCHIVE DESTINATION lib/static 
 			COMPONENT devel)
+
 ENDIF (WITH_SQLITE3)
 
 IF (WITH_MYSQL)
