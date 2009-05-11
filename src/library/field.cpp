@@ -47,6 +47,14 @@ template <>
 bool convert<int, bool>(int value) {
     return value;
 }
+template <> 
+float convert<int, float>(int value) {
+    return value;
+}
+template <> 
+float convert<double, float>(double value) {
+    return value;
+}
 template <>
 bool convert<const string&, bool>(const string& value) {
     return convert<const string&, int>(value);
