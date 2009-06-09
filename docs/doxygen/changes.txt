@@ -8,6 +8,14 @@
     Manual */
 /** \page changes Changes
 
+\section ver0_3_4 Version 0.3.4
+- feature: introduced CMake-based build system (used for windows build)
+- feature: Installer for Windows (installs Documentation,litesql-gen, libraries and includes) 
+
+- bug fix: Ticket #10 	float with integer default value does not work 	
+- bug fix: Ticket #13 	Saving and loading dates
+- bug fix: Ticket #9 	SQLite3 - open database (parameters are now separated with ";")
+
 \section ver0_3_3 Version 0.3.3
 2008 November 12th
 - bug fix: compilation issues fixed with g++ 4.x
