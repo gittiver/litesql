@@ -23,6 +23,9 @@ EXTRA_DIST= compatibility.hpp \
 	    mysql.hpp \
 	    postgresql.hpp \
 	    sqlite3.hpp \
+	    sqlite3.c \
+	    sqlite3.h \
+	    sqlite3ext.h \
 	    CMakeLists.txt
 
 liblitesql_la_LDFLAGS = -version-info 3:4 
