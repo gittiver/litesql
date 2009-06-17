@@ -50,7 +50,7 @@
 
 #line 3 "litesql-gen.xml"
 
-#include "objectmodel.hpp"
+//#include "objectmodel.hpp"
 #include "xmlobjects.hpp"
 #include "litesql-gen-main.hpp"
 #include "litesql-gen.hpp"
@@ -58,13 +58,13 @@
 using namespace std;
 using namespace xml;
 
-ObjectModel model;
+//ObjectModel model;
 
-/*
+
 vector<Object*> objects;
 vector<Relation*> relations;
 Database db;
-*/
+
 Object * obj;
 Relation * rel;
 Field * fld;
@@ -75,9 +75,9 @@ void STag_database(void)
 {
 #line 19 "litesql-gen.xml"
 
-model.db.name = safe(A_database_name);
-model.db.include = safe(A_database_include);
-model.db.nspace = safe(A_database_namespace);
+db.name = safe(A_database_name);
+db.include = safe(A_database_include);
+db.nspace = safe(A_database_namespace);
 
 } /* STag_database */
 
@@ -85,7 +85,7 @@ void STag_object(void)
 {
 #line 24 "litesql-gen.xml"
 
-model.objects.push_back(obj = new Object(A_object_name, safe(A_object_inherits)));
+objects.push_back(obj = new Object(A_object_name, safe(A_object_inherits)));
 
 } /* STag_object */
 
@@ -101,7 +101,7 @@ void STag_relation(void)
 {
 #line 30 "litesql-gen.xml"
 
-model.relations.push_back(rel = new Relation(safe(A_relation_id), safe(A_relation_name),A_relation_unidir));
+relations.push_back(rel = new Relation(safe(A_relation_id), safe(A_relation_name),A_relation_unidir));
 
 } /* STag_relation */
 
@@ -213,7 +213,7 @@ void ETag_database(void)
 {
 #line 82 "litesql-gen.xml"
 
-    generateCode(model.db, model.objects, model.relations);    
+    generateCode(db, objects, relations);    
 
 } /* ETag_database */
 
