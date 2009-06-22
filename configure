@@ -6497,7 +6497,7 @@ esac
 
 
 macro_version='2.2.7a'
-macro_revision='1.3081'
+macro_revision='1.3109'
 
 
 
@@ -7006,8 +7006,11 @@ if test "$lt_cv_path_NM" != "no"; then
   NM="$lt_cv_path_NM"
 else
   # Didn't find any BSD compatible name lister, look for dumpbin.
-  if test -n "$ac_tool_prefix"; then
-  for ac_prog in "dumpbin -symbols" "link -dump -symbols"
+  if test -n "$DUMPBIN"; then :
+    # Let the user override the test.
+  else
+    if test -n "$ac_tool_prefix"; then
+  for ac_prog in dumpbin "link -dump"
   do
     # Extract the first word of "$ac_tool_prefix$ac_prog", so it can be a program name with args.
 set dummy $ac_tool_prefix$ac_prog; ac_word=$2
@@ -7051,7 +7054,7 @@ fi
 fi
 if test -z "$DUMPBIN"; then
   ac_ct_DUMPBIN=$DUMPBIN
-  for ac_prog in "dumpbin -symbols" "link -dump -symbols"
+  for ac_prog in dumpbin "link -dump"
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -7106,6 +7109,15 @@ esac
   fi
 fi
 
+    case `$DUMPBIN -symbols /dev/null 2>&1 | sed '1q'` in
+    *COFF*)
+      DUMPBIN="$DUMPBIN -symbols"
+      ;;
+    *)
+      DUMPBIN=:
+      ;;
+    esac
+  fi
 
   if test "$DUMPBIN" != ":"; then
     NM="$DUMPBIN"
@@ -7125,13 +7137,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:7128: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:7140: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:7131: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:7143: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:7134: output\"" >&5)
+  (eval echo "\"\$as_me:7146: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -7185,6 +7197,11 @@ else
     # the test eventually succeeds (with a max line length of 256k).
     # Instead, let's just punt: use the minimum linelength reported by
     # all of the supported platforms: 8192 (on NT/2K/XP).
+    lt_cv_sys_max_cmd_len=8192;
+    ;;
+
+  mint*)
+    # On MiNT this can take a long time and run out of memory.
     lt_cv_sys_max_cmd_len=8192;
     ;;
 
@@ -7618,11 +7635,11 @@ hpux10.20* | hpux11*)
     lt_cv_file_magic_test_file=/usr/lib/hpux32/libc.so
     ;;
   hppa*64*)
-    lt_cv_deplibs_check_method='file_magic (s[0-9][0-9][0-9]|ELF-[0-9][0-9]) shared object file - PA-RISC [0-9].[0-9]'
+    lt_cv_deplibs_check_method='file_magic (s[0-9][0-9][0-9]|ELF[ -][0-9][0-9])(-bit)?( [LM]SB)? shared object( file)?[, -]* PA-RISC [0-9]\.[0-9]'
     lt_cv_file_magic_test_file=/usr/lib/pa20_64/libc.sl
     ;;
   *)
-    lt_cv_deplibs_check_method='file_magic (s[0-9][0-9][0-9]|PA-RISC[0-9].[0-9]) shared library'
+    lt_cv_deplibs_check_method='file_magic (s[0-9][0-9][0-9]|PA-RISC[0-9]\.[0-9]) shared library'
     lt_cv_file_magic_test_file=/usr/lib/libc.sl
     ;;
   esac
@@ -8201,6 +8218,18 @@ if test -n "$RANLIB"; then
   old_archive_cmds="$old_archive_cmds~\$RANLIB \$oldlib"
 fi
 
+case $host_os in
+  darwin*)
+    lock_old_archive_extraction=yes ;;
+  *)
+    lock_old_archive_extraction=no ;;
+esac
+
+
+
+
+
+
 
 
 
@@ -8370,8 +8399,8 @@ _LT_EOF
   (exit $ac_status); }; then
     # Now try to grab the symbols.
     nlist=conftest.nm
-    if { (eval echo "$as_me:$LINENO: \"$NM conftest.$ac_objext \| $lt_cv_sys_global_symbol_pipe \> $nlist\"") >&5
-  (eval $NM conftest.$ac_objext \| $lt_cv_sys_global_symbol_pipe \> $nlist) 2>&5
+    if { (eval echo "$as_me:$LINENO: \"$NM conftest.$ac_objext \| "$lt_cv_sys_global_symbol_pipe" \> $nlist\"") >&5
+  (eval $NM conftest.$ac_objext \| "$lt_cv_sys_global_symbol_pipe" \> $nlist) 2>&5
   ac_status=$?
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } && test -s "$nlist"; then
@@ -8524,7 +8553,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 8527 "configure"' > conftest.$ac_ext
+  echo '#line 8556 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -9393,724 +9422,6 @@ done
 
 
 
-ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-if test -z "$CXX"; then
-  if test -n "$CCC"; then
-    CXX=$CCC
-  else
-    if test -n "$ac_tool_prefix"; then
-  for ac_prog in g++ c++ gpp aCC CC cxx cc++ cl.exe FCC KCC RCC xlC_r xlC
-  do
-    # Extract the first word of "$ac_tool_prefix$ac_prog", so it can be a program name with args.
-set dummy $ac_tool_prefix$ac_prog; ac_word=$2
-{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if test "${ac_cv_prog_CXX+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  if test -n "$CXX"; then
-  ac_cv_prog_CXX="$CXX" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_prog_CXX="$ac_tool_prefix$ac_prog"
-    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-IFS=$as_save_IFS
-
-fi
-fi
-CXX=$ac_cv_prog_CXX
-if test -n "$CXX"; then
-  { $as_echo "$as_me:$LINENO: result: $CXX" >&5
-$as_echo "$CXX" >&6; }
-else
-  { $as_echo "$as_me:$LINENO: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-    test -n "$CXX" && break
-  done
-fi
-if test -z "$CXX"; then
-  ac_ct_CXX=$CXX
-  for ac_prog in g++ c++ gpp aCC CC cxx cc++ cl.exe FCC KCC RCC xlC_r xlC
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if test "${ac_cv_prog_ac_ct_CXX+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  if test -n "$ac_ct_CXX"; then
-  ac_cv_prog_ac_ct_CXX="$ac_ct_CXX" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_prog_ac_ct_CXX="$ac_prog"
-    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-IFS=$as_save_IFS
-
-fi
-fi
-ac_ct_CXX=$ac_cv_prog_ac_ct_CXX
-if test -n "$ac_ct_CXX"; then
-  { $as_echo "$as_me:$LINENO: result: $ac_ct_CXX" >&5
-$as_echo "$ac_ct_CXX" >&6; }
-else
-  { $as_echo "$as_me:$LINENO: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-  test -n "$ac_ct_CXX" && break
-done
-
-  if test "x$ac_ct_CXX" = x; then
-    CXX="g++"
-  else
-    case $cross_compiling:$ac_tool_warned in
-yes:)
-{ $as_echo "$as_me:$LINENO: WARNING: using cross tools not prefixed with host triplet" >&5
-$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
-ac_tool_warned=yes ;;
-esac
-    CXX=$ac_ct_CXX
-  fi
-fi
-
-  fi
-fi
-# Provide some information about the compiler.
-$as_echo "$as_me:$LINENO: checking for C++ compiler version" >&5
-set X $ac_compile
-ac_compiler=$2
-{ (ac_try="$ac_compiler --version >&5"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_compiler --version >&5") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }
-{ (ac_try="$ac_compiler -v >&5"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_compiler -v >&5") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }
-{ (ac_try="$ac_compiler -V >&5"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_compiler -V >&5") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }
-
-{ $as_echo "$as_me:$LINENO: checking whether we are using the GNU C++ compiler" >&5
-$as_echo_n "checking whether we are using the GNU C++ compiler... " >&6; }
-if test "${ac_cv_cxx_compiler_gnu+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-int
-main ()
-{
-#ifndef __GNUC__
-       choke me
-#endif
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  ac_compiler_gnu=yes
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_compiler_gnu=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-ac_cv_cxx_compiler_gnu=$ac_compiler_gnu
-
-fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_cxx_compiler_gnu" >&5
-$as_echo "$ac_cv_cxx_compiler_gnu" >&6; }
-if test $ac_compiler_gnu = yes; then
-  GXX=yes
-else
-  GXX=
-fi
-ac_test_CXXFLAGS=${CXXFLAGS+set}
-ac_save_CXXFLAGS=$CXXFLAGS
-{ $as_echo "$as_me:$LINENO: checking whether $CXX accepts -g" >&5
-$as_echo_n "checking whether $CXX accepts -g... " >&6; }
-if test "${ac_cv_prog_cxx_g+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  ac_save_cxx_werror_flag=$ac_cxx_werror_flag
-   ac_cxx_werror_flag=yes
-   ac_cv_prog_cxx_g=no
-   CXXFLAGS="-g"
-   cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  ac_cv_prog_cxx_g=yes
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	CXXFLAGS=""
-      cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  :
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cxx_werror_flag=$ac_save_cxx_werror_flag
-	 CXXFLAGS="-g"
-	 cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  ac_cv_prog_cxx_g=yes
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-   ac_cxx_werror_flag=$ac_save_cxx_werror_flag
-fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_prog_cxx_g" >&5
-$as_echo "$ac_cv_prog_cxx_g" >&6; }
-if test "$ac_test_CXXFLAGS" = set; then
-  CXXFLAGS=$ac_save_CXXFLAGS
-elif test $ac_cv_prog_cxx_g = yes; then
-  if test "$GXX" = yes; then
-    CXXFLAGS="-g -O2"
-  else
-    CXXFLAGS="-g"
-  fi
-else
-  if test "$GXX" = yes; then
-    CXXFLAGS="-O2"
-  else
-    CXXFLAGS=
-  fi
-fi
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-depcc="$CXX"  am_compiler_list=
-
-{ $as_echo "$as_me:$LINENO: checking dependency style of $depcc" >&5
-$as_echo_n "checking dependency style of $depcc... " >&6; }
-if test "${am_cv_CXX_dependencies_compiler_type+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  if test -z "$AMDEP_TRUE" && test -f "$am_depcomp"; then
-  # We make a subdir and do the tests there.  Otherwise we can end up
-  # making bogus files that we don't know about and never remove.  For
-  # instance it was reported that on HP-UX the gcc test will end up
-  # making a dummy file named `D' -- because `-MD' means `put the output
-  # in D'.
-  mkdir conftest.dir
-  # Copy depcomp to subdir because otherwise we won't find it if we're
-  # using a relative directory.
-  cp "$am_depcomp" conftest.dir
-  cd conftest.dir
-  # We will build objects and dependencies in a subdirectory because
-  # it helps to detect inapplicable dependency modes.  For instance
-  # both Tru64's cc and ICC support -MD to output dependencies as a
-  # side effect of compilation, but ICC will put the dependencies in
-  # the current directory while Tru64 will put them in the object
-  # directory.
-  mkdir sub
-
-  am_cv_CXX_dependencies_compiler_type=none
-  if test "$am_compiler_list" = ""; then
-     am_compiler_list=`sed -n 's/^#*\([a-zA-Z0-9]*\))$/\1/p' < ./depcomp`
-  fi
-  for depmode in $am_compiler_list; do
-    # Setup a source with many dependencies, because some compilers
-    # like to wrap large dependency lists on column 80 (with \), and
-    # we should not choose a depcomp mode which is confused by this.
-    #
-    # We need to recreate these files for each test, as the compiler may
-    # overwrite some of them when testing with obscure command lines.
-    # This happens at least with the AIX C compiler.
-    : > sub/conftest.c
-    for i in 1 2 3 4 5 6; do
-      echo '#include "conftst'$i'.h"' >> sub/conftest.c
-      # Using `: > sub/conftst$i.h' creates only sub/conftst1.h with
-      # Solaris 8's {/usr,}/bin/sh.
-      touch sub/conftst$i.h
-    done
-    echo "${am__include} ${am__quote}sub/conftest.Po${am__quote}" > confmf
-
-    case $depmode in
-    nosideeffect)
-      # after this tag, mechanisms are not by side-effect, so they'll
-      # only be used when explicitly requested
-      if test "x$enable_dependency_tracking" = xyes; then
-	continue
-      else
-	break
-      fi
-      ;;
-    none) break ;;
-    esac
-    # We check with `-c' and `-o' for the sake of the "dashmstdout"
-    # mode.  It turns out that the SunPro C++ compiler does not properly
-    # handle `-M -o', and we need to detect this.
-    if depmode=$depmode \
-       source=sub/conftest.c object=sub/conftest.${OBJEXT-o} \
-       depfile=sub/conftest.Po tmpdepfile=sub/conftest.TPo \
-       $SHELL ./depcomp $depcc -c -o sub/conftest.${OBJEXT-o} sub/conftest.c \
-         >/dev/null 2>conftest.err &&
-       grep sub/conftst1.h sub/conftest.Po > /dev/null 2>&1 &&
-       grep sub/conftst6.h sub/conftest.Po > /dev/null 2>&1 &&
-       grep sub/conftest.${OBJEXT-o} sub/conftest.Po > /dev/null 2>&1 &&
-       ${MAKE-make} -s -f confmf > /dev/null 2>&1; then
-      # icc doesn't choke on unknown options, it will just issue warnings
-      # or remarks (even with -Werror).  So we grep stderr for any message
-      # that says an option was ignored or not supported.
-      # When given -MP, icc 7.0 and 7.1 complain thusly:
-      #   icc: Command line warning: ignoring option '-M'; no argument required
-      # The diagnosis changed in icc 8.0:
-      #   icc: Command line remark: option '-MP' not supported
-      if (grep 'ignoring option' conftest.err ||
-          grep 'not supported' conftest.err) >/dev/null 2>&1; then :; else
-        am_cv_CXX_dependencies_compiler_type=$depmode
-        break
-      fi
-    fi
-  done
-
-  cd ..
-  rm -rf conftest.dir
-else
-  am_cv_CXX_dependencies_compiler_type=none
-fi
-
-fi
-{ $as_echo "$as_me:$LINENO: result: $am_cv_CXX_dependencies_compiler_type" >&5
-$as_echo "$am_cv_CXX_dependencies_compiler_type" >&6; }
-CXXDEPMODE=depmode=$am_cv_CXX_dependencies_compiler_type
-
- if
-  test "x$enable_dependency_tracking" != xno \
-  && test "$am_cv_CXX_dependencies_compiler_type" = gcc3; then
-  am__fastdepCXX_TRUE=
-  am__fastdepCXX_FALSE='#'
-else
-  am__fastdepCXX_TRUE='#'
-  am__fastdepCXX_FALSE=
-fi
-
-
-if test -n "$CXX" && ( test "X$CXX" != "Xno" &&
-    ( (test "X$CXX" = "Xg++" && `g++ -v >/dev/null 2>&1` ) ||
-    (test "X$CXX" != "Xg++"))) ; then
-  ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-{ $as_echo "$as_me:$LINENO: checking how to run the C++ preprocessor" >&5
-$as_echo_n "checking how to run the C++ preprocessor... " >&6; }
-if test -z "$CXXCPP"; then
-  if test "${ac_cv_prog_CXXCPP+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-      # Double quotes because CXXCPP needs to be expanded
-    for CXXCPP in "$CXX -E" "/lib/cpp"
-    do
-      ac_preproc_ok=false
-for ac_cxx_preproc_warn_flag in '' yes
-do
-  # Use a header file that comes with gcc, so configuring glibc
-  # with a fresh cross-compiler works.
-  # Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-  # <limits.h> exists even on freestanding compilers.
-  # On the NeXT, cc -E runs the code through the compiler's parser,
-  # not just through cpp. "Syntax error" is here to catch this case.
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#ifdef __STDC__
-# include <limits.h>
-#else
-# include <assert.h>
-#endif
-		     Syntax error
-_ACEOF
-if { (ac_try="$ac_cpp conftest.$ac_ext"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       }; then
-  :
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-  # Broken: fails on valid input.
-continue
-fi
-
-rm -f conftest.err conftest.$ac_ext
-
-  # OK, works on sane cases.  Now check whether nonexistent headers
-  # can be detected and how.
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <ac_nonexistent.h>
-_ACEOF
-if { (ac_try="$ac_cpp conftest.$ac_ext"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       }; then
-  # Broken: success on invalid input.
-continue
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-  # Passes both tests.
-ac_preproc_ok=:
-break
-fi
-
-rm -f conftest.err conftest.$ac_ext
-
-done
-# Because of `break', _AC_PREPROC_IFELSE's cleaning code was skipped.
-rm -f conftest.err conftest.$ac_ext
-if $ac_preproc_ok; then
-  break
-fi
-
-    done
-    ac_cv_prog_CXXCPP=$CXXCPP
-
-fi
-  CXXCPP=$ac_cv_prog_CXXCPP
-else
-  ac_cv_prog_CXXCPP=$CXXCPP
-fi
-{ $as_echo "$as_me:$LINENO: result: $CXXCPP" >&5
-$as_echo "$CXXCPP" >&6; }
-ac_preproc_ok=false
-for ac_cxx_preproc_warn_flag in '' yes
-do
-  # Use a header file that comes with gcc, so configuring glibc
-  # with a fresh cross-compiler works.
-  # Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-  # <limits.h> exists even on freestanding compilers.
-  # On the NeXT, cc -E runs the code through the compiler's parser,
-  # not just through cpp. "Syntax error" is here to catch this case.
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#ifdef __STDC__
-# include <limits.h>
-#else
-# include <assert.h>
-#endif
-		     Syntax error
-_ACEOF
-if { (ac_try="$ac_cpp conftest.$ac_ext"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       }; then
-  :
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-  # Broken: fails on valid input.
-continue
-fi
-
-rm -f conftest.err conftest.$ac_ext
-
-  # OK, works on sane cases.  Now check whether nonexistent headers
-  # can be detected and how.
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <ac_nonexistent.h>
-_ACEOF
-if { (ac_try="$ac_cpp conftest.$ac_ext"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       }; then
-  # Broken: success on invalid input.
-continue
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-  # Passes both tests.
-ac_preproc_ok=:
-break
-fi
-
-rm -f conftest.err conftest.$ac_ext
-
-done
-# Because of `break', _AC_PREPROC_IFELSE's cleaning code was skipped.
-rm -f conftest.err conftest.$ac_ext
-if $ac_preproc_ok; then
-  :
-else
-  { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-_lt_caught_CXX_error=yes; }
-fi
-
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-else
-  _lt_caught_CXX_error=yes
-fi
-
-
-
-
 
 
 
@@ -10581,11 +9892,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10584: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9895: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10588: \$? = $ac_status" >&5
+   echo "$as_me:9899: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -10783,8 +10094,8 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
         # All Alpha code is PIC.
         lt_prog_compiler_static='-non_shared'
         ;;
-      xl*)
-	# IBM XL C 8.0/Fortran 10.1 on PPC
+      xl* | bgxl* | bgf* | mpixl*)
+	# IBM XL C 8.0/Fortran 10.1, 11.1 on PPC and BlueGene
 	lt_prog_compiler_wl='-Wl,'
 	lt_prog_compiler_pic='-qpic'
 	lt_prog_compiler_static='-qstaticlink'
@@ -10920,11 +10231,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10923: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10234: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10927: \$? = $ac_status" >&5
+   echo "$as_me:10238: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -11025,11 +10336,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11028: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10339: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:11032: \$? = $ac_status" >&5
+   echo "$as_me:10343: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11080,11 +10391,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11083: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10394: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:11087: \$? = $ac_status" >&5
+   echo "$as_me:10398: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11202,7 +10513,33 @@ $as_echo_n "checking whether the $compiler linker ($LD) supports shared librarie
   esac
 
   ld_shlibs=yes
+
+  # On some targets, GNU ld is compatible enough with the native linker
+  # that we're better off using the native interface for both.
+  lt_use_gnu_ld_interface=no
   if test "$with_gnu_ld" = yes; then
+    case $host_os in
+      aix*)
+	# The AIX port of GNU ld has always aspired to compatibility
+	# with the native linker.  However, as the warning in the GNU ld
+	# block says, versions before 2.19.5* couldn't really create working
+	# shared libraries, regardless of the interface used.
+	case `$LD -v 2>&1` in
+	  *\ \(GNU\ Binutils\)\ 2.19.5*) ;;
+	  *\ \(GNU\ Binutils\)\ 2.[2-9]*) ;;
+	  *\ \(GNU\ Binutils\)\ [3-9]*) ;;
+	  *)
+	    lt_use_gnu_ld_interface=yes
+	    ;;
+	esac
+	;;
+      *)
+	lt_use_gnu_ld_interface=yes
+	;;
+    esac
+  fi
+
+  if test "$lt_use_gnu_ld_interface" = yes; then
     # If archive_cmds runs LD, not CC, wlarc should be empty
     wlarc='${wl}'
 
@@ -11235,11 +10572,12 @@ $as_echo_n "checking whether the $compiler linker ($LD) supports shared librarie
 	ld_shlibs=no
 	cat <<_LT_EOF 1>&2
 
-*** Warning: the GNU linker, at least up to release 2.9.1, is reported
+*** Warning: the GNU linker, at least up to release 2.19, is reported
 *** to be unable to reliably create shared libraries on AIX.
 *** Therefore, libtool is disabling shared libraries support.  If you
-*** really care for shared libraries, you may want to modify your PATH
-*** so that a non-GNU linker is found, and then restart.
+*** really care for shared libraries, you may want to install binutils
+*** 2.20 or above, or modify your PATH so that a non-GNU linker is found.
+*** You will then need to restart the configuration process.
 
 _LT_EOF
       fi
@@ -11342,7 +10680,7 @@ _LT_EOF
 	lf95*)				# Lahey Fortran 8.1
 	  whole_archive_flag_spec=
 	  tmp_sharedflag='--shared' ;;
-	xl[cC]*)			# IBM XL C 8.0 on PPC (deal with xlf below)
+	xl[cC]* | bgxl[cC]* | mpixl[cC]*) # IBM XL C 8.0 on PPC (deal with xlf below)
 	  tmp_sharedflag='-qmkshrobj'
 	  tmp_addflag= ;;
 	esac
@@ -11364,7 +10702,7 @@ _LT_EOF
         fi
 
 	case $cc_basename in
-	xlf*)
+	xlf* | bgf* | bgxlf* | mpixlf*)
 	  # IBM XL Fortran 10.1 on PPC cannot create shared libs itself
 	  whole_archive_flag_spec='--whole-archive$convenience --no-whole-archive'
 	  hardcode_libdir_flag_spec=
@@ -11495,8 +10833,10 @@ _LT_EOF
       else
 	# If we're using GNU nm, then we don't want the "-C" option.
 	# -C means demangle to AIX nm, but means don't demangle with GNU nm
+	# Also, AIX nm treats weak defined symbols like other global
+	# defined symbols, whereas GNU nm marks them as "W".
 	if $NM -V 2>&1 | $GREP 'GNU' > /dev/null; then
-	  export_symbols_cmds='$NM -Bpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B")) && (substr(\$ 3,1,1) != ".")) { print \$ 3 } }'\'' | sort -u > $export_symbols'
+	  export_symbols_cmds='$NM -Bpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B") || (\$ 2 == "W")) && (substr(\$ 3,1,1) != ".")) { print \$ 3 } }'\'' | sort -u > $export_symbols'
 	else
 	  export_symbols_cmds='$NM -BCpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B")) && (substr(\$ 3,1,1) != ".")) { print \$ 3 } }'\'' | sort -u > $export_symbols'
 	fi
@@ -11720,8 +11060,13 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	  # -berok will link without error, but may produce a broken library.
 	  no_undefined_flag=' ${wl}-bernotok'
 	  allow_undefined_flag=' ${wl}-berok'
-	  # Exported symbols can be pulled into shared objects from archives
-	  whole_archive_flag_spec='$convenience'
+	  if test "$with_gnu_ld" = yes; then
+	    # We only use this code for GNU lds that support --whole-archive.
+	    whole_archive_flag_spec='${wl}--whole-archive$convenience ${wl}--no-whole-archive'
+	  else
+	    # Exported symbols can be pulled into shared objects from archives
+	    whole_archive_flag_spec='$convenience'
+	  fi
 	  archive_cmds_need_lc=yes
 	  # This is similar to how AIX traditionally builds its shared libraries.
 	  archive_expsym_cmds="\$CC $shared_flag"' -o $output_objdir/$soname $libobjs $deplibs ${wl}-bnoentry $compiler_flags ${wl}-bE:$export_symbols${allow_undefined_flag}~$AR $AR_FLAGS $output_objdir/$libname$release.a $output_objdir/$soname'
@@ -12999,7 +12344,7 @@ fi
 
   # Append ld.so.conf contents to the search path
   if test -f /etc/ld.so.conf; then
-    lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;/^[	 ]*hwcap[	 ]/d;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;/^$/d' | tr '\n' ' '`
+    lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;/^[	 ]*hwcap[	 ]/d;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;s/"//g;/^$/d' | tr '\n' ' '`
     sys_lib_dlsearch_path_spec="/lib /usr/lib $lt_ld_extra"
   fi
 
@@ -13950,7 +13295,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 13953 "configure"
+#line 13298 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14046,7 +13391,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 14049 "configure"
+#line 13394 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14253,6 +13598,244 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 CC="$lt_save_CC"
 
+      if test -n "$CXX" && ( test "X$CXX" != "Xno" &&
+    ( (test "X$CXX" = "Xg++" && `g++ -v >/dev/null 2>&1` ) ||
+    (test "X$CXX" != "Xg++"))) ; then
+  ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+{ $as_echo "$as_me:$LINENO: checking how to run the C++ preprocessor" >&5
+$as_echo_n "checking how to run the C++ preprocessor... " >&6; }
+if test -z "$CXXCPP"; then
+  if test "${ac_cv_prog_CXXCPP+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+      # Double quotes because CXXCPP needs to be expanded
+    for CXXCPP in "$CXX -E" "/lib/cpp"
+    do
+      ac_preproc_ok=false
+for ac_cxx_preproc_warn_flag in '' yes
+do
+  # Use a header file that comes with gcc, so configuring glibc
+  # with a fresh cross-compiler works.
+  # Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+  # <limits.h> exists even on freestanding compilers.
+  # On the NeXT, cc -E runs the code through the compiler's parser,
+  # not just through cpp. "Syntax error" is here to catch this case.
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+		     Syntax error
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  :
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  # Broken: fails on valid input.
+continue
+fi
+
+rm -f conftest.err conftest.$ac_ext
+
+  # OK, works on sane cases.  Now check whether nonexistent headers
+  # can be detected and how.
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <ac_nonexistent.h>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  # Broken: success on invalid input.
+continue
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  # Passes both tests.
+ac_preproc_ok=:
+break
+fi
+
+rm -f conftest.err conftest.$ac_ext
+
+done
+# Because of `break', _AC_PREPROC_IFELSE's cleaning code was skipped.
+rm -f conftest.err conftest.$ac_ext
+if $ac_preproc_ok; then
+  break
+fi
+
+    done
+    ac_cv_prog_CXXCPP=$CXXCPP
+
+fi
+  CXXCPP=$ac_cv_prog_CXXCPP
+else
+  ac_cv_prog_CXXCPP=$CXXCPP
+fi
+{ $as_echo "$as_me:$LINENO: result: $CXXCPP" >&5
+$as_echo "$CXXCPP" >&6; }
+ac_preproc_ok=false
+for ac_cxx_preproc_warn_flag in '' yes
+do
+  # Use a header file that comes with gcc, so configuring glibc
+  # with a fresh cross-compiler works.
+  # Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+  # <limits.h> exists even on freestanding compilers.
+  # On the NeXT, cc -E runs the code through the compiler's parser,
+  # not just through cpp. "Syntax error" is here to catch this case.
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+		     Syntax error
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  :
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  # Broken: fails on valid input.
+continue
+fi
+
+rm -f conftest.err conftest.$ac_ext
+
+  # OK, works on sane cases.  Now check whether nonexistent headers
+  # can be detected and how.
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <ac_nonexistent.h>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  # Broken: success on invalid input.
+continue
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  # Passes both tests.
+ac_preproc_ok=:
+break
+fi
+
+rm -f conftest.err conftest.$ac_ext
+
+done
+# Because of `break', _AC_PREPROC_IFELSE's cleaning code was skipped.
+rm -f conftest.err conftest.$ac_ext
+if $ac_preproc_ok; then
+  :
+else
+  { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: C++ preprocessor \"$CXXCPP\" fails sanity check
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: C++ preprocessor \"$CXXCPP\" fails sanity check
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }; }
+fi
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+else
+  _lt_caught_CXX_error=yes
+fi
 
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
@@ -14279,6 +13862,8 @@ module_cmds_CXX=
 module_expsym_cmds_CXX=
 link_all_deplibs_CXX=unknown
 old_archive_cmds_CXX=$old_archive_cmds
+reload_flag_CXX=$reload_flag
+reload_cmds_CXX=$reload_cmds
 no_undefined_flag_CXX=
 whole_archive_flag_spec_CXX=
 enable_shared_with_static_runtimes_CXX=no
@@ -14773,8 +14358,13 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	    # -berok will link without error, but may produce a broken library.
 	    no_undefined_flag_CXX=' ${wl}-bernotok'
 	    allow_undefined_flag_CXX=' ${wl}-berok'
-	    # Exported symbols can be pulled into shared objects from archives
-	    whole_archive_flag_spec_CXX='$convenience'
+	    if test "$with_gnu_ld" = yes; then
+	      # We only use this code for GNU lds that support --whole-archive.
+	      whole_archive_flag_spec_CXX='${wl}--whole-archive$convenience ${wl}--no-whole-archive'
+	    else
+	      # Exported symbols can be pulled into shared objects from archives
+	      whole_archive_flag_spec_CXX='$convenience'
+	    fi
 	    archive_cmds_need_lc_CXX=yes
 	    # This is similar to how AIX traditionally builds its shared
 	    # libraries.
@@ -15153,7 +14743,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	    # dependencies.
 	    output_verbose_link_cmd='templist=`$CC -shared $CFLAGS -v conftest.$objext 2>&1 | $GREP "ld"`; templist=`func_echo_all "$templist" | $SED "s/\(^.*ld.*\)\( .*ld .*$\)/\1/"`; list=""; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; func_echo_all "X$list" | $Xsed'
 	    ;;
-	  xl*)
+	  xl* | mpixl* | bgxl*)
 	    # IBM XL 8.0 on PPC, with GNU ld
 	    hardcode_libdir_flag_spec_CXX='${wl}-rpath ${wl}$libdir'
 	    export_dynamic_flag_spec_CXX='${wl}--export-dynamic'
@@ -15476,6 +15066,10 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
           CC*)
 	    archive_cmds_CXX='$CC -G ${wl}-h,$soname -o $lib $libobjs $deplibs $compiler_flags'
 	    archive_expsym_cmds_CXX='$CC -G ${wl}-Bexport:$export_symbols ${wl}-h,$soname -o $lib $libobjs $deplibs $compiler_flags'
+	    old_archive_cmds_CXX='$CC -Tprelink_objects $oldobjs~
+	      '"$old_archive_cmds_CXX"
+	    reload_cmds_CXX='$CC -Tprelink_objects $reload_objs~
+	      '"$reload_cmds_CXX"
 	    ;;
 	  *)
 	    archive_cmds_CXX='$CC -shared ${wl}-h,$soname -o $lib $libobjs $deplibs $compiler_flags'
@@ -15911,8 +15505,8 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
 	    lt_prog_compiler_pic_CXX=
 	    lt_prog_compiler_static_CXX='-non_shared'
 	    ;;
-	  xlc* | xlC*)
-	    # IBM XL 8.0 on PPC
+	  xlc* | xlC* | bgxl[cC]* | mpixl[cC]*)
+	    # IBM XL 8.0, 9.0 on PPC and BlueGene
 	    lt_prog_compiler_wl_CXX='-Wl,'
 	    lt_prog_compiler_pic_CXX='-qpic'
 	    lt_prog_compiler_static_CXX='-qstaticlink'
@@ -16066,11 +15660,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16069: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15663: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16073: \$? = $ac_status" >&5
+   echo "$as_me:15667: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16165,11 +15759,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16168: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15762: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16172: \$? = $ac_status" >&5
+   echo "$as_me:15766: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16217,11 +15811,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16220: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15814: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16224: \$? = $ac_status" >&5
+   echo "$as_me:15818: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16282,8 +15876,10 @@ $as_echo_n "checking whether the $compiler linker ($LD) supports shared librarie
   aix[4-9]*)
     # If we're using GNU nm, then we don't want the "-C" option.
     # -C means demangle to AIX nm, but means don't demangle with GNU nm
+    # Also, AIX nm treats weak defined symbols like other global defined
+    # symbols, whereas GNU nm marks them as "W".
     if $NM -V 2>&1 | $GREP 'GNU' > /dev/null; then
-      export_symbols_cmds_CXX='$NM -Bpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B")) && (substr(\$ 3,1,1) != ".")) { print \$ 3 } }'\'' | sort -u > $export_symbols'
+      export_symbols_cmds_CXX='$NM -Bpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B") || (\$ 2 == "W")) && (substr(\$ 3,1,1) != ".")) { print \$ 3 } }'\'' | sort -u > $export_symbols'
     else
       export_symbols_cmds_CXX='$NM -BCpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B")) && (substr(\$ 3,1,1) != ".")) { print \$ 3 } }'\'' | sort -u > $export_symbols'
     fi
@@ -16887,7 +16483,7 @@ fi
 
   # Append ld.so.conf contents to the search path
   if test -f /etc/ld.so.conf; then
-    lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;/^[	 ]*hwcap[	 ]/d;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;/^$/d' | tr '\n' ' '`
+    lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;/^[	 ]*hwcap[	 ]/d;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;s/"//g;/^$/d' | tr '\n' ' '`
     sys_lib_dlsearch_path_spec="/lib /usr/lib $lt_ld_extra"
   fi
 
@@ -17348,13 +16944,6 @@ if test -z "${HAVE_DOXYGEN_TRUE}" && test -z "${HAVE_DOXYGEN_FALSE}"; then
   { { $as_echo "$as_me:$LINENO: error: conditional \"HAVE_DOXYGEN\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 $as_echo "$as_me: error: conditional \"HAVE_DOXYGEN\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
-if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
-  { { $as_echo "$as_me:$LINENO: error: conditional \"am__fastdepCXX\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-$as_echo "$as_me: error: conditional \"am__fastdepCXX\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -17909,6 +17498,7 @@ RANLIB='`$ECHO "$RANLIB" | $SED "$delay_single_quote_subst"`'
 old_postinstall_cmds='`$ECHO "$old_postinstall_cmds" | $SED "$delay_single_quote_subst"`'
 old_postuninstall_cmds='`$ECHO "$old_postuninstall_cmds" | $SED "$delay_single_quote_subst"`'
 old_archive_cmds='`$ECHO "$old_archive_cmds" | $SED "$delay_single_quote_subst"`'
+lock_old_archive_extraction='`$ECHO "$lock_old_archive_extraction" | $SED "$delay_single_quote_subst"`'
 CC='`$ECHO "$CC" | $SED "$delay_single_quote_subst"`'
 CFLAGS='`$ECHO "$CFLAGS" | $SED "$delay_single_quote_subst"`'
 compiler='`$ECHO "$compiler" | $SED "$delay_single_quote_subst"`'
@@ -17995,6 +17585,8 @@ predeps='`$ECHO "$predeps" | $SED "$delay_single_quote_subst"`'
 postdeps='`$ECHO "$postdeps" | $SED "$delay_single_quote_subst"`'
 compiler_lib_search_path='`$ECHO "$compiler_lib_search_path" | $SED "$delay_single_quote_subst"`'
 LD_CXX='`$ECHO "$LD_CXX" | $SED "$delay_single_quote_subst"`'
+reload_flag_CXX='`$ECHO "$reload_flag_CXX" | $SED "$delay_single_quote_subst"`'
+reload_cmds_CXX='`$ECHO "$reload_cmds_CXX" | $SED "$delay_single_quote_subst"`'
 old_archive_cmds_CXX='`$ECHO "$old_archive_cmds_CXX" | $SED "$delay_single_quote_subst"`'
 compiler_CXX='`$ECHO "$compiler_CXX" | $SED "$delay_single_quote_subst"`'
 GCC_CXX='`$ECHO "$GCC_CXX" | $SED "$delay_single_quote_subst"`'
@@ -18123,6 +17715,7 @@ predeps \
 postdeps \
 compiler_lib_search_path \
 LD_CXX \
+reload_flag_CXX \
 compiler_CXX \
 lt_prog_compiler_no_builtin_flag_CXX \
 lt_prog_compiler_wl_CXX \
@@ -18177,6 +17770,7 @@ postuninstall_cmds \
 finish_cmds \
 sys_lib_search_path_spec \
 sys_lib_dlsearch_path_spec \
+reload_cmds_CXX \
 old_archive_cmds_CXX \
 old_archive_from_new_cmds_CXX \
 old_archive_from_expsyms_cmds_CXX \
@@ -19159,10 +18753,6 @@ NL2SP=$lt_lt_NL2SP
 # convert \$build paths to \$host format.
 to_host_path_cmd=$lt_cv_to_host_path_cmd
 
-# How to create reloadable object files.
-reload_flag=$lt_reload_flag
-reload_cmds=$lt_reload_cmds
-
 # An object symbol dumper.
 OBJDUMP=$lt_OBJDUMP
 
@@ -19189,6 +18779,9 @@ STRIP=$lt_STRIP
 RANLIB=$lt_RANLIB
 old_postinstall_cmds=$lt_old_postinstall_cmds
 old_postuninstall_cmds=$lt_old_postuninstall_cmds
+
+# Whether to use a lock for old archive extraction.
+lock_old_archive_extraction=$lock_old_archive_extraction
 
 # A C compiler.
 LTCC=$lt_CC
@@ -19314,6 +18907,10 @@ striplib=$lt_striplib
 
 # The linker used to build libraries.
 LD=$lt_LD
+
+# How to create reloadable object files.
+reload_flag=$lt_reload_flag
+reload_cmds=$lt_reload_cmds
 
 # Commands used to build an old-style archive.
 old_archive_cmds=$lt_old_archive_cmds
@@ -19697,6 +19294,10 @@ _LT_EOF
 
 # The linker used to build libraries.
 LD=$lt_LD_CXX
+
+# How to create reloadable object files.
+reload_flag=$lt_reload_flag_CXX
+reload_cmds=$lt_reload_cmds_CXX
 
 # Commands used to build an old-style archive.
 old_archive_cmds=$lt_old_archive_cmds_CXX

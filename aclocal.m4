@@ -694,15 +694,13 @@ chmod +x "$CONFIG_LT"
 # appending to config.log, which fails on DOS, as config.log is still kept
 # open by configure.  Here we exec the FD to /dev/null, effectively closing
 # config.log, so it can be properly (re)opened and appended to by config.lt.
-if test "$no_create" != yes; then
-  lt_cl_success=:
-  test "$silent" = yes &&
-    lt_config_lt_args="$lt_config_lt_args --quiet"
-  exec AS_MESSAGE_LOG_FD>/dev/null
-  $SHELL "$CONFIG_LT" $lt_config_lt_args || lt_cl_success=false
-  exec AS_MESSAGE_LOG_FD>>config.log
-  $lt_cl_success || AS_EXIT(1)
-fi
+lt_cl_success=:
+test "$silent" = yes &&
+  lt_config_lt_args="$lt_config_lt_args --quiet"
+exec AS_MESSAGE_LOG_FD>/dev/null
+$SHELL "$CONFIG_LT" $lt_config_lt_args || lt_cl_success=false
+exec AS_MESSAGE_LOG_FD>>config.log
+$lt_cl_success || AS_EXIT(1)
 ])# LT_OUTPUT
 
 
@@ -1331,10 +1329,19 @@ if test -n "$RANLIB"; then
   esac
   old_archive_cmds="$old_archive_cmds~\$RANLIB \$oldlib"
 fi
+
+case $host_os in
+  darwin*)
+    lock_old_archive_extraction=yes ;;
+  *)
+    lock_old_archive_extraction=no ;;
+esac
 _LT_DECL([], [old_postinstall_cmds], [2])
 _LT_DECL([], [old_postuninstall_cmds], [2])
 _LT_TAGDECL([], [old_archive_cmds], [2],
     [Commands used to build an old-style archive])
+_LT_DECL([], [lock_old_archive_extraction], [0],
+    [Whether to use a lock for old archive extraction])
 ])# _LT_CMD_OLD_ARCHIVE
 
 
@@ -1467,6 +1474,11 @@ AC_CACHE_VAL([lt_cv_sys_max_cmd_len], [dnl
     # the test eventually succeeds (with a max line length of 256k).
     # Instead, let's just punt: use the minimum linelength reported by
     # all of the supported platforms: 8192 (on NT/2K/XP).
+    lt_cv_sys_max_cmd_len=8192;
+    ;;
+
+  mint*)
+    # On MiNT this can take a long time and run out of memory.
     lt_cv_sys_max_cmd_len=8192;
     ;;
 
@@ -2430,7 +2442,7 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu)
 
   # Append ld.so.conf contents to the search path
   if test -f /etc/ld.so.conf; then
-    lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \[$]2)); skip = 1; } { if (!skip) print \[$]0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;/^[	 ]*hwcap[	 ]/d;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;/^$/d' | tr '\n' ' '`
+    lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \[$]2)); skip = 1; } { if (!skip) print \[$]0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;/^[	 ]*hwcap[	 ]/d;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;s/"//g;/^$/d' | tr '\n' ' '`
     sys_lib_dlsearch_path_spec="/lib /usr/lib $lt_ld_extra"
   fi
 
@@ -2777,6 +2789,7 @@ AC_REQUIRE([AC_CANONICAL_HOST])dnl
 AC_REQUIRE([AC_CANONICAL_BUILD])dnl
 m4_require([_LT_DECL_SED])dnl
 m4_require([_LT_DECL_EGREP])dnl
+m4_require([_LT_PROG_ECHO_BACKSLASH])dnl
 
 AC_ARG_WITH([gnu-ld],
     [AS_HELP_STRING([--with-gnu-ld],
@@ -2906,8 +2919,8 @@ case $host_os in
     fi
     ;;
 esac
-_LT_DECL([], [reload_flag], [1], [How to create reloadable object files])dnl
-_LT_DECL([], [reload_cmds], [2])dnl
+_LT_TAGDECL([], [reload_flag], [1], [How to create reloadable object files])dnl
+_LT_TAGDECL([], [reload_cmds], [2])dnl
 ])# _LT_CMD_RELOAD
 
 
@@ -3006,11 +3019,11 @@ hpux10.20* | hpux11*)
     lt_cv_file_magic_test_file=/usr/lib/hpux32/libc.so
     ;;
   hppa*64*)
-    [lt_cv_deplibs_check_method='file_magic (s[0-9][0-9][0-9]|ELF-[0-9][0-9]) shared object file - PA-RISC [0-9].[0-9]']
+    [lt_cv_deplibs_check_method='file_magic (s[0-9][0-9][0-9]|ELF[ -][0-9][0-9])(-bit)?( [LM]SB)? shared object( file)?[, -]* PA-RISC [0-9]\.[0-9]']
     lt_cv_file_magic_test_file=/usr/lib/pa20_64/libc.sl
     ;;
   *)
-    lt_cv_deplibs_check_method='file_magic (s[[0-9]][[0-9]][[0-9]]|PA-RISC[[0-9]].[[0-9]]) shared library'
+    lt_cv_deplibs_check_method='file_magic (s[[0-9]][[0-9]][[0-9]]|PA-RISC[[0-9]]\.[[0-9]]) shared library'
     lt_cv_file_magic_test_file=/usr/lib/libc.sl
     ;;
   esac
@@ -3174,7 +3187,19 @@ if test "$lt_cv_path_NM" != "no"; then
   NM="$lt_cv_path_NM"
 else
   # Didn't find any BSD compatible name lister, look for dumpbin.
-  AC_CHECK_TOOLS(DUMPBIN, ["dumpbin -symbols" "link -dump -symbols"], :)
+  if test -n "$DUMPBIN"; then :
+    # Let the user override the test.
+  else
+    AC_CHECK_TOOLS(DUMPBIN, [dumpbin "link -dump"], :)
+    case `$DUMPBIN -symbols /dev/null 2>&1 | sed '1q'` in
+    *COFF*)
+      DUMPBIN="$DUMPBIN -symbols"
+      ;;
+    *)
+      DUMPBIN=:
+      ;;
+    esac
+  fi
   AC_SUBST([DUMPBIN])
   if test "$DUMPBIN" != ":"; then
     NM="$DUMPBIN"
@@ -3426,7 +3451,7 @@ _LT_EOF
   if AC_TRY_EVAL(ac_compile); then
     # Now try to grab the symbols.
     nlist=conftest.nm
-    if AC_TRY_EVAL(NM conftest.$ac_objext \| $lt_cv_sys_global_symbol_pipe \> $nlist) && test -s "$nlist"; then
+    if AC_TRY_EVAL(NM conftest.$ac_objext \| "$lt_cv_sys_global_symbol_pipe" \> $nlist) && test -s "$nlist"; then
       # Try sorting and uniquifying the output.
       if sort "$nlist" | uniq > "$nlist"T; then
 	mv -f "$nlist"T "$nlist"
@@ -3726,8 +3751,8 @@ m4_if([$1], [CXX], [
 	    _LT_TAGVAR(lt_prog_compiler_pic, $1)=
 	    _LT_TAGVAR(lt_prog_compiler_static, $1)='-non_shared'
 	    ;;
-	  xlc* | xlC*)
-	    # IBM XL 8.0 on PPC
+	  xlc* | xlC* | bgxl[[cC]]* | mpixl[[cC]]*)
+	    # IBM XL 8.0, 9.0 on PPC and BlueGene
 	    _LT_TAGVAR(lt_prog_compiler_wl, $1)='-Wl,'
 	    _LT_TAGVAR(lt_prog_compiler_pic, $1)='-qpic'
 	    _LT_TAGVAR(lt_prog_compiler_static, $1)='-qstaticlink'
@@ -4010,8 +4035,8 @@ m4_if([$1], [CXX], [
         # All Alpha code is PIC.
         _LT_TAGVAR(lt_prog_compiler_static, $1)='-non_shared'
         ;;
-      xl*)
-	# IBM XL C 8.0/Fortran 10.1 on PPC
+      xl* | bgxl* | bgf* | mpixl*)
+	# IBM XL C 8.0/Fortran 10.1, 11.1 on PPC and BlueGene
 	_LT_TAGVAR(lt_prog_compiler_wl, $1)='-Wl,'
 	_LT_TAGVAR(lt_prog_compiler_pic, $1)='-qpic'
 	_LT_TAGVAR(lt_prog_compiler_static, $1)='-qstaticlink'
@@ -4171,8 +4196,10 @@ m4_if([$1], [CXX], [
   aix[[4-9]]*)
     # If we're using GNU nm, then we don't want the "-C" option.
     # -C means demangle to AIX nm, but means don't demangle with GNU nm
+    # Also, AIX nm treats weak defined symbols like other global defined
+    # symbols, whereas GNU nm marks them as "W".
     if $NM -V 2>&1 | $GREP 'GNU' > /dev/null; then
-      _LT_TAGVAR(export_symbols_cmds, $1)='$NM -Bpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B")) && ([substr](\$ 3,1,1) != ".")) { print \$ 3 } }'\'' | sort -u > $export_symbols'
+      _LT_TAGVAR(export_symbols_cmds, $1)='$NM -Bpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B") || (\$ 2 == "W")) && ([substr](\$ 3,1,1) != ".")) { print \$ 3 } }'\'' | sort -u > $export_symbols'
     else
       _LT_TAGVAR(export_symbols_cmds, $1)='$NM -BCpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B")) && ([substr](\$ 3,1,1) != ".")) { print \$ 3 } }'\'' | sort -u > $export_symbols'
     fi
@@ -4250,7 +4277,33 @@ dnl Note also adjust exclude_expsyms for C++ above.
   esac
 
   _LT_TAGVAR(ld_shlibs, $1)=yes
+
+  # On some targets, GNU ld is compatible enough with the native linker
+  # that we're better off using the native interface for both.
+  lt_use_gnu_ld_interface=no
   if test "$with_gnu_ld" = yes; then
+    case $host_os in
+      aix*)
+	# The AIX port of GNU ld has always aspired to compatibility
+	# with the native linker.  However, as the warning in the GNU ld
+	# block says, versions before 2.19.5* couldn't really create working
+	# shared libraries, regardless of the interface used.
+	case `$LD -v 2>&1` in
+	  *\ \(GNU\ Binutils\)\ 2.19.5*) ;;
+	  *\ \(GNU\ Binutils\)\ 2.[[2-9]]*) ;;
+	  *\ \(GNU\ Binutils\)\ [[3-9]]*) ;;
+	  *)
+	    lt_use_gnu_ld_interface=yes
+	    ;;
+	esac
+	;;
+      *)
+	lt_use_gnu_ld_interface=yes
+	;;
+    esac
+  fi
+
+  if test "$lt_use_gnu_ld_interface" = yes; then
     # If archive_cmds runs LD, not CC, wlarc should be empty
     wlarc='${wl}'
 
@@ -4283,11 +4336,12 @@ dnl Note also adjust exclude_expsyms for C++ above.
 	_LT_TAGVAR(ld_shlibs, $1)=no
 	cat <<_LT_EOF 1>&2
 
-*** Warning: the GNU linker, at least up to release 2.9.1, is reported
+*** Warning: the GNU linker, at least up to release 2.19, is reported
 *** to be unable to reliably create shared libraries on AIX.
 *** Therefore, libtool is disabling shared libraries support.  If you
-*** really care for shared libraries, you may want to modify your PATH
-*** so that a non-GNU linker is found, and then restart.
+*** really care for shared libraries, you may want to install binutils
+*** 2.20 or above, or modify your PATH so that a non-GNU linker is found.
+*** You will then need to restart the configuration process.
 
 _LT_EOF
       fi
@@ -4390,7 +4444,7 @@ _LT_EOF
 	lf95*)				# Lahey Fortran 8.1
 	  _LT_TAGVAR(whole_archive_flag_spec, $1)=
 	  tmp_sharedflag='--shared' ;;
-	xl[[cC]]*)			# IBM XL C 8.0 on PPC (deal with xlf below)
+	xl[[cC]]* | bgxl[[cC]]* | mpixl[[cC]]*) # IBM XL C 8.0 on PPC (deal with xlf below)
 	  tmp_sharedflag='-qmkshrobj'
 	  tmp_addflag= ;;
 	esac
@@ -4412,7 +4466,7 @@ _LT_EOF
         fi
 
 	case $cc_basename in
-	xlf*)
+	xlf* | bgf* | bgxlf* | mpixlf*)
 	  # IBM XL Fortran 10.1 on PPC cannot create shared libs itself
 	  _LT_TAGVAR(whole_archive_flag_spec, $1)='--whole-archive$convenience --no-whole-archive'
 	  _LT_TAGVAR(hardcode_libdir_flag_spec, $1)=
@@ -4543,8 +4597,10 @@ _LT_EOF
       else
 	# If we're using GNU nm, then we don't want the "-C" option.
 	# -C means demangle to AIX nm, but means don't demangle with GNU nm
+	# Also, AIX nm treats weak defined symbols like other global
+	# defined symbols, whereas GNU nm marks them as "W".
 	if $NM -V 2>&1 | $GREP 'GNU' > /dev/null; then
-	  _LT_TAGVAR(export_symbols_cmds, $1)='$NM -Bpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B")) && ([substr](\$ 3,1,1) != ".")) { print \$ 3 } }'\'' | sort -u > $export_symbols'
+	  _LT_TAGVAR(export_symbols_cmds, $1)='$NM -Bpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B") || (\$ 2 == "W")) && ([substr](\$ 3,1,1) != ".")) { print \$ 3 } }'\'' | sort -u > $export_symbols'
 	else
 	  _LT_TAGVAR(export_symbols_cmds, $1)='$NM -BCpg $libobjs $convenience | awk '\''{ if (((\$ 2 == "T") || (\$ 2 == "D") || (\$ 2 == "B")) && ([substr](\$ 3,1,1) != ".")) { print \$ 3 } }'\'' | sort -u > $export_symbols'
 	fi
@@ -4648,8 +4704,13 @@ _LT_EOF
 	  # -berok will link without error, but may produce a broken library.
 	  _LT_TAGVAR(no_undefined_flag, $1)=' ${wl}-bernotok'
 	  _LT_TAGVAR(allow_undefined_flag, $1)=' ${wl}-berok'
-	  # Exported symbols can be pulled into shared objects from archives
-	  _LT_TAGVAR(whole_archive_flag_spec, $1)='$convenience'
+	  if test "$with_gnu_ld" = yes; then
+	    # We only use this code for GNU lds that support --whole-archive.
+	    _LT_TAGVAR(whole_archive_flag_spec, $1)='${wl}--whole-archive$convenience ${wl}--no-whole-archive'
+	  else
+	    # Exported symbols can be pulled into shared objects from archives
+	    _LT_TAGVAR(whole_archive_flag_spec, $1)='$convenience'
+	  fi
 	  _LT_TAGVAR(archive_cmds_need_lc, $1)=yes
 	  # This is similar to how AIX traditionally builds its shared libraries.
 	  _LT_TAGVAR(archive_expsym_cmds, $1)="\$CC $shared_flag"' -o $output_objdir/$soname $libobjs $deplibs ${wl}-bnoentry $compiler_flags ${wl}-bE:$export_symbols${allow_undefined_flag}~$AR $AR_FLAGS $output_objdir/$libname$release.a $output_objdir/$soname'
@@ -5318,14 +5379,14 @@ CC="$lt_save_CC"
 ])# _LT_LANG_C_CONFIG
 
 
-# _LT_PROG_CXX
-# ------------
-# Since AC_PROG_CXX is broken, in that it returns g++ if there is no c++
-# compiler, we have our own version here.
-m4_defun([_LT_PROG_CXX],
-[
-pushdef([AC_MSG_ERROR], [_lt_caught_CXX_error=yes])
-AC_PROG_CXX
+# _LT_LANG_CXX_CONFIG([TAG])
+# --------------------------
+# Ensure that the configuration variables for a C++ compiler are suitably
+# defined.  These variables are subsequently used by _LT_CONFIG to write
+# the compiler configuration to `libtool'.
+m4_defun([_LT_LANG_CXX_CONFIG],
+[m4_require([_LT_FILEUTILS_DEFAULTS])dnl
+m4_require([_LT_DECL_EGREP])dnl
 if test -n "$CXX" && ( test "X$CXX" != "Xno" &&
     ( (test "X$CXX" = "Xg++" && `g++ -v >/dev/null 2>&1` ) ||
     (test "X$CXX" != "Xg++"))) ; then
@@ -5333,22 +5394,6 @@ if test -n "$CXX" && ( test "X$CXX" != "Xno" &&
 else
   _lt_caught_CXX_error=yes
 fi
-popdef([AC_MSG_ERROR])
-])# _LT_PROG_CXX
-
-dnl aclocal-1.4 backwards compatibility:
-dnl AC_DEFUN([_LT_PROG_CXX], [])
-
-
-# _LT_LANG_CXX_CONFIG([TAG])
-# --------------------------
-# Ensure that the configuration variables for a C++ compiler are suitably
-# defined.  These variables are subsequently used by _LT_CONFIG to write
-# the compiler configuration to `libtool'.
-m4_defun([_LT_LANG_CXX_CONFIG],
-[AC_REQUIRE([_LT_PROG_CXX])dnl
-m4_require([_LT_FILEUTILS_DEFAULTS])dnl
-m4_require([_LT_DECL_EGREP])dnl
 
 AC_LANG_PUSH(C++)
 _LT_TAGVAR(archive_cmds_need_lc, $1)=no
@@ -5370,6 +5415,8 @@ _LT_TAGVAR(module_cmds, $1)=
 _LT_TAGVAR(module_expsym_cmds, $1)=
 _LT_TAGVAR(link_all_deplibs, $1)=unknown
 _LT_TAGVAR(old_archive_cmds, $1)=$old_archive_cmds
+_LT_TAGVAR(reload_flag, $1)=$reload_flag
+_LT_TAGVAR(reload_cmds, $1)=$reload_cmds
 _LT_TAGVAR(no_undefined_flag, $1)=
 _LT_TAGVAR(whole_archive_flag_spec, $1)=
 _LT_TAGVAR(enable_shared_with_static_runtimes, $1)=no
@@ -5599,8 +5646,13 @@ if test "$_lt_caught_CXX_error" != yes; then
 	    # -berok will link without error, but may produce a broken library.
 	    _LT_TAGVAR(no_undefined_flag, $1)=' ${wl}-bernotok'
 	    _LT_TAGVAR(allow_undefined_flag, $1)=' ${wl}-berok'
-	    # Exported symbols can be pulled into shared objects from archives
-	    _LT_TAGVAR(whole_archive_flag_spec, $1)='$convenience'
+	    if test "$with_gnu_ld" = yes; then
+	      # We only use this code for GNU lds that support --whole-archive.
+	      _LT_TAGVAR(whole_archive_flag_spec, $1)='${wl}--whole-archive$convenience ${wl}--no-whole-archive'
+	    else
+	      # Exported symbols can be pulled into shared objects from archives
+	      _LT_TAGVAR(whole_archive_flag_spec, $1)='$convenience'
+	    fi
 	    _LT_TAGVAR(archive_cmds_need_lc, $1)=yes
 	    # This is similar to how AIX traditionally builds its shared
 	    # libraries.
@@ -5952,7 +6004,7 @@ if test "$_lt_caught_CXX_error" != yes; then
 	    # dependencies.
 	    output_verbose_link_cmd='templist=`$CC -shared $CFLAGS -v conftest.$objext 2>&1 | $GREP "ld"`; templist=`func_echo_all "$templist" | $SED "s/\(^.*ld.*\)\( .*ld .*$\)/\1/"`; list=""; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; func_echo_all "X$list" | $Xsed'
 	    ;;
-	  xl*)
+	  xl* | mpixl* | bgxl*)
 	    # IBM XL 8.0 on PPC, with GNU ld
 	    _LT_TAGVAR(hardcode_libdir_flag_spec, $1)='${wl}-rpath ${wl}$libdir'
 	    _LT_TAGVAR(export_dynamic_flag_spec, $1)='${wl}--export-dynamic'
@@ -6275,6 +6327,10 @@ if test "$_lt_caught_CXX_error" != yes; then
           CC*)
 	    _LT_TAGVAR(archive_cmds, $1)='$CC -G ${wl}-h,$soname -o $lib $libobjs $deplibs $compiler_flags'
 	    _LT_TAGVAR(archive_expsym_cmds, $1)='$CC -G ${wl}-Bexport:$export_symbols ${wl}-h,$soname -o $lib $libobjs $deplibs $compiler_flags'
+	    _LT_TAGVAR(old_archive_cmds, $1)='$CC -Tprelink_objects $oldobjs~
+	      '"$_LT_TAGVAR(old_archive_cmds, $1)"
+	    _LT_TAGVAR(reload_cmds, $1)='$CC -Tprelink_objects $reload_objs~
+	      '"$_LT_TAGVAR(reload_cmds, $1)"
 	    ;;
 	  *)
 	    _LT_TAGVAR(archive_cmds, $1)='$CC -shared ${wl}-h,$soname -o $lib $libobjs $deplibs $compiler_flags'
@@ -6565,32 +6621,16 @@ _LT_TAGDECL([], [compiler_lib_search_path], [1],
 ])# _LT_SYS_HIDDEN_LIBDEPS
 
 
-# _LT_PROG_F77
-# ------------
-# Since AC_PROG_F77 is broken, in that it returns the empty string
-# if there is no fortran compiler, we have our own version here.
-m4_defun([_LT_PROG_F77],
-[
-pushdef([AC_MSG_ERROR], [_lt_disable_F77=yes])
-AC_PROG_F77
-if test -z "$F77" || test "X$F77" = "Xno"; then
-  _lt_disable_F77=yes
-fi
-popdef([AC_MSG_ERROR])
-])# _LT_PROG_F77
-
-dnl aclocal-1.4 backwards compatibility:
-dnl AC_DEFUN([_LT_PROG_F77], [])
-
-
 # _LT_LANG_F77_CONFIG([TAG])
 # --------------------------
 # Ensure that the configuration variables for a Fortran 77 compiler are
 # suitably defined.  These variables are subsequently used by _LT_CONFIG
 # to write the compiler configuration to `libtool'.
 m4_defun([_LT_LANG_F77_CONFIG],
-[AC_REQUIRE([_LT_PROG_F77])dnl
-AC_LANG_PUSH(Fortran 77)
+[AC_LANG_PUSH(Fortran 77)
+if test -z "$F77" || test "X$F77" = "Xno"; then
+  _lt_disable_F77=yes
+fi
 
 _LT_TAGVAR(archive_cmds_need_lc, $1)=no
 _LT_TAGVAR(allow_undefined_flag, $1)=
@@ -6609,6 +6649,8 @@ _LT_TAGVAR(module_cmds, $1)=
 _LT_TAGVAR(module_expsym_cmds, $1)=
 _LT_TAGVAR(link_all_deplibs, $1)=unknown
 _LT_TAGVAR(old_archive_cmds, $1)=$old_archive_cmds
+_LT_TAGVAR(reload_flag, $1)=$reload_flag
+_LT_TAGVAR(reload_cmds, $1)=$reload_cmds
 _LT_TAGVAR(no_undefined_flag, $1)=
 _LT_TAGVAR(whole_archive_flag_spec, $1)=
 _LT_TAGVAR(enable_shared_with_static_runtimes, $1)=no
@@ -6708,32 +6750,17 @@ AC_LANG_POP
 ])# _LT_LANG_F77_CONFIG
 
 
-# _LT_PROG_FC
-# -----------
-# Since AC_PROG_FC is broken, in that it returns the empty string
-# if there is no fortran compiler, we have our own version here.
-m4_defun([_LT_PROG_FC],
-[
-pushdef([AC_MSG_ERROR], [_lt_disable_FC=yes])
-AC_PROG_FC
-if test -z "$FC" || test "X$FC" = "Xno"; then
-  _lt_disable_FC=yes
-fi
-popdef([AC_MSG_ERROR])
-])# _LT_PROG_FC
-
-dnl aclocal-1.4 backwards compatibility:
-dnl AC_DEFUN([_LT_PROG_FC], [])
-
-
 # _LT_LANG_FC_CONFIG([TAG])
 # -------------------------
 # Ensure that the configuration variables for a Fortran compiler are
 # suitably defined.  These variables are subsequently used by _LT_CONFIG
 # to write the compiler configuration to `libtool'.
 m4_defun([_LT_LANG_FC_CONFIG],
-[AC_REQUIRE([_LT_PROG_FC])dnl
-AC_LANG_PUSH(Fortran)
+[AC_LANG_PUSH(Fortran)
+
+if test -z "$FC" || test "X$FC" = "Xno"; then
+  _lt_disable_FC=yes
+fi
 
 _LT_TAGVAR(archive_cmds_need_lc, $1)=no
 _LT_TAGVAR(allow_undefined_flag, $1)=
@@ -6752,6 +6779,8 @@ _LT_TAGVAR(module_cmds, $1)=
 _LT_TAGVAR(module_expsym_cmds, $1)=
 _LT_TAGVAR(link_all_deplibs, $1)=unknown
 _LT_TAGVAR(old_archive_cmds, $1)=$old_archive_cmds
+_LT_TAGVAR(reload_flag, $1)=$reload_flag
+_LT_TAGVAR(reload_cmds, $1)=$reload_cmds
 _LT_TAGVAR(no_undefined_flag, $1)=
 _LT_TAGVAR(whole_archive_flag_spec, $1)=
 _LT_TAGVAR(enable_shared_with_static_runtimes, $1)=no
@@ -6897,6 +6926,8 @@ _LT_CC_BASENAME([$compiler])
 _LT_TAGVAR(archive_cmds_need_lc, $1)=no
 
 _LT_TAGVAR(old_archive_cmds, $1)=$old_archive_cmds
+_LT_TAGVAR(reload_flag, $1)=$reload_flag
+_LT_TAGVAR(reload_cmds, $1)=$reload_cmds
 
 if test -n "$compiler"; then
   _LT_COMPILER_NO_RTTI($1)
@@ -7916,15 +7947,15 @@ m4_define([lt_dict_filter],
 
 # Generated from ltversion.in.
 
-# serial 3081 ltversion.m4
+# serial 3109 ltversion.m4
 # This file is part of GNU Libtool
 
 m4_define([LT_PACKAGE_VERSION], [2.2.7a])
-m4_define([LT_PACKAGE_REVISION], [1.3081])
+m4_define([LT_PACKAGE_REVISION], [1.3109])
 
 AC_DEFUN([LTVERSION_VERSION],
 [macro_version='2.2.7a'
-macro_revision='1.3081'
+macro_revision='1.3109'
 _LT_DECL(, macro_version, 0, [Which release of libtool.m4 was used?])
 _LT_DECL(, macro_revision, 0)
 ])
@@ -8025,6 +8056,9 @@ m4_ifndef([_LT_REQUIRED_DARWIN_CHECKS],	[AC_DEFUN([_LT_REQUIRED_DARWIN_CHECKS])]
 m4_ifndef([_LT_AC_PROG_CXXCPP],		[AC_DEFUN([_LT_AC_PROG_CXXCPP])])
 m4_ifndef([_LT_PREPARE_SED_QUOTE_VARS],	[AC_DEFUN([_LT_PREPARE_SED_QUOTE_VARS])])
 m4_ifndef([_LT_PROG_ECHO_BACKSLASH],	[AC_DEFUN([_LT_PROG_ECHO_BACKSLASH])])
+m4_ifndef([_LT_PROG_F77],		[AC_DEFUN([_LT_PROG_F77])])
+m4_ifndef([_LT_PROG_FC],		[AC_DEFUN([_LT_PROG_FC])])
+m4_ifndef([_LT_PROG_CXX],		[AC_DEFUN([_LT_PROG_CXX])])
 
 # Copyright (C) 2002, 2003, 2005, 2006, 2007, 2008  Free Software Foundation, Inc.
 #
