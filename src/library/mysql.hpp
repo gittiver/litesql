@@ -11,7 +11,7 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
-#include <mysql/mysql.h>
+#include <mysql.h>
 #include "litesql/except.hpp"
 #include "litesql/types.hpp"
 #include "litesql/string.hpp"
