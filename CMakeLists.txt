@@ -99,7 +99,7 @@ IF (WIN32)
 	SET(CMAKE_DL_LIBS "")
 	SET(CMAKE_DEBUG_POSTFIX "d") 
 	set_property(GLOBAL APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS)
-   link_directories(${CMAKE_CURRENT_SOURCE_DIR}/win32/lib/)
+	link_directories(${CMAKE_CURRENT_SOURCE_DIR}/win32/lib/)
 ENDIF (WIN32)
 
 check_include_files(dlfcn.h HAVE_DLFCN_H)

@@ -10,4 +10,3 @@ EXTRA_DIST=CMakeLists.txt \
 	   cmake/FindPostgreSQL.cmake
 ACLOCAL_AMFLAGS=-I m4
 AUTOMAKE_OPTIONS=foreign
-
