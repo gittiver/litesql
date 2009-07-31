@@ -2,6 +2,9 @@
 #include "litesql.hpp"
 #include "litesql-gen-cpp.hpp"
 #include "litesql-gen-graphviz.hpp"
+#ifdef WITH_SAX_PARSER
+#include "objectmodel.hpp"
+#endif // #ifdef WITH_SAX_PARSER
 using namespace std;
 
 char* help = 
@@ -41,7 +44,7 @@ void generateCode(xml::Database& db,
         throw litesql::Except("unsupported target: " + target);
 }
 
-int litesql_gen_main(int argc, char **argv, FILE ** yyin) { 
+int main(int argc, char **argv) { 
     bool printHelp = false;
     for (size_t i = 1; i < argc; i++) {
         string arg = argv[i];
@@ -72,6 +75,21 @@ int litesql_gen_main(int argc, char **argv, FILE ** yyin) {
         fprintf(stderr, help);
         return -1;
     }
+#ifdef WITH_SAX_PARSER
+    ObjectModel model;
+    if (!model.loadFromFile(argv[argc-1]))
+    {
+        string msg = "could not open file '" + string(argv[argc-1]) + "'";
+        perror(msg.c_str());
+        return -1;
+    }
+    else
+    {
+      generateCode(model.db, model.objects, model.relations);    
+      return 0;
+    }
+#else
+    FILE ** yyin;
     *yyin = fopen(argv[argc-1], "r");
     if (!*yyin) {
         string msg = "could not open file '" + string(argv[argc-1]) + "'";
@@ -84,4 +102,5 @@ int litesql_gen_main(int argc, char **argv, FILE ** yyin) {
         cerr << "Error: " << e << endl;
         return -1;
     }
+#endif // #ifdef WITH_SAX_PARSER
 }

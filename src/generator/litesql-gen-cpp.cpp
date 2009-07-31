@@ -548,7 +548,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
 
     for (size_t i = 0; i < o.methods.size(); i++) {
         const xml::Method& m = *o.methods[i];
-        Method mtd(m.name, m.returnType);
+        Method mtd(m.name, m.returnType.empty() ? "void" : m.returnType);
         for (size_t i2 = 0; i2 < m.params.size(); i2++) {
             const xml::Param& p = m.params[i2];
             mtd.param(Variable(p.name, p.type));

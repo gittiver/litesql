@@ -101,7 +101,16 @@ typedef const char* AT_param_name;
 typedef enum { AU_index_unique, A_index_unique_true,A_index_unique_false } AT_index_unique;
 typedef const char* AT_method_name;
 #define AU_method_name NULL
-typedef enum { AU_field_type, A_field_type_boolean,A_field_type_integer,A_field_type_string,A_field_type_float,A_field_type_time,A_field_type_date,A_field_type_datetime } AT_field_type;
+typedef enum { AU_field_type, 
+               A_field_type_boolean,
+               A_field_type_integer,
+               A_field_type_string,
+               A_field_type_float,
+               A_field_type_time,
+               A_field_type_date,
+               A_field_type_datetime,
+               A_field_type_blob 
+             } AT_field_type;
 typedef const char* AT_field_default;
 #define AU_field_default NULL
 typedef const char* AT_method_returntype;

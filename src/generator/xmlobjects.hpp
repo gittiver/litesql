@@ -9,7 +9,10 @@
 #include "litesql/split.hpp"
 #include "litesql/string.hpp"
 
+#ifndef WITH_SAX_PARSER
 extern int yylineno;
+#endif // #ifndef WITH_SAX_PARSER
+
 namespace xml {
 using namespace std;
 using namespace litesql;
@@ -66,7 +69,9 @@ public:
        case A_field_type_date:
        case A_field_type_time:
        case A_field_type_datetime:
-           return false;
+       case A_field_type_blob:
+          return false;
+       
        case A_field_type_string:
            return true;
        }
@@ -87,6 +92,7 @@ public:
            case A_field_type_date: return "INTEGER";
            case A_field_type_time: return "INTEGER";
            case A_field_type_datetime: return "INTEGER";
+           case A_field_type_blob: return "BLOB";
            default: return "";
        }
     }
@@ -99,6 +105,7 @@ public:
            case A_field_type_date: return "litesql::Date";
            case A_field_type_time: return "litesql::Time";
            case A_field_type_datetime: return "litesql::DateTime";
+           case A_field_type_blob: return "litesql::Blob";
            default: return "";
        }
     }
@@ -146,8 +153,8 @@ public:
     Relate(string on, AT_relate_limit l, AT_relate_unique u, string h) 
         : objectName(on), limit(l), unique(u), handle(h) {
         if (hasLimit() && isUnique())
-            throw logic_error("both limit and unique specified in relate: line " + 
-                              toString(yylineno));
+            throw logic_error("both limit and unique specified in relate: line " /*+ 
+                              toString(yylineno)*/);
     }
     bool hasLimit() const {
         return limit == A_relate_limit_one;
@@ -316,6 +323,7 @@ public:
     vector<Table*> tables;
     string name, include, nspace;
 };
+
 void init(Database& db, 
           vector<Object*>& objects,
           vector<Relation*>& relations);
