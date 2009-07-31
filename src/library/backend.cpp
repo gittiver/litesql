@@ -47,50 +47,29 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
     return id;
 }
 
-/*
-map<string,Backend::Creator*> registry;
-
-void Backend::registrate(const string & type,Backend::Creator* creator)
-{
-   printf("registrate %s",type); 
-   registry[type] = creator;
-}
-*/
 Backend* Backend::getBackend(const string & backendType,string connInfo)
 {
-Backend* backend = NULL;
-/*   
-   map<string,Backend::Creator*> :: iterator it = registry.find(backendType.c_str());
-
-   if (it == registry.end()) 
-   {
-      throw DatabaseError("Unknown backend: " + backendType);
-   }  
-   else
-   {
-      backend = it->second->create(connInfo);
-   }
-*/
+  Backend* backend = NULL;
 
 #ifdef HAVE_LIBMYSQLCLIENT
-    if (backendType == "mysql") {
-        backend = new MySQL(connInfo);
-    } else
+  if (backendType == "mysql") {
+    backend = new MySQL(connInfo);
+  } else
 #endif
 #ifdef HAVE_LIBPQ
     if (backendType == "postgresql") {
-        backend = new PostgreSQL(connInfo);
+      backend = new PostgreSQL(connInfo);
     } else
 #endif
 #ifdef HAVE_ODBC
-    if (backendType == "odbc") {
+      if (backendType == "odbc") {
         backend = new ODBCBackend(connInfo);
-    } else
+      } else
 #endif
 #ifdef HAVE_LIBSQLITE3
-    if (backendType == "sqlite3") {
-        backend = new SQLite3(connInfo);
-    }
+        if (backendType == "sqlite3") {
+          backend = new SQLite3(connInfo);
+        }
 #endif
-    return backend;
+        return backend;
 }
