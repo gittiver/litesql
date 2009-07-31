@@ -68,5 +68,5 @@ IF (WITH_ODBC)
 			COMPONENT devel)
 ENDIF (WITH_ODBC)
 
-INCLUDE_DIRECTORIES(../../src/library)
+INCLUDE_DIRECTORIES(../../src/library ../../include)
 

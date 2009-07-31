@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include "compatibility.hpp"
 #include "litesql.hpp"
+#include "litesql/field.hpp"
 
 namespace litesql {
 using namespace std;
@@ -45,15 +46,15 @@ int convert<const string&, int>(const string& value) {
 }
 template <>
 bool convert<int, bool>(int value) {
-    return value;
+    return value!=0;
 }
 template <> 
 float convert<int, float>(int value) {
-    return value;
+    return (float)value;
 }
 template <> 
 float convert<double, float>(double value) {
-    return value;
+    return (float)value;
 }
 template <>
 bool convert<const string&, bool>(const string& value) {
@@ -71,4 +72,63 @@ template <>
 string convert<const string&, string>(const string& value) {
     return value;
 }
+
+
+
+const char hexDigits[] = "0123456789abcdef";
+
+string Blob::toHex(void) const
+{
+  string result;
+  if (!m_data) 
+  {
+    result ="NULL";  
+  }
+  else
+  {
+    result.reserve(m_length);
+    for (size_t i = 0; i < m_length;i++)
+    {
+      char c = m_data[i];
+      char n1 = m_data[i]&0x0f;
+      char n2 = (m_data[i]&0xf0) >>4;
+
+      result.push_back( hexDigits[(m_data[i]&0xf0) >>4]);
+      result.push_back( hexDigits[m_data[i]&0x0f]);
+    }
+  }
+  return result;
+}
+
+
+ostream& operator << (ostream& os, const Blob& blob)
+{
+  return os << convert<const Blob&, string>(blob);
+}
+
+
+template <>
+Blob convert<const string&, Blob>(const string& value) 
+{
+  return Blob(value);
+}
+
+template <>
+string convert<const Blob&, string>(const Blob& value)
+{
+  if (value.isNull())
+  {
+    return "NULL";
+  }
+  else 
+  {
+    string hexVal;
+    hexVal.append("X'");
+    hexVal.append(value.toHex());
+    hexVal.append("'");
+    return hexVal;
+  }
+}
+
+
 }

@@ -155,6 +155,85 @@ public:
     operator string() const { return value(); }
 };
 
+typedef unsigned char u8_t;
+
+class Blob {
+public:
+  Blob()                             : m_data(NULL),m_length(0) {};
+  Blob(const string & value){};
+  Blob(const Blob & b)               : m_data(b.m_data),m_length(b.m_length){};
+  Blob(void * _data, size_t _length) : m_data((u8_t*)_data),m_length(_length) {};
+  virtual ~Blob() { if (m_data!=NULL) free(m_data); };
+
+  string toHex()            const ;
+  size_t length()           const  { return m_length;      };
+  bool   isNull()           const  { return m_data==NULL;  }; 
+  u8_t   data(size_t index) const  { return m_data[index]; };
+//  void   data(void* data, size_t length) {  m_data = (u8_t*)data; m_length = length; };
+//  void   data(const string& s) {  m_data = (u8_t*)data; m_length = length; };
+  void   data(const char* pszData) {  m_data = (u8_t*)strdup(pszData); m_length = strlen(pszData)+1; };
+
+private:
+  u8_t* m_data;
+  size_t m_length;
+
+};
+
+ostream& operator << (ostream& os, const Blob& blob);
+template <>
+Blob convert<const string&, Blob>(const string& value);
+template <>
+string convert<const Blob&, string>(const Blob& value);
+
+template <>
+class Field<Blob> {
+    const FieldType * field; 
+    bool _modified;
+    Blob _value;
+public:
+    Field(const FieldType & f) : field(&f), _modified(true) {}
+    string fullName() const { return field->fullName(); }   
+    string name() const { return field->name(); }
+    string type() const { return field->type(); }
+    string table() const { return field->table(); }
+    Blob value() const { return _value; }
+    const FieldType & fieldType() const { return *field; } 
+    bool modified() const { return _modified; }
+    void setModified(bool state) { _modified = state; }
+    const Field & operator=(const Blob& v) { 
+        _value = v;
+        _modified = true;
+        return *this;
+    }
+
+const Field & operator=(int v) { 
+        _value.data(NULL);
+        _modified = true;
+        return *this;
+    }
+
+/*
+const Field& operator=(const char * v) {
+        _value = v;
+        _modified = true;
+        return *this;
+    }
+    template <class T2>
+    const Field & operator=(T2 v) { 
+        _modified = true;
+        _value = litesql::convert<T2, Blob>(v); 
+        return *this;
+    }
+    template <class T2>
+    bool operator==(const T2& v) const {
+        return litesql::toString(_value) == litesql::toString(v);
+    }
+    template <class T2>
+    bool operator!=(const T2& v) const { return !(*this == v); }
+*/
+
+    operator string() const { return _value.toHex(); }
+};
 
 template <class T>
 std::string operator+(std::string a, litesql::Field<T> f) {
