@@ -28,6 +28,8 @@ int main(int argc, char **argv) {
         jeff.name = "Jeff";
         jeff.sex = Person::Sex::Male;
         jeff.age = 32;
+        Blob image_jeff("abc",4);
+        jeff.image = image_jeff;
         // store Jeff to database
         jeff.update();
         Person jill(db);
@@ -98,7 +100,7 @@ int main(int argc, char **argv) {
         // commit transaction
         db.commit();
         // clean up 
-        db.drop();
+//        db.drop();
     } catch (Except e) {
         cerr << e << endl;
         return -1;

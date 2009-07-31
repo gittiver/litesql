@@ -210,6 +210,8 @@ public:
     litesql::Field<std::string> name;
     static const litesql::FieldType Age;
     litesql::Field<int> age;
+    static const litesql::FieldType Image;
+    litesql::Field<litesql::Blob> image;
 protected:
     static std::vector < std::pair< std::string, std::string > > sex_values;
 public:
