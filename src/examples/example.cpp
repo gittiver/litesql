@@ -8,6 +8,10 @@ void example::Person::sayHello() {
         << " and I am " << age << " years old." << std::endl;
 }
 
+void example::user::sayHello() {
+    std::cout << "Hi! My name is " << name << std::endl;
+}
+
 // no name collisions expected
 using namespace litesql;
 using namespace example;
@@ -35,6 +39,7 @@ int main(int argc, char **argv) {
         Person jill(db);
         jill.name = "Jill";
         jill.sex = Person::Sex::Female;
+        jill.image = NULL;
         jill.age = 33;
         jill.update();
         Person jack(db);

@@ -1,6 +1,6 @@
 set(EXECUTABLES example)
 
-set(example_SOURCES example.cpp exampledatabase.cpp exampledatabase.hpp exampledatabase.xml exampledatabase.dot)
+set(example_SOURCES example.cpp exampledatabase.cpp exampledatabase.hpp exampledatabase.xml auth.xml exampledatabase.dot)
 set(example_LIBS litesql_sqlite litesql)
 
 # get the directory of the database xml definition
@@ -12,7 +12,7 @@ add_custom_command(
    COMMAND litesql-gen -t c++ exampledatabase.xml
    MAIN_DEPENDENCY exampledatabase.xml
    WORKING_DIRECTORY ${WDIR}
-   DEPENDS litesql-gen exampledatabase.xml 
+   DEPENDS litesql-gen exampledatabase.xml auth.xml
    )
 
 add_custom_command(

@@ -2,6 +2,7 @@
 #define _exampledatabase_hpp_
 #include "litesql.hpp"
 namespace example {
+class user;
 class Person;
 class Role;
 class Student;
@@ -137,6 +138,49 @@ public:
 ;
 ;
 };
+class user : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Name;
+    litesql::Field<std::string> name;
+    static const litesql::FieldType Passwd;
+    litesql::Field<std::string> passwd;
+protected:
+    void defaults();
+public:
+    user(const litesql::Database& db);
+    user(const litesql::Database& db, const litesql::Record& rec);
+    user(const user& obj);
+    const user& operator=(const user& obj);
+    virtual void sayHello();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<user> upcast();
+    std::auto_ptr<user> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, user o);
 class Person : public litesql::Persistent {
 public:
     class Own {

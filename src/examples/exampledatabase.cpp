@@ -352,6 +352,150 @@ template <> litesql::DataSource<example::Office> EmployeeOfficeRelation::get(con
     sel.where(srcExpr);
     return DataSource<example::Office>(db, example::Office::Id.in(sel) && expr);
 }
+const litesql::FieldType user::Own::Id("id_","INTEGER","user_");
+const std::string user::type__("user");
+const std::string user::table__("user_");
+const std::string user::sequence__("user_seq");
+const litesql::FieldType user::Id("id_","INTEGER",table__);
+const litesql::FieldType user::Type("type_","TEXT",table__);
+const litesql::FieldType user::Name("name_","TEXT",table__);
+const litesql::FieldType user::Passwd("passwd_","TEXT",table__);
+void user::defaults() {
+    id = 0;
+}
+user::user(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), name(Name), passwd(Passwd) {
+    defaults();
+}
+user::user(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), passwd(Passwd) {
+    defaults();
+    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    switch(size) {
+    case 4: passwd = convert<const std::string&, std::string>(rec[3]);
+        passwd.setModified(false);
+    case 3: name = convert<const std::string&, std::string>(rec[2]);
+        name.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+user::user(const user& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), passwd(obj.passwd) {
+}
+const user& user::operator=(const user& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        name = obj.name;
+        passwd = obj.passwd;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+std::string user::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(name.name());
+    values.push_back(name);
+    name.setModified(false);
+    fields.push_back(passwd.name());
+    values.push_back(passwd);
+    passwd.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void user::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void user::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, name);
+    updateField(updates, table__, passwd);
+}
+void user::addIDUpdates(Updates& updates) {
+}
+void user::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Name);
+    ftypes.push_back(Passwd);
+}
+void user::delRecord() {
+    deleteFromTable(table__, id);
+}
+void user::delRelations() {
+}
+void user::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void user::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<user> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool user::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<user> user::upcast() {
+    return auto_ptr<user>(new user(*this));
+}
+std::auto_ptr<user> user::upcastCopy() {
+    user* np = NULL;
+    np->id = id;
+    np->type = type;
+    np->name = name;
+    np->passwd = passwd;
+    np->inDatabase = inDatabase;
+    if (!np)
+        np = new user(*this);
+    return auto_ptr<user>(np);
+}
+std::ostream & operator<<(std::ostream& os, user o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.name.name() << " = " << o.name << std::endl;
+    os << o.passwd.name() << " = " << o.passwd << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
 const litesql::FieldType Person::Own::Id("id_","INTEGER","Person_");
 const int Person::SexType::Male(0);
 const int Person::SexType::Female(1);
@@ -582,11 +726,11 @@ void Person::delRecord() {
     deleteFromTable(table__, id);
 }
 void Person::delRelations() {
-    PersonPersonRelationMother::del(*db, (PersonPersonRelationMother::Person1 == id) || (PersonPersonRelationMother::Person2 == id));
     PersonPersonRelationFather::del(*db, (PersonPersonRelationFather::Person1 == id) || (PersonPersonRelationFather::Person2 == id));
     PersonPersonRelationSiblings::del(*db, (PersonPersonRelationSiblings::Person1 == id) || (PersonPersonRelationSiblings::Person2 == id));
     PersonPersonRelationChildren::del(*db, (PersonPersonRelationChildren::Person1 == id) || (PersonPersonRelationChildren::Person2 == id));
     RoleRelation::del(*db, (RoleRelation::Person == id));
+    PersonPersonRelationMother::del(*db, (PersonPersonRelationMother::Person1 == id) || (PersonPersonRelationMother::Person2 == id));
 }
 void Person::update() {
     if (!inDatabase) {
@@ -1347,11 +1491,13 @@ std::vector<litesql::Database::SchemaItem> ExampleDatabase::getSchema() const {
     vector<Database::SchemaItem> res;
     res.push_back(Database::SchemaItem("schema_","table","CREATE TABLE schema_ (name_ TEXT, type_ TEXT, sql_ TEXT);"));
     if (backend->supportsSequences()) {
+        res.push_back(Database::SchemaItem("user_seq","sequence","CREATE SEQUENCE user_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Person_seq","sequence","CREATE SEQUENCE Person_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Role_seq","sequence","CREATE SEQUENCE Role_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("School_seq","sequence","CREATE SEQUENCE School_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Office_seq","sequence","CREATE SEQUENCE Office_seq START 1 INCREMENT 1"));
     }
+    res.push_back(Database::SchemaItem("user_","table","CREATE TABLE user_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,passwd_ TEXT)"));
     res.push_back(Database::SchemaItem("Person_","table","CREATE TABLE Person_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,age_ INTEGER,image_ BLOB,sex_ INTEGER)"));
     res.push_back(Database::SchemaItem("Role_","table","CREATE TABLE Role_ (id_ " + backend->getRowIDType() + ",type_ TEXT)"));
     res.push_back(Database::SchemaItem("Student_","table","CREATE TABLE Student_ (id_ " + backend->getRowIDType() + ")"));

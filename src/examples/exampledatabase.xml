@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE database SYSTEM "litesql.dtd"> 
 <database name="ExampleDatabase" namespace="example">
+  <include name="auth.xml" />
     <object name="Person">
         <field name="name" type="string"/>
         <field name="age" type="integer" default="15"/>

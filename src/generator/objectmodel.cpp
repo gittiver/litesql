@@ -140,9 +140,9 @@ AT_relate_limit relate_limit(const xmlChar* value)
 
 }
 
-class MyParser : public XmlParser {
+class LitesqlParser : public XmlParser {
 public:
-  MyParser(ObjectModel* model)
+  LitesqlParser(ObjectModel* model)
     :  m_parseState(ROOT),
     m_pObjectModel(model){};
 
@@ -189,7 +189,7 @@ private:
   vector<ParseState> history;
 };
 
-void MyParser::onStartElement(const xmlChar *fullname,
+void LitesqlParser::onStartElement(const xmlChar *fullname,
                               const xmlChar **atts)
 {
   //   cout << "starting " <<fullname << endl;
@@ -337,13 +337,22 @@ void MyParser::onStartElement(const xmlChar *fullname,
   } 
   else if (xmlStrEqual(fullname,(xmlChar*)"include"))
   {
+    string filename((char*)xmlGetAttrValue(atts,"name"));
     if (m_parseState!=DATABASE)
     {
       m_parseState = ERROR;
     }
     else
     {
-      cout << "include = " << endl;
+      cout << "include " << '"' << filename << '"' << endl;
+      ObjectModel includedModel;
+      LitesqlParser parser(&includedModel);
+      if (!parser.parseFile(filename)) 
+      {
+        cout << "error on parsing included file " << '"' << filename << '"' << endl;
+      }
+      m_pObjectModel->objects.insert(m_pObjectModel->objects.end(),includedModel.objects.begin(),includedModel.objects.end());
+      m_pObjectModel->relations.insert(m_pObjectModel->relations.end(),includedModel.relations.begin(),includedModel.relations.end());
       m_parseState = INCLUDE;
     }
   } 
@@ -354,7 +363,7 @@ void MyParser::onStartElement(const xmlChar *fullname,
   } 
 }
 
-void MyParser::onEndElement(const xmlChar *fullname)
+void LitesqlParser::onEndElement(const xmlChar *fullname)
 {
   cout << "ending " <<fullname << endl; 
   if (xmlStrEqual(fullname,(xmlChar*)"database"))
@@ -478,7 +487,7 @@ void MyParser::onEndElement(const xmlChar *fullname)
 
 bool ObjectModel::loadFromFile(const std::string& filename)
 {
-  MyParser parser(this);
+  LitesqlParser parser(this);
   bool successfulParsed = parser.parseFile(filename);
   return successfulParsed;
 
