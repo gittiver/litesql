@@ -89,10 +89,6 @@ string Blob::toHex(void) const
     result.reserve(m_length);
     for (size_t i = 0; i < m_length;i++)
     {
-      char c = m_data[i];
-      char n1 = m_data[i]&0x0f;
-      char n2 = (m_data[i]&0xf0) >>4;
-
       result.push_back( hexDigits[(m_data[i]&0xf0) >>4]);
       result.push_back( hexDigits[m_data[i]&0x0f]);
     }
@@ -100,6 +96,93 @@ string Blob::toHex(void) const
   return result;
 }
 
+int hex(char c)
+{
+  switch(c)
+  {
+    case '0':
+      return 0;
+    case '1':
+      return 1;
+    case '2':
+      return 2;
+    case '3':
+      return 3;
+    case '4':
+      return 4;
+    case '5':
+      return 5;
+    case '6':
+      return 6;
+    case '7':
+      return 7;
+    case '8':
+      return 8;
+    case '9':
+      return 9;
+    case 'a':
+    case 'A':
+      return 0xa;
+    case 'b':
+    case 'B':
+      return 0xb;
+    case 'c':
+    case 'C':
+      return 0xc;
+    case 'd':
+    case 'D':
+      return 0xd;
+    case 'e':
+    case 'E':
+      return 0xe;
+    case 'f':
+    case 'F':
+      return 0xf;
+    default:
+      throw("invalid digit");
+  }
+}
+
+void Blob::initWithHexString(const string& hexString)
+{
+  if ("NULL"==hexString)
+  {
+    m_data = NULL;
+    m_length = 0;
+  }
+  else
+  {
+    m_length = hexString.size()/2;
+    m_data = (u8_t*) malloc(m_length);
+    for (size_t i = 0; i < m_length;i++)
+    {
+      m_data[i] = (hex(hexString[2*i])<<4) | hex(hexString[2*i+1]);
+    }
+  }
+}
+
+void Blob::initWithData(u8_t* data, size_t length)
+{
+  if (data!=m_data)
+  {
+    if (m_data!=NULL)
+    {
+      free(m_data);
+    }
+
+    if (data==NULL)
+    {
+      m_data = NULL;
+      m_length = 0;
+    }
+    else
+    {
+      m_data = (u8_t*)malloc(length); 
+      memcpy(m_data,data,length);
+      m_length = length;
+    }
+  }
+}
 
 ostream& operator << (ostream& os, const Blob& blob)
 {
@@ -110,7 +193,10 @@ ostream& operator << (ostream& os, const Blob& blob)
 template <>
 Blob convert<const string&, Blob>(const string& value) 
 {
-  return Blob(value);
+  if ("NULL"==value)
+    return Blob(NULL,0);
+  else
+    return Blob(value);
 }
 
 template <>
