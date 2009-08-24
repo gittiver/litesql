@@ -47,7 +47,7 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
     return id;
 }
 
-Backend* Backend::getBackend(const string & backendType,string connInfo)
+Backend* Backend::getBackend(const string & backendType,const string& connInfo)
 {
   Backend* backend = NULL;
 
