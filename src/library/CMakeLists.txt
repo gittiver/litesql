@@ -22,14 +22,20 @@ install(TARGETS ${LIBNAME}
 			COMPONENT devel)
 
 IF (WITH_SQLITE3)
-  add_library(  ${LIBNAME}_sqlite
+  set(${LIBNAME}_sqlite_SRC
 				sqlite3_backend.cpp 
+				sqlite3.hpp )
+if(NOT SQLITE3_FOUND)
+  list(APPEND ${LIBNAME}_sqlite_SRC 
 				sqlite3.c
-				sqlite3.hpp
 				sqlite3.h
 				sqlite3ext.h
-  ) 
-  install(TARGETS ${LIBNAME}_sqlite  
+				)
+endif(NOT SQLITE3_FOUND)
+
+add_library(${LIBNAME}_sqlite ${${LIBNAME}_sqlite_SRC}) 
+
+install(TARGETS ${LIBNAME}_sqlite  
 			RUNTIME DESTINATION lib 
 			ARCHIVE DESTINATION lib/static 
 			COMPONENT devel)

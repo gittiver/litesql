@@ -128,12 +128,3 @@
 #ifndef __cplusplus
 #undef inline
 #endif
-
-/* Define to rpl_malloc if the replacement function should be used. */
-#cmakedefine malloc
-
-/* Define to rpl_realloc if the replacement function should be used. */
-#cmakedefine realloc
-
-/* Define to `unsigned int' if <sys/types.h> does not define. */
-#cmakedefine size_t
