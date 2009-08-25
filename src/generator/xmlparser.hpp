@@ -3,7 +3,10 @@
 
 #include <string>
 
+extern "C"
+{
 #include <libxml/parser.h>
+}
 
 /** abstract base class for SAX2 Parser based on libxml2 */
 class XmlParser {

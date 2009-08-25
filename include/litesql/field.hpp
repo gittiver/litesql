@@ -165,22 +165,18 @@ public:
     initWithHexString(value);
   };
 
+
   Blob(const Blob & b) : m_data(NULL)
   { 
     initWithData(b.m_data,b.m_length);
   };
 
-  Blob(void* data, size_t length) : m_data(NULL), m_length(0)
+  Blob(const void* data, size_t length) : m_data(NULL), m_length(0)
   {
     initWithData((u8_t*)data,length);
   };
   
-  virtual ~Blob()
-  { 
-    if (m_data!=NULL) 
-      free(m_data); 
-  };
-
+  virtual ~Blob();
   const Blob& operator=(const Blob& v) {
     initWithData(v.m_data,v.m_length);
     return *this;
@@ -190,21 +186,12 @@ public:
   size_t length()           const  { return m_length;      };
   bool   isNull()           const  { return m_data==NULL;  }; 
   u8_t   data(size_t index) const  { return m_data[index]; };
-  void   data(const char* pszData) 
-  {
-if (m_data!=NULL)
-    {
-      free(m_data);
-    }
-    initWithData( (u8_t*)pszData,
-      pszData!=NULL ? strlen(pszData)+1 : 0 );
-  };
-
+  void   data(const char* pszData);
 private:
   u8_t* m_data;
   size_t m_length;
 
-  void initWithData(u8_t* data, size_t length);
+  void initWithData(const u8_t* data, size_t length);
   void initWithHexString(const string& hexString);
 };
 

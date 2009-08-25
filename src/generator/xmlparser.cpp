@@ -1,8 +1,15 @@
 #include <iostream>
 
 #include "xmlparser.hpp"
+#include <string.h>
 
 using namespace std;
+
+void XMLParser_xmlSAX2StartElement		(void *ctx,
+						 const xmlChar *fullname,
+						 const xmlChar **atts);
+
+void XMLParser_xmlSAX2EndElement(void *ctx,const xmlChar *name);
 
 class SaxHandler4XmlParser {
 public:
@@ -10,7 +17,7 @@ public:
    {
       memset(&saxHandler,0,sizeof(saxHandler));
       saxHandler.startElement = &XMLParser_xmlSAX2StartElement;
-      saxHandler.endElement = &XMLParser_xmlSAX2EndElement;
+      saxHandler.endElement = & XMLParser_xmlSAX2EndElement;
    };
 
    _xmlSAXHandler saxHandler;

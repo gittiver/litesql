@@ -143,6 +143,12 @@ int hex(char c)
   }
 }
 
+Blob::~Blob()
+{ 
+  if (m_data!=NULL) 
+    free(m_data); 
+}
+
 void Blob::initWithHexString(const string& hexString)
 {
   if ("NULL"==hexString)
@@ -161,7 +167,18 @@ void Blob::initWithHexString(const string& hexString)
   }
 }
 
-void Blob::initWithData(u8_t* data, size_t length)
+void   Blob::data(const char* pszData) 
+{
+  if (m_data!=NULL)
+  {
+    free(m_data);
+  }
+  initWithData( (u8_t*)pszData,
+		  pszData!=NULL ? strlen(pszData)+1 : 0 );
+}
+
+
+void Blob::initWithData(const u8_t* data, size_t length)
 {
   if (data!=m_data)
   {
