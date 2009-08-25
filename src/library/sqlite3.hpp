@@ -50,7 +50,7 @@ public:
         virtual Record fetchOne();
         virtual ~Cursor();
     };
-    SQLite3(string database);
+    SQLite3(const string& database);
     virtual bool supportsSequences() const;
     virtual string getInsertID() const;
     virtual void begin() const;

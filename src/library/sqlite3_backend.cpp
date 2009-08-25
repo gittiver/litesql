@@ -76,7 +76,7 @@ SQLite3::Cursor::~Cursor() {
         sqlite3_finalize(stmt);
     }
 }
-SQLite3::SQLite3(string connInfo) : db(NULL), transaction(false) {
+SQLite3::SQLite3(const string& connInfo) : db(NULL), transaction(false) {
     Split params(connInfo,";");
     string database;
     for (size_t i = 0; i < params.size(); i++) {

@@ -91,7 +91,7 @@ namespace litesql {
       \param connInfo database connection specific parameters (parameters are separated by semicolon)
        @throw DatabaseError if no backend is found
       */
-    static Backend* getBackend(const string& type,string connInfo);
+    static Backend* getBackend(const string& type,const string& connInfo);
       
     };
 }
