@@ -50,7 +50,7 @@ public:
         virtual Record fetchOne();
         virtual ~Cursor();
     };
-    PostgreSQL(string connInfo);
+    PostgreSQL(const string& connInfo);
     virtual bool supportsSequences() const;
     virtual void begin() const;
     virtual void commit() const;

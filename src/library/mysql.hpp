@@ -51,7 +51,7 @@ public:
         virtual Record fetchOne();
         virtual ~Cursor();
     };
-    MySQL(string connInfo);
+    MySQL(const string& connInfo);
     virtual bool supportsSequences() const;
     virtual string getRowIDType() const;
     virtual string getInsertID() const;

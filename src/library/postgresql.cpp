@@ -62,26 +62,26 @@ Record PostgreSQL::Cursor::fetchOne() {
 PostgreSQL::Cursor::~Cursor() {
     delete pq.execute("CLOSE "+name+";");
 }
-PostgreSQL::PostgreSQL(string connInfo) : conn(NULL), transaction(false) {
+PostgreSQL::PostgreSQL(const string& connInfo) : conn(NULL), transaction(false) {
     Split params(connInfo,";");
-    connInfo = "";
+    string pq_connInfo;
     for (size_t i = 0; i < params.size(); i++) {
         Split param(params[i], "=");
         if (param.size() == 1)
             continue;
         if (param[0] == "host")
-            connInfo += "host=" + param[1] + " ";
+            pq_connInfo += "host=" + param[1] + " ";
         else if (param[0] == "database")
-            connInfo += "dbname=" + param[1] + " ";
+            pq_connInfo += "dbname=" + param[1] + " ";
         else if (param[0] == "password")
-            connInfo += "password=" + param[1] + " ";
+            pq_connInfo += "password=" + param[1] + " ";
         else if (param[0] == "user")
-            connInfo += "user=" + param[1] + " ";
+            pq_connInfo += "user=" + param[1] + " ";
     }
 
-    conn = PQconnectdb(connInfo.c_str());
+    conn = PQconnectdb(pq_connInfo.c_str());
     if (PQstatus(conn) != CONNECTION_OK)
-        throw DatabaseError("PostgreSQL connection " + connInfo + " failed: " 
+        throw DatabaseError("PostgreSQL connection " + pq_connInfo + " failed: " 
                             + string(PQerrorMessage(conn)));
 }
 bool PostgreSQL::supportsSequences() const {
