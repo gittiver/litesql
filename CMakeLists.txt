@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 2.6)
+
 enable_language(C)
 enable_language(CXX)
 
@@ -31,7 +33,7 @@ option(WITH_POSTGRES "build with postgres backend" OFF)
 #option(WITH_ODBC "build with ODBC Backend" ON)
 option(WITH_DOCS "generate Documentation" OFF)
 option(WITH_TESTS "enable testing" ON)
-option(WITH_SAX_PARSER "use new SAX parser" OFF)
+option(WITH_SAX_PARSER "use new SAX parser" ON)
 
 include(cmake/FindMySQL.cmake)
 include(cmake/FindPostgreSQL.cmake)
