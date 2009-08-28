@@ -6,8 +6,18 @@ set(example_SOURCES example.cpp exampledatabase.cpp exampledatabase.hpp exampled
 #  SQLITE3_INCLUDE_DIRS - where to find sqlite3.h
 #  SQLITE3_LIBRARIES - the libraries to link against
 #  SQLITE3_DEFINITIONS - switches required for SQLite3
+
 set(example_LIBS litesql litesql_sqlite ${SQLITE3_LIBRARIES})
 
+# add mysql -libs
+if(WITH_MYSQL)
+	list(APPEND example_LIBS litesql_mysql ${MYSQL_LIBRARIES})
+endif(WITH_MYSQL)
+
+# add postgresql -libs
+if(WITH_POSTGRES)
+	list(APPEND example_LIBS litesql_postgresql ${POSTGRESQL_LIBRARIES})
+endif(WITH_POSTGRES)
 
 # get the directory of the database xml definition
 get_source_file_property(WFILE exampledatabase.xml LOCATION)
