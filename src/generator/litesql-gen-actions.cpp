@@ -221,9 +221,13 @@ void ETag_database(void)
 #line 90 "litesql-gen.xml"
 
 extern FILE * yyin;
+/*
+
 int main(int argc, char **argv) {
     return litesql_gen_main(argc, argv, &yyin);
 }
+
+*/
 
 
 /* XML application entry points. */
