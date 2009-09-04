@@ -10,6 +10,8 @@
 #include "litesql/except.hpp"
 #include "litesql/selectquery.hpp"
 #include <map>
+#include <algorithm>
+
 namespace litesql {
 using namespace std;
 
@@ -56,49 +58,77 @@ static Split getFields(string schema) {
         s.push_back(Split(tmp[i])[0]);
     return s;
 }
+
+
+bool Database::addColumn(const string & name,const string & column_def) const 
+{
+  query("ALTER TABLE " + name + " ADD COLUMN " + column_def);
+  return true;
+}
+
+bool Database::addColumns(const string & name,const vector<string> & columns) const 
+{
+  Split c(columns);
+  query("ALTER TABLE " + name + " ADD COLUMN " + c.join(","));
+  return true;
+}
+
+
 void Database::upgradeTable(string name, 
                             string oldSchema, string newSchema) const {
     Split oldFields = getFields(oldSchema);
     Split newFields = getFields(newSchema);
-    SelectQuery sel;
-    sel.source(name);
-    for (size_t i = 0; i < oldFields.size(); i++)
-        sel.result(name + "." + oldFields[i]);
-    Split q(oldSchema);
-    q[2] += "_old";
-    query(q.join(" "));
-    for (Cursor<Record> cur(cursor<Record>(sel)); cur.rowsLeft(); cur++) 
-        insert(name + "_old", *cur);
-    query("DROP TABLE " + name);
-    query(newSchema);
 
-    sel = SelectQuery();
-    sel.source(name+"_old");
-    for (size_t i = 0; i < oldFields.size(); i++)
-        sel.result(name + "_old." + oldFields[i]);
-    vector<pair<int, int> > transFields;
-    for (size_t i = 0; i < oldFields.size(); i++) {
-        for (size_t i2 = 0; i2 < newFields.size(); i2++) 
-            if (oldFields[i] == newFields[i2]) {
-                transFields.push_back(make_pair(i, i2));             
-                break;  
-            }
+    Split toAdd(newFields);
+    vector<string> commonFields;
+    Split::iterator found;
+
+    for (Split::iterator it = oldFields.begin();it!=oldFields.end();it++)
+    {
+      found = find(toAdd.begin(),toAdd.end(),*it);
+      if (found!=toAdd.end())
+      {
+        toAdd.erase(found);
+      }
     }
-    for (Cursor<Record> cur(cursor<Record>(sel)); cur.rowsLeft(); cur++) {
-        Record fields;
-        Record values;
-        Record data = *cur;
-        for (size_t i = 0; i < transFields.size(); i++) {
-            fields.push_back(newFields[transFields[i].second]);
-            values.push_back(data[transFields[i].first]);
-        }
-        insert(name, values, fields);
+
+    for (Split::iterator it = oldFields.begin();it!=oldFields.end();it++)
+    {
+      found = find(newFields.begin(),newFields.end(),*it);
+      if (found!=newFields.end())
+      {
+        commonFields.push_back(*found);
+      }
     }
-    
-    
-    query("DROP TABLE " + name + "_old");
+
+    begin();
+    string bkp_name(name+"backup");
+    query(" ALTER TABLE " + name + " RENAME TO " + bkp_name); 
+    for (Split::iterator it = toAdd.begin();it!= toAdd.end();it++)
+    {
+      addColumn(bkp_name,*it);
+    }
+
+    query(newSchema);
+    // oldfields as ...
+    Split cols;
+    string s;
+    Split bkpFields(commonFields);
+    bkpFields.extend(toAdd);
+    for (Split::iterator it = bkpFields.begin();it!= bkpFields.end();it++)
+    {
+        s = *it;
+        s.append(" AS ");
+        s.append(*it);
+        cols.push_back(s);
+    }
+
+    query(" INSERT INTO " + name + " SELECT "+ cols.join(",")+" FROM " + bkp_name); 
+    query(" DROP TABLE " + bkp_name); 
+    commit();
 }
-    Database::Database(string backend, string conn) 
+
+Database::Database(string backend, string conn) 
      : backendType(backend), connInfo(conn), backend(NULL), verbose(false) {
         openDatabase();
     }

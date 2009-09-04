@@ -12,6 +12,17 @@ set(litesql_SOURCES	database.cpp
 			compatibility.hpp 
 			compatibility.cpp 
 			datetime.cpp
+			../../include/litesql/database.hpp 
+			../../include/litesql/expr.hpp 
+			../../include/litesql/selectquery.hpp 
+			../../include/litesql/persistent.hpp 
+			../../include/litesql/split.hpp 
+			../../include/litesql/string.hpp 
+			../../include/litesql/backend.hpp 
+			../../include/litesql/updatequery.hpp 
+			../../include/litesql/field.hpp 
+			../../include/litesql/datasource.hpp 
+			../../include/litesql/datetime.hpp
 )
 
 add_library(  ${LIBNAME} ${litesql_SOURCES})

@@ -23,6 +23,7 @@ using namespace std;
 /** A base class of databases. Can be used without inheriting own version of
     Database using query()-method. See \ref usage_defining_database */
 class Database {    
+  friend class Updater;
 private:
     /** name of the backend */
     string backendType;
@@ -62,6 +63,10 @@ protected:
     \param oldSchema current schema of table 
     \param newSchema upgraded schema of table */
     void upgradeTable(string name, string oldSchema, string newSchema) const;
+
+    bool addColumn(const string & name,const string & column_def) const;
+    bool addColumns(const string & name,const vector<string> & columns) const;
+
 public:
     /** verbosity, prints queries to cerr if true */
 	bool verbose;
