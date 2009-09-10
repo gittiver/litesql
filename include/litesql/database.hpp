@@ -76,7 +76,7 @@ public:
         \param connInfo connection params, syntax "param=value param=value ..."
                valid keys: host,user,password,database and port 
 		*/
-    Database(string backendType, string connInfo);
+    Database(const string& backendType, const string& connInfo);
     /** opens new connection to same database 
         \param op opened Database */
     Database(const Database &op);

@@ -128,7 +128,7 @@ void Database::upgradeTable(string name,
     commit();
 }
 
-Database::Database(string backend, string conn) 
+Database::Database(const string& backend, const string& conn) 
      : backendType(backend), connInfo(conn), backend(NULL), verbose(false) {
         openDatabase();
     }
