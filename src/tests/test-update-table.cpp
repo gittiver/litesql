@@ -34,19 +34,17 @@ int main(int argc, char *argv[]) {
 
 #ifdef HAVE_LIBMYSQLCLIENT
     Database mysql_db("mysql","database=test-update-table.db");
-    success &&= testUpgradeTable(mysql_db);
+    success &= Updater::testUpgradeTable(mysql_db);
 #endif
 
 #ifdef HAVE_LIBPQ
     Database pg_db("postgresql","database=test-update-table.db");
-    success &&= testUpgradeTable(pg_db);
+    success &= Updater::testUpgradeTable(pg_db);
 #endif
 
 #ifdef HAVE_ODBC
-    if (success) 
-    {
     Database odbc_db("odbc","database=test-update-table.db");
-    success &&= testUpgradeTable(odbc_db);
+    success &= Updater::testUpgradeTable(odbc_db);
 #endif
 
   } catch (Except e) {

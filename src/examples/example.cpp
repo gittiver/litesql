@@ -20,10 +20,13 @@ int main(int argc, char **argv) {
 
     try {
         // using SQLite3 as backend
-         ExampleDatabase db("sqlite3", "database=example.db");
+        ExampleDatabase db("sqlite3", "database=example.db");
         // create tables, sequences and indexes
         db.verbose = true;
-        db.create();
+        if (db.needsUpgrade())
+        {
+          db.upgrade();
+        }
         // start transaction
         db.begin();
 
