@@ -143,8 +143,8 @@ AT_relate_limit relate_limit(const xmlChar* value)
 class LitesqlParser : public XmlParser {
 public:
   LitesqlParser(ObjectModel* model)
-    :  m_parseState(ROOT),
-    m_pObjectModel(model){};
+    : m_pObjectModel(model),
+      m_parseState(ROOT) {};
 
 protected:
   void onStartElement(const xmlChar *fullname,
