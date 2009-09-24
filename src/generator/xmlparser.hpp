@@ -12,6 +12,7 @@ extern "C"
 class XmlParser {
 
 public:
+   virtual ~XmlParser() {};
    bool parseFile(const std::string& filename);
    
    static const xmlChar* xmlGetAttrValue(const xmlChar** attrs,const char* key);
