@@ -8,7 +8,8 @@ EXTRA_DIST=CMakeLists.txt \
 	   config.h.cmake \
 	   cmake/FindPostgreSQL.cmake \
 	   cmake/FindMySQL.cmake \
-	   cmake/FindSQLite3.cmake \
+	   cmake/FindSQLite3.cmake 
+
 
 ACLOCAL_AMFLAGS=-I m4
 AUTOMAKE_OPTIONS=foreign
