@@ -8,6 +8,7 @@ example_LDADD=../library/liblitesql.la
 
 EXTRA_DIST=CMakeLists.txt \
 	   exampledatabase.xml \
+	   auth.xml \
 	   exampledatabase.dot \
 	   exampledatabase.png \
 	   example_output.txt \
