@@ -15,6 +15,6 @@ test_datetime_SOURCES=test-datetime.cpp
 test_datetime_LDADD=../library/liblitesql.la
 
 test_update_table_SOURCES=test-update-table.cpp
-test_update_table_LDADD=../library/liblitesql.la ../library/liblitesql_sqlite.la
+test_update_table_LDADD=../library/liblitesql.la
 
 EXTRA_DIST=CMakeLists.txt
