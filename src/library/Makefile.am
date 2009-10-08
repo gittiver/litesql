@@ -28,5 +28,5 @@ EXTRA_DIST= compatibility.hpp \
 	    sqlite3ext.h \
 	    CMakeLists.txt
 
-liblitesql_la_LDFLAGS = -version-info 3:4 
+liblitesql_la_LDFLAGS = -version-info 3:5 
 #`echo $(VERSION)|sed -e 's/\./:/g'`

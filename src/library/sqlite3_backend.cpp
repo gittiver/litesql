@@ -86,7 +86,7 @@ SQLite3::SQLite3(const string& connInfo) : db(NULL), transaction(false) {
         if (param[0] == "database")
             database = param[1];
     }
-    if (database.size() == 0)
+    if (database.empty())
         throw DatabaseError("no database-param specified");
 
     if (sqlite3_open(database.c_str(), &db)) {
