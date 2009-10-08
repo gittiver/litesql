@@ -8,6 +8,13 @@
     Manual */
 /** \page changes Changes
 
+\section ver0_3_5 Version 0.3.5
+- feature: added <include> tag to generator for including other files 
+- feature: added BLOB-support
+
+- bug fix: Ticket #8 	upgrade removes indices 	
+- bug fix: Ticket #13 	BLOB-Support for 0.3.x
+
 \section ver0_3_4 Version 0.3.4
 - feature: introduced CMake-based build system (used for windows build)
 - feature: Installer for Windows (installs Documentation,litesql-gen, libraries and includes) 
