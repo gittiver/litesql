@@ -73,7 +73,8 @@ public:
           return false;
        
        case A_field_type_string:
-           return true;
+       default:
+         return true;
        }
     }
     string getQuotedDefaultValue() const {
@@ -146,7 +147,7 @@ public:
     string objectName;
     string fieldTypeName, fieldName;
     string getMethodName;
-    int paramPos;
+    size_t paramPos;
     AT_relate_limit limit;
     AT_relate_unique unique;
     string handle;
@@ -238,7 +239,7 @@ public:
                         A_field_indexed_false, A_field_unique_false));
         }
     }
-    int getLastFieldOffset() const {
+    size_t getLastFieldOffset() const {
         if (!parentObject)
             return fields.size();
         else return parentObject->getLastFieldOffset() + fields.size();
