@@ -25,7 +25,7 @@ set(litesql_SOURCES	database.cpp
 			../../include/litesql/datetime.hpp
 )
 
-add_library(  ${LIBNAME} ${litesql_SOURCES})
+add_library(  ${LIBNAME} STATIC ${litesql_SOURCES})
 
 install(TARGETS ${LIBNAME} 
 			RUNTIME DESTINATION lib 
@@ -44,7 +44,7 @@ if(NOT SQLITE3_FOUND)
 				)
 endif(NOT SQLITE3_FOUND)
 
-add_library(${LIBNAME}_sqlite ${${LIBNAME}_sqlite_SRC}) 
+add_library(${LIBNAME}_sqlite STATIC ${${LIBNAME}_sqlite_SRC}) 
 
 install(TARGETS ${LIBNAME}_sqlite  
 			RUNTIME DESTINATION lib 
@@ -54,7 +54,7 @@ install(TARGETS ${LIBNAME}_sqlite
 ENDIF (WITH_SQLITE3)
 
 IF (WITH_MYSQL)
-  add_library(  ${LIBNAME}_mysql
+  add_library(  ${LIBNAME}_mysql STATIC
         				mysql.cpp
    
   )
@@ -68,14 +68,14 @@ IF (WITH_POSTGRES)
   add_library(  ${LIBNAME}_postgresql
 				postgresql.cpp 
   )
-  install(TARGETS ${LIBNAME}_postgresql  
+  install(TARGETS ${LIBNAME}_postgresql STATIC  
 			RUNTIME DESTINATION lib 
 			ARCHIVE DESTINATION lib/static 
 			COMPONENT devel)
 ENDIF (WITH_POSTGRES)
 
 IF (WITH_ODBC)
-  add_library(  ${LIBNAME}_odbc
+  add_library(  ${LIBNAME}_odbc STATIC
       				odbc_backend.cpp 
 		      		odbc_backend.hpp 
   )
