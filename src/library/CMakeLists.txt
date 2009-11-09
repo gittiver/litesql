@@ -27,12 +27,18 @@ set(litesql_SOURCES	database.cpp
 
 add_library(  ${LIBNAME} STATIC ${litesql_SOURCES})
 
-install(TARGETS ${LIBNAME} 
+install(TARGETS ${LIBNAME} EXPORT ${LIBNAME}
 			RUNTIME DESTINATION lib 
 			ARCHIVE DESTINATION lib/static 
 			COMPONENT devel)
+install(EXPORT ${LIBNAME} DESTINATION lib)
 
-IF (WITH_SQLITE3)
+if (MSVC)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/litesqld.lib DESTINATION lib/static
+	COMPONENT devel)
+endif(MSVC)
+
+if (WITH_SQLITE3)
   set(${LIBNAME}_sqlite_SRC
 				sqlite3_backend.cpp 
 				sqlite3.hpp )
@@ -46,44 +52,59 @@ endif(NOT SQLITE3_FOUND)
 
 add_library(${LIBNAME}_sqlite STATIC ${${LIBNAME}_sqlite_SRC}) 
 
-install(TARGETS ${LIBNAME}_sqlite  
+install(TARGETS ${LIBNAME}_sqlite  EXPORT ${LIBNAME}_sqlite  
 			RUNTIME DESTINATION lib 
 			ARCHIVE DESTINATION lib/static 
 			COMPONENT devel)
+install(EXPORT ${LIBNAME}_sqlite DESTINATION lib)
+if (MSVC)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_sqlited.lib DESTINATION lib/static COMPONENT devel)
+endif(MSVC)
+endif (WITH_SQLITE3)
 
-ENDIF (WITH_SQLITE3)
-
-IF (WITH_MYSQL)
+if (WITH_MYSQL)
   add_library(  ${LIBNAME}_mysql STATIC
         				mysql.cpp
    
   )
-  install(TARGETS ${LIBNAME}_mysql  
+  install(TARGETS ${LIBNAME}_mysql  EXPORT ${LIBNAME}_mysql 
 			RUNTIME DESTINATION lib 
 			ARCHIVE DESTINATION lib/static 
 			COMPONENT devel)
-ENDIF (WITH_MYSQL)
+  install(EXPORT ${LIBNAME}_mysql DESTINATION lib)
+if (MSVC)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_mysqld.lib DESTINATION lib/static COMPONENT devel)
+endif(MSVC)
 
-IF (WITH_POSTGRES)
-  add_library(  ${LIBNAME}_postgresql
+endif (WITH_MYSQL)
+
+if (WITH_POSTGRES)
+  add_library(  ${LIBNAME}_postgresql STATIC
 				postgresql.cpp 
   )
-  install(TARGETS ${LIBNAME}_postgresql STATIC  
+  install(TARGETS ${LIBNAME}_postgresql EXPORT ${LIBNAME}_postgresql  
 			RUNTIME DESTINATION lib 
 			ARCHIVE DESTINATION lib/static 
 			COMPONENT devel)
-ENDIF (WITH_POSTGRES)
+if (MSVC)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_postgresqld.lib DESTINATION lib/static COMPONENT devel)
+endif(MSVC)
+endif (WITH_POSTGRES)
 
-IF (WITH_ODBC)
+if (WITH_ODBC)
   add_library(  ${LIBNAME}_odbc STATIC
       				odbc_backend.cpp 
 		      		odbc_backend.hpp 
   )
-  install(TARGETS ${LIBNAME}_odbc  
+  install(TARGETS ${LIBNAME}_odbc EXPORT ${LIBNAME}_odbc 
 			RUNTIME DESTINATION lib 
 			ARCHIVE DESTINATION lib/static 
 			COMPONENT devel)
-ENDIF (WITH_ODBC)
+if (MSVC)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_odbcd.lib DESTINATION lib/static COMPONENT devel)
+endif(MSVC)
 
-INCLUDE_DIRECTORIES(../../src/library ../../include)
+endif (WITH_ODBC)
+
+include_directories(../../src/library ../../include)
 
