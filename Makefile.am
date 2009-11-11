@@ -13,3 +13,7 @@ EXTRA_DIST=CMakeLists.txt \
 
 ACLOCAL_AMFLAGS=-I m4
 AUTOMAKE_OPTIONS=foreign
+
+dist-hook:
+	find $(distdir)/win32 -name \.svn
+	rm -rf `find $(distdir)/win32 -name .svn`
