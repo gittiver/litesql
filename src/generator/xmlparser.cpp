@@ -2,65 +2,85 @@
 
 #include "xmlparser.hpp"
 #include <string.h>
+#include <io.h>
 
 using namespace std;
 
 void XMLParser_xmlSAX2StartElement		(void *ctx,
-						 const xmlChar *fullname,
-						 const xmlChar **atts);
+						 const XML_Char *fullname,
+						 const XML_Char **atts);
 
-void XMLParser_xmlSAX2EndElement(void *ctx,const xmlChar *name);
-
-class SaxHandler4XmlParser {
-public:
-   SaxHandler4XmlParser()
-   {
-      memset(&saxHandler,0,sizeof(saxHandler));
-      saxHandler.startElement = &XMLParser_xmlSAX2StartElement;
-      saxHandler.endElement = & XMLParser_xmlSAX2EndElement;
-   };
-
-   _xmlSAXHandler saxHandler;
-};
-
-/**one (initialized) instance for class XmlParser */
-SaxHandler4XmlParser saxHandler4XmlParser; 
+void XMLParser_xmlSAX2EndElement(void *ctx,const XML_Char *name);
 
 void XMLParser_xmlSAX2StartElement		(void *ctx,
-						 const xmlChar *fullname,
-						 const xmlChar **atts)
+						 const XML_Char *fullname,
+						 const XML_Char **atts)
 {
    ((XmlParser*)ctx)->onStartElement(fullname,atts);
 }
 
-void XMLParser_xmlSAX2EndElement(void *ctx,const xmlChar *name)
+void XMLParser_xmlSAX2EndElement(void *ctx,const XML_Char *name)
 {
    ((XmlParser*)ctx)->onEndElement(name);
 }
 
+XmlParser::~XmlParser()
+{
+   XML_ParserFree(saxHandler);
+}
 
 bool XmlParser::parseFile(const std::string& filename)
 {
-   int result = xmlSAXUserParseFile(&saxHandler4XmlParser.saxHandler,this,filename.c_str());
-   if (result!=0)
+  saxHandler = XML_ParserCreate("UTF-8");
+  XML_SetUserData(saxHandler,this);
+  XML_SetElementHandler(saxHandler,
+    XMLParser_xmlSAX2StartElement,
+    XMLParser_xmlSAX2EndElement);
+
+  bool success = true;
+  const size_t BUFF_SIZE = 255;
+  FILE* docfd = fopen(filename.c_str(),"r");
+  for (;;) {
+    int bytes_read;
+    void *buff = XML_GetBuffer(saxHandler, BUFF_SIZE);
+    /* handle error */
+    if (buff == NULL) {
+      success = false;
+      break;
+    }
+
+    bytes_read = fread(buff,1, BUFF_SIZE,docfd);
+    if (bytes_read < 0) {
+      /* handle error */
+      success = false;
+      break;
+    }
+
+    if (! XML_ParseBuffer(saxHandler, bytes_read, bytes_read == 0)) {
+      /* handle parse error */
+      success = false;
+      break;
+    }
+
+    if (bytes_read == 0)
+      break;
+  }
+  fclose(docfd);
+  
+  if (!success)
    {
       cerr << "error parsing " << filename.c_str() << endl;
    }
-   return result == 0;
+  return success;
 }
 
-const xmlChar* XmlParser::xmlGetAttrValue(const xmlChar** attrs,const char* key)
-{
-   return xmlGetAttrValue(attrs,(xmlChar*) key);
-}
-
-const xmlChar* XmlParser::xmlGetAttrValue(const xmlChar** attrs,const xmlChar* key)
+const XML_Char* XmlParser::xmlGetAttrValue(const XML_Char** attrs,const XML_Char* key)
 {
    if (attrs!=NULL)
    {      
       for (size_t i = 0; attrs[i]!=NULL;i+=2)
       {
-         if (xmlStrEqual(attrs[i],key))
+         if (!strcmp(attrs[i],key))
          {
             return attrs[i+1];
          } 

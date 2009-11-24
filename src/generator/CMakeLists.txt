@@ -30,16 +30,16 @@ endif(WITH_SAX_PARSER)
 add_executable(litesql-gen ${litesql-gen_SOURCES})
 
 if (WITH_SAX_PARSER)
-  target_link_libraries (litesql-gen litesql ${LIBXML2_LIBRARIES})
+  target_link_libraries (litesql-gen litesql ${EXPAT_LIBRARIES})
 else(WITH_SAX_PARSER)
   target_link_libraries (litesql-gen litesql)
 endif(WITH_SAX_PARSER)
 
 if (MSVC)
-  set_property(TARGET litesql-gen APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS YY_NEVER_INTERACTIVE YY_NO_UNISTD_H)
-  set_property(TARGET litesql-gen APPEND PROPERTY LINK_FLAGS_DEBUG /NODEFAULTLIB:MSVCRT )
+  set_property(TARGET litesql-gen APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS YY_NEVER_INTERACTIVE YY_NO_UNISTD_H ${EXPAT_DEFINITIONS})
+  set_property(TARGET litesql-gen APPEND PROPERTY LINK_FLAGS_DEBUG)
 endif(MSVC)
 
 install(TARGETS litesql-gen RUNTIME DESTINATION bin COMPONENT generator)
 
-INCLUDE_DIRECTORIES(../library ${LIBXML2_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(../library ${EXPAT_INCLUDE_DIRS})
