@@ -11,10 +11,21 @@
 #include "litesql/string.hpp"
 #include "litesql/types.hpp"
 
+#ifdef HAVE_LIBMYSQLCLIENT
 #include "mysql.hpp"
+#endif
+
+#ifdef HAVE_LIBPQ
 #include "postgresql.hpp"
+#endif
+
+#ifdef HAVE_LIBSQLITE3
 #include "sqlite3.hpp"
+#endif
+
+#ifdef HAVE_ODBC
 #include "odbc_backend.hpp"
+#endif
 
 using namespace litesql;
 using namespace std;    
