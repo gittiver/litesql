@@ -60,7 +60,7 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
 
 Backend* Backend::getBackend(const string & backendType,const string& connInfo)
 {
-  Backend* backend = NULL;
+  Backend* backend;
 
 #ifdef HAVE_LIBMYSQLCLIENT
   if (backendType == "mysql") {
@@ -80,7 +80,10 @@ Backend* Backend::getBackend(const string & backendType,const string& connInfo)
 #ifdef HAVE_LIBSQLITE3
         if (backendType == "sqlite3") {
           backend = new SQLite3(connInfo);
-        }
+        } else
 #endif
+        { 
+          backend = NULL;
+        };
         return backend;
 }
