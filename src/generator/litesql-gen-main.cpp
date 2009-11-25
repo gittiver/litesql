@@ -46,7 +46,7 @@ void generateCode(xml::Database& db,
 
 int main(int argc, char **argv) { 
     bool printHelp = false;
-    for (size_t i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; i++) {
         string arg = argv[i];
         if (arg == "-v" || arg == "--verbose") {
             verbose = true;
@@ -79,7 +79,7 @@ int main(int argc, char **argv) {
     ObjectModel model;
     if (!model.loadFromFile(argv[argc-1]))
     {
-        string msg = "could not open file '" + string(argv[argc-1]) + "'";
+        string msg = "could not load file '" + string(argv[argc-1]) + "'";
         perror(msg.c_str());
         return -1;
     }
