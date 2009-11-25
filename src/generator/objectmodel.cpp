@@ -2,7 +2,7 @@
 #include <iostream>
 #include "xmlparser.hpp"
 #include "objectmodel.hpp"
-
+#include <string.h>
 using namespace std;
 using namespace xml;
 
