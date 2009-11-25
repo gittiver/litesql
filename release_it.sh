@@ -10,7 +10,7 @@ STARTDIR=`pwd`
 mkdir -p $CMAKE_BUILDDIR
 
 cd $CMAKE_BUILDDIR
-cmake -D WITH_DOC:bool=ON -D WITH_MYSQL:bool=ON -D WITH_SQLITE:bool=ON -D WITH_TEST:bool=ON  $STARTDIR
+cmake -D WITH_DOCS:bool=ON -D WITH_MYSQL:bool=ON -D WITH_SQLITE:bool=ON -D WITH_TEST:bool=ON  $STARTDIR
 make all test package package_source
 cd $STARTDIR
 
