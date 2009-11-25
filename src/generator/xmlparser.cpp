@@ -2,7 +2,7 @@
 
 #include "xmlparser.hpp"
 #include <string.h>
-#include <io.h>
+#include <cstdio>
 
 using namespace std;
 
