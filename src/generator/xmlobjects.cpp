@@ -1,9 +1,14 @@
-#include "../library/compatibility.hpp"
+//#include "../library/compatibility.hpp"
 #include "xmlobjects.hpp"
 #include "litesql-gen-main.hpp"
 #include "md5.hpp"
 #include "litesql.hpp"
+#include "logger.hpp"
+
 #include <algorithm>
+
+  
+
 namespace std {
     template <>
     struct less<xml::Relate*> {
@@ -17,6 +22,9 @@ namespace std {
     };
 }
 namespace xml {
+
+  const char* Database::TAG="database";
+
 string validID(string s, string type="field") {
     if (s.size() == 0) 
         return "empty identifier";
@@ -281,9 +289,9 @@ void init(Database& db,
           vector<Object*>& objects,
           vector<Relation*>& relations) {
     map<string, Object*> objMap;
-    report("validating XML file\n");
+    Logger::report("validating XML file\n");
     sanityCheck(db, objects, relations);
-    report("linking XML - objects\n"); 
+    Logger::report("linking XML - objects\n"); 
     // make string -> Object mapping
 
     for (size_t i = 0; i < objects.size(); i++)

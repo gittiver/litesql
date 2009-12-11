@@ -111,6 +111,7 @@ public:
        }
     }
 };
+
 class Param {
 public:
     string name;
@@ -239,6 +240,12 @@ public:
                         A_field_indexed_false, A_field_unique_false));
         }
     }
+
+    bool inheritsFromDefault() 
+    {
+      return inherits == "litesql::Persistent";
+    }
+
     size_t getLastFieldOffset() const {
         if (!parentObject)
             return fields.size();
@@ -271,6 +278,7 @@ public:
 };
 class Database {
 public:
+  static const char* TAG;
     class Sequence {
     public:
         string name, table;

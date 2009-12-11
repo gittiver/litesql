@@ -46,6 +46,17 @@ Split Split::slice(int start, int end) const {
         data.push_back(this->operator[](i));
     return data;
 }
+
+string Split::join(const vector<string>& strings,const string& delim){
+    string res;
+    for (const_iterator i = strings.begin(); i != strings.end(); i++) {
+        if (i != strings.begin())
+            res += delim;
+        res += *i;
+    }
+    return res;
+}
+
 string Split::join(const string& delim) const {
     string res;
     for (const_iterator i = begin(); i != end(); i++) {

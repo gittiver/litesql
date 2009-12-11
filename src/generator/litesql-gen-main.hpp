@@ -14,5 +14,4 @@ void generateCode(xml::Database& db,
 int litesql_gen_main(int argc, char **argv, std::FILE ** yyin);
 #endif // #ifndef WITH_SAX_PARSER
 
-void report(const std::string& msg);
 #endif

@@ -6,6 +6,10 @@
 
 #include "xmlobjects.hpp"
 
+const char* toString(AT_field_type t);
+const char* toString(AT_relate_limit t);
+
+namespace litesql {
 /** the litesql object model */ 
 class ObjectModel {
 public:
@@ -17,5 +21,6 @@ public:
    std::vector<xml::Relation* > relations;
    xml::Database db;   
 };
+}
 #endif //#ifndef objectmodel_hpp
 

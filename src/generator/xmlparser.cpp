@@ -1,25 +1,29 @@
 #include <iostream>
 
-#include "xmlparser.hpp"
 #include <string.h>
 #include <cstdio>
 
-using namespace std;
+#include "xmlparser.hpp"
+#include "logger.hpp"
 
-void XMLParser_xmlSAX2StartElement		(void *ctx,
+using namespace std;
+using namespace litesql;
+using namespace xml;
+
+void xml::XMLParser_xmlSAX2StartElement		(void *ctx,
 						 const XML_Char *fullname,
 						 const XML_Char **atts);
 
-void XMLParser_xmlSAX2EndElement(void *ctx,const XML_Char *name);
+void xml::XMLParser_xmlSAX2EndElement(void *ctx,const XML_Char *name);
 
-void XMLParser_xmlSAX2StartElement		(void *ctx,
+void xml::XMLParser_xmlSAX2StartElement		(void *ctx,
 						 const XML_Char *fullname,
 						 const XML_Char **atts)
 {
    ((XmlParser*)ctx)->onStartElement(fullname,atts);
 }
 
-void XMLParser_xmlSAX2EndElement(void *ctx,const XML_Char *name)
+void xml::XMLParser_xmlSAX2EndElement(void *ctx,const XML_Char *name)
 {
    ((XmlParser*)ctx)->onEndElement(name);
 }
@@ -37,10 +41,16 @@ bool XmlParser::parseFile(const std::string& filename)
     XMLParser_xmlSAX2StartElement,
     XMLParser_xmlSAX2EndElement);
 
-  bool success = true;
   const size_t BUFF_SIZE = 255;
   FILE* docfd = fopen(filename.c_str(),"r");
-  for (;;) {
+  
+  bool success = (docfd !=NULL);
+  if (!success)
+  {
+    Logger::error("cant open %s",filename.c_str());
+  }
+  else {
+    for (;;) {
     int bytes_read;
     void *buff = XML_GetBuffer(saxHandler, BUFF_SIZE);
     /* handle error */
@@ -64,8 +74,9 @@ bool XmlParser::parseFile(const std::string& filename)
 
     if (bytes_read == 0)
       break;
+    }
+    fclose(docfd);
   }
-  fclose(docfd);
   
   if (!success)
    {

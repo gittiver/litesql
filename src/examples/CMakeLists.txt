@@ -25,7 +25,7 @@ get_filename_component(WDIR ${WFILE} PATH)
 
 add_custom_command(
    OUTPUT ${WDIR}/exampledatabase.cpp ${WDIR}/exampledatabase.hpp 
-   COMMAND litesql-gen -t c++ exampledatabase.xml
+   COMMAND litesql-gen -v -t c++ exampledatabase.xml
    MAIN_DEPENDENCY exampledatabase.xml
    WORKING_DIRECTORY ${WDIR}
    DEPENDS litesql-gen exampledatabase.xml auth.xml

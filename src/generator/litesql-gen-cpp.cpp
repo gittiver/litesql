@@ -7,6 +7,9 @@
 #include <ctype.h>
 #include <cstdio>
 #include <map>
+
+#include "logger.hpp"
+
 using namespace std;
 using namespace gen;
 using namespace litesql;
@@ -876,9 +879,9 @@ void getSchema(const xml::Database& db,
         rec.push_back(quote(db.indices[i]->getSQL()));
         mtd.body("res.push_back(Database::SchemaItem(" + rec.join(",") + "));");        
     }
-    report(toString(db.tables.size()) + " tables\n");
-    report(toString(db.sequences.size()) + " sequences\n");
-    report(toString(db.indices.size()) + " indices\n");
+    Logger::report(toString(db.tables.size()) + " tables\n");
+    Logger::report(toString(db.sequences.size()) + " sequences\n");
+    Logger::report(toString(db.indices.size()) + " indices\n");
 }
 void writeDatabaseClass(FILE* hpp, FILE* cpp,
                         xml::Database& dbInfo,
@@ -975,11 +978,11 @@ void writeCPPClasses(xml::Database& db,
         hasNamespace = false;
     fprintf(cpp, "using namespace litesql;\n");
 
-    report("writing prototypes for Persistent classes\n"); 
+    Logger::report("writing prototypes for Persistent classes\n"); 
     for (size_t i = 0; i < objects.size(); i++) 
         fprintf(hpp, "class %s;\n", objects[i]->name.c_str());
 
-    report("writing relations\n");
+    Logger::report("writing relations\n");
     for (size_t i = 0; i < relations.size(); i++) {
         xml::Relation & o = *relations[i];
         Class cl(o.getName());
@@ -988,7 +991,7 @@ void writeCPPClasses(xml::Database& db,
         
         cl.write(hpp, cpp);
     }
-    report("writing persistent objects\n");
+    Logger::report("writing persistent objects\n");
     for (size_t i = 0; i < objects.size(); i++) {
         xml::Object & o = *objects[i];
         Class cl(o.name, o.inherits);
@@ -1018,7 +1021,7 @@ void writeCPPClasses(xml::Database& db,
         
         strMtd.write(hpp, cpp, "", 0);
     }
-    report("writing database class\n");
+    Logger::report("writing database class\n");
     writeDatabaseClass(hpp, cpp, db, objects, relations);
     if (hasNamespace) {
         fprintf(hpp, "}\n");

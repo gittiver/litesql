@@ -5,6 +5,7 @@
 
 #include "expat.h"
 
+namespace xml {
 /** abstract base class for SAX2 Parser based on libxml2 */
 class XmlParser {
 
@@ -28,6 +29,6 @@ private:
 
    friend void XMLParser_xmlSAX2EndElement(void *ctx,const XML_Char *name);
 };
-
+}
 #endif
 

@@ -2,6 +2,7 @@
 #include "litesql.hpp"
 #include "litesql-gen-cpp.hpp"
 #include "litesql-gen-graphviz.hpp"
+#include "logger.hpp"
 #ifdef WITH_SAX_PARSER
 #include "objectmodel.hpp"
 #endif // #ifdef WITH_SAX_PARSER
@@ -26,11 +27,6 @@ char* help =
 ;
 
 static string target = "c++";
-static bool verbose = false;
-void report(const string& msg) {
-    if (verbose)
-        cout << msg;
-}
 
 void generateCode(xml::Database& db,
                   vector<xml::Object*>& objects,
@@ -44,12 +40,14 @@ void generateCode(xml::Database& db,
         throw litesql::Except("unsupported target: " + target);
 }
 
+
+
 int main(int argc, char **argv) { 
     bool printHelp = false;
     for (int i = 1; i < argc; i++) {
         string arg = argv[i];
         if (arg == "-v" || arg == "--verbose") {
-            verbose = true;
+          Logger::verbose(true);
             continue;
         } else if (arg == "-t" || arg == "--target") {
             if (i+1 >= argc) {
