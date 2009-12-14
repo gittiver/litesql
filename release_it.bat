@@ -1,4 +1,4 @@
-set CMAKE_BUILDDIR=..\build\0.3.5\cmake\vc
+set CMAKE_BUILDDIR=..\build\0.3.6\cmake\vc
 set STARTDIR=%CD%
 @if "%VS71COMNTOOLS%"=="" call "%VS80COMNTOOLS%\vsvars32.bat"
 @if "%VS80COMNTOOLS%"=="" call "%VS71COMNTOOLS%\vsvars32.bat"

@@ -12,17 +12,23 @@
 
 #include "litesqldocument.hpp"
 
-class CMyTreeView : public CTreeView
+class CModelTreeView : public CTreeView
 {
 public:
-  CMyTreeView() { };
-  virtual ~CMyTreeView() {};
+  CModelTreeView() { };
+  virtual ~CModelTreeView() {};
 
+	void setObjectModel(ObjectModel* pModel);
+
+protected:
   void OnInitialUpdate();
-  void setObjectModel(ObjectModel* pModel);
+  LRESULT OnNotifyReflect(WPARAM /*wParam*/, LPARAM /*lParam*/);
+  void DoContextMenu(CPoint& ptScreen);
+  void DoItemMenu(HTREEITEM hItem, CPoint& ptScreen);
   
   private:
     HTREEITEM AddItem(HTREEITEM hParent, LPCTSTR szText, int iImage);
+    HTREEITEM AddItem(HTREEITEM hParent, LPARAM lParam);
 
     void loadTree();
     ObjectModel* m_pModel;
@@ -46,7 +52,7 @@ private:
 
   LitesqlDocument* m_pDocument;
   
-  CMyTreeView mTree;
+  CModelTreeView mTree;
   CFilesTab mFiles;
 };
 

@@ -21,18 +21,18 @@
 #define IDM_EDIT_DELETE                 115
 #define IDM_HELP_ABOUT                  130
 
+#define IDM_ADD_OBJECT                  170
+#define IDM_REMOVE_OBJECT               171
+#define IDM_ADD_RELATION                172
+#define IDM_REMOVE_RELATION             173
+
+
 // Icon Resource
 #define IDI_VIEW                        141
 
 // Menu Resource
-#define IDM_COLOR_BLACK                 163
-#define IDM_COLOR_RED                   164
-#define IDM_COLOR_GREEN                 165
-#define IDM_COLOR_BLUE                  166
-#define IDM_COLOR_WHITE                 167
-
-
-
+#define IDM_MODELTREE_VIEW              163
+#define MDIMENUVIEW                     164
 
 
 

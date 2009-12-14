@@ -602,6 +602,7 @@
 #define IDM_FILE_NEW                    101
 #define VK_NUMPAD5                      0x65
 #define LANG_DIVEHI                     0x65
+#define IDR_MENU1                       101
 #define IDM_FILE_OPEN                   102
 #define VK_NUMPAD6                      0x66
 #define IDM_FILE_SAVE                   103
@@ -1245,6 +1246,14 @@
 #define IDM_SAVE_AS                     40003
 #define ID_FILE_SAVE_AS                 40004
 #define IDM_FILE_SAVE_AS                40005
+#define IDM_RELATION_REMOVE             40006
+#define IDM_RELATION_ADD                40007
+#define IDM_OBJECT_ADD                  40008
+#define IDM_OBJECT_REMOVE               40009
+#define IDM_REMOVE_RELATION             40010
+#define IDM_ADD_RELATION                40011
+#define IDM_REMOVE_OBJECT               40012
+#define IDM_ADD_OBJECT                  40013
 #define SC_SIZE                         0xF000
 #define SC_SEPARATOR                    0xF00F
 #define SC_MOVE                         0xF010
@@ -1275,8 +1284,8 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        101
-#define _APS_NEXT_COMMAND_VALUE         40006
+#define _APS_NEXT_RESOURCE_VALUE        102
+#define _APS_NEXT_COMMAND_VALUE         40014
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

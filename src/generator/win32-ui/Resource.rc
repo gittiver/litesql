@@ -80,14 +80,6 @@ BEGIN
         MENUITEM "&Tool Bar",                   IDW_VIEW_TOOLBAR, CHECKED
         MENUITEM "&Status Bar",                 IDW_VIEW_STATUSBAR, CHECKED
     END
-    POPUP "&Color"
-    BEGIN
-        MENUITEM "&Black",                      IDM_COLOR_BLACK
-        MENUITEM "&Red",                        IDM_COLOR_RED
-        MENUITEM "&Green",                      IDM_COLOR_GREEN
-        MENUITEM "B&lue",                       IDM_COLOR_BLUE
-        MENUITEM "&White",                      IDM_COLOR_WHITE
-    END
     POPUP "&Window"
     BEGIN
         MENUITEM "&Cascade\tShift+F5",          IDW_WINDOW_CASCADE
@@ -99,6 +91,16 @@ BEGIN
     BEGIN
         MENUITEM "&About",                      IDM_HELP_ABOUT
     END
+END
+
+IDM_MODELTREE_VIEW MENU 
+BEGIN
+    MENUITEM "Add Object",                  IDM_ADD_OBJECT
+    MENUITEM "Remove Object",               IDM_REMOVE_OBJECT
+    MENUITEM SEPARATOR
+    MENUITEM "Add Relation",                IDM_ADD_RELATION
+    MENUITEM "Remove Relation",             IDM_REMOVE_RELATION
+    MENUITEM SEPARATOR
 END
 
 

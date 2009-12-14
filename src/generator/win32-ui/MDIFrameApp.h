@@ -15,6 +15,8 @@ public:
 	virtual BOOL InitInstance();
 	CMainMDIFrame& GetMDIFrame() { return m_MainMDIFrame; }
 
+  static const TCHAR* REGISTRY_KEY;
+
 private:
     CMainMDIFrame m_MainMDIFrame;
 
