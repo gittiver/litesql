@@ -1,10 +1,11 @@
 #ifndef _litesql_gen_graphviz_hpp
 #define _litesql_gen_graphviz_hpp
-#include <cstdio>
-#include "xmlobjects.hpp"
+#include "generator.hpp"
 
-void writeGraphviz(xml::Database& db,
-                   std::vector<xml::Object*>& objects,
-                   std::vector<xml::Relation*>& relations);
+class GraphvizGenerator : public CodeGenerator {
+  public:
+    GraphvizGenerator(): CodeGenerator("graphviz") { };
+    bool generateCode(const ObjectModel* model);
+};
 
 #endif

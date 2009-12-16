@@ -42,6 +42,8 @@ public:
 };
 class Field {
 public:
+    static const char* TAG;
+
     string name;
     string fieldTypeName;
     AT_field_type type;
@@ -121,6 +123,8 @@ public:
 };
 class Method {
 public:
+    static const char* TAG;
+
     string name, returnType;
     vector<Param> params;
     Method(string n, string rt) 
@@ -144,7 +148,9 @@ public:
         : name(n), relation(r), relate(rel), object(o) {}
 };
 class Relate {
-public:    
+public:  
+  static const char* TAG;
+  
     string objectName;
     string fieldTypeName, fieldName;
     string getMethodName;
@@ -171,6 +177,8 @@ public:
 };
 class Relation {
 public:
+    static const char* TAG;
+
     string id, name;
     string table;
     AT_relation_unidir unidir;
@@ -221,6 +229,8 @@ public:
 };
 class Object {
 public:
+    static const char* TAG;
+
     string name, inherits;
     vector<Field*> fields;
     vector<Method*> methods;
@@ -241,7 +251,7 @@ public:
         }
     }
 
-    bool inheritsFromDefault() 
+    bool inheritsFromDefault() const
     {
       return inherits == "litesql::Persistent";
     }

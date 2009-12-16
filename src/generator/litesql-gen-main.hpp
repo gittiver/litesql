@@ -1,5 +1,5 @@
-#ifndef _litesql_gen_main_hpp
-#define _litesql_gen_main_hpp
+#ifndef litesql_gen_main_hpp
+#define litesql_gen_main_hpp
 #include "config.h"
 
 #include "xmlobjects.hpp"
@@ -10,8 +10,5 @@ void generateCode(xml::Database& db,
                   std::vector<xml::Object*>& objects,
                   std::vector<xml::Relation*>& relations);
 
-#ifndef WITH_SAX_PARSER
-int litesql_gen_main(int argc, char **argv, std::FILE ** yyin);
-#endif // #ifndef WITH_SAX_PARSER
+#endif // #ifndef litesql_gen_main_hpp
 
-#endif

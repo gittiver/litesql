@@ -23,7 +23,10 @@ namespace std {
 }
 namespace xml {
 
-  const char* Database::TAG="database";
+const char* Database::TAG="database";
+const char* Object::TAG="object";
+const char* Relation::TAG="relation";
+const char* Relate::TAG="relate";
 
 string validID(string s, string type="field") {
     if (s.size() == 0) 
@@ -57,8 +60,8 @@ string makeDBName(const string& s) {
     return s;
 }
 static void sanityCheck(Database& db,
-                        vector<Object*>& objects,
-                        vector<Relation*>& relations) {
+                        const vector<Object*>& objects,
+                        const vector<Relation*>& relations) {
     using namespace litesql;
     map<string, bool> usedID;
     map<string, bool> objectName;

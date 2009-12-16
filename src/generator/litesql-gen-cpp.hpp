@@ -1,10 +1,12 @@
-#ifndef _litesql_gen_cpp_hpp
-#define _litesql_gen_cpp_hpp
-#include <cstdio>
-#include "xmlobjects.hpp"
+#ifndef litesql_gen_cpp_hpp
+#define litesql_gen_cpp_hpp
 
-void writeCPPClasses(xml::Database& db,
-                     std::vector<xml::Object*>& objects,
-                     std::vector<xml::Relation*>& relations);
+#include "generator.hpp"
+
+class CppGenerator : public CodeGenerator {
+  public:
+    CppGenerator(): CodeGenerator("c++") { };
+    bool generateCode(const ObjectModel* model);
+};
 
 #endif

@@ -1,5 +1,6 @@
 #include <cstdio>
 #include "litesql.hpp"
+#include "generator.hpp"
 #include "litesql-gen-cpp.hpp"
 #include "litesql-gen-graphviz.hpp"
 #include "logger.hpp"
@@ -28,19 +29,30 @@ char* help =
 
 static string target = "c++";
 
-void generateCode(xml::Database& db,
-                  vector<xml::Object*>& objects,
-                  vector<xml::Relation*>& relations) {
-    xml::init(db, objects, relations);
+int generateCode(ObjectModel& model)
+{
+  try {
+    xml::init(model.db,model.objects,model.relations);
+    CompositeGenerator generator;
     if (target == "c++") 
-        writeCPPClasses(db, objects, relations);
+    {
+      generator.add(new CppGenerator());
+    }    
     else if (target == "graphviz") 
-        writeGraphviz(db, objects, relations);
+    {
+      generator.add(new GraphvizGenerator());
+    }
     else
-        throw litesql::Except("unsupported target: " + target);
+      throw litesql::Except("unsupported target: " + target);
+
+    generator.generateCode(&model);
+    return 0;
+  }
+  catch (Except e) {
+    cerr << e << endl;
+    return -1;
+  }
 }
-
-
 
 int main(int argc, char **argv) { 
     bool printHelp = false;
@@ -73,7 +85,7 @@ int main(int argc, char **argv) {
         fprintf(stderr, help);
         return -1;
     }
-#ifdef WITH_SAX_PARSER
+
     ObjectModel model;
     if (!model.loadFromFile(argv[argc-1]))
     {
@@ -83,22 +95,6 @@ int main(int argc, char **argv) {
     }
     else
     {
-      generateCode(model.db, model.objects, model.relations);    
-      return 0;
+      return generateCode(model);    
     }
-#else
-    FILE ** yyin;
-    *yyin = fopen(argv[argc-1], "r");
-    if (!*yyin) {
-        string msg = "could not open file '" + string(argv[argc-1]) + "'";
-        perror(msg.c_str());
-        return -1;
-    }
-    try {
-        return yylex();
-    } catch (litesql::Except e) {
-        cerr << "Error: " << e << endl;
-        return -1;
-    }
-#endif // #ifdef WITH_SAX_PARSER
 }

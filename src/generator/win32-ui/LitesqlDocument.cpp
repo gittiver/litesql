@@ -1,5 +1,5 @@
 #include "LitesqlMDIChild.h"
-#include "generator.hpp"
+#include "litesql-gen-xml.hpp"
 
 using namespace std;
 

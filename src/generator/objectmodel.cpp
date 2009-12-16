@@ -45,6 +45,7 @@ const char* toString(AT_relate_limit t)
   case A_relate_limit_many:
     return "many";
   case AU_relate_limit:
+  default:
     return "unknown";   
   }
 }
@@ -226,6 +227,7 @@ private:
   Object * obj;
   Relation * rel;
   Field * fld;
+  Field * rel_fld;
   Method * mtd;
   Index * idx;
 
@@ -256,7 +258,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       Logger::report("database = " + m_pObjectModel->db.name);
     }
   } 
-  else if (xmlStrEqual(fullname,(XML_Char*)"object"))
+  else if (xmlStrEqual(fullname,(XML_Char*)Object::TAG))
   {
     if (m_parseState!=DATABASE)
     {
@@ -275,7 +277,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     switch(m_parseState)
     {
     case OBJECT:
-      Logger::report("field = " );
+      Logger::report("field = ",(char*)xmlGetAttrValue(atts,"name") );
       if (obj) {
         obj->fields.push_back(fld =new Field( (char*)xmlGetAttrValue(atts,"name"), 
           field_type(xmlGetAttrValue(atts,"type")),
@@ -290,7 +292,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
 
     case RELATION:
       if (rel) {
-        rel->fields.push_back(fld =new Field(                 (char*)xmlGetAttrValue(atts,"name"), 
+        rel->fields.push_back(rel_fld =new Field(                 (char*)xmlGetAttrValue(atts,"name"), 
           field_type( xmlGetAttrValue(atts,"type") ),
           safe( (char*)xmlGetAttrValue(atts,"default") ),
           field_indexed( xmlGetAttrValue(atts,"indexed") ),
@@ -413,7 +415,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
 
 void LitesqlParser::onEndElement(const XML_Char *fullname)
 {
-  Logger::report("ending ",fullname); 
+//  Logger::report("ending ",fullname); 
   if (xmlStrEqual(fullname,(XML_Char*)"database"))
   {
     if (m_parseState!=DATABASE)
@@ -436,6 +438,9 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     {
       Logger::report("end object " );
       obj = NULL;
+      fld= NULL;
+      rel = NULL;
+      rel_fld = NULL;
       m_parseState = DATABASE;
     }
   } 
@@ -498,6 +503,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     {
       Logger::report("end relation " );
       rel = NULL;
+      rel_fld = NULL;
       m_parseState = DATABASE;
     }
   } 
@@ -509,7 +515,8 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     }
     else
     {
-      Logger::report("relate = " );
+      rel_fld = NULL;
+      Logger::report("end relate" );
     }
   } 
   else if (xmlStrEqual(fullname,(XML_Char*)"include"))
@@ -536,18 +543,11 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
 bool ObjectModel::loadFromFile(const std::string& filename)
 {
   LitesqlParser parser(this);
-  bool successfulParsed = parser.parseFile(filename);
-  return successfulParsed;
 
-/*
-if (!successfulParsed)
-  {
-    return false;
-  }
-  else
-  {
-//    xml::init(db,objects,relations);
-    return true;
-  }
-*/
+  bool successfulParsed = parser.parseFile(filename);
+  //if (successfulParsed)
+  //{
+  //  xml::init(db,objects,relations);
+  //}
+  return successfulParsed;
 }
