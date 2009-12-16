@@ -3,8 +3,8 @@
 HOST_SYSTEM=`uname -s`
 HOST_ARCH=`uname -m`
 
-AM_BUILDDIR=../build/autotools/$HOST_ARCH-$HOST_SYSTEM
-CMAKE_BUILDDIR=../build/cmake/$HOST_ARCH-$HOST_SYSTEM
+AM_BUILDDIR=build/autotools/$HOST_ARCH-$HOST_SYSTEM
+CMAKE_BUILDDIR=build/cmake/$HOST_ARCH-$HOST_SYSTEM
 STARTDIR=`pwd`
 
 mkdir -p $CMAKE_BUILDDIR

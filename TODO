@@ -1,4 +1,4 @@
-- add VERSION, PACKAGE etc. to config.h.cmake (undefined for now)
-- debug and release-libraries in windows-installer
 - update autotools
-
+- package win32 as "win32-libs
+- create debian, ubuntu package
+- create mac-port

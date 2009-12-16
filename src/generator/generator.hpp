@@ -2,9 +2,12 @@
 #define generator_hpp
 
 #include <vector>
+#include <ostream>
+
+#include "objectmodel.hpp"
+
 
 namespace litesql {
-  class ObjectModel;
   class CodeGenerator {
 
   public:
@@ -16,6 +19,14 @@ namespace litesql {
     virtual const char* getTarget() const;
     virtual bool generateCode(const ObjectModel* model) = 0;
 
+    //virtual void generate(std::ostream& os,const ObjectModel* model,size_t indent=0);
+
+    //virtual void generate(std::ostream& os,xml::Object object    , size_t indent=2){};
+    //virtual void generate(std::ostream& os,xml::Field* field     , size_t indent=4){};
+    //virtual void generate(std::ostream& os,xml::Method* pMethod  , size_t indent=4){};
+
+    //virtual void generate(std::ostream& os,xml::Relation* relation,size_t indent=4){};
+    
     static CodeGenerator* create(const char* target);
 
   protected:

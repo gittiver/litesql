@@ -29,6 +29,8 @@ public:
     Split slice(int start, int end) const;
     /** returns strings joined with delimiter */
     std::string join(const std::string& delim) const;
+
+    static std::string join(const std::vector<std::string>& strings,const std::string& delim=" ");
     /** adds contents of another split to the end */
     Split & extend(const Split & s);
 };

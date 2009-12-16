@@ -17,9 +17,10 @@ public:
    /** load model from xml-file (uses a  specialized XmlParser) */
    bool loadFromFile(const std::string& filename);
 
+   xml::Database db;   
+
    std::vector<xml::Object* > objects;
    std::vector<xml::Relation* > relations;
-   xml::Database db;   
 };
 }
 #endif //#ifndef objectmodel_hpp
