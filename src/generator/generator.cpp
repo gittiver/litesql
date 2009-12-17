@@ -17,6 +17,22 @@ const string& CodeGenerator::getOutputDirectory() const
   return m_directory;
 }
 
+std::string CodeGenerator::getOutputFilename(std::string& name) const
+{
+  string fname = getOutputDirectory();
+
+  if (!fname.empty())
+  {
+#ifdef WIN32
+    fname.append("\\");
+#else
+    fname.append("/");
+#endif // #ifdef _WINDOWS_
+  }
+  fname.append(name); 
+  return fname;
+}
+    
 const char* CodeGenerator::getTarget() const
 {return m_target;}
 

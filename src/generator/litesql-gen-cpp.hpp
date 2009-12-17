@@ -7,6 +7,10 @@ class CppGenerator : public CodeGenerator {
   public:
     CppGenerator(): CodeGenerator("c++") { };
     bool generateCode(const ObjectModel* model);
+    
+private:
+  void writeCPPClasses(const ObjectModel* model);
+  FILE *hpp, *cpp;
 };
 
 #endif

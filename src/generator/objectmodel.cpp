@@ -545,9 +545,9 @@ bool ObjectModel::loadFromFile(const std::string& filename)
   LitesqlParser parser(this);
 
   bool successfulParsed = parser.parseFile(filename);
-  //if (successfulParsed)
-  //{
-  //  xml::init(db,objects,relations);
-  //}
+  if (successfulParsed)
+  {
+    xml::init(db,objects,relations);
+  }
   return successfulParsed;
 }

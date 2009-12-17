@@ -1,68 +1,75 @@
 #include "litesql-gen-graphviz.hpp"
+#include <fstream>
+
 using namespace std;
 using namespace xml;
-void writeInheritance(FILE* f, 
-                      const vector<Object*>& objects) {
-    for (size_t i = 0; i < objects.size(); i++) {
-        Object& o = *objects[i];
-        fprintf(f, "    \"%s\"", o.name.c_str());
-        if (o.parentObject)
-            fprintf(f, " -> \"%s\"", o.inherits.c_str());
-        fprintf(f, ";\n");
-    }
+
+
+bool GraphvizGenerator::generate(std::ostream& os,xml::Object* const object    , size_t indent)
+{
+  string indents(indent,' ');
+  os << indents << '"' << object->name << '"';
+  
+  if (object->parentObject)
+    os << " -> \"" << object->inherits << "\"";
+  
+  os << ';' << endl;
+  return true;
 }
 
-void writeRelations(FILE* f,
-                    const vector<Relation*>& relations) {
-    for (size_t i = 0; i < relations.size(); i++) {
-        Relation& r = *relations[i];
+bool GraphvizGenerator::generate(std::ostream& os,xml::Relation* const relation,size_t indent)
+{
+  string indents(indent,' ');
+  Relation& r = *relation;
+  for (size_t i2 = 0; i2 < r.related.size(); i2++) {
+    Relate& rel = *r.related[i2];
+    string extra;
+    for (size_t i3 = 0; i3 < r.related.size(); i3++) {
+      if (i3 == i2) 
+        continue;
 
-        for (size_t i2 = 0; i2 < r.related.size(); i2++) {
-            Relate& rel = *r.related[i2];
-            string extra;
-            for (size_t i3 = 0; i3 < r.related.size(); i3++) {
-                if (i3 == i2) 
-                    continue;
-
-                Relate& destRel = *r.related[i3];
-                if (rel.handle.size() > 0) {
-                    extra = " [label=\"" + rel.handle + "\"]";
-                    fprintf(f, "    \"%s\" -> \"%s\"%s;\n", 
-                            rel.objectName.c_str(), destRel.objectName.c_str(),
-                            extra.c_str());
-                }
-            }
-        }
+      Relate& destRel = *r.related[i3];
+      if (rel.handle.size() > 0) {
+        extra = " [label=\"" + rel.handle + "\"]";
+        os << indents << "\"" << rel.objectName << "\" -> \""<< destRel.objectName <<"\""<< " [label=\"" << rel.handle << "\"]" <<";" <<endl; 
+      }
     }
+  }
+  return true;
 }
 
 bool GraphvizGenerator::generateCode(const ObjectModel* model)
 {
-  string fname = toLower(model->db.name + ".dot"); 
-  FILE* f = fopen(fname.c_str(), "w");
-  bool success;
-  if (!f) {
-    string msg = "could not open file : " + fname;
-    perror(msg.c_str());
-    success=false;
-  }
-  else
+
+  string fname = getOutputDirectory();
+
+  if (!fname.empty())
   {
-    fprintf(f, "digraph database {\n");
-    fprintf(f, "  node[shape=box,color=black];\n");
-    fprintf(f, "  subgraph inheritance {\n");
-    fprintf(f, "    edge[style=dashed,dir=forward,arrowhead=normal];\n");
-    writeInheritance(f, model->objects);
-    fprintf(f, "  }\n");
-    fprintf(f, "  subgraph relations {\n");
-    fprintf(f, "    edge[dir=forward,arrowhead=vee];\n");
-    writeRelations(f, model->relations);
-    fprintf(f, "  }\n");
-    fprintf(f, "}\n");
-    fclose(f);
-    success=true;
+#ifdef WIN32
+    fname.append("\\");
+#else
+    fname.append("/");
+#endif // #ifdef _WINDOWS_
   }
-  return success;
+  fname.append(toLower(model->db.name + ".dot")); 
+
+  ofstream os(fname.c_str());
+  os << "digraph database {" << endl
+     << "  node[shape=box,color=black];" << endl
+     << "  subgraph inheritance {" << endl
+     << "    edge[style=dashed,dir=forward,arrowhead=normal];" << endl;
+    
+  CodeGenerator::generate(os,model->objects,4);
+
+  os << "  }" << endl
+    << "  subgraph relations {" << endl
+    << "    edge[dir=forward,arrowhead=vee];" << endl;
+  CodeGenerator::generate(os,model->relations,4);
+  os << "  }" << endl
+    << "}" << endl;
+
+  os.close();
+  return true;
 }
 
 

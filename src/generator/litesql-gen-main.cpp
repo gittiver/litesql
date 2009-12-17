@@ -1,23 +1,26 @@
-#include <cstdio>
 #include "litesql.hpp"
 #include "generator.hpp"
 #include "litesql-gen-cpp.hpp"
 #include "litesql-gen-graphviz.hpp"
 #include "logger.hpp"
-#ifdef WITH_SAX_PARSER
 #include "objectmodel.hpp"
-#endif // #ifdef WITH_SAX_PARSER
+
 using namespace std;
 
-char* help = 
+const char* help = 
 "Usage: litesql-gen [options] <my-database.xml>\n\n"
 "Options:\n"
 " -t, --target=TARGET         generate code for TARGET (default: c++)\n"
 " -v, --verbose               verbosely report code generation\n"
 " --help                      print help\n"
+
+" -t, --target=TARGET         generate code for TARGET (default: c++)\n"
+
 "\n"
 "Supported targets:\n"
 "  'c++'        C++ target (.cpp,.hpp)\n"
+"  'ruby'          ruby target (.rb)\n"
+"  'objc'          Objective C (.m,.h)\n"
 //"  'c'          C target (.c,.h)\n"
 //"  'haskell'    Haskell target (.hs)\n"
 //"  'sql'        SQL schema of database (.sql)\n"
@@ -27,24 +30,30 @@ char* help =
 "\n\n"
 ;
 
-static string target = "c++";
+vector<string> targets;
 
 int generateCode(ObjectModel& model)
 {
   try {
-    xml::init(model.db,model.objects,model.relations);
     CompositeGenerator generator;
-    if (target == "c++") 
+    for (vector<string>::const_iterator target= targets.begin(); target!=targets.end();target++)
     {
-      generator.add(new CppGenerator());
-    }    
-    else if (target == "graphviz") 
-    {
-      generator.add(new GraphvizGenerator());
-    }
-    else
-      throw litesql::Except("unsupported target: " + target);
 
+      if (*target == "c++") 
+      {
+        generator.add(new CppGenerator());
+      }    
+      else if (*target == "graphviz") 
+      {
+        generator.add(new GraphvizGenerator());
+      }
+      else 
+      {
+        throw litesql::Except("unsupported target: " + *target);
+      }
+    }
+
+    generator.setOutputDirectory("c:");
     generator.generateCode(&model);
     return 0;
   }
@@ -63,26 +72,27 @@ int main(int argc, char **argv) {
             continue;
         } else if (arg == "-t" || arg == "--target") {
             if (i+1 >= argc) {
-                fprintf(stderr, "Error: missing target\n");
+              Logger::error("Error: missing target");
                 return -1;
             }    
-            target = argv[i+1];
+            targets.push_back(argv[i+1]);
             i++;
             continue;
         } else if (litesql::startsWith(arg, "--target=")) {
             litesql::Split lang(arg, "=");
-            target = lang[1];
+            targets.push_back(lang[1]);
             continue;
         } else if (arg == "--help") {
             printHelp = true;
             break;
         } else if (i < argc - 1) {
-            fprintf(stderr, "Error: invalid argument '%s'\n", arg.c_str());
+          Logger::error("Error: invalid argument "+ arg);
             return -1;
         }
     }
+    
     if (argc == 1 || printHelp) {
-        fprintf(stderr, help);
+      Logger::error(help);
         return -1;
     }
 
@@ -90,7 +100,7 @@ int main(int argc, char **argv) {
     if (!model.loadFromFile(argv[argc-1]))
     {
         string msg = "could not load file '" + string(argv[argc-1]) + "'";
-        perror(msg.c_str());
+        Logger::error(msg);
         return -1;
     }
     else

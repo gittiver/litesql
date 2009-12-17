@@ -341,6 +341,8 @@ public:
     vector<DBIndex*> indices;
     vector<Table*> tables;
     string name, include, nspace;
+
+    bool hasNamespace() const { return !nspace.empty(); }
 };
 
 void init(Database& db, 

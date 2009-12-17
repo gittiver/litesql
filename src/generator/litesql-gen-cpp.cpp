@@ -1183,77 +1183,54 @@ void writeDatabaseClass(FILE* hpp, FILE* cpp,
     db.method(init);
     db.write(hpp, cpp);
 }
-void writeCPPClasses(const xml::Database& db,
-                     const vector<xml::Object*>& objects,
-                     const vector<xml::Relation*>& relations) {
-    sanityCheck(db, objects, relations);
-    bool hasNamespace = false;
-    
-    FILE *hpp, *cpp;
-    
-    string hppName = toLower(db.name) + ".hpp";
-    hpp = fopen(hppName.c_str(), "w");
-    if (!hpp) {
-        string msg = "could not open file : " + hppName;
-        perror(msg.c_str());
-        return;
-    }
-    
-    string cppName = toLower(db.name) + ".cpp";
-    cpp = fopen(cppName.c_str(), "w");
-    if (!cpp) {
-        string msg = "could not open file : " + cppName;
-        perror(msg.c_str());
-        return;
-    }
-    string defName = "_" + toLower(db.name) + "_hpp_";
+
+void CppGenerator::writeCPPClasses(const ObjectModel* model) 
+{
+    string hppName = toLower(model->db.name) + ".hpp";
+    string defName = toLower(model->db.name) + "_hpp";
     fprintf(hpp, "#ifndef %s\n", defName.c_str());
     fprintf(hpp, "#define %s\n", defName.c_str());
     fprintf(hpp, "#include \"litesql.hpp\"\n");
-    if (!db.include.empty()) 
-        fprintf(hpp, "#include \"%s\"\n", db.include.c_str());
+    if (!model->db.include.empty()) 
+        fprintf(hpp, "#include \"%s\"\n", model->db.include.c_str());
     fprintf(cpp, "#include \"%s\"\n", hppName.c_str());
     
-
-    if (!db.nspace.empty()) {
-        fprintf(hpp, "namespace %s {\n", db.nspace.c_str());
-        fprintf(cpp, "namespace %s {\n", db.nspace.c_str());
-        hasNamespace = true;
-    } else
-        hasNamespace = false;
+    if (model->db.hasNamespace()) {
+        fprintf(hpp, "namespace %s {\n", model->db.nspace.c_str());
+        fprintf(cpp, "namespace %s {\n", model->db.nspace.c_str());
+    } 
+    
     fprintf(cpp, "using namespace litesql;\n");
 
     Logger::report("writing prototypes for Persistent classes\n"); 
-    for (size_t i = 0; i < objects.size(); i++) 
-        fprintf(hpp, "class %s;\n", objects[i]->name.c_str());
+    for (size_t i = 0; i < model->objects.size(); i++) 
+        fprintf(hpp, "class %s;\n", model->objects[i]->name.c_str());
 
     Logger::report("writing relations\n");
-    for (size_t i = 0; i < relations.size(); i++) {
-        xml::Relation & o = *relations[i];
-        Class cl(o.getName());
-        writeStaticRelData(cl, o);
-        writeRelMethods(db, cl, o);
+    for (vector<xml::Relation*>::const_iterator it = model->relations.begin(); it!= model->relations.end(); it++) {
+        Class cl((*it)->getName());
+        writeStaticRelData(cl, **it);
+        writeRelMethods(model->db, cl, **it);
         
         cl.write(hpp, cpp);
     }
     Logger::report("writing persistent objects\n");
-    for (size_t i = 0; i < objects.size(); i++) {
-        xml::Object & o = *objects[i];
-        Class cl(o.name, o.inherits);
-        writeStaticObjData(cl, o);
-        writeObjFields(cl, o);       
-        writeObjConstructors(cl, o);
-        writeObjRelationHandles(cl, o);
-        writeObjBaseMethods(cl, o);
+    for (vector<xml::Object*>::const_iterator it_o=model->objects.begin(); it_o!=model->objects.end(); it_o++) {
+        Class cl((*it_o)->name, (*it_o)->inherits);
+        writeStaticObjData(cl, **it_o);
+        writeObjFields(cl, **it_o);       
+        writeObjConstructors(cl, **it_o);
+        writeObjRelationHandles(cl, **it_o);
+        writeObjBaseMethods(cl, **it_o);
         cl.write(hpp, cpp);
 
         // Object -> string method (not associated to class)
 
         gen::Method strMtd("operator<<", "std::ostream &");
         strMtd.param(Variable("os", "std::ostream&"))
-            .param(Variable("o", o.name));
+            .param(Variable("o", (*it_o)->name));
         vector<xml::Field*> flds;
-        o.getAllFields(flds);
+        (**it_o).getAllFields(flds);
 
         strMtd.body("os << \"-------------------------------------\" << std::endl;");
         for (size_t i2 = 0; i2 < flds.size(); i2++) {
@@ -1267,23 +1244,41 @@ void writeCPPClasses(const xml::Database& db,
         strMtd.write(hpp, cpp, "", 0);
     }
     Logger::report("writing database class\n");
-    writeDatabaseClass(hpp, cpp, db, objects, relations);
-    if (hasNamespace) {
+    writeDatabaseClass(hpp, cpp, model->db, model->objects, model->relations);
+    if (model->db.hasNamespace()) {
         fprintf(hpp, "}\n");
         fprintf(cpp, "}\n");
     }
 
     fprintf(hpp, "#endif\n");
-
-    fclose(hpp);
-    fclose(cpp);
 }
 
 
 bool CppGenerator::generateCode(const ObjectModel* model)
 {
-  writeCPPClasses(model->db,
-                     model->objects,
-                     model->relations);
+  sanityCheck(model->db, model->objects, model->relations);
+
+  string hppName = getOutputFilename(toLower(model->db.name)+ ".hpp");
+
+  hpp = fopen(hppName.c_str(), "w");
+  if (!hpp) {
+    string msg = "could not open file : " + hppName;
+    perror(msg.c_str());
+    return false;
+  }
+
+  string cppName = getOutputFilename(toLower(model->db.name)+ ".cpp");
+  cpp = fopen(cppName.c_str(), "w");
+  if (!cpp) {
+    string msg = "could not open file : " + cppName;
+    perror(msg.c_str());
+    return false;
+  }
+
+  writeCPPClasses(model);
+
+  fclose(hpp);
+  fclose(cpp);
+
   return true;
 }

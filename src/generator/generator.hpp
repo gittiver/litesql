@@ -16,9 +16,8 @@ namespace litesql {
     virtual void setOutputDirectory(const std::string& directory);
     virtual const std::string& getOutputDirectory() const;
     
-    //void setOutputFile(const std::string& file);
-    //const std::string& getOutputFilename() const;
-
+    std::string getOutputFilename(std::string& name) const;
+    
     virtual const char* getTarget() const;
     virtual bool generateCode(const ObjectModel* model)=0;
 
@@ -32,7 +31,7 @@ namespace litesql {
 
     virtual bool generate(std::ostream& os,xml::Relation* const relation,size_t indent=4){return true;};
 
-    static CodeGenerator* create(const char* target);
+  //  static CodeGenerator* create(const char* target);
 
   protected:
     CodeGenerator(const char* target)
@@ -42,8 +41,8 @@ namespace litesql {
     const char* m_target;
 
     std::string m_drive;
-    std::string m_filename;
     std::string m_directory;
+    std::string m_filename;
   };
 
   class CompositeGenerator : public CodeGenerator {
