@@ -1,5 +1,5 @@
 #include "logger.hpp"
-
+#
 #include <iostream>
 
 using namespace std; 
@@ -33,4 +33,10 @@ void Logger::error(const std::string& msg,const std::string& msg2)
 {
     cerr  << msg << msg2 << endl;
 }
-    
+
+void Logger::error(const Except& ex)
+{
+    cerr  << ex << endl;
+}
+
+

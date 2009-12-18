@@ -2,6 +2,7 @@
 #define LOGGER_HPP
 
 #include <string>
+#include "litesql/except.hpp"
 
 namespace litesql 
 {
@@ -11,6 +12,7 @@ namespace litesql
     static void report(const std::string& msg);
     static void error(const std::string& msg,const std::string& msg2);
     static void error(const std::string& msg2);
+    static void error(const Except& ex);
     static void verbose(bool verbose);
   };
 }

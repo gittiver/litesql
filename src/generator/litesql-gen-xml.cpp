@@ -11,19 +11,6 @@ void XmlGenerator::setOutputFilename(const std::string& filename)
   m_outputFilename=filename;
 }
 
-string attribute(const string& name, const string& value)
-{
-  string a;
-  a.append(name).append("=").append("\"").append(value).append("\" ");
-  return a;
-}
-
-string endtag(const string& name)
-{
-  string a;
-  a.append("</").append(name).append(">");
-  return a;
-}
 
 bool generate(ostream& os,xml::Field* const field, size_t indent=4)
 {
@@ -189,7 +176,7 @@ bool XmlGenerator::generateDatabase(ostream& os,const ObjectModel* model)
 bool XmlGenerator::generateCode(const ObjectModel* model)
 {
   bool success;
-  ofstream ofs(m_outputFilename.c_str());
+  ofstream ofs(getOutputFilename(m_outputFilename).c_str());
   ofs << "<?xml version=\"1.0\"?>" << endl
       << "<!DOCTYPE database SYSTEM \"litesql.dtd\">" << endl; 
   success = generateDatabase(ofs,model);

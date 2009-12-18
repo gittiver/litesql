@@ -41,17 +41,7 @@ bool GraphvizGenerator::generate(std::ostream& os,xml::Relation* const relation,
 bool GraphvizGenerator::generateCode(const ObjectModel* model)
 {
 
-  string fname = getOutputDirectory();
-
-  if (!fname.empty())
-  {
-#ifdef WIN32
-    fname.append("\\");
-#else
-    fname.append("/");
-#endif // #ifdef _WINDOWS_
-  }
-  fname.append(toLower(model->db.name + ".dot")); 
+  string fname = getOutputFilename(toLower(model->db.name + ".dot"));
 
   ofstream os(fname.c_str());
   os << "digraph database {" << endl

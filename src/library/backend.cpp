@@ -40,7 +40,7 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
       delete r;
     } 
     for (int i = tables.size()-1; i >= 0; i--) {
-        string fieldString = Split(fields[i]).join(",");
+      string fieldString = Split::join(fields[i],",");
         string valueString;
         if (!values[i].empty())
             values[i][0] = id;

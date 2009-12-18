@@ -1,5 +1,5 @@
-#ifndef _exampledatabase_hpp_
-#define _exampledatabase_hpp_
+#ifndef exampledatabase_hpp
+#define exampledatabase_hpp
 #include "litesql.hpp"
 namespace example {
 class user;

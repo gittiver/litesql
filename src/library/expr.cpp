@@ -8,6 +8,9 @@
 #include "litesql/expr.hpp"
 #include "litesql/selectquery.hpp"
 namespace litesql {
+
+const char* Expr::True ="True";
+
 In::In(const FieldType & fld, const SelectQuery& s)
     : Oper(fld, "in", "(" + s.asString() + ")") {}
 And operator&&(const Expr &o1, const Expr &o2) {

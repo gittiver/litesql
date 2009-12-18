@@ -4,8 +4,8 @@
  * 
  * See LICENSE for copyright information. */
 
-#ifndef _litesql_expr_hpp
-#define _litesql_expr_hpp
+#ifndef litesql_expr_hpp
+#define litesql_expr_hpp
 #include <string>
 #include <utility>
 #include "litesql/utils.hpp"
@@ -21,8 +21,10 @@ protected:
     // extra tables to be joined
     Split extraTables;
 public:
+  /// constant for True expression
+  static const char* True; 
     // default expression is true
-    virtual string asString() const { return "True"; }
+    virtual string asString() const { return True; }
 
 
     Split getExtraTables() const { 
@@ -61,9 +63,9 @@ class And : public Connective {
 public:
     And(const Expr & e1_, const Expr & e2_) : Connective("and", e1_, e2_) {}
     virtual string asString() const {     
-        if (e1.asString() == "True")
+        if (e1.asString() == True)
             return e2.asString();
-        else if (e2.asString() == "True")
+        else if (e2.asString() == True)
             return e1.asString();
         else
             return Connective::asString();
@@ -75,10 +77,8 @@ public:
     Or(const Expr & e1_, const Expr & e2_) 
         : Connective("or", e1_, e2_) {}
     virtual string asString() const {
-        if (e1.asString() == "True")
-            return "True";
-        else if (e2.asString() == "True")
-            return "True";
+        if ((e1.asString() == True)||(e2.asString() == True))
+            return True;
         else
             return Connective::asString();
     }

@@ -50,6 +50,9 @@ int main(int argc, char *argv[]) {
 	// TC7
 	assert(Split("ab|c|def|ghij","|").join(" ")=="ab c def ghij");
 
+  std::string s_join = Split::join(Split("ab|c|def|ghij","|")," ");
+  assert(s_join=="ab c def ghij");
+
 
     return 0;
 }

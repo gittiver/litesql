@@ -227,8 +227,8 @@ Database::Database(const string& backend, const string& conn)
             cerr << "groupInsert" << endl;
             for (size_t i = 0; i < tables.size(); i++) {
                 cerr << "\t" << tables[i] << endl;
-                cerr << "\t\tfields : " << Split(fields[i]).join(",") << endl;
-                cerr << "\t\tvalues : " << Split(values[i]).join("|") << endl;
+                cerr << "\t\tfields : " << Split::join(fields[i],",") << endl;
+                cerr << "\t\tvalues : " << Split::join(values[i],"|") << endl;
             }
         }
         return backend->groupInsert(tables, fields, values, sequence);
