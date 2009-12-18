@@ -6,8 +6,8 @@
 
 /** \file split.hpp
     contains class Split */
-#ifndef _litesql_split_hpp
-#define _litesql_split_hpp
+#ifndef litesql_split_hpp
+#define litesql_split_hpp
 #include <string>
 #include <vector>
 namespace litesql {
@@ -16,6 +16,7 @@ class Split : public std::vector<std::string> {
 public:
     /** empty split */
     Split() {}
+    Split(size_t initial_size) { reserve(initial_size);}
     /** from string vector */
     Split(std::vector<std::string> data) 
         : std::vector<std::string>(data) {}
@@ -32,7 +33,7 @@ public:
 
     static std::string join(const std::vector<std::string>& strings,const std::string& delim=" ");
     /** adds contents of another split to the end */
-    Split & extend(const Split & s);
+    Split & extend(const std::vector<std::string> & s);
 };
 }
 #endif

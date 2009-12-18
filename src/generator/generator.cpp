@@ -17,7 +17,7 @@ const string& CodeGenerator::getOutputDirectory() const
   return m_directory;
 }
 
-std::string CodeGenerator::getOutputFilename(std::string& name) const
+std::string CodeGenerator::getOutputFilename(const std::string& name) const
 {
   string fname = getOutputDirectory();
 
@@ -35,6 +35,28 @@ std::string CodeGenerator::getOutputFilename(std::string& name) const
     
 const char* CodeGenerator::getTarget() const
 {return m_target;}
+
+bool CodeGenerator::generate(const std::vector<xml::Object* >& objects)
+{
+  for (std::vector<xml::Object* >::const_iterator it = objects.begin();
+    it != objects.end();
+    it++)
+  {
+      generate(*it);
+  }
+  return true;
+}
+
+bool CodeGenerator::generate(const std::vector<xml::Relation* >& relations)
+{
+  for (std::vector<xml::Relation* >::const_iterator it = relations.begin();
+    it != relations.end();
+    it++)
+  {
+      generate(*it);
+  }
+  return true;
+}
 
 bool CodeGenerator::generate(ostream& os,const std::vector<xml::Object* >& objects,size_t indent)
 {
@@ -61,6 +83,7 @@ bool CodeGenerator::generate(ostream& os,const std::vector<xml::Relation* >& rel
 
 void CompositeGenerator::add(CodeGenerator* g)
 {
+  g->setParentGenerator(this);
   g->setOutputDirectory(getOutputDirectory());
   generators.push_back(g);
 

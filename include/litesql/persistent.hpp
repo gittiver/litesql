@@ -4,8 +4,9 @@
  * 
  * See LICENSE for copyright information. */
 
-#ifndef _litesql_persistent_hpp
-#define _litesql_persistent_hpp
+#ifndef litesql_persistent_hpp
+#define litesql_persistent_hpp
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -18,6 +19,7 @@
 #include "litesql/selectquery.hpp"
 #include "litesql/relation.hpp"
 #include "litesql/operations.hpp"
+
 /** \file persistent.hpp 
  * Persistent
 */

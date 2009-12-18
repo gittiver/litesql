@@ -6,8 +6,8 @@
 
 /** \file datasource.hpp
  * selectObjectQuery<T> and DataSource<T> */
-#ifndef _litesql_datasource_hpp
-#define _litesql_datasource_hpp
+#ifndef litesql_datasource_hpp
+#define litesql_datasource_hpp
 #include <set>
 #include <string>
 #include "litesql/database.hpp"

@@ -1,5 +1,6 @@
-#ifndef _litesql_xmlobjects_hpp
-#define _litesql_xmlobjects_hpp
+#ifndef litesql_xmlobjects_hpp
+#define litesql_xmlobjects_hpp
+
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -9,16 +10,12 @@
 #include "litesql/split.hpp"
 #include "litesql/string.hpp"
 
-#ifndef WITH_SAX_PARSER
-extern int yylineno;
-#endif // #ifndef WITH_SAX_PARSER
-
 namespace xml {
 using namespace std;
 using namespace litesql;
-string capitalize(const string& s);
-string decapitalize(const string& s);
 string safe(const char *s);
+string attribute(const string& name, const string& value);
+string endtag(const string& name);
 string makeDBName(const string& s);
 class Value {
 public:
@@ -219,7 +216,7 @@ public:
         return res;
     }
     string getTable() const {
-        Split res;
+        Split res(related.size());
         for (size_t i = 0; i < related.size(); i++)
             res.push_back(related[i]->objectName);
         res.push_back(id);
@@ -229,6 +226,7 @@ public:
 };
 class Object {
 public:
+    static const Object DEFAULT_BASE;
     static const char* TAG;
 
     string name, inherits;

@@ -4,8 +4,8 @@
  * 
  * See LICENSE for copyright information. */
 
-#ifndef _litesql_database_hpp
-#define _litesql_database_hpp
+#ifndef litesql_database_hpp
+#define litesql_database_hpp
 #include <string>
 #include <set>
 #include "litesql/types.hpp"

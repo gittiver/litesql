@@ -1,5 +1,5 @@
-#ifndef _compatibility_hpp
-#define _compatibility_hpp
+#ifndef compatibility_hpp
+#define compatibility_hpp
 #include "config.h"
 
 #ifdef HAVE_MEMORY_H

@@ -4,8 +4,8 @@
  *
  * See LICENSE for copyright information. */
 
-#ifndef _litesql_datetime_hpp
-#define _litesql_datetime_hpp
+#ifndef litesql_datetime_hpp
+#define litesql_datetime_hpp
 /** \file datetime.hpp
     constains Date, Time and DateTime - classes */
 #include "field.hpp"

@@ -9,6 +9,7 @@ set(libmodel_SOURCES
 			md5.hpp 
 			xmlobjects.hpp 
 			litesql-gen-graphviz.cpp litesql-gen-graphviz.hpp 
+			litesql-gen-ruby-activerecord.cpp litesql-gen-ruby-activerecord.hpp 
 	)
 set(litesql-gen_SOURCES 
 			litesql-gen-main.cpp 

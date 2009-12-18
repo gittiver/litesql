@@ -7,8 +7,8 @@
 /** \file backend.hpp
     Classes Backend, Backend::Cursor and Backend::Result
 */
-#ifndef _litesql_backend_hpp
-#define _litesql_backend_hpp
+#ifndef litesql_backend_hpp
+#define litesql_backend_hpp
 #include <memory>
 #include "litesql/types.hpp"
 namespace litesql {

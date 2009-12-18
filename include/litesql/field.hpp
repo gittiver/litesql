@@ -4,8 +4,8 @@
  * 
  * See LICENSE for copyright information. */
 
-#ifndef __litesql_field_hpp
-#define __litesql_field_hpp
+#ifndef litesql_field_hpp
+#define litesql_field_hpp
 #include <iostream>
 #include <vector>
 #include <utility>

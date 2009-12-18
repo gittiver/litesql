@@ -9,22 +9,34 @@
 
 namespace litesql {
   class CodeGenerator {
-
   public:
+    typedef enum generation_mode_t { REFRESH=0,OVERWRITE };
+    
     virtual ~CodeGenerator();
 
     virtual void setOutputDirectory(const std::string& directory);
     virtual const std::string& getOutputDirectory() const;
     
-    std::string getOutputFilename(std::string& name) const;
+    void setGenerationMode(generation_mode_t mode) { m_generationMode = mode; };
+    generation_mode_t getGenerationMode() const { return m_generationMode; };
+
+    std::string getOutputFilename(const std::string& name) const;
     
     virtual const char* getTarget() const;
     virtual bool generateCode(const ObjectModel* model)=0;
 
+    CodeGenerator* const getParentGenerator() const { return m_pParentGenerator; };
+    void setParentGenerator(CodeGenerator* parent)  { m_pParentGenerator=parent; };
+    
+    bool generate(const std::vector<xml::Object* >& objects);
+    bool generate(const std::vector<xml::Relation* >& relations);
+    virtual bool generate(xml::Object* const object) {return true;};
+    virtual bool generate(xml::Relation* const relation){return true;};
+ 
     bool generate(ostream& os,const std::vector<xml::Object* >& objects,size_t indent=2);
     bool generate(ostream& os,const std::vector<xml::Relation* >& relations,size_t indent=2);
     //virtual void generate(std::ostream& os,const ObjectModel* model,size_t indent=0);
-
+    
     virtual bool generate(std::ostream& os,xml::Object* const object    , size_t indent=2) {return true;};
     //virtual void generate(std::ostream& os,xml::Field* field     , size_t indent=4){};
     //virtual void generate(std::ostream& os,xml::Method* pMethod  , size_t indent=4){};
@@ -35,14 +47,13 @@ namespace litesql {
 
   protected:
     CodeGenerator(const char* target)
-      : m_target(target) {};
+      : m_target(target),m_generationMode(REFRESH) {};
 
   private:
     const char* m_target;
-
-    std::string m_drive;
+    generation_mode_t m_generationMode;
     std::string m_directory;
-    std::string m_filename;
+    CodeGenerator* m_pParentGenerator;
   };
 
   class CompositeGenerator : public CodeGenerator {

@@ -2,9 +2,8 @@
 #include "litesql/types.hpp"
 #include "litesql-gen-cpp.hpp"
 #include "xmlobjects.hpp"
-#include <ctype.h>
-#include <cstdio>
-#include <map>
+
+//#include <map>
 
 #include "logger.hpp"
 
@@ -1253,12 +1252,63 @@ void CppGenerator::writeCPPClasses(const ObjectModel* model)
     fprintf(hpp, "#endif\n");
 }
 
+void CppGenerator::setOutputSourcesDirectory(const std::string& directory)
+{
+  m_sources_directory= directory;
+}
+
+void CppGenerator::setOutputIncludesDirectory(const std::string& directory)
+{ 
+  m_includes_directory = directory;
+}
+
+const std::string& CppGenerator::getOutputSourcesDirectory() const
+{
+  return (m_sources_directory.empty()) ? getOutputDirectory() : m_sources_directory;
+}
+
+const std::string& CppGenerator::getOutputIncludesDirectory() const
+{
+  return (m_includes_directory.empty()) ? getOutputDirectory() : m_includes_directory;
+}
+
+std::string CppGenerator::getOutputSourcesFilename(const std::string& name) const
+{
+  string fname = getOutputSourcesDirectory();
+
+  if (!fname.empty())
+  {
+#ifdef WIN32
+    fname.append("\\");
+#else
+    fname.append("/");
+#endif // #ifdef _WINDOWS_
+  }
+  fname.append(name); 
+  return fname;
+}
+
+std::string CppGenerator::getOutputIncludesFilename(const std::string& name) const
+{
+  string fname = getOutputIncludesDirectory();
+
+  if (!fname.empty())
+  {
+#ifdef WIN32
+    fname.append("\\");
+#else
+    fname.append("/");
+#endif // #ifdef _WINDOWS_
+  }
+  fname.append(name); 
+  return fname;
+}
 
 bool CppGenerator::generateCode(const ObjectModel* model)
 {
   sanityCheck(model->db, model->objects, model->relations);
 
-  string hppName = getOutputFilename(toLower(model->db.name)+ ".hpp");
+  string hppName = getOutputIncludesFilename(toLower(model->db.name)+ ".hpp");
 
   hpp = fopen(hppName.c_str(), "w");
   if (!hpp) {
@@ -1267,7 +1317,7 @@ bool CppGenerator::generateCode(const ObjectModel* model)
     return false;
   }
 
-  string cppName = getOutputFilename(toLower(model->db.name)+ ".cpp");
+  string cppName = getOutputSourcesFilename(toLower(model->db.name)+ ".cpp");
   cpp = fopen(cppName.c_str(), "w");
   if (!cpp) {
     string msg = "could not open file : " + cppName;

@@ -7,8 +7,6 @@
 
 #include <algorithm>
 
-  
-
 namespace std {
     template <>
     struct less<xml::Relate*> {
@@ -28,6 +26,8 @@ const char* Object::TAG="object";
 const char* Relation::TAG="relation";
 const char* Relate::TAG="relate";
 
+const Object Object::DEFAULT_BASE("litesql::Persistent","");
+    
 string validID(string s, string type="field") {
     if (s.size() == 0) 
         return "empty identifier";
@@ -41,18 +41,6 @@ string validID(string s, string type="field") {
     if (s[s.size()-1] == '_')
         return "ends with an underscore";
     return "";
-}
-string capitalize(const string& s) {
-    if (s.size() == 0)
-        return s;
-    char buf[2] = {toupper(s[0]), 0};
-    return string(buf) + s.substr(1, s.size());
-}
-string decapitalize(const string& s) {
-    if (s.size() == 0)
-        return s;
-    char buf[2] = {tolower(s[0]), 0};
-    return string(buf) + s.substr(1, s.size());
 }
 string makeDBName(const string& s) {
     if (s.size() > 31)
@@ -361,4 +349,20 @@ string safe(const char * s) {
         return s;
     return "";
 }
+
+string attribute(const string& name, const string& value)
+{
+  string a;
+  a.append(name).append("=").append("\"").append(value).append("\" ");
+  return a;
+}
+
+string endtag(const string& name)
+{
+  string a;
+  a.append("</").append(name).append(">");
+  return a;
+}
+
+
 }
