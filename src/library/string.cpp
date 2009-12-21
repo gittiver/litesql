@@ -12,14 +12,14 @@
 namespace litesql {
 using namespace std; 
 
-bool startsWith(string what, string with) {
+bool startsWith(const string& what, const string& with) {
     if (what.size() < with.size())
         return false;
     if (what.substr(0, with.size()) == with)
         return true;
     return false;
 }
-bool endsWith(string what, string with) {
+bool endsWith(const string& what, const string& with) {
     if (what.size() < with.size())
         return false;
     if (what.substr(what.size()-with.size(), what.size()) == with)

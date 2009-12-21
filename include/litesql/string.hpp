@@ -22,9 +22,9 @@ std::string toString(T a) {
 }
 
 /** returns true if 'what' starts with 'with' */
-bool startsWith(std::string what, std::string with);
+bool startsWith(const std::string& what, const std::string& with);
 /** returns true if 'what' end with 'with' */
-bool endsWith(std::string what, std::string with);
+bool endsWith(const std::string& what, const std::string& with);
 /** returns lower-case version of the string */
 std::string toLower(std::string s);
 /** returns upper-case version of the string */
