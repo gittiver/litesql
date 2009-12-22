@@ -260,7 +260,7 @@ static void initSchema(Database& db,
             litesql::Split fldNames;
             Database::DBIndex* index = new Database::DBIndex;
             for (size_t i3 = 0; i3 < idx.fields.size(); i3++) {
-                Database::DBField* fld = new Database::DBField;
+//                Database::DBField* fld = new Database::DBField;
                 if (fldMap.find(idx.fields[i3].name) == fldMap.end())
                     throw litesql::Except("Indexfield " + r.name + "." + idx.fields[i3].name + " is invalid.");
                 index->fields.push_back(fldMap[idx.fields[i3].name]);

@@ -16,7 +16,7 @@ namespace litesql {
     bool generate(std::ostream& os,xml::Relation* const relation,size_t indent=4);
 
   private:
-    bool generateDatabase(ostream& os,const ObjectModel* model);
+    bool generateDatabase(std::ostream& os,const ObjectModel* model);
     std::string m_outputFilename;
   };
 }

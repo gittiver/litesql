@@ -3,12 +3,16 @@
 
 #include "generator.hpp"
 
-class RubyActiveRecordGenerator : public CodeGenerator {
+namespace litesql {
+  
+  class RubyActiveRecordGenerator : public CodeGenerator {
   public:
     RubyActiveRecordGenerator(): CodeGenerator("ruby-activerecord") { };
     bool generateCode(const ObjectModel* model);
-protected:   
+  protected:   
     bool generate(xml::Object* const object);
-};
+  };
+  
+}
 
 #endif

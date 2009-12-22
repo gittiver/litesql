@@ -7,6 +7,7 @@
 #include "objectmodel.hpp"
 
 using namespace std;
+using namespace litesql;
 
 const char* help = 
 "Usage: litesql-gen [options] <my-database.xml>\n\n"
@@ -19,6 +20,7 @@ const char* help =
 " --output-sources=/path/to/src      output sources to directory \n"
 " --output-include=/path/to/include  output includes to directory\n"
 " --refresh                          refresh code of target\n"
+" --overwrite                        overwrite code on generation\n"
 "\n"
 "Supported targets:\n"
 "  'c++'        C++ target (.cpp,.hpp)\n"

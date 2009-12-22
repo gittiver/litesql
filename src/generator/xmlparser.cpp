@@ -10,11 +10,13 @@ using namespace std;
 using namespace litesql;
 using namespace xml;
 
-void xml::XMLParser_xmlSAX2StartElement		(void *ctx,
+namespace xml {
+void XMLParser_xmlSAX2StartElement		(void *ctx,
 						 const XML_Char *fullname,
 						 const XML_Char **atts);
 
-void xml::XMLParser_xmlSAX2EndElement(void *ctx,const XML_Char *name);
+void XMLParser_xmlSAX2EndElement(void *ctx,const XML_Char *name);
+}
 
 void xml::XMLParser_xmlSAX2StartElement		(void *ctx,
 						 const XML_Char *fullname,
