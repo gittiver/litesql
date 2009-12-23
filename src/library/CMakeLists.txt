@@ -1,10 +1,28 @@
 set(LIBNAME litesql)
+
+		  
+##############################################################################
+# litesql-util library
+##############################################################################
+set(litesql_util_SOURCES split.cpp 
+			string.cpp
+		       ../../include/litesql/split.hpp 
+			../../include/litesql/string.hpp 
+			)	
+add_library(litesql-util STATIC ${litesql_util_SOURCES})
+install(TARGETS litesql-util EXPORT litesql-util
+			RUNTIME DESTINATION lib 
+			ARCHIVE DESTINATION lib/static 
+			COMPONENT devel)
+install(EXPORT litesql-util DESTINATION lib)
+
+##############################################################################
+# litesql library
+##############################################################################
 set(litesql_SOURCES	database.cpp 
 			expr.cpp 
 			selectquery.cpp 
 			persistent.cpp 
-			split.cpp 
-			string.cpp 
 			backend.cpp 
 			updatequery.cpp 
 			field.cpp 
@@ -16,17 +34,13 @@ set(litesql_SOURCES	database.cpp
 			../../include/litesql/expr.hpp 
 			../../include/litesql/selectquery.hpp 
 			../../include/litesql/persistent.hpp 
-			../../include/litesql/split.hpp 
-			../../include/litesql/string.hpp 
 			../../include/litesql/backend.hpp 
 			../../include/litesql/updatequery.hpp 
 			../../include/litesql/field.hpp 
 			../../include/litesql/datasource.hpp 
 			../../include/litesql/datetime.hpp
 )
-
 add_library(  ${LIBNAME} STATIC ${litesql_SOURCES})
-
 install(TARGETS ${LIBNAME} EXPORT ${LIBNAME}
 			RUNTIME DESTINATION lib 
 			ARCHIVE DESTINATION lib/static 

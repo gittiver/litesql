@@ -16,7 +16,7 @@ set(litesql-gen-ui_SOURCES
 
 add_executable(litesql-gen-ui WIN32 ${litesql-gen-ui_SOURCES})
 
-target_link_libraries (litesql-gen-ui litesql model ${EXPAT_LIBRARIES} ${WIN32_PP_LIBRARIES} comctl32.lib)
+target_link_libraries (litesql-gen-ui litesql litesql-util model ${EXPAT_LIBRARIES} ${WIN32_PP_LIBRARIES} comctl32.lib)
 
 if (MSVC)
   set_property(TARGET litesql-gen-ui APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS ${EXPAT_DEFINITIONS})

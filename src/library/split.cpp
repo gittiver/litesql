@@ -14,7 +14,7 @@ using namespace litesql;
 using namespace std;
 
 Split::Split(const string& s, const string& delim) {
-    char * buf = strdup((char*) s.c_str());
+  char * buf = strdup((char*) s.c_str());
     char * ptr = buf;
     int len = delim.size();
     vector<char*> pointers;
@@ -50,10 +50,10 @@ Split Split::slice(int start, int end) const {
 
 string Split::join(const vector<string>& strings,const string& delim){
     string res;
-    for (const_iterator i = strings.begin(); i != strings.end(); i++) {
-        if (i != strings.begin())
-            res += delim;
-        res += *i;
+    for (const_iterator it = strings.begin(); it != strings.end(); it++) {
+        if (it != strings.begin())
+          res.append(delim);
+        res.append(*it);
     }
     return res;
 }

@@ -5,7 +5,7 @@
  * See LICENSE for copyright information. */
 
 #include "litesql/split.hpp"
-#include "litesql.hpp"
+//#include "litesql.hpp"
 #include <cassert>
 /*
   Split unit tester

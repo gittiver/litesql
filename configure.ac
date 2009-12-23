@@ -1,7 +1,7 @@
 AC_PREREQ(2.53)
-AC_INIT([LiteSQL], [0.3.5], [litesql-users@lists.sourceforge.net], [litesql])
+AC_INIT([LiteSQL], [0.3.6], [litesql-users@lists.sourceforge.net], [litesql])
 AC_CONFIG_SRCDIR([src/library/database.cpp])
-AM_INIT_AUTOMAKE([litesql], [0.3.5])
+AM_INIT_AUTOMAKE([litesql], [0.3.6])
 AM_CONFIG_HEADER(config.h)
 
 if [ ! -d m4 ]; then
@@ -45,6 +45,9 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([gettimeofday memset strchr strdup strrchr strstr strtol strtof strtoll atof localtime_r mktime])
 
 pkg_config_reqs_tv=""
+
+# Check for expat
+AX_LIB_EXPAT()
 
 # Check for SQLite3.
 find_sqlite3="yes"
@@ -170,8 +173,8 @@ AC_SUBST(pkg_config_reqs_tv)
 
 # For now, combine various DB backend flags into master flags.
 # Later, it might be useful to only compile and link with the flags when necessary.
-CXXFLAGS="$CXXFLAGS ${SQLITE3_CXXFLAGS} ${MYSQL_CXXFLAGS} ${PGSQL_CXXFLAGS}"
-LDFLAGS="$LDFLAGS ${SQLITE3_LDFLAGS} ${PGSQL_LDFLAGS}"
+CXXFLAGS="$CXXFLAGS ${EXPAT_CFLAGS} ${SQLITE3_CXXFLAGS} ${MYSQL_CXXFLAGS} ${PGSQL_CXXFLAGS}"
+LDFLAGS="$LDFLAGS ${EXPAT_LDFLAGS} ${SQLITE3_LDFLAGS} ${PGSQL_LDFLAGS}"
 LIBS="$LIBS ${MYSQL_LIBS}"
 
 AC_PROG_LIBTOOL

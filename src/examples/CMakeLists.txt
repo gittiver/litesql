@@ -7,7 +7,7 @@ set(example_SOURCES example.cpp exampledatabase.cpp exampledatabase.hpp exampled
 #  SQLITE3_LIBRARIES - the libraries to link against
 #  SQLITE3_DEFINITIONS - switches required for SQLite3
 
-set(example_LIBS litesql litesql_sqlite ${SQLITE3_LIBRARIES})
+set(example_LIBS litesql litesql-util litesql_sqlite ${SQLITE3_LIBRARIES})
 
 # add mysql -libs
 if(WITH_MYSQL)

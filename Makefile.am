@@ -8,12 +8,12 @@ EXTRA_DIST=CMakeLists.txt \
 	   config.h.cmake \
 	   cmake/FindPostgreSQL.cmake \
 	   cmake/FindMySQL.cmake \
-	   cmake/FindSQLite3.cmake \
-	   win32
+	   cmake/FindSQLite3.cmake
+
 
 ACLOCAL_AMFLAGS=-I m4
 AUTOMAKE_OPTIONS=foreign
 
 dist-hook:
-	find $(distdir)/win32 -name \.svn
-	rm -rf `find $(distdir)/win32 -name .svn`
+	find $(distdir) -name \.svn
+	rm -rf `find $(distdir) -name .svn`

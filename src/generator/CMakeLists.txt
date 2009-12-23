@@ -44,9 +44,9 @@ endif(MSVC)
 
 
 if (WITH_SAX_PARSER)
-  target_link_libraries (litesql-gen litesql model ${EXPAT_LIBRARIES})
+  target_link_libraries (litesql-gen litesql litesql-util model ${EXPAT_LIBRARIES})
 else(WITH_SAX_PARSER)
-  target_link_libraries (litesql-gen litesql model ${EXPAT_LIBRARIES})
+  target_link_libraries (litesql-gen litesql litesql-util model ${EXPAT_LIBRARIES})
 endif(WITH_SAX_PARSER)
 
 install(TARGETS litesql-gen RUNTIME DESTINATION bin COMPONENT generator)
