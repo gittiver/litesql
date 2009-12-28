@@ -1,6 +1,6 @@
 //#include "../library/compatibility.hpp"
 #include "xmlobjects.hpp"
-#include "litesql-gen-main.hpp"
+//#include "litesql-gen-main.hpp"
 #include "md5.hpp"
 #include "litesql.hpp"
 #include "logger.hpp"

@@ -175,7 +175,7 @@ AC_SUBST(pkg_config_reqs_tv)
 # Later, it might be useful to only compile and link with the flags when necessary.
 CXXFLAGS="$CXXFLAGS ${EXPAT_CFLAGS} ${SQLITE3_CXXFLAGS} ${MYSQL_CXXFLAGS} ${PGSQL_CXXFLAGS}"
 LDFLAGS="$LDFLAGS ${EXPAT_LDFLAGS} ${SQLITE3_LDFLAGS} ${PGSQL_LDFLAGS}"
-LIBS="$LIBS ${MYSQL_LIBS}"
+LIBS="$LIBS ${MYSQL_LIBS} ${EXPAT_LIBS}"
 
 AC_PROG_LIBTOOL
 AC_OUTPUT(Makefile include/Makefile include/litesql/Makefile src/Makefile 
