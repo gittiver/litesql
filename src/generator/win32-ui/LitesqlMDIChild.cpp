@@ -5,6 +5,73 @@
 #include "LitesqlMDIChild.h"
 #include "resource.h"
 
+#include "objectmodel.hpp"
+
+using namespace xml;
+
+CModelTreeView::TreeItemData::TreeItemData()
+{}
+
+CModelTreeView::TreeItemData::~TreeItemData()
+{
+  for (vector<TreeItemData*>::const_iterator it = children.begin();it !=children.end();it++)
+    {
+      delete(*it);
+    }
+}
+
+class FieldTreeItemData : public CModelTreeView::TreeItemData 
+{
+public:
+  FieldTreeItemData(Field* field) : m_pField(field) 
+  {};
+  //		virtual ~ModelTreeItemData();
+
+  virtual LPSTR GetText() {return "field"; };
+  //  private:
+  Field* m_pField;
+};  //class TreeItemData
+
+class ObjectTreeItemData : public CModelTreeView::TreeItemData 
+{
+public:
+  ObjectTreeItemData(Object* object) : m_pObject(object) 
+  {
+    for (vector<Field*>::const_iterator fit = object->fields.begin();fit !=object->fields.end();fit++)
+    {
+      children.push_back(new FieldTreeItemData(*fit));
+    }
+  };
+  
+  virtual LPSTR GetText() {return "object"; };
+  //  private:
+  Object* m_pObject;
+};  //class TreeItemData
+
+class ModelTreeItemData : public CModelTreeView::TreeItemData 
+{
+public:
+  ModelTreeItemData(ObjectModel* model) : m_pModel(model) 
+  {
+    for (vector<Object*>::const_iterator oit = model->objects.begin();oit !=model->objects.end();oit++)
+    {
+      children.push_back(new ObjectTreeItemData(*oit));
+    }
+  };
+
+  virtual LPSTR GetText() {return "model"; };
+  //  private:
+  ObjectModel* m_pModel;
+};  //class TreeItemData
+
+class RootItemData : public CModelTreeView::TreeItemData 
+{
+public:
+  RootItemData():modelItem(NULL) {};
+  virtual LPSTR GetText() {return "root"; };
+  
+  ModelTreeItemData* modelItem; 
+};  //class TreeItemData
 
 // CLitesqlView definitions
 CLitesqlView::CLitesqlView(LitesqlDocument* pDoc)
@@ -12,6 +79,7 @@ CLitesqlView::CLitesqlView(LitesqlDocument* pDoc)
   m_pDocument = pDoc;
   mTree.setObjectModel(&m_pDocument->getModel());
   SetPanes(mTree,mFiles);
+  SetBarPos(4*50);
 }
 
 // CSimpleMDIChild definitions
@@ -52,64 +120,32 @@ CFilesTab::CFilesTab()
 void CModelTreeView::setObjectModel(ObjectModel* pModel)
 {
   m_pModel = pModel;
-  loadTree();
+
+//  loadTree();
 }
 
 void CModelTreeView::OnInitialUpdate()
 {
   DWORD dwStyle = (DWORD)GetWindowLongPtr(GWL_STYLE);
-  dwStyle |= TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT;
+  dwStyle |= TVS_HASBUTTONS | TVS_HASLINES |TVS_SINGLEEXPAND;
   SetWindowLongPtr(GWL_STYLE, dwStyle);
- 
-  loadTree();
+  hRootItem = AddItem(NULL,(LPARAM)new RootItemData);
+  
+//  loadTree();
 }
 
 void CModelTreeView::loadTree()
 {
-  DeleteAllItems();
-  HTREEITEM hItem = AddItem(NULL,(LPARAM)m_pModel);
-  
-  for (std::vector<xml::Object* >::const_iterator it = m_pModel->objects.begin();
-    it != m_pModel->objects.end();
-    it++)
-  {
-    HTREEITEM hObjectItem = AddItem(hItem,(*it)->name.c_str(),1);
-
-    for (vector<xml::Field*>::const_iterator field_it = (*it)->fields.begin();
-      field_it != (*it)->fields.end();
-      field_it++)
-    {
-      AddItem(hObjectItem,(*field_it)->name.c_str(),1);
-    }
-
-    for (vector<xml::Method*>::const_iterator method_it = (*it)->methods.begin();
-      method_it  != (*it)->methods.end();
-      method_it++)
-    {
-      AddItem(hObjectItem,(*method_it)->name.c_str(),1);
-    }
-  }
-
-  for ( vector<xml::Relation*>::const_iterator it_relation = m_pModel->relations.begin();
-    it_relation != m_pModel->relations.end();
-    it_relation++)
-  {
-    HTREEITEM hRelationItem = AddItem(hItem,(*it_relation)->name.c_str(),1);
-
-    for(vector<xml::Relate*>::const_iterator it = (*it_relation)->related.begin();
-      it != (*it_relation)->related.end();
-      it++)
-    {
-      AddItem(hRelationItem,(*it)->handle.c_str(),1);
-    }
-
-  }
-
+  RootItemData* rootData = (RootItemData*)GetItemData(hRootItem);
+  AddItem(hRootItem,(LPARAM)new ModelTreeItemData(m_pModel));
+  UpdateWindow();
 }
 
 void CModelTreeView::DoContextMenu(CPoint& ptScreen)
 {
   CPoint m = ptScreen;
+  HTREEITEM selected = GetSelection();
+      
   //ScreenToClient(m_hWnd, &m);
   //HMENU hPopupMenu = LoadMenu(GetApp()->GetResourceHandle(),MAKEINTRESOURCE(IDM_MODELTREE_VIEW));
   HMENU hPopup = CreatePopupMenu();
@@ -167,21 +203,29 @@ LRESULT CModelTreeView::OnNotifyReflect(WPARAM /*wParam*/, LPARAM lParam)
     {
 
       LPNMTVDISPINFO lpdi = (LPNMTVDISPINFO)lParam;
-      ObjectModel* m = dynamic_cast<ObjectModel*>((ObjectModel*)(lpdi->item.lParam));
-      if (m)
+      
+      TreeItemData* pItem = (TreeItemData*)lpdi->item.lParam;
+      
+      if (pItem)
       {
       	if(lpdi->item.mask & TVIF_TEXT)
         {
-          lpdi->item.pszText = "Model";
+          lpdi->item.pszText = pItem->GetText();
+        }
+        
+        if(lpdi->item.mask & TVIF_CHILDREN)
+        {
+          lpdi->item.cChildren = pItem->hasChildren() ? 1 : 0;
         }
       }
       else
       {
+        lpdi->item.pszText = "NULL";
+        lpdi->item.cChildren = I_CHILDRENCALLBACK;
       }
 
       
-      //TreeItemData* pItem = (TreeItemData*)lpdi->item.lParam;
-
+ 
       //	//do we need to supply the text?
       //	if(lpdi->item.mask & TVIF_TEXT)
       //	{
@@ -222,7 +266,7 @@ LRESULT CModelTreeView::OnNotifyReflect(WPARAM /*wParam*/, LPARAM lParam)
       {
       case TVE_EXPAND:
         {
-          //UINT ExpandedOnce = pnmtv->itemNew.state & TVIS_EXPANDEDONCE;
+          UINT ExpandedOnce = pnmtv->itemNew.state & TVIS_EXPANDEDONCE;
           //if (!ExpandedOnce)
           //	GetChildItems(pnmtv->itemNew.hItem);
         }
@@ -234,7 +278,7 @@ LRESULT CModelTreeView::OnNotifyReflect(WPARAM /*wParam*/, LPARAM lParam)
   case TVN_SELCHANGED:
     {
       LPNMTREEVIEW pnmtv = (LPNMTREEVIEW)lParam;
-      //TreeItemData* pItem = (TreeItemData*)pnmtv->itemNew.lParam;
+      TreeItemData* pItem = (TreeItemData*)pnmtv->itemNew.lParam;
 
       //CMyListView* LeftView = GetExplorerApp().GetMainFrame().GetListView();
       //LeftView->DisplayFolder(pItem->GetParentFolder(), pItem->GetFullCpidl(), pItem->GetRelCpidl());
@@ -256,21 +300,6 @@ HTREEITEM CModelTreeView::AddItem(HTREEITEM hParent, LPARAM lParam)
   tvi.lParam = lParam;
   tvi.cChildren = I_CHILDRENCALLBACK;
   tvi.pszText = LPSTR_TEXTCALLBACK;
-
-  TVINSERTSTRUCT tvis = {0};
-  tvis.hParent = hParent;
-  tvis.item = tvi;
-
-  return InsertItem(tvis);
-}
-
-HTREEITEM CModelTreeView::AddItem(HTREEITEM hParent, LPCTSTR szText, int iImage)
-{
-  TVITEM tvi = {0};
-  tvi.mask = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
-  tvi.iImage = iImage;
-  tvi.iSelectedImage = iImage;
-  tvi.pszText = (LPTSTR)szText;
 
   TVINSERTSTRUCT tvis = {0};
   tvis.hParent = hParent;

@@ -164,6 +164,10 @@ public:
     bool hasLimit() const {
         return limit == A_relate_limit_one;
     }
+    
+    bool hasLimitOne() const {
+        return limit == A_relate_limit_one;
+    }
     bool isUnique() const {
         return unique == A_relate_unique_true;
     }

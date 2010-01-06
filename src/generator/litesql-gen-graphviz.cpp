@@ -4,8 +4,7 @@
 using namespace std;
 using namespace xml;
 
-
-bool GraphvizGenerator::generate(std::ostream& os,xml::Object* const object    , size_t indent)
+bool GraphvizGenerator::generate(Object* const object    ,ostream& os, size_t indent)
 {
   string indents(indent,' ');
   os << indents << '"' << object->name << '"';
@@ -17,7 +16,7 @@ bool GraphvizGenerator::generate(std::ostream& os,xml::Object* const object    ,
   return true;
 }
 
-bool GraphvizGenerator::generate(std::ostream& os,xml::Relation* const relation,size_t indent)
+bool GraphvizGenerator::generate(Relation* const relation,ostream& os,size_t indent)
 {
   string indents(indent,' ');
   Relation& r = *relation;
@@ -49,14 +48,16 @@ bool GraphvizGenerator::generateCode(const ObjectModel* model)
      << "  subgraph inheritance {" << endl
      << "    edge[style=dashed,dir=forward,arrowhead=normal];" << endl;
     
-  CodeGenerator::generate(os,model->objects,4);
+  CodeGenerator::generate(model->objects,os,4);
 
   os << "  }" << endl
-    << "  subgraph relations {" << endl
-    << "    edge[dir=forward,arrowhead=vee];" << endl;
-  CodeGenerator::generate(os,model->relations,4);
+     << "  subgraph relations {" << endl
+     << "    edge[dir=forward,arrowhead=vee];" << endl;
+  
+  CodeGenerator::generate(model->relations,os,4);
+  
   os << "  }" << endl
-    << "}" << endl;
+     << "}" << endl;
 
   os.close();
   return true;

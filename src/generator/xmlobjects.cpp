@@ -1,6 +1,4 @@
-//#include "../library/compatibility.hpp"
 #include "xmlobjects.hpp"
-//#include "litesql-gen-main.hpp"
 #include "md5.hpp"
 #include "litesql.hpp"
 #include "logger.hpp"
@@ -23,6 +21,7 @@ namespace xml {
 
 const char* Database::TAG="database";
 const char* Object::TAG="object";
+const char* Field::TAG="field";
 const char* Relation::TAG="relation";
 const char* Relate::TAG="relate";
 
@@ -291,11 +290,13 @@ void init(Database& db,
     // make Object's class hierarchy mapping (parent and children)
 
     for (size_t i = 0; i < objects.size(); i++) 
-        if (objMap.find(objects[i]->inherits) != objMap.end())
+      if (objMap.find(objects[i]->inherits) != objMap.end()) {
             objects[i]->parentObject = objMap[objects[i]->inherits];
-    for (size_t i = 0; i < objects.size(); i++) 
-        if (objects[i]->parentObject)
             objects[i]->parentObject->children.push_back(objects[i]);
+      }
+    //for (size_t i = 0; i < objects.size(); i++) 
+    //    if (objects[i]->parentObject)
+    //        objects[i]->parentObject->children.push_back(objects[i]);
 
     // sort objects of relations alphabetically (ascii)
 

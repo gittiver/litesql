@@ -396,8 +396,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     {
       Logger::report("include \"" + filename + '"' );
       ObjectModel includedModel;
-      LitesqlParser parser(&includedModel);
-      if (!parser.parseFile(filename)) 
+      if (!includedModel.loadFromFile(filename)) 
       {
         Logger::report("error on parsing included file \"" + filename + '"' );
       }
@@ -444,7 +443,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
       m_parseState = DATABASE;
     }
   } 
-  else if (xmlStrEqual(fullname,(XML_Char*)"field"))
+  else if (xmlStrEqual(fullname,xml::Field::TAG))
   {
     if (m_parseState!=FIELD)
     {

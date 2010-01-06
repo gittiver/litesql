@@ -16,12 +16,14 @@ class Split : public std::vector<std::string> {
 public:
     /** empty split */
     Split() {}
+    /** init with reserved size (only reserved)  */
     Split(size_t initial_size) { reserve(initial_size);}
     /** from string vector */
     Split(std::vector<std::string> data) 
         : std::vector<std::string>(data) {}
     /** from string. Split to parts using delimeter */
     Split(const std::string& s, const std::string& delim=" ");
+
     /** returns a part of strings 
      \param start starting index
      \param end ending index

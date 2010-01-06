@@ -15,6 +15,20 @@
 class CModelTreeView : public CTreeView
 {
 public:
+  class TreeItemData //A nested class inside CMyTreeView
+	{
+	public:
+		TreeItemData();
+    virtual ~TreeItemData();
+    
+    virtual bool hasChildren() {return !children.empty(); };
+    virtual TreeItemData* GetChildren(size_t index) { return index<children.size() ? children[index] : NULL; };
+    virtual size_t GetChildrenCount() {return children.size(); };
+    virtual LPSTR GetText() {return NULL; };
+//  protected:
+    vector<TreeItemData*> children;
+	};  //class TreeItemData
+
   CModelTreeView() { };
   virtual ~CModelTreeView() {};
 
@@ -32,6 +46,10 @@ protected:
 
     void loadTree();
     ObjectModel* m_pModel;
+    
+    HTREEITEM hRootItem;
+
+
 };
 
 class CFilesTab : public CTab

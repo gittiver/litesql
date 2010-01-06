@@ -33,15 +33,15 @@ namespace litesql {
     virtual bool generate(xml::Object* const object) {return true;};
     virtual bool generate(xml::Relation* const relation){return true;};
     
-    bool generate(std::ostream& os,const std::vector<xml::Object* >& objects,size_t indent=2);
-    bool generate(std::ostream& os,const std::vector<xml::Relation* >& relations,size_t indent=2);
+    bool generate(const std::vector<xml::Object* >& objects,std::ostream& os,size_t indent=2);
+    bool generate(const std::vector<xml::Relation* >& relations,std::ostream& os,size_t indent=2);
     //virtual void generate(std::ostream& os,const ObjectModel* model,size_t indent=0);
     
-    virtual bool generate(std::ostream& os,xml::Object* const object    , size_t indent=2) {return true;};
+    virtual bool generate(xml::Object* const object    ,std::ostream& os, size_t indent=2) {return true;};
     //virtual void generate(std::ostream& os,xml::Field* field     , size_t indent=4){};
     //virtual void generate(std::ostream& os,xml::Method* pMethod  , size_t indent=4){};
     
-    virtual bool generate(std::ostream& os,xml::Relation* const relation,size_t indent=4){return true;};
+    virtual bool generate(xml::Relation* const relation,std::ostream& os,size_t indent=4){return true;};
     
     //  static CodeGenerator* create(const char* target);
     
@@ -59,7 +59,8 @@ namespace litesql {
   class CompositeGenerator : public CodeGenerator {
   public:
     CompositeGenerator(): CodeGenerator("composite") { };
-    
+    CompositeGenerator(const char* target) : CodeGenerator(target) {};
+        
     void setOutputDirectory(const std::string& directory);
     const std::string& getOutputDirectory() const;
     void add(CodeGenerator* g);

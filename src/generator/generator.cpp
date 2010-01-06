@@ -58,24 +58,24 @@ bool CodeGenerator::generate(const std::vector<xml::Relation* >& relations)
   return true;
 }
 
-bool CodeGenerator::generate(ostream& os,const std::vector<xml::Object* >& objects,size_t indent)
+bool CodeGenerator::generate(const std::vector<xml::Object* >& objects,ostream& os,size_t indent)
 {
   for (std::vector<xml::Object* >::const_iterator it = objects.begin();
     it != objects.end();
     it++)
   {
-      generate(os,*it,indent);
+      generate(*it,os,indent);
   }
   return true;
 }
 
-bool CodeGenerator::generate(ostream& os,const std::vector<xml::Relation* >& relations,size_t indent)
+bool CodeGenerator::generate(const std::vector<xml::Relation* >& relations,ostream& os,size_t indent)
 {
   for (std::vector<xml::Relation* >::const_iterator it = relations.begin();
     it != relations.end();
     it++)
   {
-      generate(os,*it,indent);
+      generate(*it,os,indent);
   }
   return true;
 }

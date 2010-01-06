@@ -13,21 +13,16 @@ using namespace xml;
 namespace xml {
 void XMLParser_xmlSAX2StartElement		(void *ctx,
 						 const XML_Char *fullname,
-						 const XML_Char **atts);
-
-void XMLParser_xmlSAX2EndElement(void *ctx,const XML_Char *name);
-}
-
-void xml::XMLParser_xmlSAX2StartElement		(void *ctx,
-						 const XML_Char *fullname,
 						 const XML_Char **atts)
 {
    ((XmlParser*)ctx)->onStartElement(fullname,atts);
 }
 
-void xml::XMLParser_xmlSAX2EndElement(void *ctx,const XML_Char *name)
+void XMLParser_xmlSAX2EndElement(void *ctx,const XML_Char *name)
 {
    ((XmlParser*)ctx)->onEndElement(name);
+}
+
 }
 
 XmlParser::~XmlParser()

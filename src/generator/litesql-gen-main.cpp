@@ -120,8 +120,7 @@ int generateCode(ObjectModel& model)
       }
     }
 
-    generator.generateCode(&model);
-    return 0;
+    return generator.generateCode(&model)? 0 : 1 ;
 }
 
 int main(int argc, char **argv) { 

@@ -3,8 +3,6 @@
 #include "litesql-gen-cpp.hpp"
 #include "xmlobjects.hpp"
 
-//#include <map>
-
 #include "logger.hpp"
 
 namespace gen {
@@ -652,11 +650,10 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
         insert.body("fields.push_back(\"id_\");")
             .body("values.push_back(id);");
 
-    for (size_t i = 0; i < o.fields.size(); i++) {
-        const xml::Field& f = *o.fields[i];
-        insert.body("fields.push_back(" + f.name + ".name()" + ");");
-        insert.body("values.push_back(" + f.name + ");");
-        insert.body(f.name + ".setModified(false);");
+    for (vector<xml::Field*>::const_iterator f = o.fields.begin(); f!= o.fields.end(); f++) {
+        insert.body("fields.push_back(" + (*f)->name + ".name()" + ");");
+        insert.body("values.push_back(" + (*f)->name + ");");
+        insert.body((*f)->name + ".setModified(false);");
     }
     
     insert.body("fieldRecs.push_back(fields);")

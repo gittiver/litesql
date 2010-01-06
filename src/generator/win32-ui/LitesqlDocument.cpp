@@ -4,9 +4,9 @@
 using namespace std;
 
 LitesqlDocument::LitesqlDocument(LPCTSTR pszFilename)
-  {
-    Load(pszFilename);
-  }
+{
+  Load(pszFilename);
+}
 
 void LitesqlDocument::setModified(bool bModified) 
 { m_bModified = bModified; }
@@ -50,4 +50,9 @@ void LitesqlDocument::Save()
   setModified(false);   
 }
 
-void LitesqlDocument::SaveAs(LPCTSTR pszFilename) { setFilename(pszFilename);setModified();Save(); }
+void LitesqlDocument::SaveAs(LPCTSTR pszFilename) 
+{ 
+  setFilename(pszFilename);
+  setModified();
+  Save(); 
+}

@@ -12,7 +12,7 @@ void XmlGenerator::setOutputFilename(const std::string& filename)
 }
 
 
-bool generate(ostream& os,xml::Field* const field, size_t indent=4)
+bool generate(xml::Field* const field, ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
        
@@ -45,7 +45,7 @@ bool generate(ostream& os,xml::Field* const field, size_t indent=4)
   return true;
 }
 
-void generate(ostream& os,xml::Method* const pMethod,size_t indent=2)
+void generate(xml::Method* const pMethod,ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
   
@@ -69,7 +69,7 @@ void generate(ostream& os,xml::Method* const pMethod,size_t indent=2)
   }
 }
 
-bool XmlGenerator::generate(ostream& os,xml::Object* const object,size_t indent)
+bool XmlGenerator::generate(xml::Object* const object,ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
   os << indent_string << "<object " 
@@ -83,7 +83,7 @@ bool XmlGenerator::generate(ostream& os,xml::Object* const object,size_t indent)
   {
     if (((*field_it)->name!="id") && ((*field_it)->name!="type"))
     {
-      ::generate(os,*field_it,indent+2);
+      ::generate(*field_it,os,indent+2);
     }
   }
 
@@ -91,13 +91,13 @@ bool XmlGenerator::generate(ostream& os,xml::Object* const object,size_t indent)
     method_it  != object->methods.end();
     method_it++)
   {
-    ::generate(os,*method_it,indent+2);
+    ::generate(*method_it,os,indent+2);
   }
   os << indent_string << endtag("object") <<endl;
   return true;
 }
 
-bool XmlGenerator::generate(ostream& os,Relation* const relation,size_t indent)
+bool XmlGenerator::generate(Relation* const relation,ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
   os << indent_string << "<relation " 
@@ -166,8 +166,8 @@ bool XmlGenerator::generateDatabase(ostream& os,const ObjectModel* model)
      << attribute("namespace", model->db.nspace) 
      << ">" << endl;
 
-  CodeGenerator::generate(os,model->objects,2);
-  CodeGenerator::generate(os,model->relations,2);
+  CodeGenerator::generate(model->objects,os,2);
+  CodeGenerator::generate(model->relations,os,2);
   
   os << "</"<<  Database::TAG <<">" << endl;
   return true;
