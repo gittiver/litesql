@@ -7,6 +7,8 @@
 #include "litesql/split.hpp"
 #include "compatibility.hpp"
 #include <time.h>
+#include <cstdio>
+
 using namespace std;
 
 namespace litesql {

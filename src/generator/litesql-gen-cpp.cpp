@@ -5,6 +5,8 @@
 
 #include "logger.hpp"
 
+#include <cstdio>
+
 namespace gen {
 using namespace litesql;
 using namespace std;
