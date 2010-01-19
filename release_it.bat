@@ -3,7 +3,7 @@ set STARTDIR=%CD%
 @if "%VS71COMNTOOLS%"=="" call "%VS80COMNTOOLS%\vsvars32.bat"
 @if "%VS80COMNTOOLS%"=="" call "%VS71COMNTOOLS%\vsvars32.bat"
 
-mkdir -p %CMAKE_BUILDDIR%
+mkdir %CMAKE_BUILDDIR%
 
 cd %CMAKE_BUILDDIR%
 cmake -D WITH_DOCS:bool=ON -D WITH_MYSQL:bool=ON -D WITH_SQLITE:bool=ON -D WITH_TESTS:bool=ON  %STARTDIR%
