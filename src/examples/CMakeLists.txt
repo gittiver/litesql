@@ -2,47 +2,26 @@ set(EXECUTABLES example)
 
 set(example_SOURCES example.cpp exampledatabase.cpp exampledatabase.hpp exampledatabase.xml auth.xml exampledatabase.dot)
 
-# variables defined by findSQLite3.cmake
-#  SQLITE3_INCLUDE_DIRS - where to find sqlite3.h
-#  SQLITE3_LIBRARIES - the libraries to link against
-#  SQLITE3_DEFINITIONS - switches required for SQLite3
-
-set(example_LIBS litesql litesql-util litesql_sqlite ${SQLITE3_LIBRARIES})
-
-# add mysql -libs
-if(WITH_MYSQL)
-	list(APPEND example_LIBS litesql_mysql ${MYSQL_LIBRARIES})
-endif(WITH_MYSQL)
-
-# add postgresql -libs
-if(WITH_POSTGRES)
-	list(APPEND example_LIBS litesql_postgresql ${POSTGRESQL_LIBRARIES})
-endif(WITH_POSTGRES)
-
-# get the directory of the database xml definition
-get_source_file_property(WFILE exampledatabase.xml LOCATION)
-get_filename_component(WDIR ${WFILE} PATH)
-
 add_custom_command(
-   OUTPUT ${WDIR}/exampledatabase.cpp ${WDIR}/exampledatabase.hpp 
+   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/exampledatabase.cpp ${CMAKE_CURRENT_SOURCE_DIR}/exampledatabase.hpp 
    COMMAND litesql-gen -v -t c++ exampledatabase.xml
    MAIN_DEPENDENCY exampledatabase.xml
-   WORKING_DIRECTORY ${WDIR}
+   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
    DEPENDS litesql-gen exampledatabase.xml auth.xml
    )
 
 add_custom_command(
-   OUTPUT ${WDIR}/exampledatabase.dot
+   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/exampledatabase.dot
    COMMAND litesql-gen -t graphviz exampledatabase.xml
    MAIN_DEPENDENCY exampledatabase.xml
-   WORKING_DIRECTORY ${WDIR}
+   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
    DEPENDS litesql-gen exampledatabase.xml 
    )
 
  
 add_executable(example ${example_SOURCES} ${example_HEADERS})
 
-target_link_libraries (example ${example_LIBS})
+target_link_libraries (example litesql litesql-util ${BACKEND_LIBRARIES})
 
 set_property(TARGET example APPEND PROPERTY COMPILE_DEFINITIONS ${SQLITE3_DEFINITIONS})
 
