@@ -11,10 +11,21 @@
 #include "litesql/string.hpp"
 #include "litesql/types.hpp"
 
+#ifdef HAVE_LIBMYSQLCLIENT
 #include "mysql.hpp"
+#endif
+
+#ifdef HAVE_LIBPQ
 #include "postgresql.hpp"
+#endif
+
+#ifdef HAVE_LIBSQLITE3
 #include "sqlite3.hpp"
+#endif
+
+#ifdef HAVE_ODBC
 #include "odbc_backend.hpp"
+#endif
 
 using namespace litesql;
 using namespace std;    
@@ -29,7 +40,7 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
       delete r;
     } 
     for (int i = tables.size()-1; i >= 0; i--) {
-        string fieldString = Split(fields[i]).join(",");
+      string fieldString = Split::join(fields[i],",");
         string valueString;
         if (!values[i].empty())
             values[i][0] = id;
@@ -47,50 +58,32 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
     return id;
 }
 
-/*
-map<string,Backend::Creator*> registry;
-
-void Backend::registrate(const string & type,Backend::Creator* creator)
+Backend* Backend::getBackend(const string & backendType,const string& connInfo)
 {
-   printf("registrate %s",type); 
-   registry[type] = creator;
-}
-*/
-Backend* Backend::getBackend(const string & backendType,string connInfo)
-{
-Backend* backend = NULL;
-/*   
-   map<string,Backend::Creator*> :: iterator it = registry.find(backendType.c_str());
-
-   if (it == registry.end()) 
-   {
-      throw DatabaseError("Unknown backend: " + backendType);
-   }  
-   else
-   {
-      backend = it->second->create(connInfo);
-   }
-*/
+  Backend* backend;
 
 #ifdef HAVE_LIBMYSQLCLIENT
-    if (backendType == "mysql") {
-        backend = new MySQL(connInfo);
-    } else
+  if (backendType == "mysql") {
+    backend = new MySQL(connInfo);
+  } else
 #endif
 #ifdef HAVE_LIBPQ
     if (backendType == "postgresql") {
-        backend = new PostgreSQL(connInfo);
+      backend = new PostgreSQL(connInfo);
     } else
 #endif
 #ifdef HAVE_ODBC
-    if (backendType == "odbc") {
+      if (backendType == "odbc") {
         backend = new ODBCBackend(connInfo);
-    } else
+      } else
 #endif
 #ifdef HAVE_LIBSQLITE3
-    if (backendType == "sqlite3") {
-        backend = new SQLite3(connInfo);
-    }
+        if (backendType == "sqlite3") {
+          backend = new SQLite3(connInfo);
+        } else
 #endif
-    return backend;
+        { 
+          backend = NULL;
+        };
+        return backend;
 }

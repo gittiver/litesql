@@ -13,6 +13,10 @@ CLEANFILES = dummy0
 dummy0: doxygen.conf
 	$(DOXYGEN) doxygen.conf && touch dummy0
 
+dist-hook:
+	find $(distdir)/$(DOXYGEN_OUTPUT_SUBDIRS) -name \.svn
+	rm -rf `find $(distdir)/$(DOXYGEN_OUTPUT_SUBDIRS) -name .svn`
+
 install-data-local: dummy0
 	mkdir -p $(DESTDIR)$(datadir)/doc/$(LITESQL_SHORTNAME) && \
 	for d in $(DOXYGEN_OUTPUT_SUBDIRS) ;\

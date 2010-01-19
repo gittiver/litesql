@@ -2,6 +2,7 @@ digraph database {
   node[shape=box,color=black];
   subgraph inheritance {
     edge[style=dashed,dir=forward,arrowhead=normal];
+    "user";
     "Person";
     "Role";
     "Student" -> "Role";

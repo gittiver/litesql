@@ -14,9 +14,9 @@ SelectQuery selectObjectQuery(const vector<FieldType>& fdatas,
     set<string> tableSet;
 
     for (size_t i = 0; i < fdatas.size(); i++)
-        if (tableSet.find(fdatas[i].table()->name()) == tableSet.end()) {
-            tables.push_back(fdatas[i].table()->name());
-            tableSet.insert(fdatas[i].table()->name());
+        if (tableSet.find(fdatas[i].table()) == tableSet.end()) {
+            tables.push_back(fdatas[i].table());
+            tableSet.insert(fdatas[i].table());
         }
 
     Split tableFilters;
@@ -29,12 +29,12 @@ SelectQuery selectObjectQuery(const vector<FieldType>& fdatas,
         tableSet.insert(tables[i]);
     }
     if (tables.size() > 1)
-        sel.where(litesql::And(e, RawExpr(tableFilters.join(" AND "))).asString()); 
+        sel.where((e && RawExpr(tableFilters.join(" AND "))).asString()); 
     else
         sel.where(e.asString());
     
     for (size_t i = 0; i < fdatas.size(); i++)
-        sel.result(fdatas[i].table()->name() + "." + fdatas[i].name());
+        sel.result(fdatas[i].table() + "." + fdatas[i].name());
 
     return sel;
 }

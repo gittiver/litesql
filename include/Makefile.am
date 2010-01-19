@@ -1,2 +1,2 @@
-include_HEADERS=litesql.hpp litesql-xmlreader.hpp
+include_HEADERS=litesql.hpp
 SUBDIRS=litesql

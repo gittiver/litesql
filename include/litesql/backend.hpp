@@ -7,8 +7,8 @@
 /** \file backend.hpp
     Classes Backend, Backend::Cursor and Backend::Result
 */
-#ifndef _litesql_backend_hpp
-#define _litesql_backend_hpp
+#ifndef litesql_backend_hpp
+#define litesql_backend_hpp
 #include <memory>
 #include "litesql/types.hpp"
 namespace litesql {
@@ -91,7 +91,7 @@ namespace litesql {
       \param connInfo database connection specific parameters (parameters are separated by semicolon)
        @throw DatabaseError if no backend is found
       */
-    static Backend* getBackend(const string& type,string connInfo);
+    static Backend* getBackend(const string& type,const string& connInfo);
       
     };
 }

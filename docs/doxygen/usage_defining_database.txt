@@ -60,7 +60,7 @@ and relation attributes. They can be placed inside 'object'-tag or
     <value name="Green" value="1"/>
 </field>
 \endcode
-- possible values for 'type'-field are "integer","float", "string","boolean","date","time" and "datetime"
+- possible values for 'type'-field are "integer","string","boolean","date","time" and "datetime"
 - 'default' - attribute defines the initial value of field when object is 
 created.
 - 'indexed' - attribute defines whether to CREATE INDEX for the field or not,

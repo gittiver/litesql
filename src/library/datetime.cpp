@@ -3,18 +3,20 @@
  * The list of contributors at http://litesql.sf.net/
  *
  * See LICENSE for copyright information. */
+#include "litesql/datetime.hpp"
+#include "litesql/split.hpp"
 #include "compatibility.hpp"
-#include "litesql.hpp"
 #include <time.h>
+#include <cstdio>
+
 using namespace std;
+
 namespace litesql {
 
 TimeStruct::TimeStruct(time_t t) {
-    if (!t)
+    if (!t) 
         t = time(NULL);
-#ifndef WIN32
-	gmtime_r(&t, &mytm);
-#endif
+    localtime_r(&t, &mytm);
 }
 int TimeStruct::day() const {
     return mytm.tm_mday;
@@ -41,10 +43,9 @@ int TimeStruct::sec() const {
     return mytm.tm_sec;
 }
 time_t TimeStruct::timeStamp() const {
-    time_t t = mktime(const_cast<struct tm*>(&mytm));
-    return t - timezone;
+    return mktime(const_cast<struct tm*>(&mytm));
 }
-TimeStruct& TimeStruct::setDay(int day) {
+TimeStruct&  TimeStruct::setDay(int day) {
     mytm.tm_mday = day;
     return *this;
 }
@@ -69,134 +70,80 @@ TimeStruct& TimeStruct::setSec(int sec) {
     return *this;
 }
 TimeStruct& TimeStruct::setTimeStamp(time_t t) {
-#ifndef WIN32
-	gmtime_r(&t, &mytm);
-#endif
-	return *this;
+    localtime_r(&t, &mytm);
+    return *this;
 }
-void Date::setDate(int year, int month, int day) {
-    // setTimeStamp() also calls this
-    // TODO: check for dates like 2000-02-31 (not that many days in that month)
-    if ((day >= 1) && (day <= 31) && (month >= 1) && (month <= 12)) {
-        y = year;
-        m = month;
-        d = day;
-    } else {
-        // TODO: Throw exception?
-        // Obviously false values
-        y = 0;
-        d = 0;
-        m = 0;
-    }
-}
-Date::Date() {
-    setTimeStamp(time(NULL));
+                  
+Date::Date(time_t t) : value(t) {
+    if (value == 0)
+        value = time(NULL);
 }
 Date::Date(int day, int month, int year) {
-    setDate(year, month, day);
-}
-Date::Date(time_t t) {
-    setTimeStamp(t);
-}
-Date::Date(string value) {
-    // Date in ISO8601-format
-    Split data(value, "-");
-    // TODO: Better sanity check
-    if (data.size() == 3) {
-        setDate(atoi(data[0]), atoi(data[1]), atoi(data[2]));
-    } else {
-        // TODO: Exception ?
-    }
+    value = TimeStruct().setDay(day).setMonth(month).setYear(year)
+        .timeStamp();
 }
 int Date::day() const {
-    return d;
+    return TimeStruct(value).day();
+}
+int Date::dayOfWeek() const {
+    return TimeStruct(value).dayOfWeek();
 }
 int Date::month() const {
-    return m;
+    return TimeStruct(value).month();
 }
 int Date::year() const {
-    return y;
+    return TimeStruct(value).year();
 }
 time_t Date::timeStamp() const {
-    TimeStruct t;
-    t.setYear(y);
-    t.setMonth(m);
-    t.setDay(d);
-    t.setHour(0);
-    t.setMin(0);
-    t.setSec(0);
-    return t.timeStamp();
+    return value;
 }
 TimeStruct Date::timeStruct() const {
-    return TimeStruct(timeStamp());
+    return TimeStruct(value);
 }
-Date& Date::setDay(int day) {
-    if ((day >= 1) && (day <= 31)) {
-        d = day;
-    } else {
-        // TODO: ??
-    }
+Date& Date::setDay(int d) {
+    value = TimeStruct(value).setDay(d).timeStamp();
     return *this;
 }
-Date& Date::setMonth(int month) {
-    if ((month >= 1) && (month <= 12)) {
-        m = month;
-    } else {
-        // TODO: ??
-    }
+Date& Date::setMonth(int m) {
+    value = TimeStruct(value).setMonth(m).timeStamp();
     return *this;
 }
-Date& Date::setYear(int year) {
-    y = year;
+Date& Date::setYear(int y) {
+    value = TimeStruct(value).setYear(y).timeStamp();
     return *this;
 }
 Date& Date::setTimeStamp(time_t t) {
-    TimeStruct ts(t);
-    setDate(ts.year(), ts.month(), ts.day());
+    value = t;
     return *this;
 }
 string Date::asString(string format) const {
+    if (format == "%u") {
+        char buf[32];
+        snprintf(buf, 32, "%lu", value);
+        return buf;
+    }
     Split data(format, "%");
+    TimeStruct ts(value);
     string res = data[0];
     for (size_t i = 1; i < data.size(); i++) {
         string rest = data[i].substr(1, data[i].size());
         switch(data[i][0]) {
-            case 'y':
-                res += toString(y) + rest;
-                break;
-            case 'm':
-                if (m < 10)
-                    res += "0";
-                res += toString(m) + rest;
-                break;
-            case 'd':
-                if (d < 10)
-                    res += "0";
-                res += toString(d) + rest;
-                break;
-            default:
-                res += "error";
-                break;
+        case 'd':
+            res += toString(ts.day()) + rest;
+            break;
+        case 'm':
+            res += toString(ts.month()) + rest;
+            break;
+        case 'y':
+            res += toString(ts.year()) + rest;
         }
     }
     return res;
-}
-Time::Time() {
-    value = time(NULL) % (24*60*60);
 }
 Time::Time(int secs) : value(secs) {
 }
 Time::Time(int hour, int min, int sec) {
     value = hour * 3600 + min * 60 + sec;
-}
-Time::Time(string value) {
-    Split data(value, ":");
-    // TODO: Better input validation
-    if (data.size() == 3) {
-        this->value = atoi(data[0])*3600 + atoi(data[1])*60 + atoi(data[2]);
-    } else  {
-        // TODO: Exception ?
-    }
 }
 int Time::hour() const {
     return value / 3600;
@@ -227,230 +174,151 @@ Time& Time::setSecs(int secs) {
     return *this;
 }
 string Time::asString(string format) const {
+    if (format == "%u") {
+        char buf[32];
+        snprintf(buf, 32, "%d", value);
+        return buf;
+    }
     Split data(format, "%");
     string res = data[0];
     for (size_t i = 1; i < data.size(); i++) {
         string rest = data[i].substr(1, data[i].size());
         switch(data[i][0]) {
-            case 'h':
-                res += toString(hour()) + rest;
-                break;
-            case 'M':
-                if (min() < 10)
-                    res += "0";
-                res += toString(min()) + rest;
-                break;
-            case 's':
-                if (sec() < 10)
-                    res += "0";
-                res += toString(sec()) + rest;
-                break;
-            default:
-                res += "error";
-                break;
+        case 'h':
+            res += toString(hour()) + rest;
+            break;
+        case 'M':
+            if (min() < 10)
+                res += "0";
+            res += toString(min()) + rest;
+            break;
+        case 's':
+            if (sec() < 10)
+                res += "0";
+            res += toString(sec()) + rest;
         }
     }
     return res;
 }
-DateTime::DateTime() {
-    d = Date();
-    t = Time();
-}
-DateTime::DateTime(time_t tt) {
-    d = Date(tt);
-    t = Time(tt % (24*60*60));
-}
-DateTime::DateTime(string value) {
-    Split data(value, " ");
-    if (data.size() == 2) {
-        d = Date(data[0]);
-        t = Time(data[1]);
-    } else {
-        //TODO: Exception
-    }
+DateTime::DateTime(time_t t) {
+    value = t;
+    if (!value)
+        value = time(NULL);
 }
 int DateTime::hour() const {
-    return t.hour();
+    return TimeStruct(value).hour();
 }
 int DateTime::min() const {
-    return t.min();
+    return TimeStruct(value).min();
 }
 int DateTime::sec() const {
-    return t.sec();
+    return TimeStruct(value).sec();
 }
-int DateTime::day() const {
-    return d.day();
-}
-int Date::dayOfWeek() const {
-    return timeStruct().dayOfWeek();
-}
-
-int DateTime::dayOfWeek() const {
-    return d.dayOfWeek();
-}
-int DateTime::month() const {
-    return d.month();
-}
-int DateTime::year() const {
-    return d.year();
-}
-
 time_t DateTime::timeStamp() const {
-    return d.timeStamp() + t.secs();
+    return TimeStruct(value).timeStamp();
 }
 TimeStruct DateTime::timeStruct() const {
-    return TimeStruct(timeStamp());
+    return TimeStruct(value);
 }
-DateTime& DateTime::setDay(int dd) {
-    d.setDay(dd);
+DateTime& DateTime::setDay(int d) {
+    value = TimeStruct(value).setDay(d).timeStamp();
     return *this;
 }
 DateTime& DateTime::setMonth(int m) {
-    d.setMonth(m);
+    value = TimeStruct(value).setMonth(m).timeStamp();
     return *this;
 }
 DateTime& DateTime::setYear(int y) {
-    d.setYear(y);
+    value = TimeStruct(value).setYear(y).timeStamp();
     return *this;
 }
 DateTime& DateTime::setHour(int h) {
-    t.setHour(h);
+    value = TimeStruct(value).setHour(h).timeStamp();
     return *this;
 }
 DateTime& DateTime::setMin(int m) {
-    t.setMin(m);
+    value = TimeStruct(value).setMin(m).timeStamp();
     return *this;
 }
 DateTime& DateTime::setSec(int s) {
-    t.setSec(s);
+    value = TimeStruct(value).setSec(s).timeStamp();
     return *this;
 }
 string DateTime::asString(string format) const {
+    if (format == "%u") {
+        char buf[32];
+        snprintf(buf, 32, "%lu", value);
+        return buf;
+    }
     Split data(format, "%");
+    TimeStruct ts(value);
     string res = data[0];
     for (size_t i = 1; i < data.size(); i++) {
         string rest = data[i].substr(1, data[i].size());
         switch(data[i][0]) {
-            case 'y':
-                res += toString(d.year()) + rest;
-                break;
-            case 'm':
-                if (d.month() < 10)
-                    res += "0";
-                res += toString(d.month()) + rest;
-                break;
-            case 'd':
-                if (d.day() < 10)
-                    res += "0";
-                res += toString(d.day()) + rest;
-                break;
-            case 'h':
-                if (t.hour() < 10)
-                    res += "0";
-                res += toString(t.hour()) + rest;
-                break;
-            case 'M':
-                if (t.min() < 10)
-                    res += "0";
-                res += toString(t.min()) + rest;
-                break;
-            case 's':
-                if (t.sec() < 10)
-                    res += "0";
-                res += toString(t.sec()) + rest;
-                break;
-            default:
-                res += "error";
-                break;
+        case 'd':
+            res += toString(ts.day()) + rest;
+            break;
+        case 'm':
+            res += toString(ts.month()) + rest;
+            break;
+        case 'y':
+            res += toString(ts.year()) + rest;
+            break;
+        case 'h':
+            res += toString(ts.hour()) + rest;
+            break;
+        case 'M':
+            if (ts.min() < 10)
+                res += "0";
+            res += toString(ts.min()) + rest;
+            break;
+        case 's':
+            if (ts.sec() < 10)
+                res += "0";
+            res += toString(ts.sec()) + rest;
+            break;
         }
     }
     return res;
 }
-Date Date::operator-(const Date& rhs) {
-    Date res;
-    res.y = 0;
-    res.m = 0;
-    res.d = 0;
-    res.d += d - rhs.d;
-    if (res.d < 0) {
-        res.d += 30;
-        res.m -= 1;
-    }
-    res.m += m - rhs.m;
-    if (res.m < 0) {
-        res.m += 12;
-        res.y -= 1;
-    }
-    res.y += y - rhs.y;
-    res.m += 1;
-    res.d += 1;
-    return res;
+template <>
+Date convert<const string&, Date>(const string& value) {
+    return Date(atoi(value));
 }
-
-bool Date::operator>=(const Date& rhs) const {
-    if (y>rhs.y) {
-        return true;
-    } else if (y==rhs.y) {
-        if (m>rhs.m) {
-            return true;
-        } else if (rhs.m==m) {
-            if (d>=rhs.d) {
-                return true;
-            }
-        }
-    }
-    return false;
+template <>
+Time convert<const string&, Time>(const string& value) {
+    return Time(atoi(value));
+}
+template <>
+DateTime convert<const string&, DateTime>(const string& value) {
+    return DateTime(atoi(value));
+}
+template <>
+Date convert<int, Date>(int value) {
+    return Date(value);
+}
+template <>
+Time convert<int, Time>(int value) {
+    return Time(value);
+}
+template <>
+DateTime convert<int, DateTime>(int value) {
+    return DateTime(value);
 }
 
 template <>
-    Date convert<const string&, Date>(const string& value) {
-        return Date(value);
-    }
+std::string convert<const Date&, std::string>(const Date& value) {
+    return toString(value.timeStamp());
+}
 template <>
-    Time convert<const string&, Time>(const string& value) {
-        return Time(value);
-    }
+std::string convert<const Time&, std::string>(const Time& value) {
+    return toString(value.secs());
+}
 template <>
-    DateTime convert<const string&, DateTime>(const string& value) {
-        return DateTime(value);
-    }
-template <>
-    Date convert<int, Date>(int value) {
-        return Date(value);
-    }
-template <>
-    Time convert<int, Time>(int value) {
-        return Time(value);
-    }
-template <>
-    DateTime convert<int, DateTime>(int value) {
-        return DateTime(value);
-    }
-template <>
-    Date convert<long, Date>(long value) {
-        return Date(value);
-    }
-template <>
-    Time convert<long, Time>(long value) {
-        return Time(value);
-    }
-template <>
-    DateTime convert<long, DateTime>(long value) {
-        return DateTime(value);
-    }
-
-template <>
-    std::string convert<const Date&, std::string>(const Date& value) {
-        return value.asString();
-    }
-template <>
-    std::string convert<const Time&, std::string>(const Time& value) {
-        return value.asString();
-    }
-template <>
-    std::string convert<const DateTime&, std::string>(const DateTime& value) {
-        return value.asString();
-    }
+std::string convert<const DateTime&, std::string>(const DateTime& value) {
+    return toString(value.timeStamp());
+}
 
 ostream& operator << (ostream& os, const Date& d) {
     return os << d.asString();

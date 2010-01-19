@@ -23,23 +23,6 @@
 using namespace litesql;
 using namespace std;
 
-/*
-class Registrar : public Backend::Creator {
-public:
-   Registrar()
-   {
-      Backend::registrate("sqlite3",this);
-   }
-   
-   Backend* create(const string& connInfo)
-   {
-      return new SQLite3(connInfo);
-   };
-};
-
-SQLite3::Creator* SQLite3::creator = new Registrar();
-*/
-
 size_t SQLite3::Result::fieldNum() const {
     return flds.size();
 }
@@ -93,7 +76,7 @@ SQLite3::Cursor::~Cursor() {
         sqlite3_finalize(stmt);
     }
 }
-SQLite3::SQLite3(string connInfo) : db(NULL), transaction(false) {
+SQLite3::SQLite3(const string& connInfo) : db(NULL), transaction(false) {
     Split params(connInfo,";");
     string database;
     for (size_t i = 0; i < params.size(); i++) {
@@ -103,7 +86,7 @@ SQLite3::SQLite3(string connInfo) : db(NULL), transaction(false) {
         if (param[0] == "database")
             database = param[1];
     }
-    if (database.size() == 0)
+    if (database.empty())
         throw DatabaseError("no database-param specified");
 
     if (sqlite3_open(database.c_str(), &db)) {

@@ -8,6 +8,10 @@ void example::Person::sayHello() {
         << " and I am " << age << " years old." << std::endl;
 }
 
+void example::user::sayHello() {
+    std::cout << "Hi! My name is " << name << std::endl;
+}
+
 // no name collisions expected
 using namespace litesql;
 using namespace example;
@@ -16,10 +20,13 @@ int main(int argc, char **argv) {
 
     try {
         // using SQLite3 as backend
-         ExampleDatabase db("sqlite3", "database=example.db");
+        ExampleDatabase db("sqlite3", "database=example.db");
         // create tables, sequences and indexes
         db.verbose = true;
-        db.create();
+        if (db.needsUpgrade())
+        {
+          db.upgrade();
+        }
         // start transaction
         db.begin();
 
@@ -28,11 +35,14 @@ int main(int argc, char **argv) {
         jeff.name = "Jeff";
         jeff.sex = Person::Sex::Male;
         jeff.age = 32;
+        Blob image_jeff("abc",4);
+        jeff.image = image_jeff;
         // store Jeff to database
         jeff.update();
         Person jill(db);
         jill.name = "Jill";
         jill.sex = Person::Sex::Female;
+        jill.image = NULL;
         jill.age = 33;
         jill.update();
         Person jack(db);
@@ -98,7 +108,7 @@ int main(int argc, char **argv) {
         // commit transaction
         db.commit();
         // clean up 
-        db.drop();
+//        db.drop();
     } catch (Except e) {
         cerr << e << endl;
         return -1;

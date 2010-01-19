@@ -23,22 +23,6 @@
 
 using namespace litesql;
 using namespace std;
-/*
-class Registrar : public Backend::Creator {
-public:
-   Registrar()
-   {
-      Backend::registrate("odbc",this);
-   }
-   
-   Backend* create(const string& connInfo)
-   {
-      return new ODBCBackend(connInfo);
-   };
-};
-
-ODBCBackend::Creator* creator = new Registrar();
-*/
 
 size_t ODBCBackend::Result::fieldNum() const {
     return flds.size();
@@ -98,7 +82,7 @@ ODBCBackend::Cursor::~Cursor() {
 //    }
 }
 
-ODBCBackend::ODBCBackend(string connInfo) : /*db(NULL),*/ transaction(false) {
+ODBCBackend::ODBCBackend(const string& connInfo) : /*db(NULL),*/ transaction(false) {
     Split params(connInfo,";");
     string database;
     for (size_t i = 0; i < params.size(); i++) {
@@ -187,7 +171,7 @@ Backend::Result* ODBCBackend::execute(string query) const {
 }
 Backend::Cursor* ODBCBackend::cursor(string query) const {
     while (1) {
-        HSTMT stmt;
+//        HSTMT stmt;
         //int status = ODBCBackend_prepare(db, query.c_str(), query.size(), 
         //                             &stmt, NULL);
 //if (status != SQLITE_OK || stmt == NULL) {

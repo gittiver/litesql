@@ -1,6 +1,0 @@
-Makefile
-.deps
-.libs
-test-selectquery
-test-split
-*.exe

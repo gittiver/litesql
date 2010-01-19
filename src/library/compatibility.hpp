@@ -1,6 +1,11 @@
-#ifndef _compatibility_hpp
-#define _compatibility_hpp
+#ifndef compatibility_hpp
+#define compatibility_hpp
 #include "config.h"
+
+#ifdef HAVE_MEMORY_H
+#include <memory.h>
+#endif // #ifdef HAVE_MEMORY_H
+
 #ifndef HAVE_STRTOLL
 long long int strtoll(const char *nptr, char **endptr, int base);
 #endif

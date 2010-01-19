@@ -4,22 +4,22 @@
  * 
  * See LICENSE for copyright information. */
 
-#include "compatibility.hpp"
 #include "litesql/utils.hpp"
-#include "litesql/field.hpp"
+
 #include <ctype.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace litesql {
-using namespace std;    
-bool startsWith(string what, string with) {
+using namespace std; 
+
+bool startsWith(const string& what, const string& with) {
     if (what.size() < with.size())
         return false;
     if (what.substr(0, with.size()) == with)
         return true;
     return false;
 }
-bool endsWith(string what, string with) {
+bool endsWith(const string& what, const string& with) {
     if (what.size() < with.size())
         return false;
     if (what.substr(what.size()-with.size(), what.size()) == with)
@@ -37,7 +37,21 @@ string toUpper(string s) {
         s[i] = toupper(s[i]);
     return s;	
 }
-string rstrip(string s) {
+
+string capitalize(const string& s) {
+    if (s.size() == 0)
+        return s;
+    char buf[2] = {toupper(s[0]), 0};
+    return string(buf) + s.substr(1, s.size());
+}
+string decapitalize(const string& s) {
+    if (s.size() == 0)
+        return s;
+    char buf[2] = {tolower(s[0]), 0};
+    return string(buf) + s.substr(1, s.size());
+}
+
+string rstrip(const string& s) {
     if (s.size() == 0)
         return s;
     int pos = s.size()-1;
@@ -49,7 +63,7 @@ string rstrip(string s) {
     }
     return s.substr(0, pos+1);
 }
-string lstrip(string s) {
+string lstrip(const string& s) {
     unsigned int pos = 0;
     while (1) {
         if (isspace(s[pos]) && pos < s.size()-1)
@@ -59,7 +73,7 @@ string lstrip(string s) {
     }
     return s.substr(pos, s.size());
 }
-string replace(string s, string what, string with) {
+string replace(const string& s, const string& what, const string& with) {
     Split parts(s, what);
     return parts.join(with);
 }

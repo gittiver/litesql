@@ -1,1 +1,2 @@
-SUBDIRS=library libxmlreader generator tests examples 
+SUBDIRS=library generator tests examples
+EXTRA_DIST= CMakeLists.txt

@@ -3,17 +3,18 @@
  * The list of contributors at http://litesql.sf.net/ 
  * 
  * See LICENSE for copyright information. */
-#include "compatibility.hpp"
+//#include "compatibility.hpp"
 #include "litesql/split.hpp"
 #include <string>
 #include <string.h>
 #include <cstring>
-#include <stdlib.h>
+#include <cstdlib>
 
-namespace litesql {    
+using namespace litesql;    
 using namespace std;
+
 Split::Split(const string& s, const string& delim) {
-    char * buf = strdup((char*) s.c_str());
+  char * buf = strdup((char*) s.c_str());
     char * ptr = buf;
     int len = delim.size();
     vector<char*> pointers;
@@ -31,7 +32,7 @@ Split::Split(const string& s, const string& delim) {
     free(buf);
 }
 Split Split::slice(int start, int end) const {
-    vector<string> data;
+    Split data;
     if (start < 0)
         start = start+size();
     if (end < 0)
@@ -46,19 +47,25 @@ Split Split::slice(int start, int end) const {
         data.push_back(this->operator[](i));
     return data;
 }
-string Split::join(const string& delim) const {
+
+string Split::join(const vector<string>& strings,const string& delim){
     string res;
-    for (const_iterator i = begin(); i != end(); i++) {
-        if (i != begin())
-            res += delim;
-        res += *i;
+    for (const_iterator it = strings.begin(); it != strings.end(); it++) {
+        if (it != strings.begin())
+          res.append(delim);
+        res.append(*it);
     }
     return res;
 }
-Split & Split::extend(const Split & s) {
-    for (size_t i = 0; i < s.size(); i++)
-        push_back(s[i]);
-    return *this;
+
+string Split::join(const string& delim) const {
+  return join(*this,delim);  
 }
+
+Split & Split::extend(const vector<string> & s) {
+  reserve(size()+s.size());
+  for (vector<string>::const_iterator it = s.begin();it != s.end(); it++)
+        push_back(*it);
+    return *this;
 }
 

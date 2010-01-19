@@ -9,7 +9,6 @@
 #ifndef _litesql_sqlite3_hpp
 #define _litesql_sqlite3_hpp
 #ifdef HAVE_LIBSQLITE3
-//#include <sqlite3.h>
 #include "litesql/except.hpp"
 #include "litesql/types.hpp"
 #include "litesql/string.hpp"
@@ -50,7 +49,7 @@ public:
         virtual Record fetchOne();
         virtual ~Cursor();
     };
-    SQLite3(string database);
+    SQLite3(const string& database);
     virtual bool supportsSequences() const;
     virtual string getInsertID() const;
     virtual void begin() const;

@@ -5,7 +5,7 @@
  * See LICENSE for copyright information. */
 
 #include "litesql/split.hpp"
-#include "litesql.hpp"
+//#include "litesql.hpp"
 #include <cassert>
 /*
   Split unit tester
@@ -49,6 +49,9 @@ int main(int argc, char *argv[]) {
     assert(tc6[1]=="45126");
 	// TC7
 	assert(Split("ab|c|def|ghij","|").join(" ")=="ab c def ghij");
+
+  std::string s_join = Split::join(Split("ab|c|def|ghij","|")," ");
+  assert(s_join=="ab c def ghij");
 
 
     return 0;

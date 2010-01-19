@@ -4,8 +4,8 @@
  * 
  * See LICENSE for copyright information. */
 
-#ifndef _litesql_database_hpp
-#define _litesql_database_hpp
+#ifndef litesql_database_hpp
+#define litesql_database_hpp
 #include <string>
 #include <set>
 #include "litesql/types.hpp"
@@ -23,6 +23,7 @@ using namespace std;
 /** A base class of databases. Can be used without inheriting own version of
     Database using query()-method. See \ref usage_defining_database */
 class Database {    
+  friend class Updater;
 private:
     /** name of the backend */
     string backendType;
@@ -62,6 +63,10 @@ protected:
     \param oldSchema current schema of table 
     \param newSchema upgraded schema of table */
     void upgradeTable(string name, string oldSchema, string newSchema) const;
+
+    bool addColumn(const string & name,const string & column_def) const;
+    bool addColumns(const string & name,const vector<string> & columns) const;
+
 public:
     /** verbosity, prints queries to cerr if true */
 	bool verbose;
@@ -71,7 +76,7 @@ public:
         \param connInfo connection params, syntax "param=value param=value ..."
                valid keys: host,user,password,database and port 
 		*/
-    Database(string backendType, string connInfo);
+    Database(const string& backendType, const string& connInfo);
     /** opens new connection to same database 
         \param op opened Database */
     Database(const Database &op);
