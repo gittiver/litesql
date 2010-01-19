@@ -1,5 +1,4 @@
 // include LiteSQL's header file and generated header file
-//#include <iostream>
 #include "xmlparser.hpp"
 #include "objectmodel.hpp"
 #include <string.h>
@@ -269,44 +268,49 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       m_pObjectModel->objects.push_back(obj = new Object(    (char*)xmlGetAttrValue(atts,"name"), 
         safe((char*)xmlGetAttrValue(atts,"inherits"))));
       Logger::report("object = " + obj->name);
-      m_parseState = OBJECT;
+      m_parseState = OBJECT; 
+
     }
   } 
-  else if (xmlStrEqual(fullname,(XML_Char*)"field"))
+  else if (xmlStrEqual(fullname,(XML_Char*)Field::TAG))
   {
+    Field* pNewField = new Field(   (char*)xmlGetAttrValue(atts,"name"), 
+                                    field_type(xmlGetAttrValue(atts,"type")),
+                                    safe(  (char*)xmlGetAttrValue(atts,"default")),
+                                    field_indexed(xmlGetAttrValue(atts,"indexed")),
+                                    field_unique(xmlGetAttrValue(atts,"unique"))
+      );
+
     switch(m_parseState)
     {
     case OBJECT:
-      Logger::report("field = ",(char*)xmlGetAttrValue(atts,"name") );
-      if (obj) {
-        obj->fields.push_back(fld =new Field( (char*)xmlGetAttrValue(atts,"name"), 
-          field_type(xmlGetAttrValue(atts,"type")),
-          safe(  (char*)xmlGetAttrValue(atts,"default")),
-          field_indexed(xmlGetAttrValue(atts,"indexed")),
-          field_unique(xmlGetAttrValue(atts,"unique"))
-          )
-          );
-      } 
+      if (!obj) {
+        Logger::error("parsing field inside object, but currentObject == NULL ");
+      }
+      else {
+        Logger::report("field = ",(char*)xmlGetAttrValue(atts,"name") );
+        obj->fields.push_back(fld = pNewField);
+      };
       m_parseState = FIELD;
       break;
 
     case RELATION:
-      if (rel) {
-        rel->fields.push_back(rel_fld =new Field(                 (char*)xmlGetAttrValue(atts,"name"), 
-          field_type( xmlGetAttrValue(atts,"type") ),
-          safe( (char*)xmlGetAttrValue(atts,"default") ),
-          field_indexed( xmlGetAttrValue(atts,"indexed") ),
-          field_unique( xmlGetAttrValue(atts,"unique") )
-          )
-          );
+      if (!rel) {
+        Logger::error("parsing field inside realtion, but currentRelation == NULL ");
       }
-      m_parseState = RELATION;
+      else
+      {
+        Logger::report("field = ",(char*)xmlGetAttrValue(atts,"name") );
+        rel->fields.push_back(rel_fld = pNewField);
+      }
+      m_parseState = FIELD;
       break;
 
     default:
+      delete pNewField;
       m_parseState = ERROR;
     }
-  } 
+  }
   else if (xmlStrEqual(fullname,(XML_Char*)"value"))
   {
     if (m_parseState!=FIELD)
