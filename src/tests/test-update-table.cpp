@@ -16,8 +16,26 @@ class Updater {
 public:
   static bool testUpgradeTable(const Database & db)
   {
-    const char * old = "CREATE TABLE Person_ (id_ INTEGER PRIMARY KEY,type_ TEXT,uniq_f UNIQUE, name_ TEXT,name2_ TEXT,age_ INTEGER,image_ BLOB,sex_ INTEGER)";
-    const char * newS = "CREATE TABLE Person_ (id_ INTEGER PRIMARY KEY,type_ TEXT,uniq_f UNIQUE, name_ TEXT,name3_ TEXT,age_ INTEGER,image_ BLOB,sex_ INTEGER)";
+  return Updater::testAddRemoveField(db)
+    &&  Updater::testChangeFieldType(db);
+
+  }
+
+  static bool testAddRemoveField(const Database & db)
+  {
+    const char * old = "CREATE TABLE Person_ (id_ INTEGER PRIMARY KEY,name_ TEXT,name2_ TEXT)";
+    const char * newS = "CREATE TABLE Person_ (id_ INTEGER PRIMARY KEY,name_ TEXT,name3_ TEXT)";
+    db.query("DROP TABLE IF EXISTS Person_");
+    db.query(old);
+    db.upgradeTable("Person_",old,newS);
+    
+    return true;
+ } 
+
+  static bool testChangeFieldType(const Database & db)
+  {
+    const char * old = "CREATE TABLE Person_ (id_ INTEGER PRIMARY KEY,name_ TEXT)";
+    const char * newS = "CREATE TABLE Person_ (id_ INTEGER PRIMARY KEY,name_ INTEGER)";
     db.query("DROP TABLE IF EXISTS Person_");
     db.query(old);
     db.upgradeTable("Person_",old,newS);

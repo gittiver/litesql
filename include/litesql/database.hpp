@@ -19,6 +19,18 @@
 namespace litesql {
 using namespace std;
 
+class ColumnDefinition {
+public:
+  string name;
+  string type;
+
+  class EqualName {
+    string m_name;
+  public: 
+    EqualName(const std::string& name) : m_name(name) {};
+    bool operator()(ColumnDefinition d) { return d.name==m_name;};
+  };
+};
 
 /** A base class of databases. Can be used without inheriting own version of
     Database using query()-method. See \ref usage_defining_database */
@@ -64,8 +76,7 @@ protected:
     \param newSchema upgraded schema of table */
     void upgradeTable(string name, string oldSchema, string newSchema) const;
 
-    bool addColumn(const string & name,const string & column_def) const;
-    bool addColumns(const string & name,const vector<string> & columns) const;
+    bool addColumn(const string & name,const ColumnDefinition & column_def) const;
 
 public:
     /** verbosity, prints queries to cerr if true */

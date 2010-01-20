@@ -26,6 +26,7 @@ void Database::storeSchemaItem(const SchemaItem& s) const {
             RawExpr("name_='" + s.name 
                 + "' and type_='" + s.type + "'"));
     Record values;
+
     values.push_back(s.name);
     values.push_back(s.type);
     values.push_back(s.sql);
@@ -47,54 +48,61 @@ vector<Database::SchemaItem> Database::getCurrentSchema() const {
     }
     return s;
 }
-static Split getFields(string schema) {
-    Split s;
+
+bool operator ==(const ColumnDefinition& c1,const ColumnDefinition& c2)
+{
+  return (c1.name == c2.name) && (c1.type==c2.type);
+}
+
+typedef vector<ColumnDefinition> ColumnDefinitions;
+
+static ColumnDefinitions getFields(string schema) {
+    ColumnDefinitions fields;
     int start = schema.find("(");
     int end = schema.find(")");
     if (start == -1 || end == -1)
-        return s;
-    Split tmp(replace(schema.substr(start+1, end), ", ", ","), ",");
-    for (size_t i = 0; i < tmp.size(); i++)
-        s.push_back(Split(tmp[i])[0]);
-    return s;
+        return fields;
+    Split tmp(replace(schema.substr(start+1, end-start-1), ", ", ","), ",");
+    
+    ColumnDefinition field_def;
+    for (size_t i = 0; i < tmp.size(); i++) 
+    {
+      Split s(tmp[i]);
+      field_def.name = s[0];
+      field_def.type = s[1];
+      fields.push_back(field_def);
+    }
+    return fields;
 }
 
 
-bool Database::addColumn(const string & name,const string & column_def) const 
+bool Database::addColumn(const string & name,const ColumnDefinition & column_def) const 
 {
-  query("ALTER TABLE " + name + " ADD COLUMN " + column_def);
+  query("ALTER TABLE " + name + " ADD COLUMN " + column_def.name +" "+ column_def.type);
   return true;
 }
-
-bool Database::addColumns(const string & name,const vector<string> & columns) const 
-{
-  Split c(columns);
-  query("ALTER TABLE " + name + " ADD COLUMN " + c.join(","));
-  return true;
-}
-
 
 void Database::upgradeTable(string name, 
                             string oldSchema, string newSchema) const {
-    Split oldFields = getFields(oldSchema);
-    Split newFields = getFields(newSchema);
+    ColumnDefinitions oldFields = getFields(oldSchema);
+    ColumnDefinitions newFields = getFields(newSchema);
 
-    Split toAdd(newFields);
-    vector<string> commonFields;
-    Split::iterator found;
+    ColumnDefinitions toAdd(newFields);
+    ColumnDefinitions::iterator found;
 
-    for (Split::iterator it = oldFields.begin();it!=oldFields.end();it++)
+    for (ColumnDefinitions::iterator it = oldFields.begin();it!=oldFields.end();it++)
     {
-      found = find(toAdd.begin(),toAdd.end(),*it);
+      found = find_if(toAdd.begin(),toAdd.end(),ColumnDefinition::EqualName(it->name));
       if (found!=toAdd.end())
       {
         toAdd.erase(found);
       }
     }
 
-    for (Split::iterator it = oldFields.begin();it!=oldFields.end();it++)
+    ColumnDefinitions commonFields;
+    for (ColumnDefinitions::iterator it = oldFields.begin();it!=oldFields.end();it++)
     {
-      found = find(newFields.begin(),newFields.end(),*it);
+      found = find_if(newFields.begin(),newFields.end(),ColumnDefinition::EqualName(it->name));
       if (found!=newFields.end())
       {
         commonFields.push_back(*found);
@@ -104,7 +112,7 @@ void Database::upgradeTable(string name,
     begin();
     string bkp_name(name+"backup");
     query(" ALTER TABLE " + name + " RENAME TO " + bkp_name); 
-    for (Split::iterator it = toAdd.begin();it!= toAdd.end();it++)
+    for (ColumnDefinitions::iterator it = toAdd.begin();it!= toAdd.end();it++)
     {
       addColumn(bkp_name,*it);
     }
@@ -113,13 +121,20 @@ void Database::upgradeTable(string name,
     // oldfields as ...
     Split cols;
     string s;
-    Split bkpFields(commonFields);
-    bkpFields.extend(toAdd);
-    for (Split::iterator it = bkpFields.begin();it!= bkpFields.end();it++)
+
+    for (ColumnDefinitions::iterator it = commonFields.begin();it!= commonFields.end();it++)
     {
-        s = *it;
+        s = it->name;
         s.append(" AS ");
-        s.append(*it);
+        s.append(it->name);
+        cols.push_back(s);
+    }
+    
+    for (ColumnDefinitions::iterator it = toAdd.begin();it!= toAdd.end();it++)
+    {
+        s = it->name;
+        s.append(" AS ");
+        s.append(it->name);
         cols.push_back(s);
     }
 
