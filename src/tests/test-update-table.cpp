@@ -14,10 +14,12 @@ namespace litesql {
 class Updater {
 
 public:
-  static bool testUpgradeTable(const Database & db)
+  static bool testUpgradeTable(Database & db)
   {
+    db.verbose = true;
   return Updater::testAddRemoveField(db)
-    &&  Updater::testChangeFieldType(db);
+    &&  Updater::testChangeFieldType(db)
+    && Updater::testChangeFieldTypeFromTextToInteger(db);
 
   }
 
@@ -33,6 +35,16 @@ public:
  } 
 
   static bool testChangeFieldType(const Database & db)
+  {
+    const char * old = "CREATE TABLE Person_ (id_ INTEGER PRIMARY KEY,name_ INTEGER)";
+    const char * newS = "CREATE TABLE Person_ (id_ INTEGER PRIMARY KEY,name_ TEXT)";
+    db.query("DROP TABLE IF EXISTS Person_");
+    db.query(old);
+    db.upgradeTable("Person_",old,newS);
+    return true;
+ } 
+
+  static bool testChangeFieldTypeFromTextToInteger(const Database & db)
   {
     const char * old = "CREATE TABLE Person_ (id_ INTEGER PRIMARY KEY,name_ TEXT)";
     const char * newS = "CREATE TABLE Person_ (id_ INTEGER PRIMARY KEY,name_ INTEGER)";
@@ -56,7 +68,7 @@ int main(int argc, char *argv[]) {
 #endif
 
 #ifdef HAVE_LIBPQ
-    Database pg_db("postgresql","database=test-update-table.db");
+    Database pg_db("postgresql","host=localhost;database=test-update-table;user=litesql;password=litesql");
     success &= Updater::testUpgradeTable(pg_db);
 #endif
 
