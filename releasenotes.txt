@@ -1,0 +1,9 @@
+Version 0.3.6
+#############
+
+- moved code for loading and storing the model into an own library
+- added initial version of a win32 gui for code generation (not ready for production use)
+- refactored code generators
+- added code generator for ActiveRecord (not ready for production use)
+- fixed a bug with postgres on database update 
+- fixed a bug: added parsing of index and indexfield tags (was not in the new parser)
