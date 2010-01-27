@@ -726,11 +726,11 @@ void Person::delRecord() {
     deleteFromTable(table__, id);
 }
 void Person::delRelations() {
+    PersonPersonRelationMother::del(*db, (PersonPersonRelationMother::Person1 == id) || (PersonPersonRelationMother::Person2 == id));
     PersonPersonRelationFather::del(*db, (PersonPersonRelationFather::Person1 == id) || (PersonPersonRelationFather::Person2 == id));
     PersonPersonRelationSiblings::del(*db, (PersonPersonRelationSiblings::Person1 == id) || (PersonPersonRelationSiblings::Person2 == id));
     PersonPersonRelationChildren::del(*db, (PersonPersonRelationChildren::Person1 == id) || (PersonPersonRelationChildren::Person2 == id));
     RoleRelation::del(*db, (RoleRelation::Person == id));
-    PersonPersonRelationMother::del(*db, (PersonPersonRelationMother::Person1 == id) || (PersonPersonRelationMother::Person2 == id));
 }
 void Person::update() {
     if (!inDatabase) {
@@ -1511,6 +1511,7 @@ std::vector<litesql::Database::SchemaItem> ExampleDatabase::getSchema() const {
     res.push_back(Database::SchemaItem("Person_Role_Roles","table","CREATE TABLE Person_Role_Roles (Person1 INTEGER,Role2 INTEGER UNIQUE)"));
     res.push_back(Database::SchemaItem("School_Student_","table","CREATE TABLE School_Student_ (School1 INTEGER,Student2 INTEGER UNIQUE)"));
     res.push_back(Database::SchemaItem("Employee_Office_","table","CREATE TABLE Employee_Office_ (Employee1 INTEGER,Office2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Person__name_age_idx","index","CREATE UNIQUE INDEX Person__name_age_idx ON  (name_,age_)"));
     res.push_back(Database::SchemaItem("Person_Person_MotherPerson1idx","index","CREATE INDEX Person_Person_MotherPerson1idx ON Person_Person_Mother (Person1)"));
     res.push_back(Database::SchemaItem("Person_Person_MotherPerson2idx","index","CREATE INDEX Person_Person_MotherPerson2idx ON Person_Person_Mother (Person2)"));
     res.push_back(Database::SchemaItem("Person_Person_Mother_all_idx","index","CREATE INDEX Person_Person_Mother_all_idx ON Person_Person_Mother (Person1,Person2)"));

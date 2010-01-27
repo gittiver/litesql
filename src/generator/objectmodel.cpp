@@ -10,7 +10,7 @@ using namespace xml;
 #define xmlStrcasecmp(s1,s2)  ((s1==NULL) ? (s2!=NULL) : strcmp(s1,s2))
 #define xmlStrEqual(s1,s2)   (!strcmp(s1,s2))
 
-const char* toString(AT_field_type t)
+static const char* toString(AT_field_type t)
 {
   switch (t) 
   {
@@ -35,7 +35,7 @@ const char* toString(AT_field_type t)
   }
 }
 
-const char* toString(AT_relate_limit t)
+static const char* toString(AT_relate_limit t)
 {
   switch (t) 
   {
@@ -49,7 +49,7 @@ const char* toString(AT_relate_limit t)
   }
 }
 
-AT_field_type field_type(const XML_Char* value)
+static AT_field_type field_type(const XML_Char* value)
 {
   AT_field_type t;
 
@@ -92,7 +92,7 @@ AT_field_type field_type(const XML_Char* value)
   return t;
 }
 
-AT_field_unique field_unique(const XML_Char* value)
+static AT_field_unique field_unique(const XML_Char* value)
 {
   AT_field_unique t;
   if (!xmlStrcasecmp(value,(XML_Char*)"true"))
@@ -110,7 +110,26 @@ AT_field_unique field_unique(const XML_Char* value)
   return t;
 }
 
-AT_field_indexed field_indexed(const XML_Char* value)
+static AT_index_unique index_unique(const XML_Char* value)
+{
+  AT_index_unique t;
+  if (!xmlStrcasecmp(value,(XML_Char*)"true"))
+  {
+    t = A_index_unique_true;
+  }
+  else if (!xmlStrcasecmp(value,(XML_Char*)"false"))
+  {
+    t = A_index_unique_false;
+  }
+  else
+  {
+    t = AU_index_unique;
+  }
+  return t;
+}
+
+
+static AT_field_indexed field_indexed(const XML_Char* value)
 {
   AT_field_indexed t;
   if (!xmlStrcasecmp(value,(XML_Char*)"true"))
@@ -128,7 +147,7 @@ AT_field_indexed field_indexed(const XML_Char* value)
   return t;
 }
 
-AT_relation_unidir relation_unidir(const XML_Char* value)
+static AT_relation_unidir relation_unidir(const XML_Char* value)
 {
   AT_relation_unidir t;
   if (!xmlStrcasecmp(value,(XML_Char*)"true"))
@@ -146,7 +165,7 @@ AT_relation_unidir relation_unidir(const XML_Char* value)
   return t;
 }
 
-AT_relate_unique relate_unique(const XML_Char* value)
+static AT_relate_unique relate_unique(const XML_Char* value)
 {
   AT_relate_unique t;
   if (!xmlStrcasecmp(value,(XML_Char*)"true"))
@@ -164,7 +183,7 @@ AT_relate_unique relate_unique(const XML_Char* value)
   return t;
 }
 
-AT_relate_limit relate_limit(const XML_Char* value)
+static AT_relate_limit relate_limit(const XML_Char* value)
 {
   AT_relate_limit t;
   if (!xmlStrcasecmp(value,(XML_Char*)"one"))
@@ -215,6 +234,8 @@ protected:
     FIELD,
     METHOD,
     RELATION,
+    INDEX,
+    INDEXFIELD,
     INCLUDE,
     UNKNOWN,
     ERROR
@@ -229,6 +250,7 @@ private:
   Field * rel_fld;
   Method * mtd;
   Index * idx;
+  IndexField* idxField;
 
   ParseState m_parseState;
   vector<ParseState> history;
@@ -311,7 +333,44 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       m_parseState = ERROR;
     }
   }
-  else if (xmlStrEqual(fullname,(XML_Char*)"value"))
+  else if (xmlStrEqual(fullname,(XML_Char*)Index::TAG))
+  {
+    Index* pIdx = new Index(index_unique(xmlGetAttrValue(atts,"unique")));
+    
+    switch (m_parseState)
+    {
+    case OBJECT:
+      idx = pIdx;
+      obj->indices.push_back(idx);
+      m_parseState = INDEX;
+      break;
+
+    case RELATION:
+      idx = pIdx;
+      rel->indices.push_back(idx);
+      m_parseState = INDEX;
+      break;
+
+    default:
+      delete pIdx;
+      m_parseState = ERROR;
+    }
+  }
+  else if (xmlStrEqual(fullname,(XML_Char*)IndexField::TAG))
+  {
+    if (m_parseState!=INDEX)
+    {
+      m_parseState = ERROR;
+    }
+    else
+    {
+      IndexField idxField((char*)xmlGetAttrValue(atts,"name"));
+      idx->fields.push_back(idxField);
+    }    
+    
+    m_parseState = INDEXFIELD;
+  }
+  else if (xmlStrEqual(fullname,(XML_Char*)Value::TAG))
   {
     if (m_parseState!=FIELD)
     {
@@ -327,7 +386,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     }
 
   } 
-  else if (xmlStrEqual(fullname,(XML_Char*)"method"))
+  else if (xmlStrEqual(fullname,(XML_Char*)Method::TAG))
   {
     if (m_parseState!=OBJECT)
     {
@@ -345,7 +404,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     }
 
   }
-  else if (xmlStrEqual(fullname,(XML_Char*)"param"))
+  else if (xmlStrEqual(fullname,(XML_Char*)Param::TAG))
   {
     if (m_parseState!=METHOD)
     {
@@ -356,7 +415,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       mtd->param(Param((char*)xmlGetAttrValue(atts,"name"),(char*)xmlGetAttrValue(atts,"type")));
     }
   }
-  else if (xmlStrEqual(fullname,(XML_Char*)"relation"))
+  else if (xmlStrEqual(fullname,(XML_Char*)Relation::TAG))
   {
     if (m_parseState!=DATABASE)
     {
@@ -373,7 +432,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       m_parseState = RELATION;
     }
   } 
-  else if (xmlStrEqual(fullname,(XML_Char*)"relate"))
+  else if (xmlStrEqual(fullname,(XML_Char*)Relate::TAG))
   {
     if (m_parseState!=RELATION)
     {
@@ -412,14 +471,14 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
   else
   {
     m_parseState = UNKNOWN;
-    Logger::error("unknown = " );
+    Logger::error("unknown = ",fullname );
   } 
 }
 
 void LitesqlParser::onEndElement(const XML_Char *fullname)
 {
-//  Logger::report("ending ",fullname); 
-  if (xmlStrEqual(fullname,(XML_Char*)"database"))
+  //  Logger::report("ending ",fullname); 
+  if (xmlStrEqual(fullname,(XML_Char*)Database::TAG))
   {
     if (m_parseState!=DATABASE)
     {
@@ -431,7 +490,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
       m_parseState = ROOT;
     }
   } 
-  else if (xmlStrEqual(fullname,(XML_Char*)"object"))
+  else if (xmlStrEqual(fullname,(XML_Char*)Object::TAG))
   {
     if (m_parseState!=OBJECT)
     {
@@ -460,7 +519,32 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
       m_parseState = history.back();
     }
   } 
-  else if (xmlStrEqual(fullname,(XML_Char*)"value"))
+  else if (xmlStrEqual(fullname,(XML_Char*)Index::TAG))
+  {
+    if (m_parseState!=INDEX)
+    {
+      m_parseState = ERROR;
+    }
+    else
+    {
+      Logger::report("end index" );
+      idx = NULL;
+      m_parseState = history.back();
+    }
+  }
+  else if (xmlStrEqual(fullname,(XML_Char*)IndexField::TAG))
+  {
+    if (m_parseState!=INDEXFIELD)
+    {
+      m_parseState = ERROR;
+    }
+    else
+    {
+      Logger::report("end indexfield" );
+      m_parseState = history.back();
+    }
+  }
+  else if (xmlStrEqual(fullname,(XML_Char*)Value::TAG))
   {
     if (m_parseState!=FIELD)
     {
@@ -472,7 +556,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     }
 
   } 
-  else if (xmlStrEqual(fullname,(XML_Char*)"method"))
+  else if (xmlStrEqual(fullname,(XML_Char*)Method::TAG))
   {
     if (m_parseState!=METHOD)
     {
@@ -485,7 +569,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     }
 
   } 
-  else if (xmlStrEqual(fullname,(XML_Char*)"param"))
+  else if (xmlStrEqual(fullname,(XML_Char*)Param::TAG))
   {
     if (m_parseState!=METHOD)
     {
@@ -496,7 +580,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
       Logger::report("end param" );
     }
   } 
-  else if (xmlStrEqual(fullname,(XML_Char*)"relation"))
+  else if (xmlStrEqual(fullname,(XML_Char*)Relation::TAG))
   {
     if (m_parseState!=RELATION)
     {
@@ -510,7 +594,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
       m_parseState = DATABASE;
     }
   } 
-  else if (xmlStrEqual(fullname,(XML_Char*)"relate"))
+  else if (xmlStrEqual(fullname,(XML_Char*)Relate::TAG))
   {
     if (m_parseState!=RELATION)
     {
