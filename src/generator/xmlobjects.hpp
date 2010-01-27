@@ -17,18 +17,27 @@ string safe(const char *s);
 string attribute(const string& name, const string& value);
 string endtag(const string& name);
 string makeDBName(const string& s);
+
 class Value {
 public:
+    static const char* TAG;
+
     string name, value;
-    Value(string n, string v) : name(n), value(v) {}
+    Value(const string& n, const string& v) : name(n), value(v) {}
 };
+
 class IndexField {
 public:
+    static const char* TAG;
+
     string name;
-    IndexField(string n) : name(n) {}
+    IndexField(const string& n) : name(n) {}
 };
+
 class Index {
 public:
+    static const char* TAG;
+
     vector<IndexField> fields;
     AT_index_unique unique;
     Index(AT_index_unique u) : unique(u) {}
@@ -37,6 +46,7 @@ public:
         return unique == A_index_unique_true;
     }
 };
+
 class Field {
 public:
     static const char* TAG;
@@ -48,7 +58,7 @@ public:
     AT_field_indexed indexed;
     AT_field_unique unique;
     vector<Value> values;
-    Field(string n, AT_field_type t, string d, AT_field_indexed i, AT_field_unique u) 
+    Field(const string& n, AT_field_type t, string d, AT_field_indexed i, AT_field_unique u) 
         : name(n), fieldTypeName(capitalize(n)), type(t), default_(d), indexed(i), unique(u) {
     }
     void value(const Value& v) {
@@ -113,9 +123,11 @@ public:
 
 class Param {
 public:
-    string name;
+    static const char* TAG;
+
+  string name;
     AT_param_type type;
-    Param(string n, AT_param_type t) : name(n), type(t) {}
+    Param(const string& n, AT_param_type t) : name(n), type(t) {}
     
 };
 class Method {
@@ -124,7 +136,7 @@ public:
 
     string name, returnType;
     vector<Param> params;
-    Method(string n, string rt) 
+    Method(const string& n, const string& rt) 
         : name(n), returnType(rt) {}
     void param(const Param& p) {
         params.push_back(p);
@@ -141,7 +153,7 @@ public:
     Object * object;
     vector< pair<Object*,Relate*> > destObjects;
 
-    RelationHandle(string n, Relation * r, Relate * rel, Object * o) 
+    RelationHandle(const string& n, Relation * r, Relate * rel, Object * o) 
         : name(n), relation(r), relate(rel), object(o) {}
 };
 class Relate {
@@ -155,7 +167,7 @@ public:
     AT_relate_limit limit;
     AT_relate_unique unique;
     string handle;
-    Relate(string on, AT_relate_limit l, AT_relate_unique u, string h) 
+    Relate(const string& on, AT_relate_limit l, AT_relate_unique u, const string& h) 
         : objectName(on), limit(l), unique(u), handle(h) {
         if (hasLimit() && isUnique())
             throw logic_error("both limit and unique specified in relate: line " /*+ 
@@ -186,7 +198,7 @@ public:
     vector<Relate*> related;
     vector<Field*> fields;
     vector<Index*> indices;
-    Relation(string i, string n, AT_relation_unidir ud) 
+    Relation(const string& i, const string& n, AT_relation_unidir ud) 
         : id(i), name(n), unidir(ud) {}
     string getName() const {
         if (name.size() == 0) {
@@ -212,7 +224,7 @@ public:
         }
         return max;
     }
-    int countTypes(string name) const {
+    int countTypes(const string& name) const {
         int res = 0;
         for (size_t i = 0; i < related.size(); i++)
             if (related[i]->objectName == name)
@@ -242,7 +254,7 @@ public:
     Object* parentObject;
     vector<Object*> children;
 
-    Object(string n, string i) : name(n), inherits(i),
+    Object(const string& n, const string& i) : name(n), inherits(i),
         parentObject(NULL) {
         if (i.size() == 0) {
             inherits = "litesql::Persistent";
@@ -305,7 +317,7 @@ public:
         Field* field;
         vector<DBField*> references;
         DBField() : primaryKey(false) {}
-        string getSQL(string rowIDType) {
+        string getSQL(const string& rowIDType) {
             if (primaryKey)
                 type = rowIDType;
             return name + " " + type + extra;
@@ -331,7 +343,7 @@ public:
     public:
         string name;
         vector<DBField*> fields;
-        string getSQL(string rowIDType) {
+        string getSQL(const string& rowIDType) {
             litesql::Split flds;
             for (size_t i = 0; i < fields.size(); i++)
                 flds.push_back(fields[i]->getSQL(rowIDType));

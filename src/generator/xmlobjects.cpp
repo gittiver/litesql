@@ -24,10 +24,15 @@ const char* Object::TAG="object";
 const char* Field::TAG="field";
 const char* Relation::TAG="relation";
 const char* Relate::TAG="relate";
+const char* Value::TAG="value";
+const char* IndexField::TAG="indexfield";
+const char* Index::TAG="index";
+const char* Param::TAG="param";
+const char* Method::TAG="method";
 
 const Object Object::DEFAULT_BASE("litesql::Persistent","");
     
-string validID(string s, string type="field") {
+string validID(const string& s, const string& type="field") {
     if (s.size() == 0) 
         return "empty identifier";
     if (toupper(s[0]) == s[0] && type == "field")
