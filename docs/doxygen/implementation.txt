@@ -26,13 +26,23 @@ Small help:
 Usage: litesql-gen [options] <my-database.xml>
 
 Options:
- -t, --target=TARGET         generate code for TARGET (default: c++)
- -v, --verbose               verbosely report code generation
- --help                      print help
+ -t, --target=TARGET                generate code for TARGET (default: c++)
+ -v, --verbose                      verbosely report code generation
+ --help                             print help
+ 
+ --output-dir=/path/to/src          output all files to directory
+ 
+ --output-sources=/path/to/src      output sources to directory 
+                                    (only with target c++)
+ 
+ --output-include=/path/to/include  output includes to directory 
+                                    (only with target c++)
 
 Supported targets:
  'c++'        C++ target (.cpp,.hpp)
  'graphviz'   Graphviz file (.dot)
+ 'ruby-activerecord' experimental ruby support, generates migration and activeRecord classes
+
 \endcode
 
 The example database definition file (exampledatabase.xml)

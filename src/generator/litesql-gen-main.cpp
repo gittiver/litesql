@@ -17,6 +17,7 @@ const char* help =
 " --help                             print help\n"
 
 " -t, --target=TARGET                generate code for TARGET (default: c++)\n"
+" --output-dir=/path/to/src          output all files to directory \n"
 " --output-sources=/path/to/src      output sources to directory \n"
 " --output-include=/path/to/include  output includes to directory\n"
 " --refresh                          refresh code of target\n"
@@ -36,6 +37,7 @@ const char* help =
 ;
 
 struct options_t {
+  string output_dir;
   string output_sources;
   string output_includes;
   bool refresh;
@@ -43,7 +45,7 @@ struct options_t {
   vector<string> targets;
 };
 
-options_t options = {"","",true,false};
+options_t options = {"","","",true,false};
 
 int parseArgs(int argc, char **argv) 
 {
@@ -67,7 +69,11 @@ int parseArgs(int argc, char **argv)
       litesql::Split lang(arg, "=");
       options.targets.push_back(lang[1]);
       continue;
-    }  else if (litesql::startsWith(arg, "--output-sources")) {
+    }  else if (litesql::startsWith(arg, "--output-dir")) {
+      litesql::Split lang(arg, "=");
+      options.output_dir=lang[1];
+      continue;
+    } else if (litesql::startsWith(arg, "--output-sources")) {
       litesql::Split lang(arg, "=");
       options.output_sources=lang[1];
       continue;
@@ -91,14 +97,15 @@ int parseArgs(int argc, char **argv)
 int generateCode(ObjectModel& model)
 {
     CompositeGenerator generator;
-    CodeGenerator* pGen;
+    
+    generator.setOutputDirectory(options.output_dir);
+    
     for (vector<string>::const_iterator target= options.targets.begin(); target!=options.targets.end();target++)
     {
 
       if (*target == "c++") 
       {
         CppGenerator* pCppGen = new CppGenerator();
-
         pCppGen->setOutputSourcesDirectory(options.output_sources);
         pCppGen->setOutputIncludesDirectory(options.output_includes);
 
@@ -106,13 +113,11 @@ int generateCode(ObjectModel& model)
       }    
       else if (*target == "graphviz") 
       {
-        generator.add(pGen = new GraphvizGenerator());
-        pGen->setOutputDirectory(options.output_sources);
+        generator.add(new GraphvizGenerator());
       }
       else if (*target == "ruby-activerecord") 
       {
-        generator.add(pGen = new RubyActiveRecordGenerator());
-        pGen->setOutputDirectory(options.output_sources);
+        generator.add(new RubyActiveRecordGenerator());
       }
       else 
       {
