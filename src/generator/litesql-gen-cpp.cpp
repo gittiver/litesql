@@ -769,26 +769,35 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
     
     Method upcast("upcast", "std::auto_ptr<" + o.name + ">");
     Method upcastCopy("upcastCopy", "std::auto_ptr<" + o.name + ">");
-    Split names;
-    o.getChildrenNames(names);
-    upcastCopy.body(o.name + "* np = NULL;");
-    for (size_t i = 0; i < names.size(); i++) {
-        upcast.body("if (type == " + names[i] + "::type__)")
-            .body("    return auto_ptr<" + o.name + ">(new " + names[i] 
-                  + "(select<" + names[i] 
+    Split childrenNames;
+    o.getChildrenNames(childrenNames);
+    
+    if (!childrenNames.empty())
+    {
+
+      upcastCopy.body(o.name + "* np = NULL;");
+      for (size_t i = 0; i < childrenNames.size(); i++) {
+        upcast.body("if (type == " + childrenNames[i] + "::type__)")
+            .body("    return auto_ptr<" + o.name + ">(new " + childrenNames[i] 
+                  + "(select<" + childrenNames[i] 
                   + ">(*db, Id == id).one()));");
-        upcastCopy.body("if (type == " + quote(names[i]) + ")")
-            .body("    np = new " + names[i] + "(*db);");
+        upcastCopy.body("if (type == " + quote(childrenNames[i]) + ")")
+            .body("    np = new " + childrenNames[i] + "(*db);");
+      }
     }
+    else
+    {
+      upcastCopy.body(o.name + "* np = new " + o.name + "(*this);");
+    }
+    
     for (size_t i = 0; i < o.fields.size(); i++) {
         upcastCopy.body("np->" + o.fields[i]->name + " = " 
                         + o.fields[i]->name + ";");
     }
     upcastCopy
         .body("np->inDatabase = inDatabase;")
-        .body("if (!np)")
-        .body("    np = new " + o.name + "(*this);")
         .body("return auto_ptr<" + o.name + ">(np);");
+    
     upcast.body("return auto_ptr<" + o.name 
                 + ">(new " + o.name + "(*this));");
 
