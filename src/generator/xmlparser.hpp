@@ -1,5 +1,5 @@
-#ifndef _litesql_xmlparser_hpp
-#define _litesql_xmlparser_hpp
+#ifndef litesql_xmlparser_hpp
+#define litesql_xmlparser_hpp
 
 #include <string>
 
