@@ -19,6 +19,21 @@ To make valid XML, the definition file should begin with following lines:
 <!DOCTYPE database SYSTEM "litesql.dtd">
 \endcode
 
+\subsection include_tag include-tag
+
+A database definition file has a root tag which encloses all definitions
+inside it. It can have zero or more 'include'-tags. 
+
+The model in the include file is read, objects and relations are inserted 
+into the actual model. 
+
+The name is the name of the file 
+(absolute or relative to actual working directory in the os-specific notation)
+
+\code
+<include name="TestDatabase.xml" />
+\endcode
+
 \subsection database_tag Database-tag
 
 A database definition file has a root tag which encloses all definitions
@@ -103,6 +118,7 @@ inside 'object'-tag.
 - 'handle' - attribute defines identifier for relation handle, a short cut when accessing relation from a single object.
 - relation attributes can be defined using 'field'-tag
 - Note: Put relation attributes with default values last so link-method can be properly generated
+
 \subsection index_tag Index-tag 
 'index'-tag defines an index built on two or more fields.
 It can be used inside 'object'- and 'relation'-tags.
