@@ -11,9 +11,14 @@ set(libmodel_SOURCES
 			litesql-gen-graphviz.cpp litesql-gen-graphviz.hpp 
 			litesql-gen-ruby-activerecord.cpp litesql-gen-ruby-activerecord.hpp 
 	)
+
 set(litesql-gen_SOURCES 
 			litesql-gen-main.cpp 
 			litesql-gen-main.hpp 
+	)
+
+set(ddl2litesql_SOURCES 
+			ddl2litesql.cpp 
 	)
 
 # for new parser
@@ -30,9 +35,9 @@ else (WITH_SAX_PARSER)
           litesql-gen.hpp)
 endif(WITH_SAX_PARSER)
 
-
 add_library(model ${libmodel_SOURCES}) 
 add_executable(litesql-gen ${litesql-gen_SOURCES})
+add_executable(ddl2litesql ${ddl2litesql_SOURCES})
 
 if (MSVC)
   add_subdirectory(win32-ui)
@@ -45,8 +50,10 @@ endif(MSVC)
 
 if (WITH_SAX_PARSER)
   target_link_libraries (litesql-gen litesql litesql-util model ${EXPAT_LIBRARIES})
+  target_link_libraries (ddl2litesql litesql-util model ${EXPAT_LIBRARIES})
 else(WITH_SAX_PARSER)
   target_link_libraries (litesql-gen litesql litesql-util model ${EXPAT_LIBRARIES})
+  target_link_libraries (ddl2litesql litesql-util model ${EXPAT_LIBRARIES})
 endif(WITH_SAX_PARSER)
 
 install(TARGETS litesql-gen RUNTIME DESTINATION bin COMPONENT generator)
