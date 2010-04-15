@@ -35,6 +35,7 @@ option(WITH_POSTGRES "build with postgres backend" OFF)
 #option(WITH_ODBC "build with ODBC Backend" ON)
 option(WITH_DOCS "generate Documentation" OFF)
 option(WITH_SAX_PARSER "use new SAX parser" ON)
+option(WITH_UI "build also GUI-Version of generator" ON)
 option(WITH_TESTS "enable testing" ON)
 option(CMAKE_SUPPRESS_REGENERATION "suppress rules to re-run cmake on changes (warning: no dependency checks!)?" OFF)
 
