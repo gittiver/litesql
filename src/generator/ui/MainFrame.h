@@ -17,6 +17,7 @@ class MainFrame: public wxDocMDIParentFrame
   
   MainFrame(wxDocManager *manager, wxFrame *frame, const wxString& title, const wxPoint& pos, const wxSize& size,
     long type);
+  virtual ~MainFrame();
 
   void OnAbout(wxCommandEvent& event);
 //  MyCanvas *CreateCanvas(wxView *view, wxMDIChildFrame *parent);

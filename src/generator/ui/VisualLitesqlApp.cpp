@@ -27,9 +27,9 @@ bool VisualLitesqlApp::OnInit(void)
 
   //// Create a template relating drawing documents to their views
   (void) new wxDocTemplate((wxDocManager *) m_docManager, _T("Litesql-Model"), 
-                                                          _T("*.lsl"), 
+                                                          _T("*.xml"), 
                                                           _T(""), 
-                                                          _T  ("lsl"), 
+                                                          _T  ("xml"), 
                                                           _T("Litesql Model"), 
                                                           _T("Litesql Model View"),
           CLASSINFO(LitesqlDocument), CLASSINFO(LitesqlView));

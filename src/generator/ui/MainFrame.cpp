@@ -14,6 +14,11 @@ MainFrame::MainFrame(wxDocManager *manager, wxFrame *frame, const wxString& titl
   editMenu = (wxMenu *) NULL;
 }
 
+  MainFrame::~MainFrame()
+  {
+      
+  }
+
 
 //void MainFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 //{

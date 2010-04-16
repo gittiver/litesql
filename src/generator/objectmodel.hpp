@@ -10,7 +10,7 @@ namespace litesql {
 /** the litesql object model */ 
 class ObjectModel {
 public:
-   ~ObjectModel() {};
+   virtual ~ObjectModel() {};
    /** load model from xml-file (uses a  specialized XmlParser) */
    bool loadFromFile(const std::string& filename);
 

@@ -4,6 +4,7 @@ set(PROGRAM_visual_litesql_SOURCES  ui.cpp ui.h
 		MainFrame.cpp MainFrame.h
 		LitesqlDocument.h LitesqlDocument.cpp
 		LitesqlView.h LitesqlView.cpp
+		treelistctrl/include/wx/treelistctrl.h treelistctrl/src/treelistctrl.cpp
 )
 
 include(${CMAKE_ROOT}/Modules/FindwxWidgets.cmake)
@@ -34,7 +35,8 @@ if(wxWidgets_FOUND)
     include_directories(${wxWidgets_INCLUDE_DIRS} 
                         ${EXPAT_INCLUDE_DIRS}
                         ../../library 
-                        ../../generator 
+                        ../../generator
+                        treelistctrl/include 
                         )
  
 	# Here we define the executable 

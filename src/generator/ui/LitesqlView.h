@@ -10,7 +10,7 @@ public:
 //    MyCanvas *canvas;
   
     LitesqlView() { /* canvas = (MyCanvas *) NULL;*/ frame = (wxMDIChildFrame *) NULL; }
-    ~LitesqlView() {}
+    virtual ~LitesqlView() {}
 
 
     bool OnCreate(wxDocument *doc, long flags);
