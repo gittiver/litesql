@@ -27,6 +27,9 @@
 
 IMPLEMENT_DYNAMIC_CLASS(LitesqlDocument, wxDocument)
 
+using namespace std;
+using namespace litesql;
+
 LitesqlDocument::LitesqlDocument(void)
 {
   m_pModel = new ObjectModel();
@@ -47,7 +50,8 @@ wxOutputStream& LitesqlDocument::SaveObject(wxOutputStream& stream)
 {
   XmlGenerator xml_generator;
   
-  xml_generator.setOutputFilename(GetFilename().ToAscii());
+  string fname (GetFilename().mb_str());
+  xml_generator.setOutputFilename(fname);
 
   xml_generator.generateCode(m_pModel);
   
@@ -62,7 +66,8 @@ wxInputStream& LitesqlDocument::LoadObject(wxInputStream& stream)
 {
   //wxDocument::LoadObject(stream);
   
-  m_pModel->loadFromFile(GetFilename().ToAscii());
+  string fname (GetFilename().mb_str());
+  m_pModel->loadFromFile(fname);
 
   return stream;
 }
