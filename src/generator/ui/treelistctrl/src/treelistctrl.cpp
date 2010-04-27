@@ -42,6 +42,7 @@
 #if wxCHECK_VERSION(2, 7, 0)
 #include <wx/renderer.h>
 #endif
+#include <wx/app.h>
 #include <wx/apptrait.h>
 #include <wx/dcbuffer.h>
 
@@ -3077,7 +3078,7 @@ void wxTreeListMainWindow::PaintItem (wxTreeListItem *item, wxDC& dc) {
     int text_w = 0, text_h = 0;
     dc.GetTextExtent( item->GetText(GetMainColumn()).size() > 0
             ? item->GetText(GetMainColumn())
-            : " ",  // dummy text to avoid zero height and no highlight width
+            : wxT(" "),  // dummy text to avoid zero height and no highlight width
         &text_w, &text_h );
 
     // determine background and show it
@@ -4063,7 +4064,7 @@ void wxTreeListMainWindow::CalculateSize (wxTreeListItem *item, wxDC &dc) {
     dc.SetFont (GetItemFont (item));
     dc.GetTextExtent (item->GetText(m_main_column).size() > 0
             ? item->GetText (m_main_column)
-            : " ",  // blank to avoid zero height and no highlight width
+            : wxT(" "),  // blank to avoid zero height and no highlight width
         &text_w, &text_h);
     // restore normal font
     dc.SetFont (m_normalFont);

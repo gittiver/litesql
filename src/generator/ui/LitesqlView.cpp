@@ -39,8 +39,9 @@ LitesqlView::~LitesqlView()
 
 void FillTree (litesql::ObjectModel* pModel,wxTreeListCtrl* pTreeList) 
 {
+  wxString dbName(pModel->db.name.c_str(),wxConvUTF8);
   
-  static wxTreeItemId root = pTreeList->AddRoot (pModel->db.name/*_T("Root")*/);
+  static wxTreeItemId root = pTreeList->AddRoot (dbName/*_T("Root")*/);
 //  pTreeList->SetItemText (root, 1, wxString::Format (_T("Root, text #%d"), 0));
 //  pTreeList->SetItemText (root, 2, wxString::Format (_T("Root, text #%d"), 0));
   
@@ -49,15 +50,20 @@ void FillTree (litesql::ObjectModel* pModel,wxTreeListCtrl* pTreeList)
   wxTreeItemId item;
   for( vector<Object*>::iterator it = pModel->objects.begin(); it != pModel->objects.end();it++)
   {
-    item = pTreeList->AppendItem (root, (*it)->name +"(Object)", ++n);
-    pTreeList->SetItemText (item, 1, (*it)->inherits);
+    wxString name((*it)->name.c_str(),wxConvUTF8);
+    wxString inherits((*it)->inherits.c_str(),wxConvUTF8);
+    
+    item = pTreeList->AppendItem (root, name +_("(Object)"), ++n);
+    pTreeList->SetItemText (item, 1, inherits);
 //    pTreeList->SetItemText (item, 2, (*it)->parentObjectwxString::Format (_T("Item #%d, text #%d"), n, ++m));
     parent = item;
   }
 
+  
   for( vector<Relation*>::iterator it = pModel->relations.begin(); it != pModel->relations.end();it++)
   {
-    item = pTreeList->AppendItem (root, (*it)->name +"(Relation)", ++n);
+    wxString name((*it)->name.c_str(),wxConvUTF8);
+    item = pTreeList->AppendItem (root, name +_("(Relation)"), ++n);
     parent = item;
   }
   
