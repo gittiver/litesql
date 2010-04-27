@@ -42,6 +42,11 @@ LitesqlDocument::~LitesqlDocument(void)
   }
 }
 
+ObjectModel* LitesqlDocument::GetModel()
+{
+  return m_pModel;
+}
+
 #if wxUSE_STD_IOSTREAM
 wxSTD ostream& LitesqlDocument::SaveObject(wxSTD ostream& stream)
 #else
@@ -68,6 +73,7 @@ wxInputStream& LitesqlDocument::LoadObject(wxInputStream& stream)
   
   string fname (GetFilename().mb_str());
   m_pModel->loadFromFile(fname);
-
+  Modify(true);
+  UpdateAllViews();
   return stream;
 }

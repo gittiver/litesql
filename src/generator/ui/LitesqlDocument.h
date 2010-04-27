@@ -16,6 +16,8 @@ public:
   LitesqlDocument(void);
   virtual ~LitesqlDocument(void);
 
+  litesql::ObjectModel* GetModel();
+
 protected:
 
 #if wxUSE_STD_IOSTREAM

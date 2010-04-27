@@ -3,17 +3,22 @@
 
 #include <wx/docview.h>
 
+class wxTreeListCtrl;
+
 class LitesqlView: public wxView
 {
 public:
     wxMDIChildFrame *frame;
+    wxTreeListCtrl* m_treelist;
 //    MyCanvas *canvas;
   
-    LitesqlView() { /* canvas = (MyCanvas *) NULL;*/ frame = (wxMDIChildFrame *) NULL; }
-    virtual ~LitesqlView() {}
+    LitesqlView();
+    virtual ~LitesqlView();
 
 
     bool OnCreate(wxDocument *doc, long flags);
+    void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
+    
     void OnDraw(wxDC *dc);
     bool OnClose(bool deleteWindow = true);
 
