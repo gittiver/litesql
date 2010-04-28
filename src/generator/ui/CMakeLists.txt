@@ -1,11 +1,13 @@
 set(PROGRAM_visual_litesql "Visual-Litesql")
-set(PROGRAM_visual_litesql_SOURCES  ui.cpp ui.h 
+set(PROGRAM_visual_litesql_SOURCES  
 		VisualLitesqlApp.cpp VisualLitesqlApp.h 
 		MainFrame.cpp MainFrame.h
 		LitesqlDocument.h LitesqlDocument.cpp
 		LitesqlView.h LitesqlView.cpp
 		treelistctrl/include/wx/treelistctrl.h treelistctrl/src/treelistctrl.cpp
 )
+
+# ui.cpp ui.h 
 
 include(${CMAKE_ROOT}/Modules/FindwxWidgets.cmake)
 include(${CMAKE_ROOT}/Modules/UsewxWidgets.cmake)
