@@ -4,10 +4,14 @@ set(PROGRAM_visual_litesql_SOURCES
 		MainFrame.cpp MainFrame.h
 		LitesqlDocument.h LitesqlDocument.cpp
 		LitesqlView.h LitesqlView.cpp
-		treelistctrl/include/wx/treelistctrl.h treelistctrl/src/treelistctrl.cpp
+		GenerateView.h GenerateView.cpp
+    ui.cpp ui.h
+    LitesqlFieldPanel.cpp LitesqlFieldPanel.h
+    LitesqlObjectPanel.cpp LitesqlObjectPanel.h
+    LitesqlRelationPanel.cpp LitesqlRelationPanel.h
 )
+#		treelistctrl/include/wx/treelistctrl.h treelistctrl/src/treelistctrl.cpp
 
-# ui.cpp ui.h 
 
 include(${CMAKE_ROOT}/Modules/FindwxWidgets.cmake)
 include(${CMAKE_ROOT}/Modules/UsewxWidgets.cmake)

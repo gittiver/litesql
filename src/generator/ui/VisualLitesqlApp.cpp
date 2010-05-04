@@ -1,9 +1,14 @@
 #include <wx/docview.h>
 #include <wx/cmdproc.h>
+#include <wx/menu.h>
+#include <wx/image.h>
+
+
 
 #include "VisualLitesqlApp.h"
 #include "LitesqlDocument.h"
 #include "LitesqlView.h"
+#include "GenerateView.h"
 
 #include "MainFrame.h"
 
@@ -62,7 +67,7 @@ bool VisualLitesqlApp::OnInit(void)
   m_docManager->FileHistoryUseMenu(file_menu);
 
   wxMenu *help_menu = new wxMenu;
-//  help_menu->Append(DOCVIEW_ABOUT, _T("&About\tF1"));
+  help_menu->Append(ID_ABOUT, _T("&About\tF1"));
 
   wxMenuBar *menu_bar = new wxMenuBar;
 
@@ -121,7 +126,10 @@ wxMDIChildFrame *VisualLitesqlApp::CreateChildFrame(wxDocument *doc, wxView *vie
   file_menu->Append(wxID_CLOSE, _T("&Close"));
   file_menu->Append(wxID_SAVE, _T("&Save"));
   file_menu->Append(wxID_SAVEAS, _T("Save &As..."));
+  file_menu->AppendSeparator();
+  file_menu->Append(ID_GENERATE, _T("Generate ..."));
 
+  
   if (isCanvas)
   {
     file_menu->AppendSeparator();
@@ -135,19 +143,16 @@ wxMDIChildFrame *VisualLitesqlApp::CreateChildFrame(wxDocument *doc, wxView *vie
 
   wxMenu *edit_menu = (wxMenu *) NULL;
 
-  if (isCanvas)
-  {
     edit_menu = new wxMenu;
-    edit_menu->Append(wxID_UNDO, _T("&Undo"));
-    edit_menu->Append(wxID_REDO, _T("&Redo"));
-    edit_menu->AppendSeparator();
-//    edit_menu->Append(DOCVIEW_CUT, _T("&Cut last segment"));
+  //  edit_menu->Append(wxID_UNDO, _T("&Undo"));
+  //  edit_menu->Append(wxID_REDO, _T("&Redo"));
+  //  edit_menu->AppendSeparator();
+  //  edit_menu->Append(ID_GENERATE, _T("Generate ..."));
 
     doc->GetCommandProcessor()->SetEditMenu(edit_menu);
-  }
 
   wxMenu *help_menu = new wxMenu;
-//  help_menu->Append(DOCVIEW_ABOUT, _T("&About"));
+  help_menu->Append(ID_ABOUT, _T("&About"));
 
   wxMenuBar *menu_bar = new wxMenuBar;
 

@@ -69,11 +69,7 @@ wxSTD istream& LitesqlDocument::LoadObject(wxSTD istream& stream)
 wxInputStream& LitesqlDocument::LoadObject(wxInputStream& stream)
 #endif
 {
-  //wxDocument::LoadObject(stream);
-  
   string fname (GetFilename().mb_str());
   m_pModel->loadFromFile(fname);
-  Modify(true);
-  UpdateAllViews();
   return stream;
 }

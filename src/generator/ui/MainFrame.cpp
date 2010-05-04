@@ -1,10 +1,20 @@
-#include "MainFrame.h"
+#include <wx/cmdproc.h>
+#include <wx/msgdlg.h>
+
+#include "config.h"
 
 #include "objectmodel.hpp"
 
+#include "MainFrame.h"
+#include "VisualLitesqlApp.h"
+#include "LitesqlDocument.h"
+#include "GenerateView.h"
+
+
+
 IMPLEMENT_CLASS(MainFrame, wxDocMDIParentFrame)
 BEGIN_EVENT_TABLE(MainFrame, wxDocMDIParentFrame)
-//    EVT_MENU(DOCVIEW_ABOUT, MainFrame::OnAbout)
+    EVT_MENU(VisualLitesqlApp::ID_ABOUT, MainFrame::OnAbout)
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(wxDocManager *manager, wxFrame *frame, const wxString& title,
@@ -14,30 +24,11 @@ MainFrame::MainFrame(wxDocManager *manager, wxFrame *frame, const wxString& titl
   editMenu = (wxMenu *) NULL;
 }
 
-  MainFrame::~MainFrame()
-  {
-      
-  }
+MainFrame::~MainFrame()
+{}
 
+void MainFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
+{
+  (void)wxMessageBox(_T("Visual Litesql \nAuthor: Frank Landgraf\nUsage: Visual Litesql.exe"), _T("About Visual Litesql"));
+}
 
-//void MainFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
-//{
-//    (void)wxMessageBox(_T("DocView Demo\nAuthor: Julian Smart\nUsage: docview.exe"), _T("About DocView"));
-//}
-
-// Creates a canvas. Called from view.cpp when a new drawing
-// view is created.
-//MyCanvas *MainFrame::CreateCanvas(wxView *view, wxMDIChildFrame *parent)
-//{
-//  int width, height;
-//  parent->GetClientSize(&width, &height);
-//
-//  // Non-retained canvas
-//  MyCanvas *canvas = new MyCanvas(view, parent, wxPoint(0, 0), wxSize(width, height), 0);
-//  canvas->SetCursor(wxCursor(wxCURSOR_PENCIL));
-//
-//  // Give it scrollbars
-//  canvas->SetScrollbars(20, 20, 50, 50);
-//
-//  return canvas;
-//}

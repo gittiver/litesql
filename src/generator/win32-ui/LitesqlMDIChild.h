@@ -26,13 +26,13 @@ public:
     virtual size_t GetChildrenCount() {return children.size(); };
     virtual LPSTR GetText() {return NULL; };
 //  protected:
-    vector<TreeItemData*> children;
+    std::vector<TreeItemData*> children;
 	};  //class TreeItemData
 
   CModelTreeView() { };
   virtual ~CModelTreeView() {};
 
-	void setObjectModel(ObjectModel* pModel);
+  void setObjectModel(litesql::ObjectModel* pModel);
 
 protected:
   void OnInitialUpdate();
@@ -45,7 +45,7 @@ protected:
     HTREEITEM AddItem(HTREEITEM hParent, LPARAM lParam);
 
     void loadTree();
-    ObjectModel* m_pModel;
+    litesql::ObjectModel* m_pModel;
     
     HTREEITEM hRootItem;
 

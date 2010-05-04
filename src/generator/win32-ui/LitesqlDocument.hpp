@@ -7,6 +7,10 @@
 
 #include "objectmodel.hpp"
 
+namespace litesql {
+  class ObjectModel;
+}
+
 class LitesqlDocument 
 {
 public:
@@ -17,7 +21,7 @@ public:
 
   const std::string& getFilename();
   void setFilename(const std::string& filename);
-  ObjectModel& getModel();
+  litesql::ObjectModel& getModel();
 
   virtual bool Load(LPCTSTR pszFilename);  
   
@@ -27,7 +31,7 @@ public:
 private:
   bool m_bModified;
   std::string m_filename;
-  ObjectModel m_model;
+  litesql::ObjectModel m_model;
 };
 
 #endif  //#ifndef LITESQLDOCUMENT_H

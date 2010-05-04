@@ -9,6 +9,10 @@ class MainFrame;
 class VisualLitesqlApp : public wxApp
 {
 public:
+  enum {
+        ID_GENERATE = wxID_HIGHEST+1,
+        ID_ABOUT 
+        };
     VisualLitesqlApp(void); 
     virtual ~VisualLitesqlApp(void);
 
@@ -21,7 +25,7 @@ public:
 protected:
 	bool OnInit(void);
    int OnExit(void);
-
+  
 private:
 
   protected:

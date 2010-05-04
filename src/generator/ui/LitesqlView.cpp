@@ -13,11 +13,17 @@
 #error You must set wxUSE_DOC_VIEW_ARCHITECTURE to 1 in setup.h!
 #endif
 
-#include <wx/treelistctrl.h>
+#include <wx/treebook.h>
 
 #include "VisualLitesqlApp.h"
 #include "LitesqlView.h"
+#include "GenerateView.h"
+
 #include "LitesqlDocument.h"
+
+#include "LitesqlObjectPanel.h"
+#include "LitesqlFieldPanel.h"
+#include "LitesqlRelationPanel.h"
 
 #include "objectmodel.hpp"
 
@@ -25,106 +31,53 @@
 IMPLEMENT_DYNAMIC_CLASS(LitesqlView, wxView)
 
 BEGIN_EVENT_TABLE(LitesqlView, wxView)
-// 
+EVT_MENU(VisualLitesqlApp::ID_GENERATE, LitesqlView::OnGenerate)
 END_EVENT_TABLE()
 
 using namespace xml;
 
 LitesqlView::LitesqlView() 
-{ /* canvas = (MyCanvas *) NULL;*/ frame = (wxMDIChildFrame *) NULL; }
+{ frame = (wxMDIChildFrame *) NULL; }
 
 LitesqlView::~LitesqlView()
+{}
+
+wxPanel* CreatePage(wxTreebook* pTree)
 {
+  return new wxPanel(pTree);
 }
 
-void FillTree (litesql::ObjectModel* pModel,wxTreeListCtrl* pTreeList) 
+void FillTree (litesql::ObjectModel* pModel,wxTreebook* pTree) 
 {
+  int pagePos = 0;
+  
   wxString dbName(pModel->db.name.c_str(),wxConvUTF8);
-  
-  static wxTreeItemId root = pTreeList->AddRoot (dbName/*_T("Root")*/);
-//  pTreeList->SetItemText (root, 1, wxString::Format (_T("Root, text #%d"), 0));
-//  pTreeList->SetItemText (root, 2, wxString::Format (_T("Root, text #%d"), 0));
-  
-  int n = 0;
-  wxTreeItemId parent;
-  wxTreeItemId item;
+  pTree->DeleteAllPages();
+  pTree->AddPage(CreatePage(pTree),"database");
+  pagePos++;
   for( vector<Object*>::iterator it = pModel->objects.begin(); it != pModel->objects.end();it++)
   {
     wxString name((*it)->name.c_str(),wxConvUTF8);
-    wxString inherits((*it)->inherits.c_str(),wxConvUTF8);
+    pTree->AddSubPage(new LitesqlObjectPanel(pTree,*it),name +_("(Object)"));
     
-    item = pTreeList->AppendItem (root, name +_("(Object)"), ++n);
-    pTreeList->SetItemText (item, 1, inherits);
-//    pTreeList->SetItemText (item, 2, (*it)->parentObjectwxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    parent = item;
+    int subPagePos=pagePos++;
+  
+    for (vector<Field*>::iterator field = (*it)->fields.begin();
+          field != (*it)->fields.end();
+          field++)
+    {
+      wxString fname((*field)->name.c_str(),wxConvUTF8);
+      pTree->InsertSubPage(subPagePos,new LitesqlFieldPanel(pTree, *field),fname +_("(Field)"));
+      pagePos++;
+    }
   }
 
-  
-  for( vector<Relation*>::iterator it = pModel->relations.begin(); it != pModel->relations.end();it++)
+  for (vector<Relation*>::iterator relation = pModel->relations.begin(); relation!= pModel->relations.end();relation++)
   {
-    wxString name((*it)->name.c_str(),wxConvUTF8);
-    item = pTreeList->AppendItem (root, name +_("(Relation)"), ++n);
-    parent = item;
+    wxString name((*relation)->name.c_str(),wxConvUTF8);
+    pTree->AddSubPage(new LitesqlRelationPanel(pTree,*relation),name +_("(relation)"));
+    pagePos++;
   }
-  
-  /*
-   int n = 0;
-    int m = 0;
-    // initialize tree
-    pTreeList->SetItemText (root, 1, wxString::Format (_T("Root, text #%d"), 0));
-    pTreeList->SetItemText (root, 2, wxString::Format (_T("Root, text #%d"), 0));
-    wxTreeItemId parent;
-    wxTreeItemId item;
-    item = pTreeList->AppendItem (root, wxString::Format (_T("Item #%d"), ++n));
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    parent = item;
-    item = pTreeList->AppendItem (parent, wxString::Format (_T("Item #%d"), ++n), 4);
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    item = pTreeList->AppendItem (parent, wxString::Format (_T("Item #%d"), ++n), 4);
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    item = pTreeList->AppendItem (parent, wxString::Format (_T("Item #%d"), ++n), 4);
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    item = pTreeList->AppendItem (parent, wxString::Format (_T("Item #%d"), ++n), 4);
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    item = pTreeList->AppendItem (root, wxString::Format (_T("Item #%d"), ++n));
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    parent = item;
-    item = pTreeList->AppendItem (parent, wxString::Format (_T("Item #%d"), ++n), 4);
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    item = pTreeList->AppendItem (parent, wxString::Format (_T("Item #%d"), ++n), 4);
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    item = pTreeList->AppendItem (parent, wxString::Format (_T("Item #%d"), ++n), 4);
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    item = pTreeList->AppendItem (parent, wxString::Format (_T("Item #%d"), ++n), 4);
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    item = pTreeList->AppendItem (root, wxString::Format (_T("Item #%d"), ++n));
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    parent = item;
-    item = pTreeList->AppendItem (parent, wxString::Format (_T("Item #%d"), ++n), 4);
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    item = pTreeList->AppendItem (parent, wxString::Format (_T("Item #%d"), ++n), 4);
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    item = pTreeList->AppendItem (parent, wxString::Format (_T("Item #%d"), ++n), 4);
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    item = pTreeList->AppendItem (parent, wxString::Format (_T("Item #%d"), ++n), 4);
-    pTreeList->SetItemText (item, 1, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-    pTreeList->SetItemText (item, 2, wxString::Format (_T("Item #%d, text #%d"), n, ++m));
-*/
-  pTreeList->ExpandAll (root);
 }
 
 // What to do when a view is created. Creates actual
@@ -140,20 +93,9 @@ bool LitesqlView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
     frame->GetSize(&x, &y);
     frame->SetSize(wxDefaultCoord, wxDefaultCoord, x, y);
 #endif
-    m_treelist = new wxTreeListCtrl(frame);
-
-    m_treelist->SetBackgroundColour(wxColour(240,240,192));
-    int k = 250;
-    m_treelist->AddColumn (_T("Main"), k - 32, wxALIGN_LEFT);
-    m_treelist->SetColumnEditable (0, true);
-    m_treelist->AddColumn (_T("Second"), k, wxALIGN_LEFT);
-    m_treelist->SetColumnEditable (1, true);
-    m_treelist->SetColumnAlignment (1, wxALIGN_LEFT);
-    m_treelist->AddColumn (_T("Third"), k, wxALIGN_CENTER);
-    m_treelist->SetColumnEditable (2, true);
-    m_treelist->SetColumnAlignment (2, wxALIGN_CENTER);
-    
-//    FillTree(((LitesqlDocument*) GetDocument())->GetModel() ,m_treelist);
+    m_treebook = new wxTreebook(frame,-1);
+    wxSize s(100,100);
+    m_treebook->SetPageSize(s);
     frame->Show(true);
     Activate(true);
 
@@ -162,9 +104,8 @@ bool LitesqlView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 
 void LitesqlView::OnUpdate(wxView *sender, wxObject *hint) 
 {
-  FillTree(((LitesqlDocument*) GetDocument())->GetModel() ,m_treelist);
+  FillTree(((LitesqlDocument*) GetDocument())->GetModel() ,m_treebook);
 }
-
     
 // Sneakily gets used for default print/preview
 // as well as drawing on the screen.
@@ -199,4 +140,15 @@ wxApp::GetInstance();
 
 void LitesqlView::OnCut(wxCommandEvent& WXUNUSED(event) )
 {
+  int y = 2;
+  int s=y;
+}
+
+void LitesqlView::OnGenerate(wxCommandEvent& WXUNUSED(event) )
+{
+
+  wxView* v ; //= new GenerateView();
+  v = (wxView*)GenerateView::wxCreateObject();
+  GetDocument()->AddView(v);
+  //wxGetApp().CreateChildFrame(GetDocument(), v, true);
 }

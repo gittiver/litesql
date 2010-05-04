@@ -2,6 +2,7 @@
 #include "litesql-gen-xml.hpp"
 
 using namespace std;
+using namespace litesql;
 
 LitesqlDocument::LitesqlDocument(LPCTSTR pszFilename)
 {

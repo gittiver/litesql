@@ -1,18 +1,16 @@
-#ifndef LITESQL_VIEW_H
-#define LITESQL_VIEW_H
+#ifndef GENERATE_VIEW_H
+#define GENERATE_VIEW_H
 
 #include <wx/docview.h>
 
-class wxTreebook;
 
-class LitesqlView: public wxView
+class GenerateView: public wxView
 {
 public:
     wxMDIChildFrame *frame;
-    wxTreebook* m_treebook;
   
-    LitesqlView();
-    virtual ~LitesqlView();
+    GenerateView();
+    virtual ~GenerateView();
 
 
     bool OnCreate(wxDocument *doc, long flags);
@@ -25,8 +23,8 @@ public:
     void OnGenerate(wxCommandEvent& event );
 
 private:
-    DECLARE_DYNAMIC_CLASS(LitesqlView)
+    DECLARE_DYNAMIC_CLASS(GenerateView)
     DECLARE_EVENT_TABLE()
 };
 
-#endif // #ifndef LITESQL_VIEW_H
+#endif // #ifndef GENERATE_VIEW_H

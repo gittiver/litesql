@@ -627,6 +627,23 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
   history.pop_back();
 }
 
+ObjectModel::~ObjectModel()
+{
+/*
+for (std::vector<xml::Object* >::iterator it=objects.begin();
+        it !=objects.end();it++)
+  {
+    delete *it;
+  }
+
+  for (std::vector<xml::Relation* >::iterator it=relations.begin();
+        it !=relations.end();it++)
+  {
+    delete *it;
+  }
+*/
+}
+
 bool ObjectModel::loadFromFile(const std::string& filename)
 {
   LitesqlParser parser(this);
