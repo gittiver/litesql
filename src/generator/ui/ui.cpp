@@ -28,7 +28,7 @@ ObjectPanel::ObjectPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	
 	lblName = new wxStaticText( this, wxID_ANY, _("Name"), wxDefaultPosition, wxDefaultSize, 0 );
 	lblName->Wrap( -1 );
-	gSizer1->Add( lblName, 0, wxALL, 5 );
+	gSizer1->Add( lblName, 1, wxALL, 5 );
 	
 	m_textCtrlName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrlName->SetMinSize( wxSize( 150,-1 ) );
@@ -110,5 +110,32 @@ AboutDialog::AboutDialog( wxWindow* parent, wxWindowID id, const wxString& title
 }
 
 AboutDialog::~AboutDialog()
+{
+}
+
+DatabasePanel::DatabasePanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
+{
+	wxGridSizer* panelGridSizer;
+	panelGridSizer = new wxGridSizer( 2, 2, 0, 0 );
+	
+	m_staticText7 = new wxStaticText( this, wxID_ANY, _("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText7->Wrap( -1 );
+	panelGridSizer->Add( m_staticText7, 0, wxALL, 5 );
+	
+	m_textCtrl3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	panelGridSizer->Add( m_textCtrl3, 0, wxALL, 5 );
+	
+	m_staticText8 = new wxStaticText( this, wxID_ANY, _("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText8->Wrap( -1 );
+	panelGridSizer->Add( m_staticText8, 0, wxALL, 5 );
+	
+	m_textCtrl4 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	panelGridSizer->Add( m_textCtrl4, 0, wxALL, 5 );
+	
+	this->SetSizer( panelGridSizer );
+	this->Layout();
+}
+
+DatabasePanel::~DatabasePanel()
 {
 }

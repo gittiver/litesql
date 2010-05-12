@@ -41,7 +41,7 @@ bool VisualLitesqlApp::OnInit(void)
 
   //// Create the main frame window
   pMainframe = new MainFrame((wxDocManager *) m_docManager, (wxFrame *) NULL,
-                      _T("Visual Litesql"), wxPoint(0, 0), wxSize(500, 400),
+                      _T("Visual Litesql"), wxPoint(0, 0), wxSize(800, 600),
                       wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE);
 
 	// start transaction

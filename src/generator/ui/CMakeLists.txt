@@ -9,6 +9,7 @@ set(PROGRAM_visual_litesql_SOURCES
     LitesqlFieldPanel.cpp LitesqlFieldPanel.h
     LitesqlObjectPanel.cpp LitesqlObjectPanel.h
     LitesqlRelationPanel.cpp LitesqlRelationPanel.h
+    LitesqlDatabasePanel.cpp LitesqlDatabasePanel.h
 )
 #		treelistctrl/include/wx/treelistctrl.h treelistctrl/src/treelistctrl.cpp
 

@@ -10,7 +10,7 @@
 #include "LitesqlDocument.h"
 #include "GenerateView.h"
 
-
+#include "ui.h"
 
 IMPLEMENT_CLASS(MainFrame, wxDocMDIParentFrame)
 BEGIN_EVENT_TABLE(MainFrame, wxDocMDIParentFrame)
@@ -29,6 +29,7 @@ MainFrame::~MainFrame()
 
 void MainFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 {
-  (void)wxMessageBox(_T("Visual Litesql \nAuthor: Frank Landgraf\nUsage: Visual Litesql.exe"), _T("About Visual Litesql"));
+  ui::AboutDialog dlg(this);
+  dlg.ShowModal();
 }
 

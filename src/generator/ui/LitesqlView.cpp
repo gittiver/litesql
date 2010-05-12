@@ -24,6 +24,7 @@
 #include "LitesqlObjectPanel.h"
 #include "LitesqlFieldPanel.h"
 #include "LitesqlRelationPanel.h"
+#include "LitesqlDatabasePanel.h"
 
 #include "objectmodel.hpp"
 
@@ -31,40 +32,38 @@
 IMPLEMENT_DYNAMIC_CLASS(LitesqlView, wxView)
 
 BEGIN_EVENT_TABLE(LitesqlView, wxView)
+EVT_SIZE(OnSize) 
 EVT_MENU(VisualLitesqlApp::ID_GENERATE, LitesqlView::OnGenerate)
 END_EVENT_TABLE()
 
 using namespace xml;
 
 LitesqlView::LitesqlView() 
-{ frame = (wxMDIChildFrame *) NULL; }
+{ frame = (wxMDIChildFrame *) NULL;
+}
 
 LitesqlView::~LitesqlView()
 {}
 
-wxPanel* CreatePage(wxTreebook* pTree)
-{
-  return new wxPanel(pTree);
-}
-
 void FillTree (litesql::ObjectModel* pModel,wxTreebook* pTree) 
 {
   int pagePos = 0;
-  
+
   wxString dbName(pModel->db.name.c_str(),wxConvUTF8);
   pTree->DeleteAllPages();
-  pTree->AddPage(CreatePage(pTree),"database");
+
+  pTree->AddPage(new ui::LitesqlDatabasePanel(pTree,&pModel->db),_("database"));
   pagePos++;
   for( vector<Object*>::iterator it = pModel->objects.begin(); it != pModel->objects.end();it++)
   {
     wxString name((*it)->name.c_str(),wxConvUTF8);
     pTree->AddSubPage(new LitesqlObjectPanel(pTree,*it),name +_("(Object)"));
-    
+
     int subPagePos=pagePos++;
-  
+
     for (vector<Field*>::iterator field = (*it)->fields.begin();
-          field != (*it)->fields.end();
-          field++)
+      field != (*it)->fields.end();
+      field++)
     {
       wxString fname((*field)->name.c_str(),wxConvUTF8);
       pTree->InsertSubPage(subPagePos,new LitesqlFieldPanel(pTree, *field),fname +_("(Field)"));
@@ -78,35 +77,50 @@ void FillTree (litesql::ObjectModel* pModel,wxTreebook* pTree)
     pTree->AddSubPage(new LitesqlRelationPanel(pTree,*relation),name +_("(relation)"));
     pagePos++;
   }
+
+  pTree->Layout();
 }
 
 // What to do when a view is created. Creates actual
 // windows for displaying the view.
 bool LitesqlView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 {
-    frame = wxGetApp().CreateChildFrame(doc, this, true);
-    frame->SetTitle(_T("LitesqlView"));
+  frame = wxGetApp().CreateChildFrame(doc, this, true);
+  frame->SetTitle(_T("LitesqlView"));
 
 #ifdef __X__
-    // X seems to require a forced resize
-    int x, y;
-    frame->GetSize(&x, &y);
-    frame->SetSize(wxDefaultCoord, wxDefaultCoord, x, y);
+  // X seems to require a forced resize
+  int x, y;
+  frame->GetSize(&x, &y);
+  frame->SetSize(wxDefaultCoord, wxDefaultCoord, x, y);
 #endif
-    m_treebook = new wxTreebook(frame,-1);
-    wxSize s(100,100);
-    m_treebook->SetPageSize(s);
-    frame->Show(true);
-    Activate(true);
+  
+  m_treebook = new wxTreebook(frame,-1);
+  wxSize s = m_treebook->GetTreeCtrl()->GetSize();
+  s.SetWidth(s.GetWidth()*2);
+  m_treebook->GetTreeCtrl()->SetSize(s);
+  frame->Show(true);
+  Activate(true);
 
-    return true;
+  return true;
+}
+
+void LitesqlView::OnSize(wxSizeEvent& event)
+{
+  if (frame) {
+    m_treebook->SetSize(frame->GetClientSize());
+    
+    m_treebook->Layout();
+    frame->Layout();
+  }
+
 }
 
 void LitesqlView::OnUpdate(wxView *sender, wxObject *hint) 
 {
   FillTree(((LitesqlDocument*) GetDocument())->GetModel() ,m_treebook);
 }
-    
+
 // Sneakily gets used for default print/preview
 // as well as drawing on the screen.
 void LitesqlView::OnDraw(wxDC *dc)
@@ -120,8 +134,8 @@ bool LitesqlView::OnClose(bool deleteWindow)
 {
   if (!GetDocument()->Close())
     return false;
-wxApp::GetInstance();
-    
+  wxApp::GetInstance();
+
   wxString s(wxTheApp->GetAppName());
   if (frame)
     frame->SetTitle(s);
