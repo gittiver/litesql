@@ -20,7 +20,9 @@ public:
     void warn(const wxString& message);
     void error(const wxString& message);
 
-    wxMDIChildFrame *CreateChildFrame(wxDocument *doc, wxView *view, bool isCanvas);
+    wxMDIChildFrame *CreateChildFrame(wxDocument *doc, wxView *view);
+    
+    wxDocTemplate *m_pGenerateViewTemplate;
 
 protected:
 	bool OnInit(void);
@@ -30,6 +32,7 @@ private:
 
   protected:
     wxDocManager* m_docManager;
+  
     MainFrame* pMainframe;
 };
 

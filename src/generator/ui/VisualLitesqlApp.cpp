@@ -38,6 +38,13 @@ bool VisualLitesqlApp::OnInit(void)
                                                           _T("Litesql Model"), 
                                                           _T("Litesql Model View"),
           CLASSINFO(LitesqlDocument), CLASSINFO(LitesqlView));
+  m_pGenerateViewTemplate = new wxDocTemplate((wxDocManager *) m_docManager, _T("Litesql-Model (generate)"), 
+                                                          _T("*.xml"), 
+                                                          _T(""), 
+                                                          _T  ("xml"), 
+                                                          _T("Litesql Model"), 
+                                                          _T("Litesql Generate View"),
+          CLASSINFO(LitesqlDocument), CLASSINFO(GenerateView));
 
   //// Create the main frame window
   pMainframe = new MainFrame((wxDocManager *) m_docManager, (wxFrame *) NULL,
@@ -53,35 +60,10 @@ bool VisualLitesqlApp::OnInit(void)
   pMainframe->SetIcon(wxIcon(_T("doc.xbm")));
 #endif
 
-  //// Make a menubar
-  wxMenu *file_menu = new wxMenu;
-  wxMenu *edit_menu = (wxMenu *) NULL;
-
-  file_menu->Append(wxID_NEW, _T("&New...\tCtrl-N"));
-  file_menu->Append(wxID_OPEN, _T("&Open...\tCtrl-X"));
-
-  file_menu->AppendSeparator();
-  file_menu->Append(wxID_EXIT, _T("E&xit\tAlt-X"));
-  
-  // A nice touch: a history of files visited. Use this menu.
-  m_docManager->FileHistoryUseMenu(file_menu);
-
-  wxMenu *help_menu = new wxMenu;
-  help_menu->Append(ID_ABOUT, _T("&About\tF1"));
-
-  wxMenuBar *menu_bar = new wxMenuBar;
-
-  menu_bar->Append(file_menu, _T("&File"));
-  if (edit_menu)
-    menu_bar->Append(edit_menu, _T("&Edit"));
-  menu_bar->Append(help_menu, _T("&Help"));
-
 #ifdef __WXMAC__
-  wxMenuBar::MacSetCommonMenuBar(menu_bar);
+  wxMenuBar::MacSetCommonMenuBar(pMainFrame->GetMenuBar());
 #endif //def __WXMAC__
-  //// Associate the menu bar with the frame
-  pMainframe->SetMenuBar(menu_bar);
-
+  
   pMainframe->Centre(wxBOTH);
 
   SetTopWindow(pMainframe);
@@ -102,17 +84,17 @@ int VisualLitesqlApp::OnExit(void)
  * Called from view.cpp, when a view is created.
  */
  
-wxMDIChildFrame *VisualLitesqlApp::CreateChildFrame(wxDocument *doc, wxView *view, bool isCanvas)
+wxMDIChildFrame *VisualLitesqlApp::CreateChildFrame(wxDocument *doc, wxView *view)
 {
   //// Make a child frame
   wxDocMDIChildFrame *subframe =
       new wxDocMDIChildFrame(doc, view, pMainframe, wxID_ANY, _T("Child Frame"),
-                             wxPoint(10, 10), wxSize(300, 300),
+                             wxPoint(10, 10), wxSize(500, 500),
                              wxDEFAULT_FRAME_STYLE |
                              wxNO_FULL_REPAINT_ON_RESIZE);
 
 #ifdef __WXMSW__
-  subframe->SetIcon(wxString(isCanvas ? _T("chart") : _T("notepad")));
+  subframe->SetIcon(wxString( _T("notepad")));
 #endif
 #ifdef __X__
   subframe->SetIcon(wxIcon(_T("doc.xbm")));
@@ -130,7 +112,7 @@ wxMDIChildFrame *VisualLitesqlApp::CreateChildFrame(wxDocument *doc, wxView *vie
   file_menu->Append(ID_GENERATE, _T("Generate ..."));
 
   
-  if (isCanvas)
+  if (false /*isCanvas*/)
   {
     file_menu->AppendSeparator();
     file_menu->Append(wxID_PRINT, _T("&Print..."));
@@ -157,7 +139,7 @@ wxMDIChildFrame *VisualLitesqlApp::CreateChildFrame(wxDocument *doc, wxView *vie
   wxMenuBar *menu_bar = new wxMenuBar;
 
   menu_bar->Append(file_menu, _T("&File"));
-  if (isCanvas)
+  if (false /* isCanvas */ )
     menu_bar->Append(edit_menu, _T("&Edit"));
   menu_bar->Append(help_menu, _T("&Help"));
 

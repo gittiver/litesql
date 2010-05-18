@@ -13,7 +13,6 @@
 #error You must set wxUSE_DOC_VIEW_ARCHITECTURE to 1 in setup.h!
 #endif
 
-
 #include "VisualLitesqlApp.h"
 #include "GenerateView.h"
 #include "LitesqlDocument.h"
@@ -23,10 +22,11 @@
 IMPLEMENT_DYNAMIC_CLASS(GenerateView, wxView)
 
 BEGIN_EVENT_TABLE(GenerateView, wxView)
-EVT_MENU(VisualLitesqlApp::ID_GENERATE, GenerateView::OnGenerate)
 END_EVENT_TABLE()
 
-GenerateView::GenerateView() 
+
+
+GenerateView::GenerateView()
 { frame = (wxMDIChildFrame *) NULL; }
 
 GenerateView::~GenerateView()
@@ -36,7 +36,7 @@ GenerateView::~GenerateView()
 // windows for displaying the view.
 bool GenerateView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 {
-    frame = wxGetApp().CreateChildFrame(doc, this, true);
+    frame = wxGetApp().CreateChildFrame(doc,this);
     frame->SetTitle(_T("GenerateView"));
 
 #ifdef __X__
@@ -45,6 +45,9 @@ bool GenerateView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
     frame->GetSize(&x, &y);
     frame->SetSize(wxDefaultCoord, wxDefaultCoord, x, y);
 #endif
+    m_pGeneratePanel = new LitesqlGeneratePanel(frame,((LitesqlDocument*)doc)->GetModel());
+
+    frame->Layout();
     frame->Show(true);
     Activate(true);
 
@@ -84,17 +87,4 @@ bool GenerateView::OnClose(bool deleteWindow)
     return true;
   }
   return true;
-}
-
-void GenerateView::OnCut(wxCommandEvent& WXUNUSED(event) )
-{
-  int y = 2;
-  int s=y;
-}
-
-void GenerateView::OnGenerate(wxCommandEvent& WXUNUSED(event) )
-{
-
-  int x = 2;
-
 }

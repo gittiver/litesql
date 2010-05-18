@@ -2,6 +2,7 @@
 #define GENERATE_VIEW_H
 
 #include <wx/docview.h>
+#include "LitesqlGeneratePanel.h"
 
 
 class GenerateView: public wxView
@@ -19,10 +20,10 @@ public:
     void OnDraw(wxDC *dc);
     bool OnClose(bool deleteWindow = true);
 
-    void OnCut(wxCommandEvent& event);
-    void OnGenerate(wxCommandEvent& event );
-
 private:
+  LitesqlGeneratePanel* m_pGeneratePanel;
+
+
     DECLARE_DYNAMIC_CLASS(GenerateView)
     DECLARE_EVENT_TABLE()
 };

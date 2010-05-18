@@ -22,7 +22,6 @@ class MainFrame: public wxDocMDIParentFrame
   void OnAbout(wxCommandEvent& event);
 
 protected:
-  wxMDIChildFrame *CreateChildFrame(wxDocument *doc, wxView *view, bool isCanvas);
 
 DECLARE_EVENT_TABLE()
 };

@@ -85,7 +85,7 @@ void FillTree (litesql::ObjectModel* pModel,wxTreebook* pTree)
 // windows for displaying the view.
 bool LitesqlView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 {
-  frame = wxGetApp().CreateChildFrame(doc, this, true);
+  frame = wxGetApp().CreateChildFrame(doc, this);
   frame->SetTitle(_T("LitesqlView"));
 
 #ifdef __X__
@@ -160,9 +160,6 @@ void LitesqlView::OnCut(wxCommandEvent& WXUNUSED(event) )
 
 void LitesqlView::OnGenerate(wxCommandEvent& WXUNUSED(event) )
 {
+  wxGetApp().m_pGenerateViewTemplate->CreateView(GetDocument());
 
-  wxView* v ; //= new GenerateView();
-  v = (wxView*)GenerateView::wxCreateObject();
-  GetDocument()->AddView(v);
-  //wxGetApp().CreateChildFrame(GetDocument(), v, true);
 }

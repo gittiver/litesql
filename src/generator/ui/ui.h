@@ -23,6 +23,9 @@
 #include <wx/panel.h>
 #include <wx/button.h>
 #include <wx/dialog.h>
+#include <wx/filepicker.h>
+#include <wx/checklst.h>
+#include <wx/gauge.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -113,6 +116,31 @@ namespace ui
 		public:
 			DatabasePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 291,107 ), long style = wxTAB_TRAVERSAL );
 			~DatabasePanel();
+		
+	};
+	
+	///////////////////////////////////////////////////////////////////////////////
+	/// Class GeneratePanel
+	///////////////////////////////////////////////////////////////////////////////
+	class GeneratePanel : public wxPanel 
+	{
+		private:
+		
+		protected:
+			wxStaticText* m_staticOutputDir;
+			wxDirPickerCtrl* m_dirPickerOutputDir;
+			wxStaticText* m_staticGenerators;
+			wxCheckListBox* m_checkListGenerators;
+			wxButton* m_buttonRun;
+			wxGauge* m_gaugeRunProgress;
+			
+			// Virtual event handlers, overide them in your derived class
+			virtual void OnRunClick( wxCommandEvent& event ){ event.Skip(); }
+			
+		
+		public:
+			GeneratePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 406,210 ), long style = wxTAB_TRAVERSAL );
+			~GeneratePanel();
 		
 	};
 	

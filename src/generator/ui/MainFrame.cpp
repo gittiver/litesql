@@ -1,5 +1,6 @@
 #include <wx/cmdproc.h>
 #include <wx/msgdlg.h>
+#include <wx/menu.h>
 
 #include "config.h"
 
@@ -22,6 +23,30 @@ MainFrame::MainFrame(wxDocManager *manager, wxFrame *frame, const wxString& titl
   wxDocMDIParentFrame(manager, frame, wxID_ANY, title, pos, size, type, _T("myFrame"))
 {
   editMenu = (wxMenu *) NULL;
+  //// Make a menubar
+  wxMenu *file_menu = new wxMenu;
+  wxMenu *edit_menu = (wxMenu *) NULL;
+
+  file_menu->Append(wxID_NEW, _T("&New...\tCtrl-N"));
+  file_menu->Append(wxID_OPEN, _T("&Open...\tCtrl-X"));
+
+  file_menu->AppendSeparator();
+  file_menu->Append(wxID_EXIT, _T("E&xit\tAlt-X"));
+  
+  // A nice touch: a history of files visited. Use this menu.
+  m_docManager->FileHistoryUseMenu(file_menu);
+
+  wxMenu *help_menu = new wxMenu;
+  help_menu->Append(VisualLitesqlApp::ID_ABOUT, _T("&About\tF1"));
+
+  wxMenuBar *menu_bar = new wxMenuBar;
+
+  menu_bar->Append(file_menu, _T("&File"));
+  if (edit_menu)
+    menu_bar->Append(edit_menu, _T("&Edit"));
+  menu_bar->Append(help_menu, _T("&Help"));
+
+  SetMenuBar(menu_bar);
 }
 
 MainFrame::~MainFrame()
