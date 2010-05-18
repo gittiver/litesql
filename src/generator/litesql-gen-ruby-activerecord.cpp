@@ -8,6 +8,7 @@ string toActiveRecordType(AT_field_type field_type) {
   switch(field_type) {
        case A_field_type_integer:  return "int";
        case A_field_type_float:    return "float";
+       case A_field_type_double:    return "double";
        case A_field_type_boolean:  return "bool";
        case A_field_type_date:     return "date";
        case A_field_type_time:     return "timestamp";

@@ -98,6 +98,7 @@ public:
            case A_field_type_integer: return "INTEGER";
            case A_field_type_string: return "TEXT";
            case A_field_type_float: return "FLOAT";
+           case A_field_type_double: return "DOUBLE";
            case A_field_type_boolean: return "INTEGER";
            case A_field_type_date: return "INTEGER";
            case A_field_type_time: return "INTEGER";
@@ -111,6 +112,7 @@ public:
            case A_field_type_integer: return "int";
            case A_field_type_string: return "std::string";
            case A_field_type_float: return "float";
+           case A_field_type_double: return "double";
            case A_field_type_boolean: return "bool";
            case A_field_type_date: return "litesql::Date";
            case A_field_type_time: return "litesql::Time";

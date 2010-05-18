@@ -27,12 +27,22 @@ template <>
 string convert<float, string>(float value) {
     return toString(value);
 }
+template <>
+string convert<double, string>(double value) {
+    return toString(value);
+}
+
+
 template <> 
 string convert<const int&, string>(const int& value) {
     return toString(value);
 }
 template <>
 string convert<const float&, string>(const float& value) {
+    return toString(value);
+}
+template <>
+string convert<const double&, string>(const double& value) {
     return toString(value);
 }
 template <>
@@ -52,10 +62,12 @@ template <>
 float convert<int, float>(int value) {
     return (float)value;
 }
+/*
 template <> 
 float convert<double, float>(double value) {
     return (float)value;
 }
+*/
 template <>
 bool convert<const string&, bool>(const string& value) {
     return convert<const string&, int>(value);
@@ -68,6 +80,11 @@ template <>
 float convert<const string&, float>(const string& value) {
     return strtof(value.c_str(), NULL);
 }
+template <>
+double convert<const string&, double>(const string& value) {
+    return strtod(value.c_str(), NULL);
+}
+
 template <>
 string convert<const string&, string>(const string& value) {
     return value;

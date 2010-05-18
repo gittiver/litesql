@@ -22,6 +22,8 @@ static const char* toString(AT_field_type t)
     return "string";
   case A_field_type_float: 
     return "float";
+  case A_field_type_double: 
+    return "double";
   case A_field_type_time:
     return "time";
   case A_field_type_date:
@@ -68,6 +70,10 @@ static AT_field_type field_type(const XML_Char* value)
   else if (!xmlStrcasecmp(value,(XML_Char*)"float"))
   {
     t = A_field_type_float;
+  }
+  else if (!xmlStrcasecmp(value,(XML_Char*)"double"))
+  {
+    t = A_field_type_double;
   }
   else if (!xmlStrcasecmp(value,(XML_Char*)"time"))
   {
