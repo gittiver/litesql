@@ -41,7 +41,7 @@ std::string lstrip(std::string s);
 /** returns a copy string 's' where 'what' is replaced with 'with' */
 std::string replace(const std::string& s, const std::string& what, const std::string& with);
 /** converts string representation of a hex number to integer */
-int hexToInt(std::string s);
+int hexToInt(const std::string& s);
 /** string version of atoi */
 int atoi(const std::string &s);
 /** returns a string which is duplicated 'amount' times */

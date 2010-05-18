@@ -77,7 +77,7 @@ string replace(const string& s, const string& what, const string& with) {
     Split parts(s, what);
     return parts.join(with);
 }
-int hexToInt(string s) {
+int hexToInt(const string& s) {
     int res = 0;
 	
     for (size_t i = 0; i < s.size(); i++) {
