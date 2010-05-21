@@ -23,21 +23,24 @@ using namespace ui;
 
 ObjectPanel::ObjectPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
 {
-	wxGridSizer* gSizer1;
-	gSizer1 = new wxGridSizer( 2, 2, 0, 0 );
+	this->SetMinSize( wxSize( 250,80 ) );
+	
+	wxFlexGridSizer* gSizer1;
+	gSizer1 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	gSizer1->AddGrowableCol( 1 );
+	gSizer1->SetFlexibleDirection( wxBOTH );
+	gSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	lblName = new wxStaticText( this, wxID_ANY, _("Name"), wxDefaultPosition, wxDefaultSize, 0 );
 	lblName->Wrap( -1 );
-	gSizer1->Add( lblName, 1, wxALL, 5 );
+	gSizer1->Add( lblName, 1, wxALL|wxEXPAND, 5 );
 	
 	m_textCtrlName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrlName->SetMinSize( wxSize( 150,-1 ) );
-	
-	gSizer1->Add( m_textCtrlName, 1, wxALL, 5 );
+	gSizer1->Add( m_textCtrlName, 2, wxALL|wxFIXED_MINSIZE|wxEXPAND, 5 );
 	
 	lblInherits = new wxStaticText( this, wxID_ANY, _("Inherit From"), wxDefaultPosition, wxDefaultSize, 0 );
 	lblInherits->Wrap( -1 );
-	gSizer1->Add( lblInherits, 0, wxALL, 5 );
+	gSizer1->Add( lblInherits, 0, wxALL|wxEXPAND, 5 );
 	
 	wxArrayString m_choiceInheritsFromChoices;
 	m_choiceInheritsFrom = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceInheritsFromChoices, 0 );
@@ -56,8 +59,13 @@ ObjectPanel::~ObjectPanel()
 
 FieldPanel::FieldPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
 {
-	wxGridSizer* gSizer1;
-	gSizer1 = new wxGridSizer( 2, 2, 0, 0 );
+	this->SetMinSize( wxSize( 300,120 ) );
+	
+	wxFlexGridSizer* gSizer1;
+	gSizer1 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	gSizer1->AddGrowableCol( 1 );
+	gSizer1->SetFlexibleDirection( wxBOTH );
+	gSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	this->SetSizer( gSizer1 );
 	this->Layout();
@@ -69,15 +77,20 @@ FieldPanel::~FieldPanel()
 
 RelationPanel::RelationPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
 {
-	wxGridSizer* gSizer1;
-	gSizer1 = new wxGridSizer( 2, 2, 0, 0 );
+	this->SetMinSize( wxSize( 300,120 ) );
+	
+	wxFlexGridSizer* gSizer1;
+	gSizer1 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	gSizer1->AddGrowableCol( 1 );
+	gSizer1->SetFlexibleDirection( wxBOTH );
+	gSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	m_staticText2 = new wxStaticText( this, wxID_ANY, _("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2->Wrap( -1 );
 	gSizer1->Add( m_staticText2, 0, wxALL, 5 );
 	
 	m_textCtrl2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	gSizer1->Add( m_textCtrl2, 0, wxALL, 5 );
+	gSizer1->Add( m_textCtrl2, 1, wxALL|wxEXPAND, 5 );
 	
 	this->SetSizer( gSizer1 );
 	this->Layout();
@@ -113,51 +126,31 @@ AboutDialog::~AboutDialog()
 {
 }
 
-DatabasePanel::DatabasePanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
-{
-	wxGridSizer* panelGridSizer;
-	panelGridSizer = new wxGridSizer( 2, 2, 0, 0 );
-	
-	m_staticText7 = new wxStaticText( this, wxID_ANY, _("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText7->Wrap( -1 );
-	panelGridSizer->Add( m_staticText7, 0, wxALL, 5 );
-	
-	m_textCtrl3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	panelGridSizer->Add( m_textCtrl3, 0, wxALL, 5 );
-	
-	m_staticText8 = new wxStaticText( this, wxID_ANY, _("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText8->Wrap( -1 );
-	panelGridSizer->Add( m_staticText8, 0, wxALL, 5 );
-	
-	m_textCtrl4 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	panelGridSizer->Add( m_textCtrl4, 0, wxALL, 5 );
-	
-	this->SetSizer( panelGridSizer );
-	this->Layout();
-}
-
-DatabasePanel::~DatabasePanel()
-{
-}
-
 GeneratePanel::GeneratePanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
 {
-	wxGridSizer* panelSizer;
-	panelSizer = new wxGridSizer( 4, 2, 0, 0 );
+	this->SetMinSize( wxSize( 400,210 ) );
+	
+	wxFlexGridSizer* panelSizer;
+	panelSizer = new wxFlexGridSizer( 4, 2, 0, 0 );
+	panelSizer->AddGrowableCol( 1 );
+	panelSizer->SetFlexibleDirection( wxBOTH );
+	panelSizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
 	
 	m_staticOutputDir = new wxStaticText( this, wxID_ANY, _("Output Directory"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticOutputDir->Wrap( -1 );
 	panelSizer->Add( m_staticOutputDir, 0, wxALL, 5 );
 	
 	m_dirPickerOutputDir = new wxDirPickerCtrl( this, wxID_ANY, wxEmptyString, _("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE|wxDIRP_DIR_MUST_EXIST );
-	panelSizer->Add( m_dirPickerOutputDir, 1, wxALL, 5 );
+	panelSizer->Add( m_dirPickerOutputDir, 1, wxALL|wxEXPAND, 5 );
 	
 	m_staticGenerators = new wxStaticText( this, wxID_ANY, _("Select generators"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticGenerators->Wrap( -1 );
 	panelSizer->Add( m_staticGenerators, 0, wxALL, 5 );
 	
 	wxArrayString m_checkListGeneratorsChoices;
-	m_checkListGenerators = new wxCheckListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_checkListGeneratorsChoices, 0 );
+	m_checkListGenerators = new wxCheckListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_checkListGeneratorsChoices, wxLB_MULTIPLE );
+	m_checkListGenerators->SetMinSize( wxSize( -1,120 ) );
+	
 	panelSizer->Add( m_checkListGenerators, 10, wxALL|wxEXPAND, 5 );
 	
 	m_buttonRun = new wxButton( this, wxID_ANY, _("Run"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -167,7 +160,7 @@ GeneratePanel::GeneratePanel( wxWindow* parent, wxWindowID id, const wxPoint& po
 	m_gaugeRunProgress->SetMinSize( wxSize( 100,20 ) );
 	m_gaugeRunProgress->SetMaxSize( wxSize( -1,20 ) );
 	
-	panelSizer->Add( m_gaugeRunProgress, 1, wxALL|wxFIXED_MINSIZE, 5 );
+	panelSizer->Add( m_gaugeRunProgress, 1, wxALL|wxFIXED_MINSIZE|wxEXPAND, 5 );
 	
 	this->SetSizer( panelSizer );
 	this->Layout();
@@ -180,4 +173,43 @@ GeneratePanel::~GeneratePanel()
 {
 	// Disconnect Events
 	m_buttonRun->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GeneratePanel::OnRunClick ), NULL, this );
+}
+
+DatabasePanel::DatabasePanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
+{
+	this->SetMinSize( wxSize( 300,120 ) );
+	
+	wxFlexGridSizer* fgSizer1;
+	fgSizer1 = new wxFlexGridSizer( 3, 2, 0, 0 );
+	fgSizer1->AddGrowableCol( 1 );
+	fgSizer1->SetFlexibleDirection( wxBOTH );
+	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
+	
+	m_staticName = new wxStaticText( this, wxID_ANY, _("Name"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticName->Wrap( -1 );
+	fgSizer1->Add( m_staticName, 0, wxALL, 5 );
+	
+	m_textName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer1->Add( m_textName, 1, wxALL|wxEXPAND, 5 );
+	
+	m_staticNamespace = new wxStaticText( this, wxID_ANY, _("Namespace"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticNamespace->Wrap( -1 );
+	fgSizer1->Add( m_staticNamespace, 0, wxALL, 5 );
+	
+	m_textNamespace = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer1->Add( m_textNamespace, 1, wxALL|wxEXPAND, 5 );
+	
+	m_staticInclude = new wxStaticText( this, wxID_ANY, _("additional Include"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticInclude->Wrap( -1 );
+	fgSizer1->Add( m_staticInclude, 0, wxALL, 5 );
+	
+	m_textInclude = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer1->Add( m_textInclude, 1, wxALL|wxEXPAND, 5 );
+	
+	this->SetSizer( fgSizer1 );
+	this->Layout();
+}
+
+DatabasePanel::~DatabasePanel()
+{
 }

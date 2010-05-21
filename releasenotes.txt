@@ -1,3 +1,8 @@
+Version 0.3.8
+#############
+- a Gui-Tool for editing and generating Code (cross-platform through wxWidgets)
+- added double as field type for higher precision calculation
+ 
 Version 0.3.7
 #############
 - fixed error on creating indexes (see trac ticket #23)

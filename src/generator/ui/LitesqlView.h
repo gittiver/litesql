@@ -4,6 +4,7 @@
 #include <wx/docview.h>
 
 class wxTreebook;
+class wxTreebookEvent;
 
 class LitesqlView: public wxView
 {
@@ -24,7 +25,9 @@ protected:
     bool OnClose(bool deleteWindow = true);
     void OnSize(wxSizeEvent& event);
 
-    void OnCut(wxCommandEvent& event);
+    void OnPageChanged(wxTreebookEvent& event);
+    void OnPageChanging(wxTreebookEvent& event);
+
     void OnGenerate(wxCommandEvent& event );
 
 private:

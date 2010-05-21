@@ -600,6 +600,7 @@ const litesql::FieldType Person::Type("type_","TEXT",table__);
 const litesql::FieldType Person::Name("name_","TEXT",table__);
 const litesql::FieldType Person::Age("age_","INTEGER",table__);
 const litesql::FieldType Person::Image("image_","BLOB",table__);
+const litesql::FieldType Person::ADoubleValue("aDoubleValue_","DOUBLE",table__);
 std::vector < std::pair< std::string, std::string > > Person::sex_values;
 const Person::SexType Person::Sex("sex_","INTEGER",table__,sex_values);
 void Person::initValues() {
@@ -614,16 +615,18 @@ void Person::defaults() {
     sex = 0;
 }
 Person::Person(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), name(Name), age(Age), image(Image), sex(Sex) {
+     : litesql::Persistent(db), id(Id), type(Type), name(Name), age(Age), image(Image), aDoubleValue(ADoubleValue), sex(Sex) {
     defaults();
 }
 Person::Person(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), age(Age), image(Image), sex(Sex) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), age(Age), image(Image), aDoubleValue(ADoubleValue), sex(Sex) {
     defaults();
-    size_t size = (rec.size() > 6) ? 6 : rec.size();
+    size_t size = (rec.size() > 7) ? 7 : rec.size();
     switch(size) {
-    case 6: sex = convert<const std::string&, int>(rec[5]);
+    case 7: sex = convert<const std::string&, int>(rec[6]);
         sex.setModified(false);
+    case 6: aDoubleValue = convert<const std::string&, double>(rec[5]);
+        aDoubleValue.setModified(false);
     case 5: image = convert<const std::string&, litesql::Blob>(rec[4]);
         image.setModified(false);
     case 4: age = convert<const std::string&, int>(rec[3]);
@@ -637,7 +640,7 @@ Person::Person(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 Person::Person(const Person& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), age(obj.age), image(obj.image), sex(obj.sex) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), age(obj.age), image(obj.image), aDoubleValue(obj.aDoubleValue), sex(obj.sex) {
 }
 const Person& Person::operator=(const Person& obj) {
     if (this != &obj) {
@@ -646,6 +649,7 @@ const Person& Person::operator=(const Person& obj) {
         name = obj.name;
         age = obj.age;
         image = obj.image;
+        aDoubleValue = obj.aDoubleValue;
         sex = obj.sex;
     }
     litesql::Persistent::operator=(obj);
@@ -685,6 +689,9 @@ std::string Person::insert(litesql::Record& tables, litesql::Records& fieldRecs,
     fields.push_back(image.name());
     values.push_back(image);
     image.setModified(false);
+    fields.push_back(aDoubleValue.name());
+    values.push_back(aDoubleValue);
+    aDoubleValue.setModified(false);
     fields.push_back(sex.name());
     values.push_back(sex);
     sex.setModified(false);
@@ -708,6 +715,7 @@ void Person::addUpdates(Updates& updates) {
     updateField(updates, table__, name);
     updateField(updates, table__, age);
     updateField(updates, table__, image);
+    updateField(updates, table__, aDoubleValue);
     updateField(updates, table__, sex);
 }
 void Person::addIDUpdates(Updates& updates) {
@@ -718,6 +726,7 @@ void Person::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Name);
     ftypes.push_back(Age);
     ftypes.push_back(Image);
+    ftypes.push_back(ADoubleValue);
     ftypes.push_back(Sex);
 }
 void Person::delRecord() {
@@ -769,6 +778,7 @@ std::auto_ptr<Person> Person::upcastCopy() {
     np->name = name;
     np->age = age;
     np->image = image;
+    np->aDoubleValue = aDoubleValue;
     np->sex = sex;
     np->inDatabase = inDatabase;
     return auto_ptr<Person>(np);
@@ -780,6 +790,7 @@ std::ostream & operator<<(std::ostream& os, Person o) {
     os << o.name.name() << " = " << o.name << std::endl;
     os << o.age.name() << " = " << o.age << std::endl;
     os << o.image.name() << " = " << o.image << std::endl;
+    os << o.aDoubleValue.name() << " = " << o.aDoubleValue << std::endl;
     os << o.sex.name() << " = " << o.sex << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
@@ -1484,7 +1495,7 @@ std::vector<litesql::Database::SchemaItem> ExampleDatabase::getSchema() const {
         res.push_back(Database::SchemaItem("Office_seq","sequence","CREATE SEQUENCE Office_seq START 1 INCREMENT 1"));
     }
     res.push_back(Database::SchemaItem("user_","table","CREATE TABLE user_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,passwd_ TEXT)"));
-    res.push_back(Database::SchemaItem("Person_","table","CREATE TABLE Person_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,age_ INTEGER,image_ BLOB,sex_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Person_","table","CREATE TABLE Person_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,age_ INTEGER,image_ BLOB,aDoubleValue_ DOUBLE,sex_ INTEGER)"));
     res.push_back(Database::SchemaItem("Role_","table","CREATE TABLE Role_ (id_ " + backend->getRowIDType() + ",type_ TEXT)"));
     res.push_back(Database::SchemaItem("Student_","table","CREATE TABLE Student_ (id_ " + backend->getRowIDType() + ")"));
     res.push_back(Database::SchemaItem("Employee_","table","CREATE TABLE Employee_ (id_ " + backend->getRowIDType() + ")"));

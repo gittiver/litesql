@@ -32,18 +32,24 @@
 IMPLEMENT_DYNAMIC_CLASS(LitesqlView, wxView)
 
 BEGIN_EVENT_TABLE(LitesqlView, wxView)
-EVT_SIZE(OnSize) 
-EVT_MENU(VisualLitesqlApp::ID_GENERATE, LitesqlView::OnGenerate)
+  EVT_SIZE(OnSize) 
+  EVT_MENU(VisualLitesqlApp::ID_GENERATE, LitesqlView::OnGenerate)
+  
+  EVT_TREEBOOK_PAGE_CHANGED(wxID_ANY, LitesqlView::OnPageChanged)
+  EVT_TREEBOOK_PAGE_CHANGING(wxID_ANY, LitesqlView::OnPageChanging)
+
 END_EVENT_TABLE()
 
 using namespace xml;
 
 LitesqlView::LitesqlView() 
-{ frame = (wxMDIChildFrame *) NULL;
+{ 
+  frame = (wxMDIChildFrame *) NULL;
 }
 
 LitesqlView::~LitesqlView()
-{}
+{
+}
 
 void FillTree (litesql::ObjectModel* pModel,wxTreebook* pTree) 
 {
@@ -99,13 +105,16 @@ bool LitesqlView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
   wxSize s = m_treebook->GetTreeCtrl()->GetSize();
   s.SetWidth(s.GetWidth()*2);
   m_treebook->GetTreeCtrl()->SetSize(s);
+
+  m_treebook->Layout();
+  
   frame->Show(true);
   Activate(true);
 
   return true;
 }
 
-void LitesqlView::OnSize(wxSizeEvent& event)
+void LitesqlView::OnSize(wxSizeEvent& WXUNUSED(event))
 {
   if (frame) {
     m_treebook->SetSize(frame->GetClientSize());
@@ -152,14 +161,27 @@ bool LitesqlView::OnClose(bool deleteWindow)
   return true;
 }
 
-void LitesqlView::OnCut(wxCommandEvent& WXUNUSED(event) )
-{
-  int y = 2;
-  int s=y;
-}
-
 void LitesqlView::OnGenerate(wxCommandEvent& WXUNUSED(event) )
 {
   wxGetApp().m_pGenerateViewTemplate->CreateView(GetDocument());
 
 }
+
+void LitesqlView::OnPageChanged(wxTreebookEvent& WXUNUSED(event))
+{
+  wxWindow *pPage = m_treebook->GetCurrentPage();
+  if (pPage)
+  {
+    pPage->TransferDataToWindow();
+  }
+}
+
+void LitesqlView::OnPageChanging(wxTreebookEvent& WXUNUSED(event))
+{
+  wxWindow *pPage = m_treebook->GetCurrentPage();
+  if (pPage)
+  {
+    pPage->TransferDataFromWindow();
+  }
+}
+

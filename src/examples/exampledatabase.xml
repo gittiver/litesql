@@ -6,6 +6,7 @@
         <field name="name" type="string"/>
         <field name="age" type="integer" default="15"/>
       <field name="image" type="blob"/>
+      <field name="aDoubleValue" type="double"/>
       <field name="sex" type="integer">
             <value name="Male" value="0"/>
             <value name="Female" value="1"/>

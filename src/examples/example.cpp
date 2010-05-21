@@ -23,6 +23,7 @@ int main(int argc, char **argv) {
         ExampleDatabase db("sqlite3", "database=example.db");
         // create tables, sequences and indexes
         db.verbose = true;
+        
         if (db.needsUpgrade())
         {
           db.upgrade();
@@ -35,6 +36,7 @@ int main(int argc, char **argv) {
         jeff.name = "Jeff";
         jeff.sex = Person::Sex::Male;
         jeff.age = 32;
+        jeff.aDoubleValue = 0.32;
         Blob image_jeff("abc",4);
         jeff.image = image_jeff;
         // store Jeff to database
