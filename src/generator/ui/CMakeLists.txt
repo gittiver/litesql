@@ -11,6 +11,7 @@ set(PROGRAM_visual_litesql_SOURCES
     LitesqlRelationPanel.cpp LitesqlRelationPanel.h
     LitesqlDatabasePanel.cpp LitesqlDatabasePanel.h
     LitesqlGeneratePanel.cpp LitesqlGeneratePanel.h
+    ddx.h
 )
 #		treelistctrl/include/wx/treelistctrl.h treelistctrl/src/treelistctrl.cpp
 
