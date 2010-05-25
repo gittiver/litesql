@@ -74,6 +74,7 @@ public:
        switch(type) {
        case A_field_type_integer:
        case A_field_type_float: 
+       case A_field_type_double: 
        case A_field_type_boolean: 
        case A_field_type_date:
        case A_field_type_time:
@@ -90,7 +91,15 @@ public:
         if (hasQuotedValues())
             return "\"" + default_ + "\"";
         if (default_.size() == 0)
-            return "0";
+        {
+          switch(type) {
+            case A_field_type_float: 
+            case A_field_type_double: 
+              return "0.0";
+            default:
+              return "0";
+          }
+        }
         return default_;
     }
     string getSQLType() const {
