@@ -67,6 +67,47 @@ FieldPanel::FieldPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, con
 	gSizer1->SetFlexibleDirection( wxBOTH );
 	gSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
+	lblName = new wxStaticText( this, wxID_ANY, _("Name"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblName->Wrap( -1 );
+	gSizer1->Add( lblName, 0, wxALL, 5 );
+	
+	m_textCtrlName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	gSizer1->Add( m_textCtrlName, 1, wxALL|wxEXPAND, 5 );
+	
+	lblInherits = new wxStaticText( this, wxID_ANY, _("Inherit From"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblInherits->Wrap( -1 );
+	gSizer1->Add( lblInherits, 0, wxALL, 5 );
+	
+	wxArrayString m_choiceInheritsFromChoices;
+	m_choiceInheritsFrom = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceInheritsFromChoices, 0 );
+	m_choiceInheritsFrom->SetSelection( 0 );
+	m_choiceInheritsFrom->SetMinSize( wxSize( 150,-1 ) );
+	
+	gSizer1->Add( m_choiceInheritsFrom, 1, wxALL|wxEXPAND, 5 );
+	
+	lblDefault = new wxStaticText( this, wxID_ANY, _("Default Value:"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblDefault->Wrap( -1 );
+	gSizer1->Add( lblDefault, 0, wxALL, 5 );
+	
+	m_textCtrlDefaultValue = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	gSizer1->Add( m_textCtrlDefaultValue, 1, wxALL|wxEXPAND, 5 );
+	
+	lblIndexed = new wxStaticText( this, wxID_ANY, _("Indexed"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblIndexed->Wrap( -1 );
+	gSizer1->Add( lblIndexed, 0, wxALL, 5 );
+	
+	m_checkBoxIndexed = new wxCheckBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	
+	gSizer1->Add( m_checkBoxIndexed, 0, wxALL, 5 );
+	
+	lblUnique = new wxStaticText( this, wxID_ANY, _("Unique"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblUnique->Wrap( -1 );
+	gSizer1->Add( lblUnique, 0, wxALL, 5 );
+	
+	m_checkBoxUnique = new wxCheckBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	
+	gSizer1->Add( m_checkBoxUnique, 0, wxALL, 5 );
+	
 	this->SetSizer( gSizer1 );
 	this->Layout();
 }

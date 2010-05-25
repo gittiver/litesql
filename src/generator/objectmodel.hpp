@@ -19,6 +19,10 @@ public:
    std::vector<xml::Object* > objects;
    std::vector<xml::Relation* > relations;
 };
+
+const char* toString(AT_field_type t);
+AT_field_type field_type(const char* value);
+
 }
 #endif //#ifndef objectmodel_hpp
 

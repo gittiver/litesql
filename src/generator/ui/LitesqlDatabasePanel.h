@@ -22,18 +22,14 @@ namespace ui {
     /** Constructor */
     LitesqlDatabasePanel( wxWindow* parent, xml::Database* db );
 
-    // validate the correctness of input, return true if ok
-    bool Validate();
-/*
     bool TransferDataToWindow()
     { return TransferData(true); }
 
     bool TransferDataFromWindow()
     { return TransferData(false); }
-*/
+
   protected:
     bool TransferData(bool toWindow);
-
 
   private:
     xml::Database* m_database;

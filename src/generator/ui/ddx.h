@@ -5,7 +5,21 @@
   if (toWindow) { \
   (textControl)->SetValue(stringVar); \
   } else { \
-   (stringVar)= (textControl)->GetValue();\
+   (stringVar)=(textControl)->GetValue();\
+  }
+  
+#define TRANSFER_CHOICE(choiceCtrl,stringVar,toWindow) \
+  if (toWindow) { \
+  (choiceCtrl)->SetStringSelection(stringVar()); \
+  } else { \
+   stringVar((choiceCtrl)->GetStringSelection());\
+  }
+
+#define TRANSFER_BOOL(checkBoxCtrl,boolValue,toWindow) \
+  if (toWindow) { \
+  (checkBoxCtrl)->SetValue(boolValue()); \
+  } else { \
+   boolValue((checkBoxCtrl)->GetValue());\
   }
 
 class TransferableData {

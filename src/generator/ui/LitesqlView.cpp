@@ -72,7 +72,7 @@ void FillTree (litesql::ObjectModel* pModel,wxTreebook* pTree)
       field++)
     {
       wxString fname((*field)->name.c_str(),wxConvUTF8);
-      pTree->InsertSubPage(subPagePos,new LitesqlFieldPanel(pTree, *field),fname +_("(Field)"));
+      pTree->InsertSubPage(subPagePos,new LitesqlFieldPanel(pTree, new uiField(*field)),fname +_("(Field)"));
       pagePos++;
     }
   }

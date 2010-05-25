@@ -10,7 +10,7 @@ using namespace xml;
 #define xmlStrcasecmp(s1,s2)  ((s1==NULL) ? (s2!=NULL) : strcmp(s1,s2))
 #define xmlStrEqual(s1,s2)   (!strcmp(s1,s2))
 
-static const char* toString(AT_field_type t)
+const char* litesql::toString(AT_field_type t)
 {
   switch (t) 
   {
@@ -30,28 +30,15 @@ static const char* toString(AT_field_type t)
     return "date";
   case A_field_type_datetime:
     return "datetime";
-  case A_field_type_blob: return "blob";
+  case A_field_type_blob: 
+    return "blob";
 
   default: 
     return "unknown";   
   }
 }
 
-static const char* toString(AT_relate_limit t)
-{
-  switch (t) 
-  {
-  case A_relate_limit_one:
-    return "one";
-  case A_relate_limit_many:
-    return "many";
-  case AU_relate_limit:
-  default:
-    return "unknown";   
-  }
-}
-
-static AT_field_type field_type(const XML_Char* value)
+AT_field_type litesql::field_type(const char* value)
 {
   AT_field_type t;
 
@@ -97,6 +84,21 @@ static AT_field_type field_type(const XML_Char* value)
   }
   return t;
 }
+
+static const char* toString(AT_relate_limit t)
+{
+  switch (t) 
+  {
+  case A_relate_limit_one:
+    return "one";
+  case A_relate_limit_many:
+    return "many";
+  case AU_relate_limit:
+  default:
+    return "unknown";   
+  }
+}
+
 
 static AT_field_unique field_unique(const XML_Char* value)
 {

@@ -21,6 +21,7 @@
 #include <wx/choice.h>
 #include <wx/sizer.h>
 #include <wx/panel.h>
+#include <wx/checkbox.h>
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/filepicker.h>
@@ -58,9 +59,19 @@ namespace ui
 		private:
 		
 		protected:
+			wxStaticText* lblName;
+			wxTextCtrl* m_textCtrlName;
+			wxStaticText* lblInherits;
+			wxChoice* m_choiceInheritsFrom;
+			wxStaticText* lblDefault;
+			wxTextCtrl* m_textCtrlDefaultValue;
+			wxStaticText* lblIndexed;
+			wxCheckBox* m_checkBoxIndexed;
+			wxStaticText* lblUnique;
+			wxCheckBox* m_checkBoxUnique;
 		
 		public:
-			FieldPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,120 ), long style = wxTAB_TRAVERSAL );
+			FieldPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,164 ), long style = wxTAB_TRAVERSAL );
 			~FieldPanel();
 		
 	};

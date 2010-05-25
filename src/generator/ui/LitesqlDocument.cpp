@@ -22,13 +22,31 @@
 
 #include "LitesqlDocument.h"
 
-#include "objectmodel.hpp"
 #include "litesql-gen-xml.hpp"
 
 IMPLEMENT_DYNAMIC_CLASS(LitesqlDocument, wxDocument)
 
 using namespace std;
 using namespace litesql;
+
+bool uiField::isEditable()const  
+{
+  return (m_pField->name!="id") && (m_pField->name!="type");
+}
+
+const wxString FTSTRING[] = { 
+               _("boolean"),
+               _("integer"),
+               _("string"),
+               _("float"),
+               _("double"),
+               _("time"),
+               _("date"),
+               _("datetime"),
+               _("blob") 
+};  
+
+const wxArrayString uiField::FIELDTYPES(sizeof(FTSTRING)/sizeof(wxString),FTSTRING);
 
 LitesqlDocument::LitesqlDocument(void)
 {
