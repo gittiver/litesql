@@ -14,7 +14,6 @@ set(libmodel_SOURCES
 
 set(litesql-gen_SOURCES 
 			litesql-gen-main.cpp 
-			litesql-gen-main.hpp 
 	)
 
 set(ddl2litesql_SOURCES 

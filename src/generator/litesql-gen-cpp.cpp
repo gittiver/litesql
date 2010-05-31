@@ -340,7 +340,7 @@ void writeStaticObjData(Class& cl, const xml::Object& o) {
     }
 }
 void writeObjFields(Class & cl, const xml::Object & o) {
-    Method init("initValues", "void");
+  gen::Method init("initValues", "void");
     bool hasValues = false;
     string ftypeClass ="const litesql::FieldType";
 
@@ -377,7 +377,7 @@ void writeObjFields(Class & cl, const xml::Object & o) {
         if (!fld.values.empty()) {
             ftypeClass = fld.fieldTypeName + "Type";
             Class ftypeCl(ftypeClass, "litesql::FieldType");
-            Method cons(ftypeClass);
+            gen::Method cons(ftypeClass);
             ftypeClass = "const " + o.name + "::" + ftypeClass;
             cons.param(Variable("n", "const std::string&"))
                 .param(Variable("t", "const std::string&"))
@@ -427,7 +427,7 @@ void writeObjFields(Class & cl, const xml::Object & o) {
         cl.method(init);
 }
 void writeObjConstructors(Class& cl, const xml::Object& o) {
-    Method defaults("defaults", "void");
+  gen::Method defaults("defaults", "void");
     defaults.protected_();
     bool hasDefaults = false;
     for (size_t i = 0; i < o.fields.size(); i++) {
@@ -438,7 +438,7 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
     } 
 
     
-    Method cons1(o.name); // Object(const Database &)
+    gen::Method cons1(o.name); // Object(const Database &)
     string consParams = o.inherits + "(db)";
     string cons2Params = o.inherits + "(db, rec)";
     if (o.fields.size() > 0) {
@@ -457,7 +457,7 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
     if (hasDefaults)
         cons1.body("defaults();");
     
-    Method cons2(o.name); // Object(const Database &, const Record& row
+    gen::Method cons2(o.name); // Object(const Database &, const Record& row
     cons2.param(Variable("db", "const litesql::Database&"))
         .param(Variable("rec", "const litesql::Record&"))
         .constructor(cons2Params);
@@ -483,7 +483,7 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
         cons2.body("}");
     }
     
-    Method cons3(o.name); // Object(const Object& obj);
+    gen::Method cons3(o.name); // Object(const Object& obj);
     string consParams3 = o.inherits + "(obj)";    
     if (o.fields.size() > 0) {
         Split fieldCopy;
@@ -498,7 +498,7 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
     if (hasDefaults)
         cl.method(defaults);
     
-    Method assign("operator=", "const " + o.name + "&");
+    gen::Method assign("operator=", "const " + o.name + "&");
     assign.param(Variable("obj", "const " + o.name + "&"));
     if (o.fields.size() > 0) {
         assign.body("if (this != &obj) {");
@@ -522,12 +522,12 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
         string className = xml::capitalize(handle.name) + "Handle";
         Class hcl(className,
                   "litesql::RelationHandle<" + o.name + ">");
-        Method cons(className);
+        gen::Method cons(className);
         cons.param(Variable("owner", "const " + o.name + "&")).
             constructor("litesql::RelationHandle<" + o.name + ">(owner)");
         
-        Method link("link", "void");
-        Method unlink("unlink", "void");
+        gen::Method link("link", "void");
+        gen::Method unlink("unlink", "void");
         Split params;
         params.push_back("owner->getDatabase()");
         params.resize(1 + rel->related.size());
@@ -556,7 +556,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
         unlink.body(rel->getName() + "::unlink(" + params.join(", ") + ");");
         Variable exprParam("expr", "const litesql::Expr&", "litesql::Expr()");
         Variable srcExprParam("srcExpr", "const litesql::Expr&", "litesql::Expr()");
-        Method del("del", "void");
+        gen::Method del("del", "void");
         params.clear();
         params.push_back("owner->getDatabase()");
         params.push_back("expr && " + rel->getName() 
@@ -569,7 +569,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
         if (handle.destObjects.size() == 1) {
             xml::Object* dest = handle.destObjects[0].first;
             xml::Relate* relate = handle.destObjects[0].second;
-            Method get("get", "litesql::DataSource<" + dest->name + ">");
+            gen::Method get("get", "litesql::DataSource<" + dest->name + ">");
             get.param(exprParam).param(srcExprParam);
             
             params.clear();
@@ -585,14 +585,14 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
             hcl.method(get);
         } else {
             if (rel->sameTypes() <= 2) {
-                Method getTpl("get", "litesql::DataSource<T>");
+                gen::Method getTpl("get", "litesql::DataSource<T>");
                 getTpl.template_("class T").defineOnly()
                     .param(exprParam).param(srcExprParam);
                 hcl.method(getTpl);                
                 for (size_t i2 = 0; i2 < handle.destObjects.size(); i2++) {
                     xml::Object* dest = handle.destObjects[i2].first;
                     xml::Relate* relate = handle.destObjects[i2].second;
-                    Method get("get", 
+                    gen::Method get("get", 
                                "litesql::DataSource<" + dest->name + ">");
                     get.templateSpec("").param(exprParam).param(srcExprParam);
                     params.clear();
@@ -609,7 +609,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
                     xml::Object* dest = handle.destObjects[i2].first;
                     xml::Relate* relate = handle.destObjects[i2].second;
                     string num = toString(i2 + 1);
-                    Method get("get" + dest->name + num, 
+                    gen::Method get("get" + dest->name + num, 
                                "litesql::DataSource<" + dest->name + ">");
                     get.param(exprParam).param(srcExprParam);
                     params.clear();
@@ -623,7 +623,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
                 }
             }
         }
-        Method getRows("getRows", "litesql::DataSource<" 
+        gen::Method getRows("getRows", "litesql::DataSource<" 
                        + rel->getName() + "::Row>");
         getRows.param(exprParam)
             .body("return " + rel->getName()
@@ -633,13 +633,13 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
                   " == owner->id));");
         hcl.method(getRows);
         cl.class_(hcl);
-        Method hdlMethod(handle.name, o.name + "::" + className);
+        gen::Method hdlMethod(handle.name, o.name + "::" + className);
         hdlMethod.body("return " + o.name + "::" +  className + "(*this);");
         cl.method(hdlMethod);
     }
 }
 void writeObjBaseMethods(Class& cl, const xml::Object& o) {
-    Method insert("insert", "std::string");
+    gen::Method insert("insert", "std::string");
     insert.protected_()
         .param(Variable("tables", "litesql::Record&"))
         .param(Variable("fieldRecs", "litesql::Records&"))
@@ -669,7 +669,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
                     + "sequence__);");
 
 
-    Method create("create", "void");
+    gen::Method create("create", "void");
     create.protected_();
     create.body("litesql::Record tables;")
         .body("litesql::Records fieldRecs;")
@@ -680,7 +680,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
         .body("    id = newID;");
 
 
-    Method addUpdates("addUpdates", "void");
+    gen::Method addUpdates("addUpdates", "void");
     addUpdates.protected_().virtual_()
         .param(Variable("updates", "Updates&"))
         .body("prepareUpdate(updates, table__);");
@@ -690,7 +690,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
     }
     if (o.parentObject) 
         addUpdates.body(o.inherits + "::addUpdates(updates);");
-    Method addIDUpdates("addIDUpdates", "void");    
+    gen::Method addIDUpdates("addIDUpdates", "void");    
     addIDUpdates.protected_().virtual_()
         .param(Variable("updates", "Updates&"));
     if (o.parentObject) {
@@ -701,7 +701,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
             addIDUpdates.body(o.inherits + "::addIDUpdates(updates);");
     }
     
-    Method getFieldTypes("getFieldTypes", "void");
+    gen::Method getFieldTypes("getFieldTypes", "void");
     getFieldTypes.static_().
         param(Variable("ftypes", "std::vector<litesql::FieldType>&"));
     if (o.parentObject) 
@@ -709,7 +709,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
     for (size_t i = 0; i < o.fields.size(); i++)
         getFieldTypes.body("ftypes.push_back(" + o.fields[i]->fieldTypeName + ");");
     
-    Method update("update", "void");
+    gen::Method update("update", "void");
     update.virtual_()
         .body("if (!inDatabase) {")
         .body("    create();")
@@ -730,12 +730,12 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
         .body("litesql::Persistent::update(updates);")
         .body("oldKey = id;");
 
-    Method delRecord("delRecord", "void");
+    gen::Method delRecord("delRecord", "void");
     delRecord.protected_().virtual_()
         .body("deleteFromTable(table__, id);");
     if (o.parentObject)
         delRecord.body(o.inherits + "::delRecord();");
-    Method delRelations("delRelations", "void");
+    gen::Method delRelations("delRelations", "void");
     delRelations.protected_().virtual_();
     for (map<xml::Relation*, vector<xml::Relate*> >::const_iterator i = 
              o.relations.begin(); i != o.relations.end(); i++) {
@@ -750,7 +750,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
         
     
 
-    Method del("del", "void");
+    gen::Method del("del", "void");
     del.virtual_()
         .body("if (typeIsCorrect() == false) {")
         .body("    std::auto_ptr<" + o.name + "> p(upcastCopy());")
@@ -764,11 +764,11 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
         .body("inDatabase = false;");
 
 
-    Method typeIsCorrect("typeIsCorrect", "bool");    
+    gen::Method typeIsCorrect("typeIsCorrect", "bool");    
     typeIsCorrect.body("return type == type__;").virtual_();
     
-    Method upcast("upcast", "std::auto_ptr<" + o.name + ">");
-    Method upcastCopy("upcastCopy", "std::auto_ptr<" + o.name + ">");
+    gen::Method upcast("upcast", "std::auto_ptr<" + o.name + ">");
+    gen::Method upcastCopy("upcastCopy", "std::auto_ptr<" + o.name + ">");
     Split childrenNames;
     o.getChildrenNames(childrenNames);
     
@@ -803,7 +803,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
 
     for (size_t i = 0; i < o.methods.size(); i++) {
         const xml::Method& m = *o.methods[i];
-        Method mtd(m.name, m.returnType.empty() ? "void" : m.returnType);
+        gen::Method mtd(m.name, m.returnType.empty() ? "void" : m.returnType);
         for (size_t i2 = 0; i2 < m.params.size(); i2++) {
             const xml::Param& p = m.params[i2];
             mtd.param(Variable(p.name, p.type));
@@ -825,7 +825,7 @@ void writeStaticRelData(Class& cl, const xml::Relation& r) {
                    quote(r.getTable()));
     table.static_();
     cl.variable(table);
-    Method initValues("initValues", "void");
+    gen::Method initValues("initValues", "void");
     bool hasValues = false;
     initValues.static_();
     for (size_t i2 = 0; i2 < r.related.size(); i2++) {
@@ -861,7 +861,7 @@ void writeStaticRelData(Class& cl, const xml::Relation& r) {
         if (!fld.values.empty()) {
             ftypeClass = fld.fieldTypeName + "Type";
             Class ftypeCl(ftypeClass, "litesql::FieldType");
-            Method cons(ftypeClass);
+            gen::Method cons(ftypeClass);
    	        ftypeClass = "const " + r.getName() + "::" + ftypeClass;
             cons.param(Variable("n", "const std::string&"))
                 .param(Variable("t", "const std::string&"))
@@ -892,7 +892,7 @@ void writeStaticRelData(Class& cl, const xml::Relation& r) {
     if (hasValues)
         cl.method(initValues);
     Class rowcl("Row");
-    Method rowcons("Row");
+    gen::Method rowcons("Row");
     rowcons.param(Variable("db", "const litesql::Database&"))
         .param(Variable("rec", "const litesql::Record&", "litesql::Record()"));
 //        .constructor("litesql::Record(db, rec)");
@@ -938,10 +938,10 @@ void writeRelMethods(const xml::Database& database,
                        "litesql::Expr()");
     Variable srcExpr("srcExpr", "const litesql::Expr&", 
                        "litesql::Expr()");
-    Method link("link", "void");
-    Method unlink("unlink", "void");
-    Method del("del", "void");
-    Method getRows("getRows", 
+    gen::Method link("link", "void");
+    gen::Method unlink("unlink", "void");
+    gen::Method del("del", "void");
+    gen::Method getRows("getRows", 
                    "litesql::DataSource<"+r.getName()+"::Row>");
     
     link.static_().param(dbparam);
@@ -1041,13 +1041,13 @@ void writeRelMethods(const xml::Database& database,
     }
     cl.method(link).method(unlink).method(del).method(getRows);
     if (r.sameTypes() == 1) {
-        Method getTpl("get", "litesql::DataSource<T>");
+        gen::Method getTpl("get", "litesql::DataSource<T>");
         getTpl.static_().template_("class T").defineOnly()
             .param(dbparam).param(destExpr).param(srcExpr);
         cl.method(getTpl);
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
             xml::Relate& rel = *r.related[i2];
-            Method get("get", "litesql::DataSource<" 
+            gen::Method get("get", "litesql::DataSource<" 
                        + database.nspace + "::" + rel.objectName + ">");
             rel.getMethodName = "get<" + rel.objectName + ">";
             get.static_().templateSpec("")
@@ -1072,7 +1072,7 @@ void writeRelMethods(const xml::Database& database,
                 num = toString(counter[rel.objectName]);        
             }
             rel.getMethodName = "get" + rel.objectName + num;
-            Method get(rel.getMethodName, 
+            gen::Method get(rel.getMethodName, 
                        "litesql::DataSource<" + database.nspace + "::" 
                         + rel.objectName + ">");
 
@@ -1099,7 +1099,7 @@ void writeRelMethods(const xml::Database& database,
 void getSchema(const xml::Database& db,
                //const vector<xml::Object*>& objects,
 //               const vector<xml::Relation*>& relations,
-               Method& mtd) {    
+gen::Method& mtd) {    
 //    Records recs;
     Split rec;
     mtd.body("vector<Database::SchemaItem> res;");
@@ -1163,7 +1163,7 @@ void writeDatabaseClass(FILE* hpp, FILE* cpp,
     getSchemaMtd.body("return res;");
 
     db.method(getSchemaMtd);
-    Method init("initialize", "void");
+    gen::Method init("initialize", "void");
     init.body("static bool initialized = false;")
         .body("if (initialized)")
         .body("    return;")
