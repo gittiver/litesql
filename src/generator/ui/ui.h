@@ -77,6 +77,23 @@ namespace ui
 	};
 	
 	///////////////////////////////////////////////////////////////////////////////
+	/// Class MethodPanel
+	///////////////////////////////////////////////////////////////////////////////
+	class MethodPanel : public wxPanel 
+	{
+		private:
+		
+		protected:
+			wxStaticText* lblName;
+			wxTextCtrl* m_textCtrlName;
+		
+		public:
+			MethodPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,164 ), long style = wxTAB_TRAVERSAL );
+			~MethodPanel();
+		
+	};
+	
+	///////////////////////////////////////////////////////////////////////////////
 	/// Class RelationPanel
 	///////////////////////////////////////////////////////////////////////////////
 	class RelationPanel : public wxPanel 
@@ -84,12 +101,33 @@ namespace ui
 		private:
 		
 		protected:
-			wxStaticText* m_staticText2;
-			wxTextCtrl* m_textCtrl2;
+			wxStaticText* lblName;
+			wxTextCtrl* m_textCtrlName;
 		
 		public:
 			RelationPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,120 ), long style = wxTAB_TRAVERSAL );
 			~RelationPanel();
+		
+	};
+	
+	///////////////////////////////////////////////////////////////////////////////
+	/// Class DatabasePanel
+	///////////////////////////////////////////////////////////////////////////////
+	class DatabasePanel : public wxPanel 
+	{
+		private:
+		
+		protected:
+			wxStaticText* m_staticName;
+			wxTextCtrl* m_textName;
+			wxStaticText* m_staticNamespace;
+			wxTextCtrl* m_textNamespace;
+			wxStaticText* m_staticInclude;
+			wxTextCtrl* m_textInclude;
+		
+		public:
+			DatabasePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,120 ), long style = wxTAB_TRAVERSAL );
+			~DatabasePanel();
 		
 	};
 	
@@ -133,27 +171,6 @@ namespace ui
 		public:
 			GeneratePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 400,210 ), long style = wxTAB_TRAVERSAL );
 			~GeneratePanel();
-		
-	};
-	
-	///////////////////////////////////////////////////////////////////////////////
-	/// Class DatabasePanel
-	///////////////////////////////////////////////////////////////////////////////
-	class DatabasePanel : public wxPanel 
-	{
-		private:
-		
-		protected:
-			wxStaticText* m_staticName;
-			wxTextCtrl* m_textName;
-			wxStaticText* m_staticNamespace;
-			wxTextCtrl* m_textNamespace;
-			wxStaticText* m_staticInclude;
-			wxTextCtrl* m_textInclude;
-		
-		public:
-			DatabasePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,120 ), long style = wxTAB_TRAVERSAL );
-			~DatabasePanel();
 		
 	};
 	

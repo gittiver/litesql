@@ -28,11 +28,19 @@ protected:
     void OnPageChanged(wxTreebookEvent& event);
     void OnPageChanging(wxTreebookEvent& event);
 
+    void OnContextMenu(wxContextMenuEvent& event);
+    
+    void OnAddObject(wxCommandEvent& event );
+    void OnRemoveObject(wxCommandEvent& event );
     void OnGenerate(wxCommandEvent& event );
 
+    wxMenu* GetContextMenu();
 private:
     DECLARE_DYNAMIC_CLASS(LitesqlView)
     DECLARE_EVENT_TABLE()
+
+    wxMenu* m_ctxMenu;
+
 };
 
 #endif // #ifndef LITESQL_VIEW_H

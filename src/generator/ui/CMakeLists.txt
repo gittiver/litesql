@@ -6,8 +6,9 @@ set(PROGRAM_visual_litesql_SOURCES
 		LitesqlView.h LitesqlView.cpp
 		GenerateView.h GenerateView.cpp
     ui.cpp ui.h
-    LitesqlFieldPanel.cpp LitesqlFieldPanel.h
     LitesqlObjectPanel.cpp LitesqlObjectPanel.h
+    LitesqlFieldPanel.cpp LitesqlFieldPanel.h
+    LitesqlMethodPanel.cpp LitesqlMethodPanel.h
     LitesqlRelationPanel.cpp LitesqlRelationPanel.h
     LitesqlDatabasePanel.cpp LitesqlDatabasePanel.h
     LitesqlGeneratePanel.cpp LitesqlGeneratePanel.h

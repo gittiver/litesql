@@ -11,6 +11,8 @@ class VisualLitesqlApp : public wxApp
 public:
   enum {
         ID_GENERATE = wxID_HIGHEST+1,
+        ID_ADD_OBJECT,
+        ID_REMOVE_OBJECT,
         ID_ABOUT 
         };
     VisualLitesqlApp(void); 
