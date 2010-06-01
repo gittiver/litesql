@@ -29,15 +29,26 @@
 
 #include "objectmodel.hpp"
 
-
 IMPLEMENT_DYNAMIC_CLASS(LitesqlView, wxView)
 
 BEGIN_EVENT_TABLE(LitesqlView, wxView)
   EVT_SIZE(OnSize) 
   EVT_MENU(VisualLitesqlApp::ID_GENERATE, LitesqlView::OnGenerate)
-  EVT_MENU(VisualLitesqlApp::ID_ADD_OBJECT, LitesqlView::OnAddObject)
-  EVT_MENU(VisualLitesqlApp::ID_REMOVE_OBJECT, LitesqlView::OnRemoveObject)
+
+  EVT_MENU(VisualLitesqlApp::ID_ADD_OBJECT,     LitesqlView::OnAddObject)
+  EVT_MENU(VisualLitesqlApp::ID_REMOVE_OBJECT,  LitesqlView::OnRemoveObject)
+
+  EVT_MENU(VisualLitesqlApp::ID_ADD_METHOD,     LitesqlView::OnAddMethod)
+  EVT_MENU(VisualLitesqlApp::ID_REMOVE_METHOD,  LitesqlView::OnRemoveMethod)
+
+  EVT_MENU(VisualLitesqlApp::ID_ADD_RELATED,    LitesqlView::OnAddRelated)
+  EVT_MENU(VisualLitesqlApp::ID_REMOVE_RELATED, LitesqlView::OnRemoveRelated)
+
+  EVT_MENU(VisualLitesqlApp::ID_ADD_RELATION,   LitesqlView::OnAddRelation)
+  EVT_MENU(VisualLitesqlApp::ID_REMOVE_RELATION,LitesqlView::OnRemoveRelation)
+
   EVT_CONTEXT_MENU(LitesqlView::OnContextMenu)
+  
   EVT_TREEBOOK_PAGE_CHANGED(wxID_ANY, LitesqlView::OnPageChanged)
   EVT_TREEBOOK_PAGE_CHANGING(wxID_ANY, LitesqlView::OnPageChanging)
 
@@ -219,6 +230,24 @@ void LitesqlView::OnRemoveObject(wxCommandEvent& WXUNUSED(event) )
   GetDocument()->Modify(true);
   GetDocument()->UpdateAllViews(this,NULL);
 }
+
+void LitesqlView::OnAddMethod(wxCommandEvent& WXUNUSED(event) )
+{}
+
+void LitesqlView::OnRemoveMethod(wxCommandEvent& WXUNUSED(event) )
+{}
+
+void LitesqlView::OnAddRelated(wxCommandEvent& WXUNUSED(event) )
+{}
+
+void LitesqlView::OnRemoveRelated(wxCommandEvent& WXUNUSED(event) )
+{}
+
+void LitesqlView::OnAddRelation(wxCommandEvent& WXUNUSED(event) )
+{}
+
+void LitesqlView::OnRemoveRelation(wxCommandEvent& WXUNUSED(event) )
+{}
 
 void LitesqlView::OnGenerate(wxCommandEvent& WXUNUSED(event) )
 {

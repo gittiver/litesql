@@ -13,6 +13,15 @@ public:
         ID_GENERATE = wxID_HIGHEST+1,
         ID_ADD_OBJECT,
         ID_REMOVE_OBJECT,
+        ID_ADD_FIELD,
+        ID_REMOVE_FIELD,
+        ID_ADD_METHOD,
+        ID_REMOVE_METHOD,
+        ID_ADD_RELATED,
+        ID_REMOVE_RELATED,
+        ID_ADD_RELATION,
+        ID_REMOVE_RELATION,
+
         ID_ABOUT 
         };
     VisualLitesqlApp(void); 

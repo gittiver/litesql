@@ -32,6 +32,16 @@ protected:
     
     void OnAddObject(wxCommandEvent& event );
     void OnRemoveObject(wxCommandEvent& event );
+
+    void OnAddMethod(wxCommandEvent& );
+    void OnRemoveMethod(wxCommandEvent& );
+
+    void OnAddRelated(wxCommandEvent&);
+    void OnRemoveRelated(wxCommandEvent&);
+
+    void OnAddRelation(wxCommandEvent&);
+    void OnRemoveRelation(wxCommandEvent&);
+
     void OnGenerate(wxCommandEvent& event );
 
     wxMenu* GetContextMenu();
