@@ -38,6 +38,9 @@ BEGIN_EVENT_TABLE(LitesqlView, wxView)
   EVT_MENU(VisualLitesqlApp::ID_ADD_OBJECT,     LitesqlView::OnAddObject)
   EVT_MENU(VisualLitesqlApp::ID_REMOVE_OBJECT,  LitesqlView::OnRemoveObject)
 
+  EVT_MENU(VisualLitesqlApp::ID_ADD_FIELD,     LitesqlView::OnAddField)
+  EVT_MENU(VisualLitesqlApp::ID_REMOVE_FIELD,  LitesqlView::OnRemoveField)
+
   EVT_MENU(VisualLitesqlApp::ID_ADD_METHOD,     LitesqlView::OnAddMethod)
   EVT_MENU(VisualLitesqlApp::ID_REMOVE_METHOD,  LitesqlView::OnRemoveMethod)
 
@@ -56,6 +59,7 @@ END_EVENT_TABLE()
 
 using namespace xml;
 using namespace litesql;
+using namespace ui;
 
 LitesqlView::LitesqlView() 
   : m_ctxMenu(NULL),
@@ -77,6 +81,18 @@ wxMenu* LitesqlView::GetContextMenu()
     m_ctxMenu = new wxMenu;
     m_ctxMenu->Append(VisualLitesqlApp::ID_ADD_OBJECT,_("Add Object ..."));
     m_ctxMenu->Append(VisualLitesqlApp::ID_REMOVE_OBJECT,_("Remove Object ..."));
+    m_ctxMenu->AppendSeparator();
+    m_ctxMenu->Append(VisualLitesqlApp::ID_ADD_FIELD,_("Add Field..."));
+    m_ctxMenu->Append(VisualLitesqlApp::ID_REMOVE_FIELD,_("Remove Field ..."));
+    m_ctxMenu->AppendSeparator();
+    m_ctxMenu->Append(VisualLitesqlApp::ID_ADD_METHOD,_("Add Method ..."));
+    m_ctxMenu->Append(VisualLitesqlApp::ID_REMOVE_METHOD,_("Remove Method..."));
+    m_ctxMenu->AppendSeparator();
+    m_ctxMenu->Append(VisualLitesqlApp::ID_ADD_RELATED,_("Add Related..."));
+    m_ctxMenu->Append(VisualLitesqlApp::ID_REMOVE_RELATED,_("Remove Related ..."));
+    m_ctxMenu->AppendSeparator();
+    m_ctxMenu->Append(VisualLitesqlApp::ID_ADD_RELATION,_("Add Relation..."));
+    m_ctxMenu->Append(VisualLitesqlApp::ID_REMOVE_RELATION,_("Remove Relation ..."));
   }
 
   // \TODO change menu on selected item
@@ -95,7 +111,7 @@ static void FillTree (ObjectModel* pModel,wxTreebook* pTree)
   for( vector<Object*>::iterator it = pModel->objects.begin(); it != pModel->objects.end();it++)
   {
     wxString name((*it)->name.c_str(),wxConvUTF8);
-    pTree->AddSubPage(new LitesqlObjectPanel(pTree,*it),name +_("(Object)"));
+    pTree->AddSubPage(new LitesqlObjectPanel(pTree,pModel->objects,*it),name +_("(Object)"));
 
     int subPagePos=pagePos++;
 
@@ -213,9 +229,10 @@ void LitesqlView::OnContextMenu(wxContextMenuEvent& event)
   }
 }
 
+
 void LitesqlView::OnAddObject(wxCommandEvent& WXUNUSED(event) )
 {
-  wxMessageBox(_("OnAddObject"));
+//  wxMessageBox(_("OnAddObject"));
   ObjectModel* pModel = ((LitesqlDocument*) GetDocument())->GetModel();
   Object* newObject = new Object("newObject","");
   pModel->objects.push_back(newObject);
@@ -229,6 +246,50 @@ void LitesqlView::OnRemoveObject(wxCommandEvent& WXUNUSED(event) )
   wxMessageBox(_("OnRemoveObject"));
   GetDocument()->Modify(true);
   GetDocument()->UpdateAllViews(this,NULL);
+}
+
+void LitesqlView::OnAddField(wxCommandEvent& WXUNUSED(event) )
+{
+  wxWindow *pPage = m_treebook->GetCurrentPage();
+  if (!pPage) 
+  {
+  
+  }
+  else if (pPage->IsKindOf(CLASSINFO(LitesqlObjectPanel)))
+  {
+    xml::Field* newField = new xml::Field("newField",AU_field_type,"",AU_field_indexed,AU_field_unique);
+    ((LitesqlObjectPanel*)pPage)->GetObject()->fields.push_back(newField);
+    m_treebook->InsertSubPage(  m_treebook->GetSelection(),
+                                new LitesqlFieldPanel(m_treebook, new uiField(newField)),_("newField(Field)"),
+                                true);
+      GetDocument()->Modify(true);
+//      GetDocument()->UpdateAllViews(this,NULL);
+  }
+  else
+  {
+  
+  }
+}
+
+void LitesqlView::OnRemoveField(wxCommandEvent& WXUNUSED(event) )
+{
+  wxWindow *pPage = m_treebook->GetCurrentPage();
+  if (!pPage) 
+  {
+  
+  }
+  else if (pPage->IsKindOf(CLASSINFO(LitesqlFieldPanel)))
+  {
+    int sel = m_treebook->GetSelection();
+
+    ((LitesqlDocument*) GetDocument())->RemoveField(((LitesqlFieldPanel*)pPage)->GetField());
+  }
+  else
+  {
+  
+  }
+
+
 }
 
 void LitesqlView::OnAddMethod(wxCommandEvent& WXUNUSED(event) )
@@ -252,11 +313,11 @@ void LitesqlView::OnRemoveRelation(wxCommandEvent& WXUNUSED(event) )
 void LitesqlView::OnGenerate(wxCommandEvent& WXUNUSED(event) )
 {
   wxGetApp().m_pGenerateViewTemplate->CreateView(GetDocument());
-
 }
 
 void LitesqlView::OnPageChanged(wxTreebookEvent& WXUNUSED(event))
 {
+  
   wxWindow *pPage = m_treebook->GetCurrentPage();
   if (pPage)
   {

@@ -17,6 +17,7 @@ public:
 
 
 protected:
+    wxPanel* GetSelectedPage();
 
     bool OnCreate(wxDocument *doc, long flags);
     void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
@@ -33,8 +34,11 @@ protected:
     void OnAddObject(wxCommandEvent& event );
     void OnRemoveObject(wxCommandEvent& event );
 
-    void OnAddMethod(wxCommandEvent& );
-    void OnRemoveMethod(wxCommandEvent& );
+    void OnAddField(wxCommandEvent& event);
+    void OnRemoveField(wxCommandEvent& event);
+
+    void OnAddMethod(wxCommandEvent& event);
+    void OnRemoveMethod(wxCommandEvent& event);
 
     void OnAddRelated(wxCommandEvent&);
     void OnRemoveRelated(wxCommandEvent&);

@@ -17,17 +17,20 @@ public:
 	/** Constructor */
   LitesqlFieldPanel( wxWindow* parent , uiField* pField);
 
-  bool TransferDataToWindow()
-    { return TransferData(true); }
-
-    bool TransferDataFromWindow()
-    { return TransferData(false); }
+  bool TransferDataToWindow()    { return TransferData(true); }
+  bool TransferDataFromWindow()  { return TransferData(false); }
+  
+  uiField* GetField()          { return m_pField; }
 
 protected:
   bool TransferData(bool toWindow);
 
 private:
+  LitesqlFieldPanel() : ui::FieldPanel(NULL) {};
+  DECLARE_DYNAMIC_CLASS(LitesqlFieldPanel);
+  
   uiField* m_pField;
+  
 };
 
 #endif // __LitesqlFieldPanel__

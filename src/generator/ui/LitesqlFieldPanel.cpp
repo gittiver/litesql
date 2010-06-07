@@ -3,6 +3,8 @@
 
 using namespace xml;
 
+IMPLEMENT_DYNAMIC_CLASS(LitesqlFieldPanel,ui::FieldPanel)
+
 LitesqlFieldPanel::LitesqlFieldPanel( wxWindow* parent , uiField* pField)
 :
 FieldPanel( parent ),

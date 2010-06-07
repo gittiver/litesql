@@ -1,6 +1,23 @@
 #ifndef DDX_H
 #define DDX_H
 
+static void transfer_text(wxTextCtrl* textControl,std::string& stringVar,bool toWindow) {
+  if (toWindow) { 
+  (textControl)->SetValue(stringVar); 
+  } else { 
+   (stringVar)=(textControl)->GetValue();
+  }
+}
+
+static void transfer_choice(wxChoice *choiceCtrl,std::string &stringVar,bool toWindow) 
+{
+  if (toWindow) { 
+    choiceCtrl->SetStringSelection(stringVar); 
+  } else { 
+   stringVar = choiceCtrl->GetStringSelection();
+  }
+}
+
 #define TRANSFER_TEXT(textControl,stringVar,toWindow) \
   if (toWindow) { \
   (textControl)->SetValue(stringVar); \

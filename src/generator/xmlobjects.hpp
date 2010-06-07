@@ -58,7 +58,7 @@ public:
     AT_field_indexed indexed;
     AT_field_unique unique;
     vector<Value> values;
-    Field(const string& n, AT_field_type t, string d, AT_field_indexed i, AT_field_unique u) 
+    Field(const string& n, AT_field_type t, const string& d, AT_field_indexed i, AT_field_unique u) 
         : name(n), fieldTypeName(capitalize(n)), type(t), default_(d), indexed(i), unique(u) {
     }
     void value(const Value& v) {

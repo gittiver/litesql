@@ -663,3 +663,38 @@ bool ObjectModel::loadFromFile(const std::string& filename)
   }
   return successfulParsed;
 }
+
+bool ObjectModel::remove(xml::Field* field)
+{
+  if (field!=NULL)
+  {  
+    std::vector<Field*>::iterator found;
+    for ( std::vector<xml::Object* >::iterator it=objects.begin();
+          it !=objects.end();
+          it++)
+    {
+      found = find((*it)->fields.begin(),(*it)->fields.end(),field);
+      if (found!=(*it)->fields.end()) 
+      {
+        (*it)->fields.erase(found);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+bool ObjectModel::remove(xml::Object* object)
+{
+  if (object!=NULL)
+  {  
+    std::vector<Object*>::iterator found = find(objects.begin(),objects.end(),object);
+    if (found!=objects.end()) 
+    {
+      objects.erase(found);
+      return true;
+    }
+  }
+  return false;
+}
+

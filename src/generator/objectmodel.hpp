@@ -14,6 +14,10 @@ public:
    /** load model from xml-file (uses a  specialized XmlParser) */
    bool loadFromFile(const std::string& filename);
 
+   bool remove(xml::Field* field);
+   bool remove(xml::Object* object);
+//   bool remove(xml::relation* relation);
+
    xml::Database db;   
 
    std::vector<xml::Object* > objects;

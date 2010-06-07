@@ -40,6 +40,7 @@ public:
   virtual ~LitesqlDocument(void);
 
   litesql::ObjectModel* GetModel();
+  void RemoveField(uiField* pField);
 
 protected:
 

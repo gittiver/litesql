@@ -46,7 +46,7 @@ const wxString FTSTRING[] = {
                _("blob") 
 };  
 
-const wxArrayString uiField::FIELDTYPES(sizeof(FTSTRING)/sizeof(wxString),FTSTRING);
+const wxArrayString uiField::FIELDTYPES(sizeof(FTSTRING)/sizeof(FTSTRING[0]),FTSTRING);
 
 LitesqlDocument::LitesqlDocument(void)
 {
@@ -63,6 +63,18 @@ LitesqlDocument::~LitesqlDocument(void)
 ObjectModel* LitesqlDocument::GetModel()
 {
   return m_pModel;
+}
+
+void LitesqlDocument::RemoveField(uiField* pField)
+{
+  if ( (m_pModel!=NULL) && (pField!=NULL) ) 
+  {
+    if (m_pModel->remove(pField->field()))  
+    {
+      Modify(true);
+      UpdateAllViews();
+    }
+  }
 }
 
 #if wxUSE_STD_IOSTREAM
