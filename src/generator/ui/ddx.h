@@ -1,20 +1,31 @@
 #ifndef DDX_H
 #define DDX_H
 
+#include <string>
+
 static void transfer_text(wxTextCtrl* textControl,std::string& stringVar,bool toWindow) {
   if (toWindow) { 
-  (textControl)->SetValue(stringVar); 
+    textControl->SetValue(wxString::FromUTF8(stringVar.c_str())); 
   } else { 
-   (stringVar)=(textControl)->GetValue();
+   stringVar = textControl->GetValue().ToUTF8();
   }
 }
 
 static void transfer_choice(wxChoice *choiceCtrl,std::string &stringVar,bool toWindow) 
 {
   if (toWindow) { 
+    choiceCtrl->SetStringSelection(wxString::FromUTF8(stringVar.c_str())); 
+  } else { 
+   stringVar = choiceCtrl->GetStringSelection().ToUTF8();
+  }
+}
+
+static void transfer_choice(wxChoice *choiceCtrl,wxString &stringVar,bool toWindow) 
+{
+  if (toWindow) { 
     choiceCtrl->SetStringSelection(stringVar); 
   } else { 
-   stringVar = choiceCtrl->GetStringSelection();
+    stringVar = choiceCtrl->GetStringSelection();
   }
 }
 
