@@ -38,26 +38,17 @@ add_library(model ${libmodel_SOURCES})
 add_executable(litesql-gen ${litesql-gen_SOURCES})
 add_executable(ddl2litesql ${ddl2litesql_SOURCES})
 
+target_link_libraries (litesql-gen litesql litesql-util model ${EXPAT_LIBRARIES})
+target_link_libraries (ddl2litesql litesql-util model ${EXPAT_LIBRARIES})
+
 if (WITH_UI)
-
   add_subdirectory(ui)
-
   if (MSVC)
     add_subdirectory(win32-ui)
-    set_property(TARGET model APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS YY_NEVER_INTERACTIVE YY_NO_UNISTD_H ${EXPAT_DEFINITIONS})
-    set_property(TARGET model APPEND PROPERTY LINK_FLAGS_DEBUG)
-    set_property(TARGET litesql-gen APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS YY_NEVER_INTERACTIVE YY_NO_UNISTD_H ${EXPAT_DEFINITIONS})
-    set_property(TARGET litesql-gen APPEND PROPERTY LINK_FLAGS_DEBUG)
   endif(MSVC)
 endif(WITH_UI)
 
-if (WITH_SAX_PARSER)
-  target_link_libraries (litesql-gen litesql litesql-util model ${EXPAT_LIBRARIES})
-  target_link_libraries (ddl2litesql litesql-util model ${EXPAT_LIBRARIES})
-else(WITH_SAX_PARSER)
-  target_link_libraries (litesql-gen litesql litesql-util model ${EXPAT_LIBRARIES})
-  target_link_libraries (ddl2litesql litesql-util model ${EXPAT_LIBRARIES})
-endif(WITH_SAX_PARSER)
+
 
 install(TARGETS litesql-gen RUNTIME DESTINATION bin COMPONENT generator)
 INCLUDE_DIRECTORIES(../library ${EXPAT_INCLUDE_DIRS})
