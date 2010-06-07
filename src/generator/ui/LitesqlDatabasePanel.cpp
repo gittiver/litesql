@@ -12,8 +12,8 @@ m_database(db)
 
 bool LitesqlDatabasePanel::TransferData(bool toWindow)
 {
-  TRANSFER_TEXT(m_textName,m_database->name,toWindow);
-  TRANSFER_TEXT(m_textInclude,m_database->include,toWindow);
-  TRANSFER_TEXT(m_textNamespace,m_database->nspace,toWindow);
+  transfer_text(m_textName,m_database->name,toWindow);
+  transfer_text(m_textInclude,m_database->include,toWindow);
+  transfer_text(m_textNamespace,m_database->nspace,toWindow);
   return true;
 }

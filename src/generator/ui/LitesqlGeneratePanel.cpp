@@ -65,7 +65,7 @@ struct options_t {
     }
   }
 
-  std::string s (generator.generateCode(  m_pModel) ? "Success" : "Fail");
+  wxString s (generator.generateCode(  m_pModel) ? _("Success") : _("Fail") );
   wxMessageBox(s);
 
 }

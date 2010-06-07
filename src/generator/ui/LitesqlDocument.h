@@ -20,8 +20,8 @@ public:
   bool unique() const { return m_pField->isUnique(); }
   void unique(bool isUnique) { m_pField->unique = isUnique ? A_field_unique_true:A_field_unique_false; }
 
-  wxString type() const { return litesql::toString(m_pField->type); }
-  void type(const wxString& type) { m_pField->type = litesql::field_type(type); }
+  wxString type() const { return wxString::FromAscii(litesql::toString(m_pField->type)); }
+  void type(const wxString& type) { m_pField->type = litesql::field_type(type.ToAscii()); }
 
   static const wxArrayString FIELDTYPES;
 

@@ -61,7 +61,7 @@ bool VisualLitesqlApp::OnInit(void)
 #endif
 
 #ifdef __WXMAC__
-  wxMenuBar::MacSetCommonMenuBar(pMainFrame->GetMenuBar());
+  wxMenuBar::MacSetCommonMenuBar(pMainframe->GetMenuBar());
 #endif //def __WXMAC__
   
   pMainframe->Centre(wxBOTH);

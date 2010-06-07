@@ -13,12 +13,12 @@ LitesqlObjectPanel::LitesqlObjectPanel( wxWindow* parent, vector<Object*> baseCl
 ui::ObjectPanel( parent ),
 m_pObject(pObject)
 {
-  m_choiceInheritsFrom->Append("");
+  m_choiceInheritsFrom->Append(_T(""));
   for (vector<Object*>::const_iterator it = baseClasses.begin();
       it != baseClasses.end();
       it++)
   {
-    m_choiceInheritsFrom->Append((*it)->name);
+    m_choiceInheritsFrom->Append(wxString::FromUTF8((*it)->name.c_str()));
   }
 }
 

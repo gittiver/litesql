@@ -32,9 +32,9 @@
 IMPLEMENT_DYNAMIC_CLASS(LitesqlView, wxView)
 
 BEGIN_EVENT_TABLE(LitesqlView, wxView)
-  EVT_SIZE(OnSize) 
+  EVT_SIZE(LitesqlView::OnSize) 
   EVT_MENU(VisualLitesqlApp::ID_GENERATE, LitesqlView::OnGenerate)
-
+  
   EVT_MENU(VisualLitesqlApp::ID_ADD_OBJECT,     LitesqlView::OnAddObject)
   EVT_MENU(VisualLitesqlApp::ID_REMOVE_OBJECT,  LitesqlView::OnRemoveObject)
 
@@ -62,8 +62,7 @@ using namespace litesql;
 using namespace ui;
 
 LitesqlView::LitesqlView() 
-  : m_ctxMenu(NULL),
-    frame((wxMDIChildFrame *) NULL)
+  : frame((wxMDIChildFrame *) NULL),m_ctxMenu(NULL)
 {}
 
 LitesqlView::~LitesqlView()
@@ -280,7 +279,7 @@ void LitesqlView::OnRemoveField(wxCommandEvent& WXUNUSED(event) )
   }
   else if (pPage->IsKindOf(CLASSINFO(LitesqlFieldPanel)))
   {
-    int sel = m_treebook->GetSelection();
+      //    int sel = m_treebook->GetSelection();
 
     ((LitesqlDocument*) GetDocument())->RemoveField(((LitesqlFieldPanel*)pPage)->GetField());
   }

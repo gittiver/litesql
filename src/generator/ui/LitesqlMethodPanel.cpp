@@ -20,7 +20,7 @@ m_pMethod(pMethod)
 
 bool LitesqlMethodPanel::TransferData(bool toWindow)
 {
-  TRANSFER_TEXT(m_textCtrlName,m_pMethod->name,toWindow);
+  transfer_text(m_textCtrlName,m_pMethod->name,toWindow);
   //TRANSFER_CHOICE(m_choiceInheritsFrom,m_pField->type,toWindow);
   //TRANSFER_TEXT(m_textCtrlDefaultValue,m_pField->field()->default_,toWindow); 
   //TRANSFER_BOOL(m_checkBoxIndexed,m_pField->indexed,toWindow);

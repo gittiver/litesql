@@ -12,6 +12,6 @@ LitesqlRelationPanel::LitesqlRelationPanel( wxWindow* parent, Relation* pRelatio
 
 bool LitesqlRelationPanel::TransferData(bool toWindow)
 {
-  TRANSFER_TEXT(m_textCtrlName,m_pRelation->name,toWindow);
+  transfer_text(m_textCtrlName,m_pRelation->name,toWindow);
   return true;
 }
