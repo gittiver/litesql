@@ -64,6 +64,11 @@ public:
     void value(const Value& v) {
         values.push_back(v);
     }
+    
+    bool isEditable() {
+        return (name!="id") && (name!="type");  
+    }
+
     bool isIndexed() const {
         return indexed == A_field_indexed_true;
     }

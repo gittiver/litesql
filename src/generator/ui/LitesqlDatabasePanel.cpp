@@ -1,6 +1,8 @@
 #include "LitesqlDatabasePanel.h"
 #include "xmlObjects.hpp"
 
+#include "ddx.h"
+
 using namespace ui;
 using namespace xml;
 
@@ -8,12 +10,8 @@ LitesqlDatabasePanel::LitesqlDatabasePanel( wxWindow* parent,Database* db )
 :
 DatabasePanel( parent ),
 m_database(db)
-{}
-
-bool LitesqlDatabasePanel::TransferData(bool toWindow)
 {
-  transfer_text(m_textName,m_database->name,toWindow);
-  transfer_text(m_textInclude,m_database->include,toWindow);
-  transfer_text(m_textNamespace,m_database->nspace,toWindow);
-  return true;
+  m_textName->SetValidator(StdStringValidator(wxFILTER_ALPHANUMERIC,&m_database->name));
+  m_textInclude->SetValidator(StdStringValidator(wxFILTER_ALPHANUMERIC,&m_database->include));
+  m_textNamespace->SetValidator(StdStringValidator(wxFILTER_ALPHANUMERIC,&m_database->nspace));
 }

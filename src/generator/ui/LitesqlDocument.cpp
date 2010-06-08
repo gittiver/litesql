@@ -34,20 +34,6 @@ bool uiField::isEditable()const
   return (m_pField->name!="id") && (m_pField->name!="type");
 }
 
-const wxString FTSTRING[] = { 
-               _("boolean"),
-               _("integer"),
-               _("string"),
-               _("float"),
-               _("double"),
-               _("time"),
-               _("date"),
-               _("datetime"),
-               _("blob") 
-};  
-
-const wxArrayString uiField::FIELDTYPES(sizeof(FTSTRING)/sizeof(FTSTRING[0]),FTSTRING);
-
 LitesqlDocument::LitesqlDocument(void)
 {
   m_pModel = new ObjectModel();
@@ -65,11 +51,11 @@ ObjectModel* LitesqlDocument::GetModel()
   return m_pModel;
 }
 
-void LitesqlDocument::RemoveField(uiField* pField)
+void LitesqlDocument::RemoveField(xml::Field* pField)
 {
   if ( (m_pModel!=NULL) && (pField!=NULL) ) 
   {
-    if (m_pModel->remove(pField->field()))  
+    if (m_pModel->remove(pField))  
     {
       Modify(true);
       UpdateAllViews();

@@ -119,7 +119,7 @@ static void FillTree (ObjectModel* pModel,wxTreebook* pTree)
       field++)
     {
       wxString fname((*field)->name.c_str(),wxConvUTF8);
-      pTree->InsertSubPage(subPagePos,new LitesqlFieldPanel(pTree, new uiField(*field)),fname +_("(Field)"));
+      pTree->InsertSubPage(subPagePos,new LitesqlFieldPanel(pTree, *field),fname +_("(Field)"));
       pagePos++;
     }
 
@@ -259,7 +259,7 @@ void LitesqlView::OnAddField(wxCommandEvent& WXUNUSED(event) )
     xml::Field* newField = new xml::Field("newField",AU_field_type,"",AU_field_indexed,AU_field_unique);
     ((LitesqlObjectPanel*)pPage)->GetObject()->fields.push_back(newField);
     m_treebook->InsertSubPage(  m_treebook->GetSelection(),
-                                new LitesqlFieldPanel(m_treebook, new uiField(newField)),_("newField(Field)"),
+                                new LitesqlFieldPanel(m_treebook, newField),_("newField(Field)"),
                                 true);
       GetDocument()->Modify(true);
 //      GetDocument()->UpdateAllViews(this,NULL);

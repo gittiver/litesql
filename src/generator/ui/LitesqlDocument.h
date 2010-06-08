@@ -20,10 +20,9 @@ public:
   bool unique() const { return m_pField->isUnique(); }
   void unique(bool isUnique) { m_pField->unique = isUnique ? A_field_unique_true:A_field_unique_false; }
 
-  wxString type() const { return wxString::FromAscii(litesql::toString(m_pField->type)); }
-  void type(const wxString& type) { m_pField->type = litesql::field_type(type.ToAscii()); }
+//  wxString type() const { return wxString::FromAscii(litesql::toString(m_pField->type)); }
+//  void type(const wxString& type) { m_pField->type = litesql::field_type(type.ToAscii()); }
 
-  static const wxArrayString FIELDTYPES;
 
 protected:
   virtual ~uiField() {};
@@ -40,7 +39,7 @@ public:
   virtual ~LitesqlDocument(void);
 
   litesql::ObjectModel* GetModel();
-  void RemoveField(uiField* pField);
+  void RemoveField(xml::Field* pField);
 
 protected:
 
