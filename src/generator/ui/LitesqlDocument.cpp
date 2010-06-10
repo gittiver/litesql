@@ -29,11 +29,6 @@ IMPLEMENT_DYNAMIC_CLASS(LitesqlDocument, wxDocument)
 using namespace std;
 using namespace litesql;
 
-bool uiField::isEditable()const  
-{
-  return (m_pField->name!="id") && (m_pField->name!="type");
-}
-
 LitesqlDocument::LitesqlDocument(void)
 {
   m_pModel = new ObjectModel();
