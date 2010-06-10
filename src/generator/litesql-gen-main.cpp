@@ -142,21 +142,20 @@ int main(int argc, char **argv) {
   }
 
   ObjectModel model;
-  if (!model.loadFromFile(argv[argc-1]))
-  {
-    string msg = "could not load file '" + string(argv[argc-1]) + "'";
-    Logger::error(msg);
-    return -1;
-  }
-  else
-  {
-    try {
-      return generateCode(model); 
-    }
-    catch (Except e) {
-      Logger::error(e);
-      cerr << e << endl;
+  try {
+    if (!model.loadFromFile(argv[argc-1]))
+    {
+      string msg = "could not load file '" + string(argv[argc-1]) + "'";
+      Logger::error(msg);
       return -1;
     }
+    else
+    {
+      return generateCode(model); 
+    }
+  } 
+  catch (Except e) {
+      Logger::error(e);
+      return -1;
   }
 }

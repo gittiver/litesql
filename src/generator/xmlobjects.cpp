@@ -33,19 +33,31 @@ const char* Method::TAG="method";
 const Object Object::DEFAULT_BASE("litesql::Persistent","");
     
 string validID(const string& s, const string& type="field") {
-    if (s.size() == 0) 
-        return "empty identifier";
-    if (toupper(s[0]) == s[0] && type == "field")
-        return "does not begin with lower case letter";
-    if (!isalpha(s[0])) 
-        return "first character is not alphabet";
+  string result="";  
+  
+  if (s.empty()) 
+    result = "empty identifier";
+  else if (toupper(s[0]) == s[0] && type == "field")
+    result =  "does not begin with lower case letter";
+  else if (!isalpha(s[0])) 
+    result = "first character is not alphabet";
+  else if (s[s.size()-1] == '_')
+        result = "ends with an underscore";
+  else
+  {
     for (size_t i = 1; i < s.size(); i++)
-        if (!isalnum(s[i]) && !(s[i] != '_'))
-            return "illegal character : " + s[i];
-    if (s[s.size()-1] == '_')
-        return "ends with an underscore";
-    return "";
+    {
+      if (!isalnum(s[i]) && !(s[i] != '_')) 
+      {
+        result = "illegal character : ";
+        result += s[i];
+        break;
+      }
+    }
+  }
+  return result;
 }
+
 string makeDBName(const string& s) {
     if (s.size() > 31)
         return "_" + md5HexDigest(s);
@@ -73,7 +85,7 @@ static void sanityCheck(Database& db,
         for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
             Field& f = *o.fields[i2];
             if (!(err = validID(f.name)).empty())
-                throw Except("invalid id: object.field.name : " + o.name + "." + f.name);
+              throw Except("invalid id: object.field.name : " + o.name + "." + f.name + " cause:" + err );
             if (usedField.find(f.name) != usedField.end())
                 throw Except("duplicate id: object.field.name : " + o.name + "." + f.name);
             usedField[f.name] = true;
@@ -83,7 +95,7 @@ static void sanityCheck(Database& db,
         Relation& r = *relations[i];
         string name = r.getName();
         if (!(err = validID(name,"class")).empty())
-            throw Except("invalid id: relation.name : " + name);
+            throw Except("invalid id: relation.name : " + name + "cause:" + err );
         if (usedID.find(name) != usedID.end())
             throw Except("duplicate id: relation.name : " + name);
         usedID[name] = true;
@@ -95,7 +107,7 @@ static void sanityCheck(Database& db,
         for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
             Field& f = *r.fields[i2];
             if (!(err = validID(f.name)).empty())
-                throw Except("invalid id: relation.field.name : " + name + "." + f.name);
+                throw Except("invalid id: relation.field.name : " + name + "." + f.name + "cause:" + err );
             if (usedField.find(f.name) != usedField.end())
                 throw Except("duplicate id: relation.field.name : " + name + "." + f.name);
             usedField[f.name] = true;
@@ -111,7 +123,7 @@ static void sanityCheck(Database& db,
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
             Relate& rel = *r.related[i2];
             if (!(err = validID(rel.handle)).empty() && !rel.handle.empty())
-                throw Except("invalid id: relation.relate.handle : " + name + "." + rel.handle);
+                throw Except("invalid id: relation.relate.handle : " + name + "." + rel.handle + "cause:" + err );
             if (usedField.find(rel.handle) != usedField.end())
                 throw Except("duplicate id: relation.relate.handle : " + name + "." + rel.handle);
             if (objectName.find(rel.objectName) == objectName.end())
