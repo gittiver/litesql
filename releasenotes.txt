@@ -1,8 +1,10 @@
 Version 0.3.8
 #############
-- a Gui-Tool for editing and generating Code (cross-platform through wxWidgets)
 - added double as field type for higher precision calculation
- 
+- fixed trac ticket #25 (uncatched exceptions on validating model are 
+  catched now) 
+- Beta for Gui-Tool for editing and generating Code (cross-platform through wxWidgets)
+
 Version 0.3.7
 #############
 - fixed error on creating indexes (see trac ticket #23)
