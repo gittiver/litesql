@@ -39,20 +39,20 @@ string toUpper(string s) {
 }
 
 string capitalize(const string& s) {
-    if (s.size() == 0)
+    if (s.empty())
         return s;
     char buf[2] = {toupper(s[0]), 0};
     return string(buf) + s.substr(1, s.size());
 }
 string decapitalize(const string& s) {
-    if (s.size() == 0)
+    if (s.empty())
         return s;
     char buf[2] = {tolower(s[0]), 0};
     return string(buf) + s.substr(1, s.size());
 }
 
 string rstrip(const string& s) {
-    if (s.size() == 0)
+    if (s.empty())
         return s;
     int pos = s.size()-1;
     while (1) {
