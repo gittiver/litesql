@@ -41,11 +41,11 @@ public:
     };
     /** SQLite3 - cursor */
     class Cursor : public Backend::Cursor {
-        sqlite3 * db;
+//        sqlite3 * db;
         sqlite3_stmt * stmt;
         const SQLite3& owner;
     public:
-        Cursor(sqlite3 * db, sqlite3_stmt * s, const SQLite3& owner);
+        Cursor(/*sqlite3 * db,*/ sqlite3_stmt * s, const SQLite3& owner);
         virtual Record fetchOne();
         virtual ~Cursor();
     };
@@ -55,8 +55,8 @@ public:
     virtual void begin() const;
     virtual void commit() const;
     virtual void rollback() const;
-    Backend::Result* execute(string query) const;
-    Backend::Cursor* cursor(string query) const;
+    Backend::Result* execute(const string& query) const;
+    Backend::Cursor* cursor(const string& query) const;
     virtual ~SQLite3();
 };
 }

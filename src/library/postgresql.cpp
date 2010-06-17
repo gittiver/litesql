@@ -105,7 +105,7 @@ void PostgreSQL::rollback() const {
       transaction = false;
     }
 }
-Backend::Result* PostgreSQL::execute(string query) const {
+Backend::Result* PostgreSQL::execute(const string& query) const {
     query += ";";
     PGresult * res = PQexec(conn, query.c_str());
     if (PQresultStatus(res) != PGRES_TUPLES_OK 
@@ -116,7 +116,7 @@ Backend::Result* PostgreSQL::execute(string query) const {
     }
     return new Result(res);    
 }
-Backend::Cursor* PostgreSQL::cursor(string query) const {
+Backend::Cursor* PostgreSQL::cursor(const string& query) const {
     return new Cursor(*this, query + ";");
 }
 PostgreSQL::~PostgreSQL() {

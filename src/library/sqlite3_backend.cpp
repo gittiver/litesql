@@ -36,8 +36,8 @@ size_t SQLite3::Result::recordNum() const {
 Records SQLite3::Result::records() const {
     return recs;
 }
-SQLite3::Cursor::Cursor(sqlite3 * d, sqlite3_stmt * s, const SQLite3& o) 
-    : db(d), stmt(s), owner(o) {}
+SQLite3::Cursor::Cursor(sqlite3_stmt * s, const SQLite3& o) 
+    :  stmt(s), owner(o) {}
 Record SQLite3::Cursor::fetchOne() {
     bool busy = false;
     do 
@@ -47,7 +47,7 @@ Record SQLite3::Cursor::fetchOne() {
         switch(status)
         {
         case SQLITE_ERROR: case SQLITE_MISUSE: {
-                std::string error = sqlite3_errmsg(db);
+          std::string error = sqlite3_errmsg(owner.db);
                 throw UnknownError("step failed: " +toString(status)  + error);
             }
         case SQLITE_DONE: return Record(); break;
@@ -141,7 +141,7 @@ void SQLite3::throwError(int status) const {
     default: throw UnknownError("compile failed: " + error);
     }
 }
-Backend::Result* SQLite3::execute(string query) const {
+Backend::Result* SQLite3::execute(const string& query) const {
     Result * r = new Result;
     char * errMsg;
     int status;
@@ -158,7 +158,7 @@ Backend::Result* SQLite3::execute(string query) const {
     } while (status != SQLITE_OK); 
     return r;    
 }
-Backend::Cursor* SQLite3::cursor(string query) const {
+Backend::Cursor* SQLite3::cursor(const string& query) const {
     while (1) {
         sqlite3_stmt * stmt = NULL;
         int status = sqlite3_prepare(db, query.c_str(), query.size(), 
@@ -175,7 +175,7 @@ Backend::Cursor* SQLite3::cursor(string query) const {
             }
         }
         else
-            return new Cursor(db, stmt, *this);
+            return new Cursor(stmt, *this);
     }
     
 }

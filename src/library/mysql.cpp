@@ -129,13 +129,13 @@ void MySQL::commit() const {
 void MySQL::rollback() const {
   delete execute("ROLLBACK");
 }
-Backend::Result* MySQL::execute(string query) const {
+Backend::Result* MySQL::execute(const string& query) const {
     if (mysql_real_query(&conn, query.c_str(), query.size())) {
         throw SQLError(mysql_error(&conn));    
     }
     return new Result(mysql_store_result(&conn));
 }
-Backend::Cursor* MySQL::cursor(string query) const {
+Backend::Cursor* MySQL::cursor(const string& query) const {
     return new Cursor(host, user, passwd, database, port, query);       
 }
 MySQL::~MySQL() {

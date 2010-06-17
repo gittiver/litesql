@@ -31,7 +31,7 @@ using namespace litesql;
 using namespace std;    
 
 string Backend::groupInsert(Record tables, Records fields, Records values,
-                   string sequence) const {
+                   const string& sequence) const {
     string id = values[0][0];
     
     if (supportsSequences() && values[0][0] == "NULL") {
