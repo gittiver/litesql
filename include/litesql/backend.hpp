@@ -71,12 +71,12 @@ namespace litesql {
             /** executes SQL-query 
               \param query SQL-query to execute 
               \return Result-object which holds result set of query */
-            virtual Result* execute(string query) const = 0;
+            virtual Result* execute(const string& query) const = 0;
             /** executes SQL-query
               \param query SQL-query to execute 
               \return Cursor-object which can be used to iterate result set 
               row by row without loading everything to memory */
-            virtual Cursor* cursor(string query) const = 0;
+            virtual Cursor* cursor(const string& query) const = 0;
             /** executes multiple INSERT-statements and assigns same 'row id'
               for first field of every record
               \param tables destination tables for insert operation
@@ -85,7 +85,7 @@ namespace litesql {
               \param sequence sequence where row id-numbers are pulled
               \return new row id */
             virtual string groupInsert(Record tables, Records fields, Records values,
-                    string sequence) const;
+                    const string& sequence) const;
     /** returns a backend according to Backendtype in type, parameters are specific to backend and are separated by semicolon.
       \param type type of the database backend (supported are : "mysql","postgresql","sqlite3","odbc"
       \param connInfo database connection specific parameters (parameters are separated by semicolon)
