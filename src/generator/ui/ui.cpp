@@ -62,39 +62,39 @@ FieldPanel::FieldPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, con
 	this->SetMinSize( wxSize( 300,120 ) );
 	
 	wxFlexGridSizer* gSizer1;
-	gSizer1 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	gSizer1 = new wxFlexGridSizer( 6, 2, 0, 0 );
 	gSizer1->AddGrowableCol( 1 );
 	gSizer1->SetFlexibleDirection( wxBOTH );
 	gSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	lblName = new wxStaticText( this, wxID_ANY, _("Name"), wxDefaultPosition, wxDefaultSize, 0 );
 	lblName->Wrap( -1 );
-	gSizer1->Add( lblName, 0, wxALL, 5 );
+	gSizer1->Add( lblName, 1, wxALL, 5 );
 	
 	m_textCtrlName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( m_textCtrlName, 1, wxALL|wxEXPAND, 5 );
 	
-	lblInherits = new wxStaticText( this, wxID_ANY, _("Inherit From"), wxDefaultPosition, wxDefaultSize, 0 );
-	lblInherits->Wrap( -1 );
-	gSizer1->Add( lblInherits, 0, wxALL, 5 );
+	lblFieldtype = new wxStaticText( this, wxID_ANY, _("Fieldtype"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblFieldtype->Wrap( -1 );
+	gSizer1->Add( lblFieldtype, 1, wxALL, 5 );
 	
-	wxArrayString m_choiceInheritsFromChoices;
-	m_choiceInheritsFrom = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceInheritsFromChoices, 0 );
-	m_choiceInheritsFrom->SetSelection( 0 );
-	m_choiceInheritsFrom->SetMinSize( wxSize( 150,-1 ) );
+	wxArrayString m_choiceFieldtypeChoices;
+	m_choiceFieldtype = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceFieldtypeChoices, 0 );
+	m_choiceFieldtype->SetSelection( 0 );
+	m_choiceFieldtype->SetMinSize( wxSize( 150,-1 ) );
 	
-	gSizer1->Add( m_choiceInheritsFrom, 1, wxALL|wxEXPAND, 5 );
+	gSizer1->Add( m_choiceFieldtype, 1, wxALL|wxEXPAND, 5 );
 	
 	lblDefault = new wxStaticText( this, wxID_ANY, _("Default Value:"), wxDefaultPosition, wxDefaultSize, 0 );
 	lblDefault->Wrap( -1 );
-	gSizer1->Add( lblDefault, 0, wxALL, 5 );
+	gSizer1->Add( lblDefault, 1, wxALL, 5 );
 	
 	m_textCtrlDefaultValue = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( m_textCtrlDefaultValue, 1, wxALL|wxEXPAND, 5 );
 	
 	lblIndexed = new wxStaticText( this, wxID_ANY, _("Indexed"), wxDefaultPosition, wxDefaultSize, 0 );
 	lblIndexed->Wrap( -1 );
-	gSizer1->Add( lblIndexed, 0, wxALL, 5 );
+	gSizer1->Add( lblIndexed, 1, wxALL, 5 );
 	
 	m_checkBoxIndexed = new wxCheckBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	
@@ -102,18 +102,47 @@ FieldPanel::FieldPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, con
 	
 	lblUnique = new wxStaticText( this, wxID_ANY, _("Unique"), wxDefaultPosition, wxDefaultSize, 0 );
 	lblUnique->Wrap( -1 );
-	gSizer1->Add( lblUnique, 0, wxALL, 5 );
+	gSizer1->Add( lblUnique, 1, wxALL, 5 );
 	
 	m_checkBoxUnique = new wxCheckBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	
 	gSizer1->Add( m_checkBoxUnique, 0, wxALL, 5 );
 	
+	lblValues = new wxStaticText( this, wxID_ANY, _("Values"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblValues->Wrap( -1 );
+	gSizer1->Add( lblValues, 0, wxALL, 5 );
+	
+	m_listValues = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 ); 
+	gSizer1->Add( m_listValues, 0, wxALL|wxEXPAND, 5 );
+	
+	m_staticText20 = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText20->Wrap( -1 );
+	gSizer1->Add( m_staticText20, 1, wxALL, 5 );
+	
+	wxBoxSizer* bSizer2;
+	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_btnAdd = new wxButton( this, wxID_ANY, _("+"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+	bSizer2->Add( m_btnAdd, 0, wxALL, 5 );
+	
+	m_btnRemove = new wxButton( this, wxID_ANY, _("-"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+	bSizer2->Add( m_btnRemove, 0, wxALL, 5 );
+	
+	gSizer1->Add( bSizer2, 1, wxEXPAND, 5 );
+	
 	this->SetSizer( gSizer1 );
 	this->Layout();
+	
+	// Connect Events
+	m_btnAdd->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( FieldPanel::OnAddValue ), NULL, this );
+	m_btnRemove->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( FieldPanel::OnRemoveValue ), NULL, this );
 }
 
 FieldPanel::~FieldPanel()
 {
+	// Disconnect Events
+	m_btnAdd->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( FieldPanel::OnAddValue ), NULL, this );
+	m_btnRemove->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( FieldPanel::OnRemoveValue ), NULL, this );
 }
 
 MethodPanel::MethodPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
@@ -157,6 +186,28 @@ RelationPanel::RelationPanel( wxWindow* parent, wxWindowID id, const wxPoint& po
 	
 	m_textCtrlName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( m_textCtrlName, 0, wxALL|wxEXPAND, 5 );
+	
+	lblObject1 = new wxStaticText( this, wxID_ANY, _("Object 1"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblObject1->Wrap( -1 );
+	gSizer1->Add( lblObject1, 1, wxALL, 5 );
+	
+	wxArrayString m_choiceObject1Choices;
+	m_choiceObject1 = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceObject1Choices, 0 );
+	m_choiceObject1->SetSelection( 0 );
+	m_choiceObject1->SetMinSize( wxSize( 150,-1 ) );
+	
+	gSizer1->Add( m_choiceObject1, 0, wxALL|wxEXPAND, 5 );
+	
+	lblObject2 = new wxStaticText( this, wxID_ANY, _("Object 2"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblObject2->Wrap( -1 );
+	gSizer1->Add( lblObject2, 1, wxALL, 5 );
+	
+	wxArrayString m_choiceObject2Choices;
+	m_choiceObject2 = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceObject2Choices, 0 );
+	m_choiceObject2->SetSelection( 0 );
+	m_choiceObject2->SetMinSize( wxSize( 150,-1 ) );
+	
+	gSizer1->Add( m_choiceObject2, 0, wxALL|wxEXPAND, 5 );
 	
 	this->SetSizer( gSizer1 );
 	this->Layout();

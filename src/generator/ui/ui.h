@@ -22,6 +22,7 @@
 #include <wx/sizer.h>
 #include <wx/panel.h>
 #include <wx/checkbox.h>
+#include <wx/listbox.h>
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/filepicker.h>
@@ -61,17 +62,27 @@ namespace ui
 		protected:
 			wxStaticText* lblName;
 			wxTextCtrl* m_textCtrlName;
-			wxStaticText* lblInherits;
-			wxChoice* m_choiceInheritsFrom;
+			wxStaticText* lblFieldtype;
+			wxChoice* m_choiceFieldtype;
 			wxStaticText* lblDefault;
 			wxTextCtrl* m_textCtrlDefaultValue;
 			wxStaticText* lblIndexed;
 			wxCheckBox* m_checkBoxIndexed;
 			wxStaticText* lblUnique;
 			wxCheckBox* m_checkBoxUnique;
+			wxStaticText* lblValues;
+			wxListBox* m_listValues;
+			wxStaticText* m_staticText20;
+			wxButton* m_btnAdd;
+			wxButton* m_btnRemove;
+			
+			// Virtual event handlers, overide them in your derived class
+			virtual void OnAddValue( wxCommandEvent& event ){ event.Skip(); }
+			virtual void OnRemoveValue( wxCommandEvent& event ){ event.Skip(); }
+			
 		
 		public:
-			FieldPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,164 ), long style = wxTAB_TRAVERSAL );
+			FieldPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,302 ), long style = wxTAB_TRAVERSAL );
 			~FieldPanel();
 		
 	};
@@ -103,9 +114,13 @@ namespace ui
 		protected:
 			wxStaticText* lblName;
 			wxTextCtrl* m_textCtrlName;
+			wxStaticText* lblObject1;
+			wxChoice* m_choiceObject1;
+			wxStaticText* lblObject2;
+			wxChoice* m_choiceObject2;
 		
 		public:
-			RelationPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,120 ), long style = wxTAB_TRAVERSAL );
+			RelationPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 318,120 ), long style = wxTAB_TRAVERSAL );
 			~RelationPanel();
 		
 	};

@@ -13,13 +13,20 @@ LitesqlObjectPanel::LitesqlObjectPanel( wxWindow* parent, vector<Object*> baseCl
 ui::ObjectPanel( parent ),
 m_pObject(pObject)
 {
-  m_choiceInheritsFrom->Append(_T(""));
+  m_choiceInheritsFrom->Append(wxString::FromUTF8(Object::DEFAULT_BASE.name.c_str()));
   for (vector<Object*>::const_iterator it = baseClasses.begin();
       it != baseClasses.end();
       it++)
   {
-    m_choiceInheritsFrom->Append(wxString::FromUTF8((*it)->name.c_str()));
+    if ((*it)->name!=pObject->name) 
+    {
+      m_choiceInheritsFrom->Append(wxString::FromUTF8((*it)->name.c_str()));
+    }
   }
+  
+  m_choiceInheritsFrom->SetValidator(ObjectTypeValidator(m_pObject));
+
+  m_textCtrlName->SetValidator(StdStringValidator(wxFILTER_ALPHANUMERIC,&m_pObject->name));
 }
 
 xml::Object* LitesqlObjectPanel::GetObject()
@@ -27,10 +34,38 @@ xml::Object* LitesqlObjectPanel::GetObject()
   return m_pObject;
 }
 
-bool LitesqlObjectPanel::TransferData(bool toWindow)
+/* ObjectTypeValidator Implementation */
+IMPLEMENT_DYNAMIC_CLASS(ObjectTypeValidator,wxGenericValidator)
+
+ObjectTypeValidator::ObjectTypeValidator (xml::Object *val)
+: m_pObject(val),
+  wxGenericValidator(&value)
 {
- 
-  transfer_text(m_textCtrlName,m_pObject->name,toWindow);
-  transfer_choice(m_choiceInheritsFrom,m_pObject->inherits,toWindow);
-  return true;
+}
+
+ObjectTypeValidator::ObjectTypeValidator (const ObjectTypeValidator& val)
+: wxGenericValidator(val)
+{
+  m_pObject= val.m_pObject;
+  value = val.value;
+  Copy(val);
+  m_pString = &value;
+}
+
+wxObject *ObjectTypeValidator::Clone() const
+{ return new ObjectTypeValidator(*this); }
+    
+  // Called to transfer data to the window
+bool ObjectTypeValidator::TransferToWindow() 
+{
+  value = wxString::FromUTF8(m_pObject->inherits.c_str());
+  return wxGenericValidator::TransferToWindow();
+}
+
+    // Called to transfer data from the window
+bool ObjectTypeValidator::TransferFromWindow()
+{
+  bool rval = wxGenericValidator::TransferFromWindow();
+  m_pObject->inherits = value.ToUTF8();
+  return rval;
 }
