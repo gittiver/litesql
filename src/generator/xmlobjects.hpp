@@ -102,7 +102,7 @@ public:
             case A_field_type_double: 
               return "0.0";
             case A_field_type_blob: 
-              return "Blob.nil";
+              return "Blob::nil";
             default:
               return "0";
           }
