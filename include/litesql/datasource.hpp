@@ -83,6 +83,7 @@ public:
     }
     /** returns all objects in result set. */
     vector<T> all() const {
+        // \TODO a cursor is not appropriate here, because we fetch all results of the query 
         return cursor().dump();
     }
     /** modifies SelectQuery to order result set 
