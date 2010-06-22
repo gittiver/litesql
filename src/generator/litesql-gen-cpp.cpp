@@ -321,7 +321,6 @@ static void sanityCheck(const xml::Database& db,
     }   
 }
 
-
 void writeStaticObjData(Class& cl, const xml::Object& o) {
     Variable type__("type__", "const std::string", quote(o.name));
     type__.static_();
@@ -433,8 +432,10 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
     for (size_t i = 0; i < o.fields.size(); i++) {
         const xml::Field& f = *o.fields[i];
         if (!f.default_.empty() || !f.hasQuotedValues())
-            defaults.body(f.name + " = " + f.getQuotedDefaultValue() + ";");
-            hasDefaults = true;
+        {
+          defaults.body(f.name + " = " + f.getQuotedDefaultValue() + ";");
+          hasDefaults = true;
+        }
     } 
 
     

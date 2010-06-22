@@ -96,6 +96,8 @@ string convert<const string&, string>(const string& value) {
 
 const char hexDigits[] = "0123456789abcdef";
 
+const Blob Blob::nil;
+
 string Blob::toHex(void) const
 {
   string result;

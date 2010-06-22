@@ -161,6 +161,7 @@ typedef unsigned char u8_t;
 
 class Blob {
 public:
+  static const Blob nil;
   Blob()                            : m_data(NULL),m_length(0)               {};
   Blob(const string & value) : m_data(NULL),m_length(0)
   {
@@ -220,12 +221,6 @@ public:
     void setModified(bool state) { _modified = state; }
     const Field & operator=(const Blob& v) { 
         _value = v;
-        _modified = true;
-        return *this;
-    }
-
-const Field & operator=(int v) { 
-        _value.data(NULL);
         _modified = true;
         return *this;
     }

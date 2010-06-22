@@ -101,6 +101,8 @@ public:
             case A_field_type_float: 
             case A_field_type_double: 
               return "0.0";
+            case A_field_type_blob: 
+              return "Blob.nil";
             default:
               return "0";
           }
