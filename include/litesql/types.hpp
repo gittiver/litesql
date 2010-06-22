@@ -20,8 +20,7 @@ class Record : public std::vector<std::string>
 {
 public: 
     Record() : std::vector<std::string>() {}
-    /** defined for compatibility with Persistent */
-    Record(const Database & db, const Record& r ) { *this = r;}
+    Record(size_t reserved) { reserve(reserved); }
 };
 /** shortcut */
 typedef std::vector<Record> Records;
