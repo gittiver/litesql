@@ -93,11 +93,17 @@ MySQL::MySQL(const string& connInfo) {
         else if (param[0] == "port")
             port = atoi(param[1]);
     }
+    conn = new MYSQL;
     mysql_init(conn);
     if (!mysql_real_connect(conn, host.c_str(), user.c_str(), passwd.c_str(),
               database.c_str(), port, NULL, 0)) {
         throw DatabaseError(mysql_error(conn));
     }
+}
+
+MySQL::~MySQL() {
+    mysql_close(conn);
+    delete conn;
 }
 
 bool MySQL::supportsSequences() const {
@@ -172,9 +178,6 @@ MySQL::Cursor::~Cursor() {
 
 Backend::Cursor* MySQL::cursor(const string& query) const {
   return new Cursor(this,query);       
-}
-MySQL::~MySQL() {
-    mysql_close(conn);
 }
 
 #endif

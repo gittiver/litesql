@@ -32,6 +32,8 @@ public:
   class Result;
 
     MySQL(const string& connInfo);
+    virtual ~MySQL();
+
     virtual bool supportsSequences() const;
     virtual string getRowIDType() const;
     virtual string getInsertID() const;
@@ -40,7 +42,6 @@ public:
     virtual void rollback() const;
     Backend::Result* execute(const string& query) const;
     Backend::Cursor* cursor(const string& query) const;
-    virtual ~MySQL();
 };
 }
 #endif
