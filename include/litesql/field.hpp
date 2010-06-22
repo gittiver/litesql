@@ -29,8 +29,9 @@ protected:
     typedef vector< pair<string, string> > Values;
 private:
     Values _values;
+    FieldType() {};
 public:
-
+    
     FieldType(const string& n, 
               const string& t, 
               const string& tbl,
@@ -63,6 +64,7 @@ To convert(From value);
 template <class T>
 std::string store(const T& value) {
     return litesql::toString(value);
+//  return convert<T,std::string>(value);
 }
 
 template <class T>
