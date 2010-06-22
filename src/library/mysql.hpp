@@ -11,46 +11,26 @@
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
-#include <mysql.h>
+
 #include "litesql/except.hpp"
 #include "litesql/types.hpp"
 #include "litesql/string.hpp"
 #include "litesql/backend.hpp"
 
-#include <string>
+typedef struct st_mysql MYSQL;
+
 namespace litesql {
-using namespace std;
+
+  using namespace std;
 /** MySQL - backend */
 class MySQL : public Backend {
-    mutable MYSQL conn;
+    MYSQL* conn;
     string host, user, passwd, database;
     int port;
 public:
-    /** MySQL - result */
-    class Result : public Backend::Result {
-        MYSQL_RES * res;
-    public:
-        Result(MYSQL_RES * res);
-        virtual ~Result();
-        virtual size_t fieldNum() const;
-        virtual Record fields() const;
-        virtual size_t recordNum() const;
-        virtual Records records() const;
-        const Records& recordsRef() const;
-    };
-    /** MySQL - cursor, Note: because MySQL-does not support multiple
-     * cursors in single connection, this class actually makes one connection
-     * per cursor */
-    class Cursor : public Backend::Cursor {
-        MYSQL_RES * res;
-        MYSQL conn;
-        size_t fieldNum;
-    public:
-        Cursor(string host, string user, string passwd, string database, 
-               int port, string q);
-        virtual Record fetchOne();
-        virtual ~Cursor();
-    };
+  class Cursor;
+  class Result;
+
     MySQL(const string& connInfo);
     virtual bool supportsSequences() const;
     virtual string getRowIDType() const;
@@ -58,8 +38,8 @@ public:
     virtual void begin() const;
     virtual void commit() const;
     virtual void rollback() const;
-    Backend::Result* execute(string query) const;
-    Backend::Cursor* cursor(string query) const;
+    Backend::Result* execute(const string& query) const;
+    Backend::Cursor* cursor(const string& query) const;
     virtual ~MySQL();
 };
 }

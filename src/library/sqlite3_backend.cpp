@@ -23,6 +23,19 @@
 using namespace litesql;
 using namespace std;
 
+/** SQLite3 - result */
+class SQLite3::Result : public Backend::Result {
+public:
+  Records recs;
+  Record flds;
+  Result() {}
+  virtual size_t fieldNum() const;
+  virtual Record fields() const;
+  virtual size_t recordNum() const;
+  virtual Records records() const;
+  const Records& recordsRef() const;
+};
+
 size_t SQLite3::Result::fieldNum() const {
     return flds.size();
 }
@@ -36,8 +49,21 @@ size_t SQLite3::Result::recordNum() const {
 Records SQLite3::Result::records() const {
     return recs;
 }
+
+/** SQLite3 - cursor */
+class SQLite3::Cursor : public Backend::Cursor {
+  //        sqlite3 * db;
+  sqlite3_stmt * stmt;
+  const SQLite3& owner;
+public:
+  Cursor(/*sqlite3 * db,*/ sqlite3_stmt * s, const SQLite3& owner);
+  virtual Record fetchOne();
+  virtual ~Cursor();
+};
+
 SQLite3::Cursor::Cursor(sqlite3_stmt * s, const SQLite3& o) 
     :  stmt(s), owner(o) {}
+
 Record SQLite3::Cursor::fetchOne() {
     bool busy = false;
     do 
@@ -60,9 +86,8 @@ Record SQLite3::Cursor::fetchOne() {
             break;
         }
     } while (busy);
-    Record rec;
     int columnNum = sqlite3_data_count(stmt);
-    rec.reserve(columnNum);
+    Record rec(columnNum);
     for (int i = 0; i < columnNum; i++) {
         if (sqlite3_column_type(stmt, i) == SQLITE_NULL)
             rec.push_back("NULL");
@@ -124,7 +149,7 @@ static int callback(void *r, int argc, char **argv, char **azColName) {
     if (res->flds.size() == 0) 
         for (int i = 0; i < argc; i++)
             res->flds.push_back(azColName[i]);
-    Record rec; 
+    Record rec(argc); 
     for (int i = 0; i < argc; i++) 
         rec.push_back(argv[i] ? argv[i] : "NULL");   
     res->recs.push_back(rec);
@@ -158,6 +183,7 @@ Backend::Result* SQLite3::execute(const string& query) const {
     } while (status != SQLITE_OK); 
     return r;    
 }
+
 Backend::Cursor* SQLite3::cursor(const string& query) const {
     while (1) {
         sqlite3_stmt * stmt = NULL;
