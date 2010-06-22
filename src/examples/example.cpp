@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
         Person jill(db);
         jill.name = "Jill";
         jill.sex = Person::Sex::Female;
-        jill.image = NULL;
+        jill.image = Blob.nil;
         jill.age = 33;
         jill.update();
         Person jack(db);

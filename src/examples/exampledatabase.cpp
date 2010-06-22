@@ -611,7 +611,7 @@ void Person::initValues() {
 void Person::defaults() {
     id = 0;
     age = 15;
-    image = 0;
+    image = Blob.nil;
     aDoubleValue = 0.0;
     sex = 0;
 }
