@@ -23,15 +23,10 @@ class Like;
 class SelectQuery;
 
 class FieldType {
-    string _name, _type, _table;
-
 protected:
     typedef vector< pair<string, string> > Values;
-private:
-    Values _values;
-    FieldType() {};
 public:
-    
+    FieldType() {};
     FieldType(const string& n, 
               const string& t, 
               const string& tbl,
@@ -54,6 +49,9 @@ public:
     bool operator!=(const FieldType & fd) const {
         return ! (*this == fd);
     }
+private:
+    string _name, _type, _table;
+    Values _values;
 };
 
 /** convert function */
