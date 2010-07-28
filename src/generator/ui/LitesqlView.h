@@ -2,9 +2,7 @@
 #define LITESQL_VIEW_H
 
 #include <wx/docview.h>
-
-class wxTreebook;
-class wxTreebookEvent;
+#include <wx/treebook.h>
 
 class LitesqlView: public wxView
 {
