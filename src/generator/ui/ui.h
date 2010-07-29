@@ -22,7 +22,7 @@
 #include <wx/sizer.h>
 #include <wx/panel.h>
 #include <wx/checkbox.h>
-#include <wx/listbox.h>
+#include <wx/listctrl.h>
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/filepicker.h>
@@ -71,7 +71,7 @@ namespace ui
 			wxStaticText* lblUnique;
 			wxCheckBox* m_checkBoxUnique;
 			wxStaticText* lblValues;
-			wxListBox* m_listValues;
+			wxListCtrl* m_listValues;
 			wxStaticText* m_staticText20;
 			wxButton* m_btnAdd;
 			wxButton* m_btnRemove;
@@ -82,7 +82,7 @@ namespace ui
 			
 		
 		public:
-			FieldPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,302 ), long style = wxTAB_TRAVERSAL );
+			FieldPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 338,302 ), long style = wxTAB_TRAVERSAL );
 			~FieldPanel();
 		
 	};

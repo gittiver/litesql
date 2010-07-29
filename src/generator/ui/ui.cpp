@@ -112,7 +112,7 @@ FieldPanel::FieldPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, con
 	lblValues->Wrap( -1 );
 	gSizer1->Add( lblValues, 0, wxALL, 5 );
 	
-	m_listValues = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 ); 
+	m_listValues = new wxListCtrl( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_EDIT_LABELS|wxLC_REPORT );
 	gSizer1->Add( m_listValues, 0, wxALL|wxEXPAND, 5 );
 	
 	m_staticText20 = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
