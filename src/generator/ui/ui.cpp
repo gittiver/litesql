@@ -62,7 +62,7 @@ FieldPanel::FieldPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, con
 	this->SetMinSize( wxSize( 300,120 ) );
 	
 	wxFlexGridSizer* gSizer1;
-	gSizer1 = new wxFlexGridSizer( 6, 2, 0, 0 );
+	gSizer1 = new wxFlexGridSizer( 7, 2, 0, 0 );
 	gSizer1->AddGrowableCol( 1 );
 	gSizer1->SetFlexibleDirection( wxBOTH );
 	gSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -175,7 +175,7 @@ RelationPanel::RelationPanel( wxWindow* parent, wxWindowID id, const wxPoint& po
 	this->SetMinSize( wxSize( 300,120 ) );
 	
 	wxFlexGridSizer* gSizer1;
-	gSizer1 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	gSizer1 = new wxFlexGridSizer( 3, 2, 0, 0 );
 	gSizer1->AddGrowableCol( 1 );
 	gSizer1->SetFlexibleDirection( wxBOTH );
 	gSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
