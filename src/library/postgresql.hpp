@@ -55,8 +55,8 @@ public:
     virtual void begin() const;
     virtual void commit() const;
     virtual void rollback() const;
-    Backend::Result* execute(string query) const;
-    Backend::Cursor* cursor(string query) const;
+    Backend::Result* execute(const string& query) const;
+    Backend::Cursor* cursor(const string& query) const;
     virtual ~PostgreSQL();
 };
 }

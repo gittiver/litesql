@@ -105,8 +105,8 @@ void PostgreSQL::rollback() const {
       transaction = false;
     }
 }
-Backend::Result* PostgreSQL::execute(const string& query) const {
-    query += ";";
+Backend::Result* PostgreSQL::execute(const string& _query) const {
+    string query = _query + ";";
     PGresult * res = PQexec(conn, query.c_str());
     if (PQresultStatus(res) != PGRES_TUPLES_OK 
         && PQresultStatus(res) != PGRES_COMMAND_OK) {
