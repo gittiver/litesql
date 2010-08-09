@@ -50,7 +50,7 @@ protected:
         }
     }
     void prepareUpdate(Updates& updates, string table);
-    void deleteFromTable(string table, string id);
+    void deleteFromTable(const string& table, const string& id);
     /** pointer to current Database Persistent is assigned to. 
         It is not a reference because Persistents must be assignable using
         operator= */

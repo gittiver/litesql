@@ -52,7 +52,7 @@ void Persistent::prepareUpdate(Updates& updates, string table) {
         updates[table] = vector<pair<FieldType, string> >();
     }
 }
-void Persistent::deleteFromTable(string table, string id) {
+void Persistent::deleteFromTable(const string& table, const string& id) {
     db->query("DELETE FROM " + table + " WHERE id_="+escapeSQL(id));
 }
 }
