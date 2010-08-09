@@ -135,7 +135,7 @@ static void FillTree (ObjectModel* pModel,wxTreebook* pTree)
   for (vector<Relation*>::iterator relation = pModel->relations.begin(); relation!= pModel->relations.end();relation++)
   {
     wxString name((*relation)->name.c_str(),wxConvUTF8);
-    pTree->AddSubPage(new LitesqlRelationPanel(pTree,*relation),name +_("(relation)"));
+    pTree->AddSubPage(new LitesqlRelationPanel(pTree,pModel->objects,*relation),name +_("(relation)"));
     pagePos++;
   }
 
