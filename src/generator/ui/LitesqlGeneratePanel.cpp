@@ -16,7 +16,12 @@ LitesqlGeneratePanel::LitesqlGeneratePanel( wxWindow* parent,litesql::ObjectMode
 GeneratePanel( parent ),
 m_pModel(pModel)
 {
-
+  for (CodeGenerator::FactoryMap::iterator it  = CodeGenerator::getFactoryMap().begin();
+                                           it != CodeGenerator::getFactoryMap().end();
+                                           it++ )
+  {
+    m_checkListGenerators->Append(wxString::FromUTF8(it->first.c_str()));
+  }
 }
 
 
@@ -34,39 +39,30 @@ struct options_t {
 
   options_t options = {"","","",true};
   options.targets.push_back("c++");
+  options.output_includes = options.output_sources 
+                          = options.output_dir 
+                          = m_dirPickerOutputDir->GetPath().ToUTF8();
 
   CompositeGenerator generator;
     
   generator.setOutputDirectory(options.output_dir);
   
-  
-  for (vector<string>::const_iterator target= options.targets.begin(); target!=options.targets.end();target++)
+  for (int index=0; index < m_checkListGenerators->GetCount();index++)
   {
+    if (m_checkListGenerators->IsChecked(index))
+    {
+      string key(m_checkListGenerators->GetString(index).ToUTF8()); 
+      CodeGenerator::create(key.c_str());
+      CodeGenerator::FactoryMap::iterator it = CodeGenerator::getFactoryMap().find(key);
+      if (it != CodeGenerator::getFactoryMap().end() &&  it->second!=NULL)
+      {
+        generator.add(it->second->create());
+      }
 
-    if (*target == "c++") 
-    {
-      CppGenerator* pCppGen = new CppGenerator();
-      pCppGen->setOutputSourcesDirectory(options.output_sources);
-      pCppGen->setOutputIncludesDirectory(options.output_includes);
-
-      generator.add(pCppGen);
-    }    
-    else if (*target == "graphviz") 
-    {
-      generator.add(new GraphvizGenerator());
-    }
-    else if (*target == "ruby-activerecord") 
-    {
-      generator.add(new RubyActiveRecordGenerator());
-    }
-    else 
-    {
-      throw litesql::Except("unsupported target: " + *target);
     }
   }
 
   wxString s (generator.generateCode(  m_pModel) ? _("Success") : _("Fail") );
   wxMessageBox(s);
-
 }
 

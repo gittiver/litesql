@@ -1,10 +1,71 @@
 #include "generator.hpp"
 #include "objectmodel.hpp"
-//#include <fstream>
+#include "litesql-gen-cpp.hpp"
+#include "litesql-gen-ruby-activerecord.hpp"
+#include "litesql-gen-graphviz.hpp"
+
 
 using namespace std;
 using namespace litesql;
 
+CodeGenerator::FactoryMap::FactoryMap()
+{
+  registerFactory(new CodeGenerator::Factory<CppGenerator>(CppGenerator::NAME));
+  
+  registerFactory(new CodeGenerator::Factory<RubyActiveRecordGenerator>(RubyActiveRecordGenerator::NAME));
+  registerFactory(new CodeGenerator::Factory<ActiveRecordClassGenerator>(ActiveRecordClassGenerator::NAME));
+  registerFactory(new CodeGenerator::Factory<RubyMigrationsGenerator>(RubyMigrationsGenerator::NAME));
+
+  registerFactory(new CodeGenerator::Factory<GraphvizGenerator>(GraphvizGenerator::NAME));
+
+}
+
+CodeGenerator::FactoryMap::~FactoryMap()
+{
+  for (iterator it  = begin();
+                it != end();
+                it++ )
+  {
+    delete it->second;
+  }
+}
+
+CodeGenerator::FactoryMap& CodeGenerator::getFactoryMap()
+{
+  static FactoryMap instance;
+  return instance;
+}
+
+bool CodeGenerator::registerFactory(AbstractFactory* pFactory)
+{
+  if (!pFactory)
+  {
+    return false;
+  }
+  else
+  {
+    getFactoryMap()[pFactory->getName()] = pFactory;  
+    return true;
+  }
+}
+
+CodeGenerator* CodeGenerator::create(const char* target)
+{
+  FactoryMap::iterator it = getFactoryMap().find(target);
+  if (it != getFactoryMap().end() &&  it->second!=NULL)
+  {
+    return it->second->create();
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
+
+CodeGenerator::CodeGenerator()
+{}
+  
 CodeGenerator::~CodeGenerator()
 {}
 

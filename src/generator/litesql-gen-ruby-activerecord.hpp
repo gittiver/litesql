@@ -7,12 +7,14 @@ namespace litesql {
 
   class RubyActiveRecordGenerator : public CompositeGenerator {
   public:
+     static const char* NAME;
     RubyActiveRecordGenerator();
   };
 
   class ActiveRecordClassGenerator : public CodeGenerator {
   public:
-    ActiveRecordClassGenerator(): CodeGenerator("ruby-activerecord-class") { };
+     static const char* NAME;
+    ActiveRecordClassGenerator(): CodeGenerator(NAME) { };
     bool generateCode(const ObjectModel* model);
   protected:   
     bool generate(xml::Object* const object);
@@ -20,7 +22,8 @@ namespace litesql {
 
   class RubyMigrationsGenerator : public CodeGenerator {
   public:
-    RubyMigrationsGenerator(): CodeGenerator("ruby-activerecord-migrations") { };
+     static const char* NAME;
+    RubyMigrationsGenerator(): CodeGenerator(NAME) { };
     bool generateCode(const ObjectModel* model);
   };
 

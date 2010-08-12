@@ -4,6 +4,10 @@
 using namespace std;
 using namespace xml;
 
+const char* RubyActiveRecordGenerator ::NAME = "ruby-activerecord";
+const char* ActiveRecordClassGenerator::NAME = "ruby-activerecord-class";
+const char* RubyMigrationsGenerator :: NAME ="ruby-activerecord-migrations";
+
 string toActiveRecordType(AT_field_type field_type) {
   switch(field_type) {
        case A_field_type_integer:  return "int";
@@ -20,7 +24,7 @@ string toActiveRecordType(AT_field_type field_type) {
   }
 }
 
-RubyActiveRecordGenerator::RubyActiveRecordGenerator(): CompositeGenerator("ruby-activerecord") 
+RubyActiveRecordGenerator::RubyActiveRecordGenerator(): CompositeGenerator(RubyActiveRecordGenerator::NAME) 
 { 
   add(new ActiveRecordClassGenerator());
   add(new RubyMigrationsGenerator());

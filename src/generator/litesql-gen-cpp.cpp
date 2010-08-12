@@ -7,6 +7,7 @@
 
 #include <cstdio>
 
+
 namespace gen {
 using namespace litesql;
 using namespace std;
@@ -259,6 +260,10 @@ public:
 using namespace std;
 using namespace gen;
 using namespace litesql;
+
+const char* CppGenerator::NAME="c++";
+
+//bool b = CodeGenerator::registerFactory(new CodeGenerator::Factory<CppGenerator>(CppGenerator::NAME));
 
 string quote(string s) {
     return "\"" + s + "\"";

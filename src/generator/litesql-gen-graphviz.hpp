@@ -7,7 +7,9 @@ namespace litesql {
   
   class GraphvizGenerator : public CodeGenerator {
   public:
-    GraphvizGenerator(): CodeGenerator("graphviz") { };
+    static const char* NAME;
+
+    GraphvizGenerator(): CodeGenerator(NAME) { };
     bool generateCode(const ObjectModel* model);
   protected:   
     bool generate(xml::Object* const object     , std::ostream& os , size_t indent);

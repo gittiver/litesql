@@ -91,6 +91,8 @@ wxMenu* LitesqlView::GetContextMenu()
     m_ctxMenu->AppendSeparator();
     m_ctxMenu->Append(VisualLitesqlApp::ID_ADD_RELATION,_("Add Relation..."));
     m_ctxMenu->Append(VisualLitesqlApp::ID_REMOVE_RELATION,_("Remove Relation ..."));
+    m_ctxMenu->AppendSeparator();
+    m_ctxMenu->Append(VisualLitesqlApp::ID_GENERATE,_("Generate..."));
   }
 
   // \TODO change menu on selected item

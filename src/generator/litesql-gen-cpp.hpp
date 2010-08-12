@@ -7,7 +7,8 @@ namespace litesql {
   
   class CppGenerator : public CodeGenerator {
   public:
-    CppGenerator(): CodeGenerator("c++") { };
+    static const char* NAME;
+    CppGenerator(): CodeGenerator(NAME) { };
     bool generateCode(const ObjectModel* model);
     
     void setOutputSourcesDirectory(const std::string& directory);

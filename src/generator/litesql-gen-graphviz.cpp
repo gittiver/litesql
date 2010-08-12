@@ -4,6 +4,8 @@
 using namespace std;
 using namespace xml;
 
+const char* GraphvizGenerator::NAME="graphviz";
+
 bool GraphvizGenerator::generate(Object* const object    ,ostream& os, size_t indent)
 {
   string indents(indent,' ');
