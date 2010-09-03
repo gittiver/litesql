@@ -16,7 +16,7 @@ In FieldType::in(const string& set) const {
 In FieldType::in(const SelectQuery& sel) const {
     return In(*this, sel);
 }
-Like FieldType::like(const string& s) {
+Like FieldType::like(const string& s) const {
     return Like(*this, s);
 }
 template <> 
