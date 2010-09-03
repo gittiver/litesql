@@ -44,7 +44,7 @@ bool XmlParser::parseFile(const std::string& filename)
   bool success = (docfd !=NULL);
   if (!success)
   {
-    Logger::error("cant open %s",filename.c_str());
+    Logger::error("cant open ",filename);
   }
   else {
     for (;;) {
@@ -77,7 +77,7 @@ bool XmlParser::parseFile(const std::string& filename)
   
   if (!success)
    {
-      cerr << "error parsing " << filename.c_str() << endl;
+      Logger::error("error parsing ", filename);
    }
   return success;
 }
