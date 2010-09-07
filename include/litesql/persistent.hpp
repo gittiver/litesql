@@ -38,7 +38,7 @@ protected:
                   Records& fieldRecs,
                   Records& values,
                   const string& sequence);
-    void update(Updates& updates); 
+    void update(const Updates& updates); 
     template <class T>
     void updateField(litesql::Persistent::Updates& updates, 
                      const std::string& table, 
@@ -49,7 +49,7 @@ protected:
             fld.setModified(false);
         }
     }
-    void prepareUpdate(Updates& updates, string table);
+    void prepareUpdate(Updates& updates, const string& table);
     void deleteFromTable(const string& table, const string& id);
     /** pointer to current Database Persistent is assigned to. 
         It is not a reference because Persistents must be assignable using
@@ -90,9 +90,10 @@ public:
     /** selectObjectQuery uses this to list tables used by Persistent 
         \param fdatas field information */
     static Split getTablesFromFieldTypes(const std::vector<FieldType> & fdatas);
+
     /** class adds own tables to tables 
         \param tables initially empty Split. Tables are inserted there */
-    virtual void getTables(Split & tables) const {  }
+//    virtual void getTables(Split & tables) const =0 ;
 };
 
 }

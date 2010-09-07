@@ -32,12 +32,12 @@ string Persistent::insert(Record& tables,
     inDatabase = true;
     return key;
 }
-void Persistent::update(Updates& updates) {
-    for (Updates::iterator i = updates.begin(); i != updates.end(); i++) {
+void Persistent::update(const Updates& updates) {
+    for (Updates::const_iterator i = updates.begin(); i != updates.end(); i++) {
         UpdateQuery uq(i->first);
         uq.where(RawExpr("id_ = '" + toString(oldKey) + "'"));
         bool notEmpty = false;
-        for (vector<pair<FieldType, string> >::iterator i2 =
+        for (vector<pair<FieldType, string> >::const_iterator i2 =
                 i->second.begin(); i2 != i->second.end();
              i2++) {
             uq.set(i2->first, i2->second);
@@ -47,7 +47,7 @@ void Persistent::update(Updates& updates) {
             db->query(uq);
     }
 }
-void Persistent::prepareUpdate(Updates& updates, string table) {
+void Persistent::prepareUpdate(Updates& updates, const string& table) {
     if (updates.find(table) == updates.end()) {
         updates[table] = vector<pair<FieldType, string> >();
     }
