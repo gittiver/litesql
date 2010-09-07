@@ -1,7 +1,7 @@
 AC_PREREQ(2.53)
-AC_INIT([LiteSQL], [0.3.8], [litesql-users@lists.sourceforge.net], [litesql])
+AC_INIT([LiteSQL], [0.3.9], [litesql-users@lists.sourceforge.net], [litesql])
 AC_CONFIG_SRCDIR([src/library/database.cpp])
-AM_INIT_AUTOMAKE([litesql], [0.3.8])
+AM_INIT_AUTOMAKE([litesql], [0.3.9])
 AM_CONFIG_HEADER(config.h)
 
 if [ ! -d m4 ]; then
