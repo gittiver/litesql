@@ -21,9 +21,9 @@ class UpdateQuery {
     Split fields;
     Split values;
 public:
-    UpdateQuery(string t) : table(t), _where("True") {}
+    UpdateQuery(const string& t) : table(t), _where("True") {}
     UpdateQuery& where(const Expr& e);
-    UpdateQuery& set(FieldType f, string value);
+    UpdateQuery& set(const FieldType& f, const string& value);
     operator std::string() const;
     std::string asString() const { return this->operator std::string(); }
 };

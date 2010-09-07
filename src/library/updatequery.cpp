@@ -11,7 +11,7 @@ UpdateQuery& UpdateQuery::where(const Expr& e) {
     _where = (RawExpr(_where) && e).asString();
     return *this;
 }
-UpdateQuery& UpdateQuery::set(FieldType f, string value) {
+UpdateQuery& UpdateQuery::set(const FieldType& f, const string& value) {
     fields.push_back(f.name());
     values.push_back(escapeSQL(value));
     return *this;
