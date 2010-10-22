@@ -3,12 +3,16 @@
  * The list of contributors at http://litesql.sf.net/ 
  * 
  * See LICENSE for copyright information. */
-//#include "compatibility.hpp"
 #include "mysql.hpp"
-#ifdef HAVE_LIBMYSQLCLIENT
-#include <string>
+#include "config.h"
 
-#include "config-win.h"
+#ifdef HAVE_LIBMYSQLCLIENT
+
+#ifdef WIN32
+#include <winsock2.h>				/* For windows */
+#endif
+
+#include <string>
 #include <mysql.h>
 
 using namespace litesql;
