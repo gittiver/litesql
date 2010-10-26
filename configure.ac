@@ -47,7 +47,53 @@ AC_CHECK_FUNCS([gettimeofday memset strchr strdup strrchr strstr strtol strtof s
 pkg_config_reqs_tv=""
 
 # Check for expat
-AX_LIB_EXPAT()
+find_expat="yes"
+expat_master_dir=/usr
+EXPAT_CXXFLAGS=""
+EXPAT_LDFLAGS=""
+AC_ARG_WITH([expat], AS_HELP_STRING([--with-expat@<:@=PATH@:>@],
+[compile with expat support @<:@default=yes@:>@]),[
+case "$withval" in
+    yes) ;;
+    no) find_expat="no" ;;
+    *) expat_master_dir=$withval ;;
+esac])
+if test "x${find_expat}" = "xyes"
+then
+    AC_MSG_CHECKING([for expat header file])
+    expat_header="${expat_master_dir}/include/expat.h"
+    if test -r "${expat_header}"
+    then
+	if test "x/usr" != "x${expat_master_dir}"
+	then
+	    EXPAT_CXXFLAGS="-I${expat_master_dir}/include"
+	    EXPAT_LDFLAGS="-L${expat_master_dir}/lib"
+	fi
+    else
+	expat_header="not found"
+    fi
+    AC_MSG_RESULT([${expat_header}])
+    if test "${expat_header}" != "not found"
+    then
+	saved_LDFLAGS="$LDFLAGS"
+	LDFLAGS="$LDFLAGS ${EXPAT_LDFLAGS}"
+	AC_CHECK_LIB([expat], [XML_ParserCreate])
+	LDFLAGS="${saved_LDFLAGS}"
+	if test "x${ac_cv_lib_expat_XML_ParserCreate}" = "xyes"
+	then
+	    if test "x" = "x${pkg_config_reqs_tv}"
+	    then
+		pkg_config_reqs_tv="Requires: expat"
+	    else
+		pkg_config_reqs_tv="${pkg_config_reqs_tv}, expat"
+	    fi
+	fi
+    fi
+fi
+AC_SUBST(EXPAT_CXXFLAGS)
+AC_SUBST(EXPAT_LDFLAGS)
+
+
 
 # Check for SQLite3.
 find_sqlite3="yes"
@@ -121,7 +167,7 @@ AC_CHECK_PROG([MYSQL_CONFIG], [mysql_config], [${mysql_config_path}/mysql_config
 if test "x${MYSQL_CONFIG}" != "xnot found"
 then
     MYSQL_CXXFLAGS=`${MYSQL_CONFIG} --include`
-    MYSQL_LIBS=`${MYSQL_CONFIG} --libs`
+cd     MYSQL_LIBS=`${MYSQL_CONFIG} --libs`
     AC_DEFINE([HAVE_LIBMYSQLCLIENT])
 fi
 fi
