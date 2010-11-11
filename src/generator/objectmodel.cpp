@@ -241,6 +241,7 @@ protected:
     OBJECT,
     FIELD,
     METHOD,
+	PARAM,
     RELATION,
     INDEX,
     INDEXFIELD,
@@ -420,7 +421,11 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     }
     else
     {
-      mtd->param(Param((char*)xmlGetAttrValue(atts,"name"),(char*)xmlGetAttrValue(atts,"type")));
+		
+	
+      mtd->param(Param((char*)xmlGetAttrValue(atts,"name"),strdup((char*)xmlGetAttrValue(atts,"type"))));
+	  m_parseState= PARAM;
+	  Logger::report("param = ");
     }
   }
   else if (xmlStrEqual(fullname,(XML_Char*)Relation::TAG))
@@ -579,12 +584,13 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
   } 
   else if (xmlStrEqual(fullname,(XML_Char*)Param::TAG))
   {
-    if (m_parseState!=METHOD)
-    {
+    if (m_parseState!= PARAM)
+	{
       m_parseState = ERROR;
     }
     else
     {
+      m_parseState = METHOD;
       Logger::report("end param" );
     }
   } 
