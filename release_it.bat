@@ -7,7 +7,7 @@ set STARTDIR=%CD%
 mkdir %CMAKE_BUILDDIR%
 
 cd %CMAKE_BUILDDIR%
-cmake -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=ON -D LITESQL_WITH_SQLITE:bool=ON -D LITESQL_WITH_TESTS:bool=ON  -D LITESQL_WITH_UI:bool=ON %STARTDIR%
+cmake -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=ON -D LITESQL_WITH_SQLITE:bool=ON -D LITESQL_WITH_TESTS:bool=ON  -D LITESQL_WITH_UI:bool=ON -D LITESQL_MSVC_MT:BOOL=OFF %STARTDIR%
 devenv /rebuild Debug litesql.sln /project "ALL_BUILD.vcproj" /projectconfig Debug
 devenv /rebuild Release litesql.sln /project "ALL_BUILD.vcproj" /projectconfig Debug
 
