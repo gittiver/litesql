@@ -28,6 +28,9 @@
 #include <wx/filepicker.h>
 #include <wx/checklst.h>
 #include <wx/gauge.h>
+#include <wx/treectrl.h>
+#include <wx/notebook.h>
+#include <wx/splitter.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -186,6 +189,41 @@ namespace ui
 		public:
 			GeneratePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 400,210 ), long style = wxTAB_TRAVERSAL );
 			~GeneratePanel();
+		
+	};
+	
+	///////////////////////////////////////////////////////////////////////////////
+	/// Class ModelTreePanel
+	///////////////////////////////////////////////////////////////////////////////
+	class ModelTreePanel : public wxPanel 
+	{
+		private:
+		
+		protected:
+			wxSplitterWindow* m_mainSplitter;
+			wxPanel* m_treePanel;
+			wxTreeCtrl* m_modelTreeCtrl;
+			wxPanel* m_detailPanel;
+			wxNotebook* m_detailNotebook;
+			
+			// Virtual event handlers, overide them in your derived class
+			virtual void OnTreeDeleteItem( wxTreeEvent& event ){ event.Skip(); }
+			virtual void OnTreeItemActivated( wxTreeEvent& event ){ event.Skip(); }
+			virtual void OnTreeItemGetTooltip( wxTreeEvent& event ){ event.Skip(); }
+			virtual void OnTreeItemMenu( wxTreeEvent& event ){ event.Skip(); }
+			virtual void OnTreeSelChanged( wxTreeEvent& event ){ event.Skip(); }
+			virtual void OnTreeSelChanging( wxTreeEvent& event ){ event.Skip(); }
+			
+		
+		public:
+			ModelTreePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 642,547 ), long style = wxTAB_TRAVERSAL );
+			~ModelTreePanel();
+			void m_mainSplitterOnIdle( wxIdleEvent& )
+			{
+			m_mainSplitter->SetSashPosition( 0 );
+			m_mainSplitter->Disconnect( wxEVT_IDLE, wxIdleEventHandler( ModelTreePanel::m_mainSplitterOnIdle ), NULL, this );
+			}
+			
 		
 	};
 	

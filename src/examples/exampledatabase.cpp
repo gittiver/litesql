@@ -1481,6 +1481,126 @@ std::ostream & operator<<(std::ostream& os, Office o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
+const litesql::FieldType ThingWithMethods::Own::Id("id_","INTEGER","ThingWithMethods_");
+const std::string ThingWithMethods::type__("ThingWithMethods");
+const std::string ThingWithMethods::table__("ThingWithMethods_");
+const std::string ThingWithMethods::sequence__("ThingWithMethods_seq");
+const litesql::FieldType ThingWithMethods::Id("id_","INTEGER",table__);
+const litesql::FieldType ThingWithMethods::Type("type_","TEXT",table__);
+void ThingWithMethods::defaults() {
+    id = 0;
+}
+ThingWithMethods::ThingWithMethods(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type) {
+    defaults();
+}
+ThingWithMethods::ThingWithMethods(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type) {
+    defaults();
+    size_t size = (rec.size() > 2) ? 2 : rec.size();
+    switch(size) {
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+ThingWithMethods::ThingWithMethods(const ThingWithMethods& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type) {
+}
+const ThingWithMethods& ThingWithMethods::operator=(const ThingWithMethods& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+std::string ThingWithMethods::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void ThingWithMethods::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void ThingWithMethods::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+}
+void ThingWithMethods::addIDUpdates(Updates& updates) {
+}
+void ThingWithMethods::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+}
+void ThingWithMethods::delRecord() {
+    deleteFromTable(table__, id);
+}
+void ThingWithMethods::delRelations() {
+}
+void ThingWithMethods::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void ThingWithMethods::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<ThingWithMethods> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool ThingWithMethods::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<ThingWithMethods> ThingWithMethods::upcast() {
+    return auto_ptr<ThingWithMethods>(new ThingWithMethods(*this));
+}
+std::auto_ptr<ThingWithMethods> ThingWithMethods::upcastCopy() {
+    ThingWithMethods* np = new ThingWithMethods(*this);
+    np->id = id;
+    np->type = type;
+    np->inDatabase = inDatabase;
+    return auto_ptr<ThingWithMethods>(np);
+}
+std::ostream & operator<<(std::ostream& os, ThingWithMethods o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
 ExampleDatabase::ExampleDatabase(std::string backendType, std::string connInfo)
      : litesql::Database(backendType, connInfo) {
     initialize();
@@ -1494,6 +1614,7 @@ std::vector<litesql::Database::SchemaItem> ExampleDatabase::getSchema() const {
         res.push_back(Database::SchemaItem("Role_seq","sequence","CREATE SEQUENCE Role_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("School_seq","sequence","CREATE SEQUENCE School_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Office_seq","sequence","CREATE SEQUENCE Office_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("ThingWithMethods_seq","sequence","CREATE SEQUENCE ThingWithMethods_seq START 1 INCREMENT 1"));
     }
     res.push_back(Database::SchemaItem("user_","table","CREATE TABLE user_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,passwd_ TEXT)"));
     res.push_back(Database::SchemaItem("Person_","table","CREATE TABLE Person_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,age_ INTEGER,image_ BLOB,aDoubleValue_ DOUBLE,sex_ INTEGER)"));
@@ -1502,6 +1623,7 @@ std::vector<litesql::Database::SchemaItem> ExampleDatabase::getSchema() const {
     res.push_back(Database::SchemaItem("Employee_","table","CREATE TABLE Employee_ (id_ " + backend->getRowIDType() + ")"));
     res.push_back(Database::SchemaItem("School_","table","CREATE TABLE School_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT)"));
     res.push_back(Database::SchemaItem("Office_","table","CREATE TABLE Office_ (id_ " + backend->getRowIDType() + ",type_ TEXT)"));
+    res.push_back(Database::SchemaItem("ThingWithMethods_","table","CREATE TABLE ThingWithMethods_ (id_ " + backend->getRowIDType() + ",type_ TEXT)"));
     res.push_back(Database::SchemaItem("Person_Person_Mother","table","CREATE TABLE Person_Person_Mother (Person1 INTEGER UNIQUE,Person2 INTEGER)"));
     res.push_back(Database::SchemaItem("Person_Person_Father","table","CREATE TABLE Person_Person_Father (Person1 INTEGER UNIQUE,Person2 INTEGER)"));
     res.push_back(Database::SchemaItem("Person_Person_Siblings","table","CREATE TABLE Person_Person_Siblings (Person1 INTEGER,Person2 INTEGER)"));

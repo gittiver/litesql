@@ -9,6 +9,7 @@ class Student;
 class Employee;
 class School;
 class Office;
+class ThingWithMethods;
 class PersonPersonRelationMother {
 public:
     class Row {
@@ -521,6 +522,45 @@ public:
     std::auto_ptr<Office> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, Office o);
+class ThingWithMethods : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+protected:
+    void defaults();
+public:
+    ThingWithMethods(const litesql::Database& db);
+    ThingWithMethods(const litesql::Database& db, const litesql::Record& rec);
+    ThingWithMethods(const ThingWithMethods& obj);
+    const ThingWithMethods& operator=(const ThingWithMethods& obj);
+    virtual void sayHello(string text, int repeat);
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<ThingWithMethods> upcast();
+    std::auto_ptr<ThingWithMethods> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, ThingWithMethods o);
 class ExampleDatabase : public litesql::Database {
 public:
     ExampleDatabase(std::string backendType, std::string connInfo);

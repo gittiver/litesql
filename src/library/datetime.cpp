@@ -201,9 +201,7 @@ string Time::asString(string format) const {
     return res;
 }
 DateTime::DateTime(time_t t) {
-    value = t;
-    if (!value)
-        value = time(NULL);
+    value =  (t==0) ? time(NULL) : t;
 }
 int DateTime::hour() const {
     return TimeStruct(value).hour();

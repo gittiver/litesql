@@ -12,6 +12,11 @@ void example::user::sayHello() {
     std::cout << "Hi! My name is " << name << std::endl;
 }
 
+void example::ThingWithMethods::sayHello(std::string text,int repeat) {
+	std::cout << "Hi! I want to say :" << text << std::endl;
+}
+
+
 // no name collisions expected
 using namespace litesql;
 using namespace example;

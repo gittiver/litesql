@@ -211,59 +211,59 @@ static AT_relate_limit relate_limit(const XML_Char* value)
 }
 
 namespace xml {
-class LitesqlParser : public XmlParser {
-public:
-  LitesqlParser(ObjectModel* model)
-    : m_pObjectModel(model),
+  class LitesqlParser : public XmlParser {
+  public:
+    LitesqlParser(ObjectModel* model)
+      : m_pObjectModel(model),
       m_parseState(ROOT) {};
 
-protected:
-  void onStartElement(const XML_Char *fullname,
-    const XML_Char **atts);
+  protected:
+    void onStartElement(const XML_Char *fullname,
+      const XML_Char **atts);
 
-  void onEndElement(const XML_Char *fullname);
-  /** ROOT->DATABASE; 
-  *
-  *    DATABASE->OBJECT;
-  *      OBJECT->FIELD;
-  *      OBJECT->METHOD;
-  *      FIELD->OBJECT;
-  *      METHOD->OBJECT;
-  *
-  *    DATABASE->RELATION;
-  *    RELATION->DATABASE;
-  *
-  *  DATABASE->ROOT;
-  * ERROR;
-  */
-  enum ParseState { ROOT,
-    DATABASE,
-    OBJECT,
-    FIELD,
-    METHOD,
-	PARAM,
-    RELATION,
-    INDEX,
-    INDEXFIELD,
-    INCLUDE,
-    UNKNOWN,
-    ERROR
+    void onEndElement(const XML_Char *fullname);
+    /** ROOT->DATABASE; 
+    *
+    *    DATABASE->OBJECT;
+    *      OBJECT->FIELD;
+    *      OBJECT->METHOD;
+    *      FIELD->OBJECT;
+    *      METHOD->OBJECT;
+    *
+    *    DATABASE->RELATION;
+    *    RELATION->DATABASE;
+    *
+    *  DATABASE->ROOT;
+    * ERROR;
+    */
+    enum ParseState { ROOT,
+      DATABASE,
+      OBJECT,
+      FIELD,
+      METHOD,
+      PARAM,
+      RELATION,
+      INDEX,
+      INDEXFIELD,
+      INCLUDE,
+      UNKNOWN,
+      ERROR
+    };
+
+  private:
+    ObjectModel* m_pObjectModel;
+
+    Object * obj;
+    Relation * rel;
+    Field * fld;
+    Field * rel_fld;
+    Method * mtd;
+    Index * idx;
+    IndexField* idxField;
+
+    ParseState m_parseState;
+    vector<ParseState> history;
   };
-
-private:
-  ObjectModel* m_pObjectModel;
-
-  Object * obj;
-  Relation * rel;
-  Field * fld;
-  Field * rel_fld;
-  Method * mtd;
-  Index * idx;
-  IndexField* idxField;
-
-  ParseState m_parseState;
-  vector<ParseState> history;
-};
 
 }
 
@@ -285,7 +285,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       m_pObjectModel->db.name = safe((char*)xmlGetAttrValue(atts,"name"));
       m_pObjectModel->db.include = safe((char*)xmlGetAttrValue(atts,"include"));
       m_pObjectModel->db.nspace = safe((char*)xmlGetAttrValue(atts,"namespace"));
-      Logger::report("database = " + m_pObjectModel->db.name);
+      Logger::report("database = " , m_pObjectModel->db.name);
     }
   } 
   else if (xmlStrEqual(fullname,(XML_Char*)Object::TAG))
@@ -298,7 +298,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     {
       m_pObjectModel->objects.push_back(obj = new Object(    (char*)xmlGetAttrValue(atts,"name"), 
         safe((char*)xmlGetAttrValue(atts,"inherits"))));
-      Logger::report("object = " + obj->name);
+      Logger::report("object = ",obj->name);
       m_parseState = OBJECT; 
 
     }
@@ -306,10 +306,10 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
   else if (xmlStrEqual(fullname,(XML_Char*)Field::TAG))
   {
     Field* pNewField = new Field(   (char*)xmlGetAttrValue(atts,"name"), 
-                                    field_type(xmlGetAttrValue(atts,"type")),
-                                    safe(  (char*)xmlGetAttrValue(atts,"default")),
-                                    field_indexed(xmlGetAttrValue(atts,"indexed")),
-                                    field_unique(xmlGetAttrValue(atts,"unique"))
+      field_type(xmlGetAttrValue(atts,"type")),
+      safe(  (char*)xmlGetAttrValue(atts,"default")),
+      field_indexed(xmlGetAttrValue(atts,"indexed")),
+      field_unique(xmlGetAttrValue(atts,"unique"))
       );
 
     switch(m_parseState)
@@ -319,7 +319,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
         Logger::error("parsing field inside object, but currentObject == NULL ");
       }
       else {
-        Logger::report("field = ",(char*)xmlGetAttrValue(atts,"name") );
+        Logger::report("field = ",obj->name);
         obj->fields.push_back(fld = pNewField);
       };
       m_parseState = FIELD;
@@ -327,12 +327,12 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
 
     case RELATION:
       if (!rel) {
-        Logger::error("parsing field inside realtion, but currentRelation == NULL ");
+        Logger::error("parsing field inside relation, but currentRelation == NULL ");
       }
       else
       {
-        Logger::report("field = ",(char*)xmlGetAttrValue(atts,"name") );
         rel->fields.push_back(rel_fld = pNewField);
+        Logger::report("field = ",rel_fld->name );
       }
       m_parseState = FIELD;
       break;
@@ -345,7 +345,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
   else if (xmlStrEqual(fullname,(XML_Char*)Index::TAG))
   {
     Index* pIdx = new Index(index_unique(xmlGetAttrValue(atts,"unique")));
-    
+
     switch (m_parseState)
     {
     case OBJECT:
@@ -376,7 +376,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       IndexField idxField((char*)xmlGetAttrValue(atts,"name"));
       idx->fields.push_back(idxField);
     }    
-    
+
     m_parseState = INDEXFIELD;
   }
   else if (xmlStrEqual(fullname,(XML_Char*)Value::TAG))
@@ -409,7 +409,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
         )
         );
       m_parseState= METHOD;
-      Logger::report("method = " );
+      Logger::report("method = ",mtd->name );
     }
 
   }
@@ -421,11 +421,11 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     }
     else
     {
-		
-	
-      mtd->param(Param((char*)xmlGetAttrValue(atts,"name"),strdup((char*)xmlGetAttrValue(atts,"type"))));
-	  m_parseState= PARAM;
-	  Logger::report("param = ");
+      char* pszName = (char*)xmlGetAttrValue(atts,"name");	
+
+      mtd->param(Param(pszName,strdup((char*)xmlGetAttrValue(atts,"type"))));
+      m_parseState= PARAM;
+      Logger::report("param = ",pszName);
     }
   }
   else if (xmlStrEqual(fullname,(XML_Char*)Relation::TAG))
@@ -499,7 +499,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     }
     else
     {
-      Logger::report("end database " );
+      Logger::report("end ",Database::TAG );
       m_parseState = ROOT;
     }
   } 
@@ -511,7 +511,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     }
     else
     {
-      Logger::report("end object " );
+      Logger::report("end ", Object::TAG );
       obj = NULL;
       fld= NULL;
       rel = NULL;
@@ -527,7 +527,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     }
     else
     {
-      Logger::report("end field" );
+      Logger::report("end ",xml::Field::TAG );
       fld = NULL;
       m_parseState = history.back();
     }
@@ -540,7 +540,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     }
     else
     {
-      Logger::report("end index" );
+      Logger::report("end ", Index::TAG );
       idx = NULL;
       m_parseState = history.back();
     }
@@ -553,7 +553,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     }
     else
     {
-      Logger::report("end indexfield" );
+      Logger::report("end " ,IndexField::TAG);
       m_parseState = history.back();
     }
   }
@@ -565,7 +565,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     }
     else
     {
-      Logger::report("end value" );
+      Logger::report("end ", Value::TAG );
     }
 
   } 
@@ -578,20 +578,20 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     else
     {
       m_parseState = OBJECT;
-      Logger::report("end method" );
+      Logger::report("end ", Method::TAG );
     }
 
   } 
   else if (xmlStrEqual(fullname,(XML_Char*)Param::TAG))
   {
     if (m_parseState!= PARAM)
-	{
+    {
       m_parseState = ERROR;
     }
     else
     {
       m_parseState = METHOD;
-      Logger::report("end param" );
+      Logger::report("end ",Param::TAG);
     }
   } 
   else if (xmlStrEqual(fullname,(XML_Char*)Relation::TAG))
@@ -602,7 +602,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     }
     else
     {
-      Logger::report("end relation " );
+      Logger::report("end ",Param::TAG );
       rel = NULL;
       rel_fld = NULL;
       m_parseState = DATABASE;
@@ -617,7 +617,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     else
     {
       rel_fld = NULL;
-      Logger::report("end relate" );
+      Logger::report("end Relate::TAG" );
     }
   } 
   else if (xmlStrEqual(fullname,(XML_Char*)"include"))
@@ -628,7 +628,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     }
     else
     {
-      Logger::report("end include " );
+      Logger::report("end ","include" );
       m_parseState = DATABASE;
     }
   } 
@@ -643,19 +643,19 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
 
 ObjectModel::~ObjectModel()
 {
-/*
-for (std::vector<xml::Object* >::iterator it=objects.begin();
-        it !=objects.end();it++)
+  /*
+  for (std::vector<xml::Object* >::iterator it=objects.begin();
+  it !=objects.end();it++)
   {
-    delete *it;
+  delete *it;
   }
 
   for (std::vector<xml::Relation* >::iterator it=relations.begin();
-        it !=relations.end();it++)
+  it !=relations.end();it++)
   {
-    delete *it;
+  delete *it;
   }
-*/
+  */
 }
 
 bool ObjectModel::loadFromFile(const std::string& filename)
@@ -676,8 +676,8 @@ bool ObjectModel::remove(xml::Field* field)
   {  
     std::vector<Field*>::iterator found;
     for ( std::vector<xml::Object* >::iterator it=objects.begin();
-          it !=objects.end();
-          it++)
+      it !=objects.end();
+      it++)
     {
       found = find((*it)->fields.begin(),(*it)->fields.end(),field);
       if (found!=(*it)->fields.end()) 

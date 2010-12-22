@@ -330,3 +330,57 @@ GeneratePanel::~GeneratePanel()
 	// Disconnect Events
 	m_buttonRun->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GeneratePanel::OnRunClick ), NULL, this );
 }
+
+ModelTreePanel::ModelTreePanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
+{
+	wxBoxSizer* bMainSizer;
+	bMainSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_mainSplitter = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D );
+	m_mainSplitter->Connect( wxEVT_IDLE, wxIdleEventHandler( ModelTreePanel::m_mainSplitterOnIdle ), NULL, this );
+	m_treePanel = new wxPanel( m_mainSplitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* btreePanelSizer;
+	btreePanelSizer = new wxBoxSizer( wxVERTICAL );
+	
+	m_modelTreeCtrl = new wxTreeCtrl( m_treePanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE );
+	btreePanelSizer->Add( m_modelTreeCtrl, 5, wxALL|wxEXPAND, 5 );
+	
+	m_treePanel->SetSizer( btreePanelSizer );
+	m_treePanel->Layout();
+	btreePanelSizer->Fit( m_treePanel );
+	m_detailPanel = new wxPanel( m_mainSplitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bDetailPanelSizer;
+	bDetailPanelSizer = new wxBoxSizer( wxVERTICAL );
+	
+	m_detailNotebook = new wxNotebook( m_detailPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	
+	bDetailPanelSizer->Add( m_detailNotebook, 1, wxEXPAND | wxALL, 5 );
+	
+	m_detailPanel->SetSizer( bDetailPanelSizer );
+	m_detailPanel->Layout();
+	bDetailPanelSizer->Fit( m_detailPanel );
+	m_mainSplitter->SplitVertically( m_treePanel, m_detailPanel, 0 );
+	bMainSizer->Add( m_mainSplitter, 1, wxEXPAND, 5 );
+	
+	this->SetSizer( bMainSizer );
+	this->Layout();
+	
+	// Connect Events
+	m_modelTreeCtrl->Connect( wxEVT_COMMAND_TREE_DELETE_ITEM, wxTreeEventHandler( ModelTreePanel::OnTreeDeleteItem ), NULL, this );
+	m_modelTreeCtrl->Connect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( ModelTreePanel::OnTreeItemActivated ), NULL, this );
+	m_modelTreeCtrl->Connect( wxEVT_COMMAND_TREE_ITEM_GETTOOLTIP, wxTreeEventHandler( ModelTreePanel::OnTreeItemGetTooltip ), NULL, this );
+	m_modelTreeCtrl->Connect( wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEventHandler( ModelTreePanel::OnTreeItemMenu ), NULL, this );
+	m_modelTreeCtrl->Connect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( ModelTreePanel::OnTreeSelChanged ), NULL, this );
+	m_modelTreeCtrl->Connect( wxEVT_COMMAND_TREE_SEL_CHANGING, wxTreeEventHandler( ModelTreePanel::OnTreeSelChanging ), NULL, this );
+}
+
+ModelTreePanel::~ModelTreePanel()
+{
+	// Disconnect Events
+	m_modelTreeCtrl->Disconnect( wxEVT_COMMAND_TREE_DELETE_ITEM, wxTreeEventHandler( ModelTreePanel::OnTreeDeleteItem ), NULL, this );
+	m_modelTreeCtrl->Disconnect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( ModelTreePanel::OnTreeItemActivated ), NULL, this );
+	m_modelTreeCtrl->Disconnect( wxEVT_COMMAND_TREE_ITEM_GETTOOLTIP, wxTreeEventHandler( ModelTreePanel::OnTreeItemGetTooltip ), NULL, this );
+	m_modelTreeCtrl->Disconnect( wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEventHandler( ModelTreePanel::OnTreeItemMenu ), NULL, this );
+	m_modelTreeCtrl->Disconnect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( ModelTreePanel::OnTreeSelChanged ), NULL, this );
+	m_modelTreeCtrl->Disconnect( wxEVT_COMMAND_TREE_SEL_CHANGING, wxTreeEventHandler( ModelTreePanel::OnTreeSelChanging ), NULL, this );
+}

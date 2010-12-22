@@ -4,12 +4,14 @@
 #include <wx/docview.h>
 #include <wx/treebook.h>
 
+class LitesqlModelTreePanel;
+
 class LitesqlView: public wxView
 {
 public:
     wxMDIChildFrame *frame;
-    wxTreebook* m_treebook;
-  
+	LitesqlModelTreePanel* panel;
+
     LitesqlView();
     virtual ~LitesqlView();
 
@@ -22,8 +24,7 @@ protected:
     
     void OnDraw(wxDC *dc);
     bool OnClose(bool deleteWindow = true);
-    void OnSize(wxSizeEvent& event);
-
+   
     void OnPageChanged(wxTreebookEvent& event);
     void OnPageChanging(wxTreebookEvent& event);
 
