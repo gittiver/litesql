@@ -20,13 +20,7 @@
 
 #include "LitesqlDocument.h"
 
-#include "LitesqlObjectPanel.h"
-#include "LitesqlFieldPanel.h"
-#include "LitesqlMethodPanel.h"
-#include "LitesqlRelationPanel.h"
-#include "LitesqlDatabasePanel.h"
-
-#include "objectmodel.hpp"
+#include "LitesqlModelTreePanel.h"
 
 IMPLEMENT_DYNAMIC_CLASS(LitesqlView, wxView)
 
@@ -55,163 +49,6 @@ END_EVENT_TABLE()
 using namespace xml;
 using namespace litesql;
 using namespace ui;
-
-class LitesqlModelTreePanel : public ui::ModelTreePanel
-{
-	public:
-	/** Constructor */
-  LitesqlModelTreePanel( wxWindow* parent)
-  : ModelTreePanel( parent )
-  {
-  }
-  
-  wxTreeCtrl* GetTreeCtrl()
-  {
-	  return m_modelTreeCtrl;
-  }
-private:	
-	void OnTreeDeleteItem( wxTreeEvent& event ){ event.Skip(); }
-	void OnTreeItemActivated( wxTreeEvent& event ){ event.Skip(); }
-	void OnTreeItemGetTooltip( wxTreeEvent& event ){ event.Skip(); }
-	void OnTreeItemMenu( wxTreeEvent& event ){ event.Skip(); }
-	void OnTreeSelChanged( wxTreeEvent& event ){ event.Skip(); }
-	void OnTreeSelChanging( wxTreeEvent& event ){ event.Skip(); }
-
-};
-
-class wxModelItem : public wxTreeItemData {
-public:
-	wxModelItem() : wxTreeItemData() {};
-	virtual ~wxModelItem() {}; 
-	virtual wxString GetLabel() const = 0 ;
-	//virtual wxWindow* GetEditPanel() const = 0;
-	wxWindow* GetEditPanel() const			{	return NULL;	};
-	virtual bool hasChildren() const		{	return false;	};
-	virtual wxArrayPtrVoid* GetChildren()	{	return NULL;	};
-
-	static void RefreshTree(wxTreeCtrl* pTree,wxTreeItemId& baseItem,wxModelItem* item);
-};
-
-void wxModelItem::RefreshTree(wxTreeCtrl* pTree,wxTreeItemId& baseItem,wxModelItem* item)
-{
-	wxTreeItemId itemId = pTree->InsertItem(baseItem,item->GetId(), item->GetLabel()); 
-	if (item->hasChildren())
-	{
-		wxArrayPtrVoid* pChildren = item->GetChildren();
-		for(wxArrayPtrVoid::iterator it =  pChildren->begin(); 
-									 it != pChildren->end();
-									 it++)
-		{
-			RefreshTree(pTree,itemId,(wxModelItem*)(*it));
-		}
-	}
-}
-
-class wxCompositeModelItem : public wxModelItem {
-public:
-	wxCompositeModelItem(): wxModelItem(),m_childrenInitalized(false) {};
-	virtual ~wxCompositeModelItem() 
-	{
-		for(wxArrayPtrVoid::iterator it =  m_children.begin(); 
-									 it != m_children.end();
-									 it++)
-		{
-			delete (*it);
-		}
-	}; 
-	
-	wxArrayPtrVoid* GetChildren() 
-	{
-		if (!m_childrenInitalized)
-		{
-			InitChildren();
-			m_childrenInitalized=true;
-		}
-		return &m_children;
-	}
-	
-protected:
-	virtual void InitChildren()=0;
-	wxArrayPtrVoid m_children;
-
-private:
-		bool m_childrenInitalized;
-};
-
-class wxFieldItem : public wxModelItem 
-{
-public:
-	wxFieldItem(Field* pField) : m_pField(pField) {}
- 
-	wxString GetLabel() const			{ wxString label(m_pField->name.c_str(),wxConvUTF8);
-		return label;	};
-private:
-	Field* m_pField;
-
-};
-
-class wxMethodItem: public wxModelItem 
-{
-public:
-	wxMethodItem(Method* pMethod) : m_pMethod(pMethod) {}
-	wxString GetLabel() const			{ wxString label(m_pMethod->name.c_str(),wxConvUTF8);
-		return label;	};
-private:
-	Method* m_pMethod;
-};
-
-class wxLitesqlObject : public wxCompositeModelItem {
-	public:
-		wxLitesqlObject(Object* pObject)
-			:	m_pObject(pObject)	{};
-		wxString GetLabel() const			{ wxString label(m_pObject->name.c_str(),wxConvUTF8);
-		return label;	};
-		wxWindow* GetEditPanel() const      { return NULL;				};
-		bool hasChildren() const {	return true; };
-
-		void InitChildren()
-		{
-			for (vector<Field*>::iterator field = m_pObject->fields.begin();
-				field != m_pObject->fields.end();
-				field++)
-			{
-				m_children.push_back(new wxFieldItem(*field));
-			}
-
-			for (vector<Method*>::iterator method = m_pObject->methods.begin();
-				method != m_pObject->methods.end();
-				method++)
-			{
-				m_children.push_back(new wxMethodItem(*method));
-			}
-		}
-	
-private:
-		Object* m_pObject;	
-};
-
-class wxLitesqlModel : public wxCompositeModelItem {
-	public:
-		wxLitesqlModel(ObjectModel* pModel)
-			:	m_pModel(pModel) { 	};
-
-		wxString GetLabel() const			{ wxString label(m_pModel->db.name.c_str(),wxConvUTF8);
-		return label; };
-		wxWindow* GetEditPanel() const      { return NULL;				};
-		bool hasChildren() const {	return true; };
-
-		void InitChildren()
-		{
-			for( vector<Object*>::iterator it = m_pModel->objects.begin(); it != m_pModel->objects.end();it++)
-			{
-				m_children.push_back(new wxLitesqlObject(*it));
-	
-			}
-		}
-
-private:
-		ObjectModel* m_pModel;
-};
 
 LitesqlView::LitesqlView() 
   : frame((wxMDIChildFrame *) NULL),m_ctxMenu(NULL)
@@ -267,11 +104,11 @@ bool LitesqlView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 #endif
 
 	panel = new LitesqlModelTreePanel(frame);
-
+/*
 	panel->GetTreeCtrl()->DeleteAllItems();
 	wxTreeItemId rootId = panel->GetTreeCtrl()->AddRoot(_("root"));
 	wxModelItem::RefreshTree(panel->GetTreeCtrl(),rootId,new wxLitesqlModel(((LitesqlDocument*) doc)->GetModel()));
-
+*/
 	panel->Layout();
 	frame->Show(true);
 	Activate(true);
@@ -281,13 +118,8 @@ bool LitesqlView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 
 void LitesqlView::OnUpdate(wxView *sender, wxObject *hint) 
 {
-	panel->GetTreeCtrl()->DeleteAllItems();
-	wxTreeItemId rootId = panel->GetTreeCtrl()->AddRoot(_("root"));
-	wxModelItem::RefreshTree(panel->GetTreeCtrl(),rootId,
-							 new wxLitesqlModel( ((LitesqlDocument*) GetDocument())->GetModel())
-							 );
-
-	panel->Layout();
+	panel->setObjectModel(((LitesqlDocument*) GetDocument())->GetModel());
+  panel->Layout();
 }
 
 // Sneakily gets used for default print/preview
@@ -321,6 +153,8 @@ bool LitesqlView::OnClose(bool deleteWindow)
   return true;
 }
 
+
+
 void LitesqlView::OnContextMenu(wxContextMenuEvent& event)
 {
   if (frame)
@@ -332,11 +166,7 @@ void LitesqlView::OnContextMenu(wxContextMenuEvent& event)
 
 void LitesqlView::OnAddObject(wxCommandEvent& WXUNUSED(event) )
 {
-//  wxMessageBox(_("OnAddObject"));
-  ObjectModel* pModel = ((LitesqlDocument*) GetDocument())->GetModel();
-  Object* newObject = new Object("newObject","");
-  pModel->objects.push_back(newObject);
-  
+  panel->AddObject(new Object("newObject",""));
   GetDocument()->Modify(true);
   GetDocument()->UpdateAllViews(this,NULL);
 }
@@ -418,52 +248,3 @@ void LitesqlView::OnGenerate(wxCommandEvent& WXUNUSED(event) )
   wxGetApp().m_pGenerateViewTemplate->CreateView(GetDocument());
 }
 
-void LitesqlView::OnPageChanged(wxTreebookEvent& WXUNUSED(event))
-{
-/*	wxWindow *pPage = m_treebook->GetCurrentPage();
-	if (pPage)
-	{
-		pPage->TransferDataToWindow();
-	}
-*/
-}
-
-void LitesqlView::OnPageChanging(wxTreebookEvent& event)
-{
-/*
-  wxWindow *pPage = m_treebook->GetCurrentPage();
-  if (pPage)
-  {
-    wxString s;
-	pPage->TransferDataFromWindow();
-	
-	if (pPage->IsKindOf(CLASSINFO(LitesqlObjectPanel)))
-	{
-		s = ((LitesqlObjectPanel*)pPage)->GetObject()->name + _("(Object)"); 
-	}
-	else if (pPage->IsKindOf(CLASSINFO(LitesqlFieldPanel)))
-	{
-		s = ((LitesqlFieldPanel*)pPage)->GetPageText(); 
-		m_treebook->SetPageText(event.GetOldSelection(),s);
-	}
-	else if (pPage->IsKindOf(CLASSINFO(LitesqlMethodPanel)))
-	{
-		s = ((LitesqlMethodPanel*)pPage)->GetPageText(); 
-		m_treebook->SetPageText(event.GetOldSelection(),s);
-	}
-	else if (pPage->IsKindOf(CLASSINFO(LitesqlRelationPanel)))
-	{
-		s = ((LitesqlRelationPanel*)pPage)->GetPageText(); 
-		m_treebook->SetPageText(event.GetOldSelection(),s);
-	}
-	else if (pPage->IsKindOf(CLASSINFO(LitesqlDatabasePanel)))
-	{
-		s = ((LitesqlDatabasePanel*)pPage)->GetPageText(); 
-		m_treebook->SetPageText(event.GetOldSelection(),s);
-	}
-	
-	m_treebook->SetPageText(event.GetOldSelection(),s);
-	
-  }
-*/
-}

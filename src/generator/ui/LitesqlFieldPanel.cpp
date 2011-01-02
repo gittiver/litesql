@@ -257,7 +257,7 @@ bool FieldValuesValidator::TransferFromWindow()
        )
     {
       
-      string name = pList->GetItemText(index).ToUTF8();
+      string name(pList->GetItemText(index).ToUTF8());
       
       // get column 1 as value
       info.SetId(index);
@@ -265,7 +265,7 @@ bool FieldValuesValidator::TransferFromWindow()
       info.SetMask(wxLIST_MASK_TEXT);
       pList->GetItem(info);
       
-      string value = info.GetText().ToUTF8();
+      string value(info.GetText().ToUTF8());
       
       xml::Value v(name,value);
       m_pField->values.push_back( v );

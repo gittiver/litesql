@@ -43,7 +43,8 @@ class LitesqlObjectPanel : public ui::ObjectPanel
 {
 public:
 	/** Constructor */
-  LitesqlObjectPanel( wxWindow* parent, std::vector<xml::Object*> baseClasses,xml::Object* pObject );
+  LitesqlObjectPanel( wxWindow* parent,xml::Object* pObject );
+  void setBaseClasses(const std::vector<xml::Object*>& baseClasses);
   xml::Object* GetObject();
 
 private:

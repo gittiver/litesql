@@ -18,6 +18,7 @@ public:
 
 protected:
     wxPanel* GetSelectedPage();
+  wxMenu* GetContextMenu();
 
     bool OnCreate(wxDocument *doc, long flags);
     void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
@@ -47,7 +48,6 @@ protected:
 
     void OnGenerate(wxCommandEvent& event );
 
-    wxMenu* GetContextMenu();
 private:
     DECLARE_DYNAMIC_CLASS(LitesqlView)
     DECLARE_EVENT_TABLE()

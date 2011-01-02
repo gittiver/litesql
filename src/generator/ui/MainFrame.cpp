@@ -2,8 +2,6 @@
 #include <wx/msgdlg.h>
 #include <wx/menu.h>
 
-#include "config.h"
-
 #include "objectmodel.hpp"
 
 #include "MainFrame.h"

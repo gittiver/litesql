@@ -8,26 +8,34 @@ using namespace xml;
 IMPLEMENT_DYNAMIC_CLASS(LitesqlObjectPanel,ui::ObjectPanel)
 
 
-LitesqlObjectPanel::LitesqlObjectPanel( wxWindow* parent, vector<Object*> baseClasses,Object* pObject  )
+LitesqlObjectPanel::LitesqlObjectPanel( wxWindow* parent, Object* pObject  )
 :
 ui::ObjectPanel( parent ),
 m_pObject(pObject)
 {
-  m_choiceInheritsFrom->Append(wxString::FromUTF8(Object::DEFAULT_BASE.name.c_str()));
-  for (vector<Object*>::const_iterator it = baseClasses.begin();
-      it != baseClasses.end();
-      it++)
-  {
-    if ((*it)->name!=pObject->name) 
-    {
-      m_choiceInheritsFrom->Append(wxString::FromUTF8((*it)->name.c_str()));
-    }
-  }
+    // setBaseClasses(<#const std *baseClasses#>);
   
   m_choiceInheritsFrom->SetValidator(ObjectTypeValidator(m_pObject));
 
   m_textCtrlName->SetValidator(StdStringValidator(wxFILTER_ALPHANUMERIC,&m_pObject->name));
 }
+
+void LitesqlObjectPanel::setBaseClasses(const std::vector<xml::Object*>& baseClasses)
+{
+  m_choiceInheritsFrom->Clear();
+  m_choiceInheritsFrom->Append(wxString::FromUTF8(Object::DEFAULT_BASE.name.c_str()));
+  for (vector<Object*>::const_iterator it = baseClasses.begin();
+       it != baseClasses.end();
+       it++)
+  {
+    if ((*it)->name!=m_pObject->name) 
+    {
+      m_choiceInheritsFrom->Append(wxString::FromUTF8((*it)->name.c_str()));
+    }
+  }
+  m_choiceInheritsFrom->SetStringSelection(wxString::FromUTF8(m_pObject->inherits.c_str()));
+}
+
 
 xml::Object* LitesqlObjectPanel::GetObject()
 {

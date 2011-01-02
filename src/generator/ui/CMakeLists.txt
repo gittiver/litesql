@@ -2,7 +2,7 @@ set(PROGRAM_visual_litesql "Visual-Litesql")
 set(PROGRAM_visual_litesql_SOURCES  
 		VisualLitesqlApp.cpp VisualLitesqlApp.h 
 		MainFrame.cpp MainFrame.h
-		LitesqlDocument.h LitesqlDocument.cpp
+ 		LitesqlDocument.h LitesqlDocument.cpp
 		LitesqlView.h LitesqlView.cpp
 		GenerateView.h GenerateView.cpp
     ui.cpp ui.h
@@ -12,9 +12,9 @@ set(PROGRAM_visual_litesql_SOURCES
     LitesqlRelationPanel.cpp LitesqlRelationPanel.h
     LitesqlDatabasePanel.cpp LitesqlDatabasePanel.h
     LitesqlGeneratePanel.cpp LitesqlGeneratePanel.h
+    LitesqlModelTreePanel.cpp LitesqlModelTreePanel.h 
     ddx.cpp ddx.h
 )
-#		treelistctrl/include/wx/treelistctrl.h treelistctrl/src/treelistctrl.cpp
 
 
 include(${CMAKE_ROOT}/Modules/FindwxWidgets.cmake)

@@ -342,7 +342,7 @@ ModelTreePanel::ModelTreePanel( wxWindow* parent, wxWindowID id, const wxPoint& 
 	wxBoxSizer* btreePanelSizer;
 	btreePanelSizer = new wxBoxSizer( wxVERTICAL );
 	
-	m_modelTreeCtrl = new wxTreeCtrl( m_treePanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE );
+	m_modelTreeCtrl = new wxTreeCtrl( m_treePanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE|wxTR_HIDE_ROOT );
 	btreePanelSizer->Add( m_modelTreeCtrl, 5, wxALL|wxEXPAND, 5 );
 	
 	m_treePanel->SetSizer( btreePanelSizer );
@@ -352,9 +352,9 @@ ModelTreePanel::ModelTreePanel( wxWindow* parent, wxWindowID id, const wxPoint& 
 	wxBoxSizer* bDetailPanelSizer;
 	bDetailPanelSizer = new wxBoxSizer( wxVERTICAL );
 	
-	m_detailNotebook = new wxNotebook( m_detailPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+  m_detailNotebook = new wxNotebook( m_detailPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
 	
-	bDetailPanelSizer->Add( m_detailNotebook, 1, wxEXPAND | wxALL, 5 );
+  bDetailPanelSizer->Add( m_detailNotebook, 1, wxEXPAND | wxALL, 5 );
 	
 	m_detailPanel->SetSizer( bDetailPanelSizer );
 	m_detailPanel->Layout();
