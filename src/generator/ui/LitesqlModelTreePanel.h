@@ -4,21 +4,17 @@
 
 #include "ui.h"
 
-#include "LitesqlObjectPanel.h"
-#include "LitesqlFieldPanel.h"
-#include "LitesqlMethodPanel.h"
-#include "LitesqlRelationPanel.h"
-#include "LitesqlDatabasePanel.h"
-
 #include "objectmodel.hpp"
 
-class wxModelItemArray;
+class wxModelItem;
+
+typedef std::vector<wxModelItem*> wxModelItemArray;
 
 class wxModelItem : public wxTreeItemData {
 public:
 	wxModelItem() : wxTreeItemData() { SetId(this);};
 	virtual ~wxModelItem() {}; 
-	virtual wxString GetLabel() const = 0 ;
+  virtual wxString GetLabel() const =0 ;
 	virtual wxWindow* GetEditPanel(wxWindow *parent) {return NULL; };
 	virtual bool hasChildren() const      {	return false;	};
 	virtual wxModelItemArray* GetChildren()	{	return NULL;	};
@@ -26,7 +22,7 @@ public:
 	static void RefreshTree(wxTreeCtrl* pTree,wxTreeItemId& baseItem,wxModelItem* item);
 };
 
-WX_DECLARE_OBJARRAY(wxModelItem,wxModelItemArray);
+
 
 
 class wxCompositeModelItem : public wxModelItem {
@@ -80,6 +76,14 @@ public:
   void setObjectModel(litesql::ObjectModel* pModel);
 
   wxTreeItemId AddObject(xml::Object* newObject);
+  wxTreeItemId AddField();
+  wxTreeItemId AddMethod();
+  wxTreeItemId AddRelation();
+
+  bool RemoveObject();
+  bool RemoveField();
+  bool RemoveMethod();
+  bool RemoveRelation();
   
 private:
   wxLitesqlModel* m_pModel;

@@ -45,7 +45,8 @@ class LitesqlRelationPanel : public ui::RelationPanel
 {
 public:
   /** Constructor */
-  LitesqlRelationPanel( wxWindow* parent , std::vector<xml::Object*> baseClasses, xml::Relation* pRelation);
+  LitesqlRelationPanel( wxWindow* parent , xml::Relation* pRelation);
+  void setBaseClasses(const std::vector<xml::Object*>& baseClasses);
 
 private:
   xml::Relation* m_pRelation;

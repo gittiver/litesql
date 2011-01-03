@@ -1,24 +1,24 @@
 #include "LitesqlModelTreePanel.h"
+#include "LitesqlDatabasePanel.h"
+#include "LitesqlObjectPanel.h"
+#include "LitesqlRelationPanel.h"
+#include "LitesqlFieldPanel.h"
+#include "LitesqlMethodPanel.h"
 
 using namespace xml;
 using namespace litesql;
 using namespace ui;
 
-#include <wx/arrimpl.cpp>
-
-WX_DEFINE_OBJARRAY(wxModelItemArray);
-
-;
 wxCompositeModelItem::wxCompositeModelItem(): wxModelItem(),m_childrenInitalized(false) {};
 
 wxCompositeModelItem::~wxCompositeModelItem() 
 {
-  for(wxModelItemArray::iterator it =  m_children.begin(); 
-      it != m_children.end();
-      it++)
-  {
-    delete (*it);
-  }
+  //for(wxModelItemArray::iterator it =  m_children.begin(); 
+  //    it != m_children.end();
+  //    it++)
+  //{
+  //  delete (*it);
+  //}
 }; 
 
 wxModelItemArray* wxCompositeModelItem::GetChildren() 
@@ -46,6 +46,7 @@ public:
     return pPanel;
   };
   
+  Field* field() { return m_pField; }
 private:
 	Field* m_pField;
 
@@ -65,7 +66,7 @@ public:
     LitesqlMethodPanel* pPanel = new LitesqlMethodPanel(parent,m_pMethod);
     return pPanel;
   };
-  
+  Method* method() {return m_pMethod; };
 private:
 	Method* m_pMethod;
 };
@@ -85,7 +86,19 @@ class wxLitesqlObject : public wxCompositeModelItem {
     pPanel->setBaseClasses(m_pModel->objects);
     return pPanel;
   };
-  
+
+  void AddField(wxFieldItem* pField)
+  {
+    m_pObject->fields.push_back(pField->field());
+    m_children.push_back(pField);
+  }
+
+  void AddMethod(wxMethodItem* pMethod)
+  {
+    m_pObject->methods.push_back(pMethod->method());
+    m_children.push_back(pMethod);
+  }
+
   bool hasChildren() const {	return true; };
 
 		void InitChildren()
@@ -105,10 +118,50 @@ class wxLitesqlObject : public wxCompositeModelItem {
 			}
 		}
 	
+    Object* object() {return m_pObject;}
 private:
 		Object* m_pObject;	
   ObjectModel* m_pModel;
 };
+
+class wxLitesqlRelation : public wxCompositeModelItem {
+	public:
+    wxLitesqlRelation(Relation* pRelation,ObjectModel* pModel)
+			:	m_pRelation(pRelation),m_pModel(pModel)	{};
+  ~wxLitesqlRelation()  { }
+  
+  wxString GetLabel() const			{ wxString label(m_pRelation->name.c_str(),wxConvUTF8);
+		return label;	};
+
+  wxWindow* GetEditPanel(wxWindow *parent) 			
+  {	
+    LitesqlRelationPanel* pPanel = new LitesqlRelationPanel(parent,m_pRelation);
+    return pPanel;
+  };
+
+  void AddField(wxFieldItem* pField)
+  {
+    m_pRelation->fields.push_back(pField->field());
+    m_children.push_back(pField);
+  }
+
+  bool hasChildren() const {	return true; };
+
+		void InitChildren()
+		{
+			for (vector<Field*>::iterator field = m_pRelation->fields.begin();
+				field != m_pRelation->fields.end();
+				field++)
+			{
+				m_children.push_back(new wxFieldItem(*field));
+			}
+		}
+	
+private:
+	Relation* m_pRelation;	
+  ObjectModel* m_pModel;
+};
+
 
 wxLitesqlModel::wxLitesqlModel(ObjectModel* pModel)
 :	m_pModel(pModel) { 	}
@@ -145,8 +198,8 @@ LitesqlModelTreePanel::LitesqlModelTreePanel( wxWindow* parent)
 
 LitesqlModelTreePanel::~LitesqlModelTreePanel()
 {
-  if (m_pModel)
-    delete m_pModel;
+//  if (m_pModel)
+//    delete m_pModel;
 }
 
 void LitesqlModelTreePanel::setObjectModel(litesql::ObjectModel* pModel)
@@ -161,8 +214,132 @@ wxTreeItemId LitesqlModelTreePanel::AddObject(Object* newObject)
 {
   wxLitesqlObject* pObject = new wxLitesqlObject(newObject,m_pModel->GetModel());
   m_pModel->GetModel()->objects.push_back(newObject);
-  return m_modelTreeCtrl->InsertItem(m_pModel->GetId(), -1, pObject->GetLabel(), -1, -1, pObject);
+  wxTreeItemId newItem = m_modelTreeCtrl->InsertItem(m_pModel->GetId(), -1, pObject->GetLabel(), -1, -1, pObject);
+
+  m_modelTreeCtrl->SelectItem(newItem);
+
+  return newItem;
 }
+
+wxTreeItemId LitesqlModelTreePanel::AddRelation()
+{
+  wxTreeItemId newItem;
+  //wxLitesqlRelation* pRelation = new wxLitesqlRelation(new xml::Relation(,m_pModel->GetModel());
+  //m_pModel->GetModel()->relations.push_back(pRelation->relation());
+  //wxTreeItemId newItem = m_modelTreeCtrl->InsertItem(m_pModel->GetId(), -1, pRelation->GetLabel(), -1, -1, pRelation);
+
+  //m_modelTreeCtrl->SelectItem(newItem);
+
+  return newItem;
+}
+
+wxTreeItemId LitesqlModelTreePanel::AddField()
+{
+  wxTreeItemId newItem; 
+  wxTreeItemId selectedItem = GetTreeCtrl()->GetSelection();
+  if (selectedItem)
+  {
+    wxLitesqlObject* data = dynamic_cast<wxLitesqlObject*>(GetTreeCtrl()->GetItemData(selectedItem));
+    if (data)
+    {
+      wxFieldItem* field = new wxFieldItem(new xml::Field("newField",AU_field_type,"",AU_field_indexed,AU_field_unique));
+      data->AddField(field);
+      newItem = m_modelTreeCtrl->InsertItem(selectedItem, -1, field->GetLabel(), -1, -1, field);
+      m_modelTreeCtrl->SelectItem(newItem);
+    }
+  }
+  return newItem;
+}
+
+wxTreeItemId LitesqlModelTreePanel::AddMethod()
+{
+  wxTreeItemId newItem; 
+  wxTreeItemId selectedItem = GetTreeCtrl()->GetSelection();
+  if (selectedItem)
+  {
+    wxLitesqlObject* data = dynamic_cast<wxLitesqlObject*>(GetTreeCtrl()->GetItemData(selectedItem));
+    if (data)
+    {
+      wxMethodItem* method = new wxMethodItem(new xml::Method("newMethod", ""));
+      data->AddMethod(method);
+      newItem = m_modelTreeCtrl->InsertItem(selectedItem, -1, method->GetLabel(), -1, -1, method);
+      m_modelTreeCtrl->SelectItem(newItem);
+    }
+  }
+  return newItem;
+}
+
+bool LitesqlModelTreePanel::RemoveObject()
+{
+  bool success;
+  
+  wxTreeItemId selectedItem = GetTreeCtrl()->GetSelection();
+  if (!selectedItem)
+  {
+    success = false;
+  }
+  else
+  {
+    wxLitesqlObject* data = dynamic_cast<wxLitesqlObject*>(GetTreeCtrl()->GetItemData(selectedItem));
+    if (data)
+    {
+      m_pModel->GetModel()->remove(data->object());
+      m_modelTreeCtrl->Delete(selectedItem);
+    }
+    success = (data!=NULL);
+  }
+  return success;
+}
+
+bool LitesqlModelTreePanel::RemoveField()
+{
+  bool success;
+  
+  wxTreeItemId selectedItem = GetTreeCtrl()->GetSelection();
+  if (!selectedItem)
+  {
+    success = false;
+  }
+  else
+  {
+    wxFieldItem* data = dynamic_cast<wxFieldItem*>(GetTreeCtrl()->GetItemData(selectedItem));
+    if (data)
+    {
+      m_pModel->GetModel()->remove(data->field());
+      m_modelTreeCtrl->Delete(selectedItem);
+    }
+    success = (data!=NULL);
+  }
+  return success;
+}
+
+bool LitesqlModelTreePanel::RemoveMethod()
+{
+  bool success;
+  
+  wxTreeItemId selectedItem = GetTreeCtrl()->GetSelection();
+  if (!selectedItem)
+  {
+    success = false;
+  }
+  else
+  {
+    wxMethodItem* data = dynamic_cast<wxMethodItem*>(GetTreeCtrl()->GetItemData(selectedItem));
+    if (data)
+    {
+      m_pModel->GetModel()->remove(data->method());
+      m_modelTreeCtrl->Delete(selectedItem);
+    }
+    success = (data!=NULL);
+  }
+  return success;
+}
+
+bool LitesqlModelTreePanel::RemoveRelation()
+{
+  return false;
+}
+
 
 void LitesqlModelTreePanel::OnTreeSelChanged( wxTreeEvent& event )
 {
@@ -175,13 +352,16 @@ void LitesqlModelTreePanel::OnTreeSelChanged( wxTreeEvent& event )
     GetDetailNotebook()->Layout();
   }
     // update the label after getting the data
-  wxModelItem* pOldItem = (wxModelItem*)GetTreeCtrl()->GetItemData(event.GetOldItem());
-  if (pOldItem)
+  if (event.GetOldItem())
   {
-    GetTreeCtrl()->SetItemText(event.GetOldItem(), pOldItem->GetLabel());
-  }
-                               
-    // add new page 
+    wxModelItem* pOldItem = (wxModelItem*)GetTreeCtrl()->GetItemData(event.GetOldItem());
+    if (pOldItem)
+    {
+      GetTreeCtrl()->SetItemText(event.GetOldItem(), pOldItem->GetLabel());
+    }
+  }                            
+  
+  // add new page 
   wxModelItem* pItem = (wxModelItem*)GetTreeCtrl()->GetItemData(event.GetItem());
   if (pItem) {
     wxWindow *pPage = pItem->GetEditPanel(GetDetailNotebook());
@@ -207,8 +387,8 @@ void wxModelItem::RefreshTree(wxTreeCtrl* pTree,wxTreeItemId& baseItem,wxModelIt
   pTree->SetItemData(itemId, item);
 	if (item->hasChildren())
 	{
-		wxArrayPtrVoid* pChildren = item->GetChildren();
-		for(wxArrayPtrVoid::iterator it =  pChildren->begin(); 
+    wxModelItemArray* pChildren = item->GetChildren();
+		for(wxModelItemArray::iterator it =  pChildren->begin(); 
         it != pChildren->end();
         it++)
 		{

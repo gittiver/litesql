@@ -104,11 +104,6 @@ bool LitesqlView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 #endif
 
 	panel = new LitesqlModelTreePanel(frame);
-/*
-	panel->GetTreeCtrl()->DeleteAllItems();
-	wxTreeItemId rootId = panel->GetTreeCtrl()->AddRoot(_("root"));
-	wxModelItem::RefreshTree(panel->GetTreeCtrl(),rootId,new wxLitesqlModel(((LitesqlDocument*) doc)->GetModel()));
-*/
 	panel->Layout();
 	frame->Show(true);
 	Activate(true);
@@ -173,63 +168,45 @@ void LitesqlView::OnAddObject(wxCommandEvent& WXUNUSED(event) )
 
 void LitesqlView::OnRemoveObject(wxCommandEvent& WXUNUSED(event) )
 {
-  wxMessageBox(_("OnRemoveObject"));
-  GetDocument()->Modify(true);
-  GetDocument()->UpdateAllViews(this,NULL);
+  if (panel->RemoveObject())
+  {
+    GetDocument()->Modify(true);
+    GetDocument()->UpdateAllViews(this,NULL);
+  }
 }
 
 void LitesqlView::OnAddField(wxCommandEvent& WXUNUSED(event) )
 {
-/*
-wxWindow *pPage = m_treebook->GetCurrentPage();
-  if (!pPage) 
-  {
-  
-  }
-  else if (pPage->IsKindOf(CLASSINFO(LitesqlObjectPanel)))
-  {
-    xml::Field* newField = new xml::Field("newField",AU_field_type,"",AU_field_indexed,AU_field_unique);
-    ((LitesqlObjectPanel*)pPage)->GetObject()->fields.push_back(newField);
-    m_treebook->InsertSubPage(  m_treebook->GetSelection(),
-                                new LitesqlFieldPanel(m_treebook, newField),_("newField(Field)"),
-                                true);
-      GetDocument()->Modify(true);
-      GetDocument()->UpdateAllViews(this,NULL);
-  }
-  else
-  {
-  
-  }
-*/
+  panel->AddField();
+  GetDocument()->Modify(true);
+  GetDocument()->UpdateAllViews(this,NULL);
 }
 
 void LitesqlView::OnRemoveField(wxCommandEvent& WXUNUSED(event) )
 {
-/*
-wxWindow *pPage = m_treebook->GetCurrentPage();
-  if (!pPage) 
+  if (panel->RemoveField())
   {
-  
+    GetDocument()->Modify(true);
+    GetDocument()->UpdateAllViews(this,NULL);
   }
-  else if (pPage->IsKindOf(CLASSINFO(LitesqlFieldPanel)))
-  {
-    ((LitesqlDocument*) GetDocument())->RemoveField(((LitesqlFieldPanel*)pPage)->GetField());
-  }
-  else
-  {
-  
-  }
-*/
-
 }
 
 void LitesqlView::OnAddMethod(wxCommandEvent& WXUNUSED(event) )
 {
+  panel->AddMethod();
+  GetDocument()->Modify(true);
+  GetDocument()->UpdateAllViews(this,NULL);
 	
 }
 
 void LitesqlView::OnRemoveMethod(wxCommandEvent& WXUNUSED(event) )
-{}
+{
+  if (panel->RemoveMethod())
+  {
+    GetDocument()->Modify(true);
+    GetDocument()->UpdateAllViews(this,NULL);
+  }
+}
 
 void LitesqlView::OnAddRelated(wxCommandEvent& WXUNUSED(event) )
 {}
@@ -238,7 +215,11 @@ void LitesqlView::OnRemoveRelated(wxCommandEvent& WXUNUSED(event) )
 {}
 
 void LitesqlView::OnAddRelation(wxCommandEvent& WXUNUSED(event) )
-{}
+{
+  panel->AddRelation();
+  GetDocument()->Modify(true);
+  GetDocument()->UpdateAllViews(this,NULL);
+}
 
 void LitesqlView::OnRemoveRelation(wxCommandEvent& WXUNUSED(event) )
 {}
