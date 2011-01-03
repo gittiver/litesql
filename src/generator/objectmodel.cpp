@@ -690,6 +690,26 @@ bool ObjectModel::remove(xml::Field* field)
   return false;
 }
 
+bool ObjectModel::remove(xml::Method* method)
+{
+  if (method!=NULL)
+  {  
+    std::vector<Method*>::iterator found;
+    for ( std::vector<xml::Object* >::iterator it=objects.begin();
+      it !=objects.end();
+      it++)
+    {
+      found = find((*it)->methods.begin(),(*it)->methods.end(),method);
+      if (found!=(*it)->methods.end()) 
+      {
+        (*it)->methods.erase(found);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 bool ObjectModel::remove(xml::Object* object)
 {
   if (object!=NULL)

@@ -15,6 +15,7 @@ public:
    bool loadFromFile(const std::string& filename);
 
    bool remove(xml::Field* field);
+  bool remove(xml::Method* method);
    bool remove(xml::Object* object);
 //   bool remove(xml::relation* relation);
 
