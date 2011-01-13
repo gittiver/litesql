@@ -7,6 +7,7 @@
 
 using namespace std;
 using namespace litesql;
+using namespace xml;
 
 CodeGenerator::FactoryMap::FactoryMap()
 {
@@ -97,9 +98,9 @@ std::string CodeGenerator::getOutputFilename(const std::string& name) const
 const char* CodeGenerator::getTarget() const
 {return m_target;}
 
-bool CodeGenerator::generate(const std::vector<xml::Object* >& objects)
+bool CodeGenerator::generate(const xml::ObjectSequence& objects)
 {
-  for (std::vector<xml::Object* >::const_iterator it = objects.begin();
+  for (xml::ObjectSequence::const_iterator it = objects.begin();
     it != objects.end();
     it++)
   {
@@ -108,9 +109,9 @@ bool CodeGenerator::generate(const std::vector<xml::Object* >& objects)
   return true;
 }
 
-bool CodeGenerator::generate(const std::vector<xml::Relation* >& relations)
+bool CodeGenerator::generate(const Relation::sequence& relations)
 {
-  for (std::vector<xml::Relation* >::const_iterator it = relations.begin();
+  for (Relation::sequence::const_iterator it = relations.begin();
     it != relations.end();
     it++)
   {
@@ -119,9 +120,9 @@ bool CodeGenerator::generate(const std::vector<xml::Relation* >& relations)
   return true;
 }
 
-bool CodeGenerator::generate(const std::vector<xml::Object* >& objects,ostream& os,size_t indent)
+bool CodeGenerator::generate(const ObjectSequence& objects,ostream& os,size_t indent)
 {
-  for (std::vector<xml::Object* >::const_iterator it = objects.begin();
+  for (ObjectSequence::const_iterator it = objects.begin();
     it != objects.end();
     it++)
   {
@@ -130,9 +131,9 @@ bool CodeGenerator::generate(const std::vector<xml::Object* >& objects,ostream& 
   return true;
 }
 
-bool CodeGenerator::generate(const std::vector<xml::Relation* >& relations,ostream& os,size_t indent)
+bool CodeGenerator::generate(const Relation::sequence& relations,ostream& os,size_t indent)
 {
-  for (std::vector<xml::Relation* >::const_iterator it = relations.begin();
+  for (Relation::sequence::const_iterator it = relations.begin();
     it != relations.end();
     it++)
   {
