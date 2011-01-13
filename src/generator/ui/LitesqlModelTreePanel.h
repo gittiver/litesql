@@ -75,7 +75,7 @@ public:
 
   void setObjectModel(litesql::ObjectModel* pModel);
 
-  wxTreeItemId AddObject(xml::Object* newObject);
+  wxTreeItemId AddObject(xml::ObjectPtr& newObject);
   wxTreeItemId AddField();
   wxTreeItemId AddMethod();
   wxTreeItemId AddRelation();

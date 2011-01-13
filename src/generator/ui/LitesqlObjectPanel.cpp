@@ -8,7 +8,7 @@ using namespace xml;
 IMPLEMENT_DYNAMIC_CLASS(LitesqlObjectPanel,ui::ObjectPanel)
 
 
-LitesqlObjectPanel::LitesqlObjectPanel( wxWindow* parent, Object* pObject  )
+LitesqlObjectPanel::LitesqlObjectPanel( wxWindow* parent, ObjectPtr& pObject  )
 :
 ui::ObjectPanel( parent ),
 m_pObject(pObject)
@@ -20,11 +20,11 @@ m_pObject(pObject)
   m_textCtrlName->SetValidator(StdStringValidator(wxFILTER_ALPHANUMERIC,&m_pObject->name));
 }
 
-void LitesqlObjectPanel::setBaseClasses(const std::vector<xml::Object*>& baseClasses)
+void LitesqlObjectPanel::setBaseClasses(const ObjectSequence& baseClasses)
 {
   m_choiceInheritsFrom->Clear();
-  m_choiceInheritsFrom->Append(wxString::FromUTF8(Object::DEFAULT_BASE.name.c_str()));
-  for (vector<Object*>::const_iterator it = baseClasses.begin();
+  m_choiceInheritsFrom->Append(wxString::FromUTF8(Object::DEFAULT_BASE->name.c_str()));
+  for (ObjectSequence::const_iterator it = baseClasses.begin();
        it != baseClasses.end();
        it++)
   {
@@ -37,7 +37,7 @@ void LitesqlObjectPanel::setBaseClasses(const std::vector<xml::Object*>& baseCla
 }
 
 
-xml::Object* LitesqlObjectPanel::GetObject()
+xml::ObjectPtr& LitesqlObjectPanel::GetObject()
 {
   return m_pObject;
 }
@@ -45,7 +45,7 @@ xml::Object* LitesqlObjectPanel::GetObject()
 /* ObjectTypeValidator Implementation */
 IMPLEMENT_DYNAMIC_CLASS(ObjectTypeValidator,wxGenericValidator)
 
-ObjectTypeValidator::ObjectTypeValidator (xml::Object *val)
+ObjectTypeValidator::ObjectTypeValidator (xml::ObjectPtr val)
 : m_pObject(val),
   wxGenericValidator(&value)
 {

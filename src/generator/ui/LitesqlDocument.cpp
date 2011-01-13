@@ -46,9 +46,9 @@ ObjectModel* LitesqlDocument::GetModel()
   return m_pModel;
 }
 
-void LitesqlDocument::RemoveField(xml::Field* pField)
+void LitesqlDocument::RemoveField(xml::Field::counted_ptr pField)
 {
-  if ( (m_pModel!=NULL) && (pField!=NULL) ) 
+  if ( (m_pModel!=NULL) && (pField.get()!=NULL) ) 
   {
     if (m_pModel->remove(pField))  
     {

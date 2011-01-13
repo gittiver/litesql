@@ -12,7 +12,7 @@ void XmlGenerator::setOutputFilename(const std::string& filename)
 }
 
 
-bool generate(xml::Field* const field, ostream& os,size_t indent)
+bool generate(Field::counted_ptr const field, ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
        
@@ -45,7 +45,7 @@ bool generate(xml::Field* const field, ostream& os,size_t indent)
   return true;
 }
 
-void generate(xml::Method* const pMethod,ostream& os,size_t indent)
+void generate(const xml::Method::counted_ptr& pMethod,ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
   
@@ -69,7 +69,7 @@ void generate(xml::Method* const pMethod,ostream& os,size_t indent)
   }
 }
 
-bool XmlGenerator::generate(xml::Object* const object,ostream& os,size_t indent)
+bool XmlGenerator::generate(const xml::ObjectPtr& object,ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
   os << indent_string << "<object " 
@@ -77,7 +77,7 @@ bool XmlGenerator::generate(xml::Object* const object,ostream& os,size_t indent)
     << (object->inheritsFromDefault() ? "": attribute("inherits",object->inherits))
     << ">" <<endl;
 
-  for (vector<xml::Field*>::const_iterator field_it = object->fields.begin();
+  for (Field::sequence::const_iterator field_it = object->fields.begin();
     field_it != object->fields.end();
     field_it++)
   {
@@ -87,7 +87,7 @@ bool XmlGenerator::generate(xml::Object* const object,ostream& os,size_t indent)
     }
   }
 
-  for (vector<xml::Method*>::const_iterator method_it = object->methods.begin();
+  for (Method::sequence::const_iterator method_it = object->methods.begin();
     method_it  != object->methods.end();
     method_it++)
   {
@@ -112,7 +112,7 @@ bool XmlGenerator::generate(Relation* const relation,ostream& os,size_t indent)
   else
   {
     os << ">" << endl;
-    for(vector<xml::Relate*>::const_iterator it = relation->related.begin();
+    for(Relate::sequence::const_iterator it = relation->related.begin();
       it != relation->related.end();
       it++)
     {
@@ -162,8 +162,8 @@ bool XmlGenerator::generate(Relation* const relation,ostream& os,size_t indent)
 bool XmlGenerator::generateDatabase(ostream& os,const ObjectModel* model)
 {
   os << "<" << Database::TAG << " " 
-     << attribute("name",model->db.name) 
-     << attribute("namespace", model->db.nspace) 
+     << attribute("name",model->db->name) 
+     << attribute("namespace", model->db->nspace) 
      << ">" << endl;
 
   CodeGenerator::generate(model->objects,os,2);

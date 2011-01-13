@@ -17,7 +17,7 @@ namespace litesql {
     ActiveRecordClassGenerator(): CodeGenerator(NAME) { };
     bool generateCode(const ObjectModel* model);
   protected:   
-    bool generate(xml::Object* const object);
+    bool generate(const xml::ObjectPtr& object);
   };
 
   class RubyMigrationsGenerator : public CodeGenerator {

@@ -15,7 +15,7 @@ public:
   virtual ~LitesqlDocument(void);
 
   litesql::ObjectModel* GetModel();
-  void RemoveField(xml::Field* pField);
+  void RemoveField(xml::Field::counted_ptr pField);
 
 protected:
 

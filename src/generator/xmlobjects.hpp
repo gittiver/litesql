@@ -10,6 +10,10 @@
 #include "litesql/split.hpp"
 #include "litesql/string.hpp"
 
+#define NO_MEMBER_TEMPLATES
+#include "litesql/counted_ptr.hpp"
+#undef NO_MEMBER_TEMPLATES
+
 namespace xml {
 using namespace std;
 using namespace litesql;
@@ -22,7 +26,9 @@ class Value {
 public:
     static const char* TAG;
 
-    string name, value;
+    string name;
+    string value;
+    
     Value(const string& n, const string& v) : name(n), value(v) {}
 };
 
@@ -36,10 +42,14 @@ public:
 
 class Index {
 public:
-    static const char* TAG;
+  typedef counted_ptr<Index> counted_ptr;
+  typedef std::vector<counted_ptr> sequence;
 
-    vector<IndexField> fields;
+  static const char* TAG;
+
+    std::vector<IndexField> fields;
     AT_index_unique unique;
+    
     Index(AT_index_unique u) : unique(u) {}
 
     bool isUnique() const {
@@ -49,7 +59,10 @@ public:
 
 class Field {
 public:
-    static const char* TAG;
+  typedef counted_ptr<Field> counted_ptr;
+  typedef std::vector<counted_ptr> sequence;
+  
+  static const char* TAG;
 
     string name;
     string fieldTypeName;
@@ -139,6 +152,11 @@ public:
     }
 };
 
+inline bool operator==(const Field::counted_ptr& lhs,const Field::counted_ptr& rhs)
+{
+  return lhs.get()==rhs.get();
+}
+
 class Param {
 public:
     static const char* TAG;
@@ -148,11 +166,16 @@ public:
     Param(const string& n, AT_param_type t) : name(n), type(t) {}
     
 };
+
 class Method {
 public:
-    static const char* TAG;
+  typedef counted_ptr<Method> counted_ptr;
+  typedef std::vector<counted_ptr> sequence;
 
-    string name, returnType;
+  static const char* TAG;
+
+    string name;
+    string returnType;
     vector<Param> params;
     Method(const string& n, const string& rt) 
         : name(n), returnType(rt) {}
@@ -160,26 +183,34 @@ public:
         params.push_back(p);
     }
 };
+
+inline bool operator==(const Method::counted_ptr& lhs,const Method::counted_ptr& rhs)
+{
+  return lhs.get()==rhs.get();
+}
+
 class Relation;
 class Relate;
 class Object;
-class RelationHandle {
-public:
-    string name;
-    Relation * relation;
-    Relate * relate;
-    Object * object;
-    vector< pair<Object*,Relate*> > destObjects;
 
-    RelationHandle(const string& n, Relation * r, Relate * rel, Object * o) 
-        : name(n), relation(r), relate(rel), object(o) {}
-};
+typedef counted_ptr<Object> ObjectPtr;
+typedef std::vector<ObjectPtr> ObjectSequence;
+
+inline bool operator==(const ObjectPtr& lhs,const ObjectPtr& rhs)
+{
+  return lhs.get()==rhs.get();
+}
+
 class Relate {
-public:  
-  static const char* TAG;
+public:
+  typedef counted_ptr<Relate> counted_ptr;
+  typedef std::vector<counted_ptr> sequence;
+
+    static const char* TAG;
   
     string objectName;
-    string fieldTypeName, fieldName;
+    string fieldTypeName;
+    string fieldName;
     string getMethodName;
     size_t paramPos;
     AT_relate_limit limit;
@@ -201,21 +232,33 @@ public:
     bool isUnique() const {
         return unique == A_relate_unique_true;
     }
-    bool operator < (const Relate& r) const {
-        return objectName < r.objectName;
-    }
-
+    
+  struct CompareByObjectName
+		: public binary_function<counted_ptr, counted_ptr, bool>
+	{	// functor for operator<
+	bool operator()(const counted_ptr& _Left, const counted_ptr& _Right) const
+		{	// apply operator< to operands
+		return (_Left->objectName < _Right->objectName);
+		}
+	};
 };
+
+inline bool operator==(const Relate::counted_ptr& lhs,const Relate::counted_ptr& rhs)
+{ return lhs.get()==rhs.get();  }
+
 class Relation {
 public:
+  typedef counted_ptr<Relation> counted_ptr;
+  typedef std::vector<counted_ptr> sequence;
+
     static const char* TAG;
 
     string id, name;
     string table;
     AT_relation_unidir unidir;
-    vector<Relate*> related;
-    vector<Field*> fields;
-    vector<Index*> indices;
+    Relate::sequence related;
+    Field::sequence fields;
+    Index::sequence indices;
     Relation(const string& i, const string& n, AT_relation_unidir ud) 
         : id(i), name(n), unidir(ud) {}
     string getName() const {
@@ -242,8 +285,8 @@ public:
         }
         return max;
     }
-    int countTypes(const string& name) const {
-        int res = 0;
+    size_t countTypes(const string& name) const {
+        size_t res = 0;
         for (size_t i = 0; i < related.size(); i++)
             if (related[i]->objectName == name)
                 res++;
@@ -258,28 +301,62 @@ public:
         return makeDBName(res.join("_"));
     }
 };
+
+inline bool operator==(const Relation::counted_ptr& lhs,const Relation::counted_ptr& rhs)
+{
+  return lhs.get()==rhs.get();
+}
+
+inline bool operator<(const Relation::counted_ptr& lhs,const Relation::counted_ptr& rhs)
+{
+  return lhs.get() < rhs.get();
+}
+
+class RelationHandle {
+public:
+  typedef counted_ptr<RelationHandle> counted_ptr;
+  typedef std::vector<counted_ptr> sequence;
+
+  string name;
+  Relation::counted_ptr relation;
+  Relate::counted_ptr relate;
+  ObjectPtr object;
+  std::vector< pair< ObjectPtr,Relate::counted_ptr > > destObjects;
+
+  RelationHandle(const string& n, Relation::counted_ptr& r, Relate::counted_ptr& rel, ObjectPtr& o) 
+    : name(n), relation(r), relate(rel), object(o) {}
+};
+
+
 class Object {
 public:
-    static const Object DEFAULT_BASE;
+  typedef counted_ptr<Object> counted_ptr;
+  typedef std::vector<counted_ptr> sequence;
+
+
+    static ObjectPtr DEFAULT_BASE;
+    static Field::counted_ptr ID_FIELD;
+    static Field::counted_ptr TYPE_FIELD;
+
     static const char* TAG;
 
     string name, inherits;
-    vector<Field*> fields;
-    vector<Method*> methods;
-    vector<Index*> indices;
-    vector<RelationHandle*> handles;
-    map<Relation*, vector<Relate*> > relations;
-    Object* parentObject;
-    vector<Object*> children;
+    Field::sequence fields;
+    Method::sequence methods;
+    Index::sequence indices;
+    RelationHandle::sequence handles;
+    map<Relation::counted_ptr, Relate::sequence > relations;
+    ObjectPtr parentObject;
+    ObjectSequence children;
 
-    Object(const string& n, const string& i) : name(n), inherits(i),
+    Object(const string& n, const string& i) 
+      : name(n), 
+        inherits(i),
         parentObject(NULL) {
         if (i.size() == 0) {
             inherits = "litesql::Persistent";
-            fields.push_back(new Field("id", A_field_type_integer, "", 
-                         A_field_indexed_false, A_field_unique_false));
-            fields.push_back(new Field("type", A_field_type_string, "", 
-                        A_field_indexed_false, A_field_unique_false));
+            fields.push_back(ID_FIELD);
+            fields.push_back(TYPE_FIELD);
         }
     }
 
@@ -289,12 +366,12 @@ public:
     }
 
     size_t getLastFieldOffset() const {
-        if (!parentObject)
+        if (!parentObject.get())
             return fields.size();
         else return parentObject->getLastFieldOffset() + fields.size();
     }
-    void getAllFields(vector<Field*>& flds) const {
-        if (parentObject)
+    void getAllFields(Field::sequence& flds) const {
+        if (parentObject.get())
             parentObject->getAllFields(flds);
         for (size_t i = 0; i < fields.size(); i++)
             flds.push_back(fields[i]);
@@ -305,9 +382,9 @@ public:
             children[i]->getChildrenNames(names);
         }
     }
-    const Object* getBaseObject() const{
-        if (!parentObject)
-            return this;
+    const ObjectPtr getBaseObject() const{
+      if (!parentObject.get())
+            return ObjectPtr(NULL);
         else
             return parentObject->getBaseObject();
     }
@@ -318,22 +395,34 @@ public:
         return makeDBName(name + "_seq");
     }
 };
+
 class Database {
 public:
-  static const char* TAG;
+
+    static const char* TAG;
+    
     class Sequence {
     public:
-        string name, table;
-        string getSQL() {
+      typedef counted_ptr<Sequence> counted_ptr;
+      typedef std::vector<counted_ptr> sequence;
+    
+      string name;
+      string table;
+      
+      string getSQL() {
             return "CREATE SEQUENCE " + name + " START 1 INCREMENT 1";
         }
     };
+    
     class DBField {
     public:
+      typedef counted_ptr<DBField> counted_ptr;
+      typedef std::vector<counted_ptr> sequence;
+
         string name, type, extra;
         bool primaryKey;
-        Field* field;
-        vector<DBField*> references;
+        Field::counted_ptr field;
+        sequence references;
         DBField() : primaryKey(false) {}
         string getSQL(const string& rowIDType) {
             if (primaryKey)
@@ -341,11 +430,16 @@ public:
             return name + " " + type + extra;
         }
     };
+    
     class DBIndex {
     public:
-        string name, table;
+        typedef counted_ptr<DBIndex> counted_ptr;
+        typedef std::vector<counted_ptr> sequence;
+
+        string name;
+        string table;
         bool unique;
-        vector<DBField*> fields;
+        DBField::sequence fields;
         DBIndex() : unique(false) {}
         string getSQL() {
             litesql::Split flds;
@@ -357,10 +451,14 @@ public:
             return "CREATE" + uniqueS + " INDEX " + name + " ON " + table + " (" + flds.join(",") + ")";
         }
     };
+    
     class Table {
     public:
-        string name;
-        vector<DBField*> fields;
+      typedef counted_ptr<Table> counted_ptr;
+      typedef std::vector<counted_ptr> sequence;
+
+      string name;
+        DBField::sequence fields;
         string getSQL(const string& rowIDType) {
             litesql::Split flds;
             for (size_t i = 0; i < fields.size(); i++)
@@ -369,17 +467,22 @@ public:
         }
 
     };
-    vector<Sequence*> sequences;
-    vector<DBIndex*> indices;
-    vector<Table*> tables;
-    string name, include, nspace;
+    
+    Sequence::sequence sequences;
+    DBIndex::sequence indices;
+    Table::sequence tables;
+    string name;
+    string include;
+    string nspace;
 
     bool hasNamespace() const { return !nspace.empty(); }
 };
 
-void init(Database& db, 
-          vector<Object*>& objects,
-          vector<Relation*>& relations);
+typedef counted_ptr<Database> DatabasePtr;
+
+void init(DatabasePtr& db, 
+          Object::sequence& objects,
+          Relation::sequence& relations);
 
 
 }

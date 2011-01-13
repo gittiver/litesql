@@ -1,9 +1,9 @@
 #ifndef DDX_H
 #define DDX_H
 
-#include <string>
 #include <wx/choice.h>
 #include <wx/valtext.h>
+#include <string>
 
 class StdStringValidator : public wxTextValidator {
 

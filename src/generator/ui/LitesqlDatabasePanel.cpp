@@ -6,7 +6,7 @@
 using namespace ui;
 using namespace xml;
 
-LitesqlDatabasePanel::LitesqlDatabasePanel( wxWindow* parent,Database* db )
+LitesqlDatabasePanel::LitesqlDatabasePanel( wxWindow* parent,DatabasePtr& db )
 :
 DatabasePanel( parent ),
 m_database(db)

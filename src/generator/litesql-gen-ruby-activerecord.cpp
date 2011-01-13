@@ -30,17 +30,17 @@ RubyActiveRecordGenerator::RubyActiveRecordGenerator(): CompositeGenerator(RubyA
   add(new RubyMigrationsGenerator());
 }
 
-bool ActiveRecordClassGenerator::generate(xml::Object* const object)
+bool ActiveRecordClassGenerator::generate(const xml::ObjectPtr& object)
 {
   string fname = getOutputFilename(toLower(object->name + ".rb"));
 
   ofstream os(fname.c_str());
   
   
-  string baseClass = object->parentObject ? object->inherits : "ActiveRecord::Base"; 
+  string baseClass = object->parentObject.get() ? object->inherits : "ActiveRecord::Base"; 
   os << "class " << object->name << " < " << baseClass << endl;
   
-  for (vector<RelationHandle*>::const_iterator it = object->handles.begin(); it!= object->handles.end(); it++) {
+  for (RelationHandle::sequence::const_iterator it = object->handles.begin(); it!= object->handles.end(); it++) {
     os  << ((*it)->relate->hasLimit() ? "has_one" : "has_many") 
         << " :" << (*it)->name;
     
@@ -67,11 +67,11 @@ void generateSelfUp(const ObjectModel* model,ostream& os)
 {
   string indent("  ");
   os << "def self.up" << endl;
-  for (vector<Object*>::const_iterator it = model->objects.begin(); it !=model->objects.end();it++)
+  for (ObjectSequence::const_iterator it = model->objects.begin(); it !=model->objects.end();it++)
   {
     os << indent << "create_table :" << (*it)->getTable() <<  " do |t|" << endl;
   
-    for (vector<Field*>::const_iterator fit = (*it)->fields.begin(); fit !=(*it)->fields.end();fit++)
+    for (Field::sequence::const_iterator fit = (*it)->fields.begin(); fit !=(*it)->fields.end();fit++)
     {
       os  << indent << indent 
           << "t." << toActiveRecordType((*fit)->type) << " :" << (*fit)->name     
@@ -92,7 +92,7 @@ void generateSelfDown(const ObjectModel* model,ostream& os)
 {
   string indent("  ");
   os << "def self.down" << endl;
-  for (vector<Object*>::const_iterator it = model->objects.begin(); it !=model->objects.end();it++)
+  for (ObjectSequence::const_iterator it = model->objects.begin(); it !=model->objects.end();it++)
   {
     os << indent << "drop_table :" << (*it)->getTable() << endl;
   
@@ -102,9 +102,9 @@ void generateSelfDown(const ObjectModel* model,ostream& os)
 
 bool RubyMigrationsGenerator::generateCode(const ObjectModel* model)
 {
-  ofstream os(getOutputFilename(toLower(model->db.name + "_migration.rb")).c_str());
+  ofstream os(getOutputFilename(toLower(model->db->name + "_migration.rb")).c_str());
   
-  os << "class " << "Create" << model->db.name << "  < ActiveRecord::Migration" << endl;
+  os << "class " << "Create" << model->db->name << "  < ActiveRecord::Migration" << endl;
   os << endl;
   generateSelfUp(model,os);
   os << endl;

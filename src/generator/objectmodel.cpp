@@ -258,7 +258,7 @@ namespace xml {
     Field * fld;
     Field * rel_fld;
     Method * mtd;
-    Index * idx;
+    Index::counted_ptr idx;
     IndexField* idxField;
 
     ParseState m_parseState;
@@ -282,10 +282,15 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     else
     {
       m_parseState = DATABASE;
-      m_pObjectModel->db.name = safe((char*)xmlGetAttrValue(atts,"name"));
-      m_pObjectModel->db.include = safe((char*)xmlGetAttrValue(atts,"include"));
-      m_pObjectModel->db.nspace = safe((char*)xmlGetAttrValue(atts,"namespace"));
-      Logger::report("database = " , m_pObjectModel->db.name);
+      
+      DatabasePtr pDb(new xml::Database);
+      
+      pDb->name = safe((char*)xmlGetAttrValue(atts,"name"));
+      pDb->include = safe((char*)xmlGetAttrValue(atts,"include"));
+      pDb->nspace = safe((char*)xmlGetAttrValue(atts,"namespace"));
+      
+      m_pObjectModel->db = pDb;
+      Logger::report("database = " , m_pObjectModel->db->name);
     }
   } 
   else if (xmlStrEqual(fullname,(XML_Char*)Object::TAG))
@@ -296,8 +301,9 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     }
     else
     {
-      m_pObjectModel->objects.push_back(obj = new Object(    (char*)xmlGetAttrValue(atts,"name"), 
-        safe((char*)xmlGetAttrValue(atts,"inherits"))));
+      ObjectPtr pObj(obj = new Object(    (char*)xmlGetAttrValue(atts,"name"), 
+        safe((char*)xmlGetAttrValue(atts,"inherits")))); 
+      m_pObjectModel->objects.push_back(pObj);
       Logger::report("object = ",obj->name);
       m_parseState = OBJECT; 
 
@@ -320,7 +326,8 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       }
       else {
         Logger::report("field = ",obj->name);
-        obj->fields.push_back(fld = pNewField);
+        Field::counted_ptr field(fld = pNewField);
+        obj->fields.push_back(field);
       };
       m_parseState = FIELD;
       break;
@@ -331,7 +338,8 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       }
       else
       {
-        rel->fields.push_back(rel_fld = pNewField);
+        Field::counted_ptr field(rel_fld = pNewField);
+        rel->fields.push_back(field);
         Logger::report("field = ",rel_fld->name );
       }
       m_parseState = FIELD;
@@ -344,24 +352,23 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
   }
   else if (xmlStrEqual(fullname,(XML_Char*)Index::TAG))
   {
-    Index* pIdx = new Index(index_unique(xmlGetAttrValue(atts,"unique")));
-
+    Index::counted_ptr ptrIndex(new Index(index_unique(xmlGetAttrValue(atts,"unique"))));
+      
     switch (m_parseState)
     {
     case OBJECT:
-      idx = pIdx;
-      obj->indices.push_back(idx);
+      idx = ptrIndex;
+      obj->indices.push_back(ptrIndex);
       m_parseState = INDEX;
       break;
 
     case RELATION:
-      idx = pIdx;
-      rel->indices.push_back(idx);
+      idx = ptrIndex;
+      rel->indices.push_back(ptrIndex);
       m_parseState = INDEX;
       break;
 
     default:
-      delete pIdx;
       m_parseState = ERROR;
     }
   }
@@ -403,11 +410,10 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     }
     else
     {
-      obj->methods.push_back(
-        mtd = new Method( safe((char*)xmlGetAttrValue(atts,"name")), 
+      Method::counted_ptr m(mtd = new Method( safe((char*)xmlGetAttrValue(atts,"name")), 
         safe((char*)xmlGetAttrValue(atts,"returntype")) 
-        )
-        );
+        ));
+      obj->methods.push_back(m);
       m_parseState= METHOD;
       Logger::report("method = ",mtd->name );
     }
@@ -436,11 +442,12 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     }
     else
     {
-      m_pObjectModel->relations.push_back(rel = new Relation(  safe((char*)xmlGetAttrValue(atts,"id")), 
-        safe((char*)xmlGetAttrValue(atts,"name")),
-        relation_unidir(xmlGetAttrValue(atts,"unidir"))));
+      Relation::counted_ptr ptrRelation(rel = new Relation(  safe((char*)xmlGetAttrValue(atts,"id")), 
+                                                   safe((char*)xmlGetAttrValue(atts,"name")),
+                                                   relation_unidir(xmlGetAttrValue(atts,"unidir")))); 
+      m_pObjectModel->relations.push_back(ptrRelation);
 
-      Logger::report( "relation = " + rel->getName());
+      Logger::report( "relation = " + ptrRelation->getName());
 
       m_parseState = RELATION;
     }
@@ -453,11 +460,15 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     }
     else
     {
-      rel->related.push_back(
+      Relate::counted_ptr ptrRel(
         new Relate( safe((char*)xmlGetAttrValue(atts,"object")), 
-        relate_limit(xmlGetAttrValue(atts,"limit")), 
-        relate_unique(xmlGetAttrValue(atts,"unique")), 
-        safe((char*)xmlGetAttrValue(atts,"handle"))));
+                    relate_limit(xmlGetAttrValue(atts,"limit")), 
+                    relate_unique(xmlGetAttrValue(atts,"unique")), 
+                    safe((char*)xmlGetAttrValue(atts,"handle"))
+                  ) 
+      );
+
+      rel->related.push_back(ptrRel);
       Logger::report("relate = " );
     }
   } 
@@ -541,7 +552,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     else
     {
       Logger::report("end ", Index::TAG );
-      idx = NULL;
+      idx = Index::counted_ptr(NULL);
       m_parseState = history.back();
     }
   }
@@ -641,22 +652,12 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
   history.pop_back();
 }
 
-ObjectModel::~ObjectModel()
-{
-  /*
-  for (std::vector<xml::Object* >::iterator it=objects.begin();
-  it !=objects.end();it++)
-  {
-  delete *it;
-  }
+ObjectModel::ObjectModel()
+: db(NULL)
+{}
 
-  for (std::vector<xml::Relation* >::iterator it=relations.begin();
-  it !=relations.end();it++)
-  {
-  delete *it;
-  }
-  */
-}
+ObjectModel::~ObjectModel()
+{}
 
 bool ObjectModel::loadFromFile(const std::string& filename)
 {
@@ -665,17 +666,21 @@ bool ObjectModel::loadFromFile(const std::string& filename)
   bool successfulParsed = parser.parseFile(filename);
   if (successfulParsed)
   {
-    xml::init(db,objects,relations);
+    try {
+      xml::init(db,objects,relations);
+    } catch (Except e) {
+      Logger::error(e);
+    }
   }
   return successfulParsed;
 }
 
-bool ObjectModel::remove(xml::Field* field)
+bool ObjectModel::remove(Field::counted_ptr& field)
 {
-  if (field!=NULL)
+  if (field.get()!=NULL)
   {  
-    std::vector<Field*>::iterator found;
-    for ( std::vector<xml::Object* >::iterator it=objects.begin();
+    Field::sequence::iterator found;
+    for ( ObjectSequence::iterator it=objects.begin();
       it !=objects.end();
       it++)
     {
@@ -690,12 +695,12 @@ bool ObjectModel::remove(xml::Field* field)
   return false;
 }
 
-bool ObjectModel::remove(xml::Method* method)
+bool ObjectModel::remove(xml::Method::counted_ptr& method)
 {
-  if (method!=NULL)
+  if (method.get()!=NULL)
   {  
-    std::vector<Method*>::iterator found;
-    for ( std::vector<xml::Object* >::iterator it=objects.begin();
+    Method::sequence::iterator found;
+    for ( xml::ObjectSequence::iterator it=objects.begin();
       it !=objects.end();
       it++)
     {
@@ -710,11 +715,11 @@ bool ObjectModel::remove(xml::Method* method)
   return false;
 }
 
-bool ObjectModel::remove(xml::Object* object)
+bool ObjectModel::remove(xml::ObjectPtr& object)
 {
-  if (object!=NULL)
+  if (object.get()!=NULL)
   {  
-    std::vector<Object*>::iterator found = find(objects.begin(),objects.end(),object);
+    ObjectSequence::iterator found = find(objects.begin(),objects.end(),object);
     if (found!=objects.end()) 
     {
       objects.erase(found);

@@ -47,7 +47,7 @@ struct options_t {
     
   generator.setOutputDirectory(options.output_dir);
   
-  for (int index=0; index < m_checkListGenerators->GetCount();index++)
+  for (size_t index=0; index < m_checkListGenerators->GetCount();index++)
   {
     if (m_checkListGenerators->IsChecked(index))
     {

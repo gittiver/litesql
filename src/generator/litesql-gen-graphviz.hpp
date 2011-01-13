@@ -12,8 +12,8 @@ namespace litesql {
     GraphvizGenerator(): CodeGenerator(NAME) { };
     bool generateCode(const ObjectModel* model);
   protected:   
-    bool generate(xml::Object* const object     , std::ostream& os , size_t indent);
-    bool generate(xml::Relation* const relation , std::ostream& os , size_t indent);
+    bool generate(const xml::ObjectPtr& object     , std::ostream& os , size_t indent);
+    bool generate(const xml::Relation::counted_ptr& relation , std::ostream& os , size_t indent);
   };
 }
 

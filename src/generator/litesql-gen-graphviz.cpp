@@ -6,19 +6,19 @@ using namespace xml;
 
 const char* GraphvizGenerator::NAME="graphviz";
 
-bool GraphvizGenerator::generate(Object* const object    ,ostream& os, size_t indent)
+bool GraphvizGenerator::generate(const ObjectPtr& object    ,ostream& os, size_t indent)
 {
   string indents(indent,' ');
   os << indents << '"' << object->name << '"';
   
-  if (object->parentObject)
+  if (object->parentObject.get())
     os << " -> \"" << object->inherits << "\"";
   
   os << ';' << endl;
   return true;
 }
 
-bool GraphvizGenerator::generate(Relation* const relation,ostream& os,size_t indent)
+bool GraphvizGenerator::generate(const Relation::counted_ptr& relation, ostream& os, size_t indent)
 {
   string indents(indent,' ');
   Relation& r = *relation;
@@ -42,7 +42,7 @@ bool GraphvizGenerator::generate(Relation* const relation,ostream& os,size_t ind
 bool GraphvizGenerator::generateCode(const ObjectModel* model)
 {
 
-  string fname = getOutputFilename(toLower(model->db.name + ".dot"));
+  string fname = getOutputFilename(toLower(model->db->name + ".dot"));
 
   ofstream os(fname.c_str());
   os << "digraph database {" << endl

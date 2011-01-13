@@ -161,7 +161,8 @@ void LitesqlView::OnContextMenu(wxContextMenuEvent& event)
 
 void LitesqlView::OnAddObject(wxCommandEvent& WXUNUSED(event) )
 {
-  panel->AddObject(new Object("newObject",""));
+  ObjectPtr newObject(new Object("newObject",""));
+  panel->AddObject(newObject);
   GetDocument()->Modify(true);
   GetDocument()->UpdateAllViews(this,NULL);
 }

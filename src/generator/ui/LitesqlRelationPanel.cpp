@@ -5,13 +5,13 @@
 
 using namespace xml;
 
-LitesqlRelationPanel::LitesqlRelationPanel( wxWindow* parent, Relation* pRelation )
+LitesqlRelationPanel::LitesqlRelationPanel( wxWindow* parent, Relation::counted_ptr& pRelation )
 : ui::RelationPanel( parent ),
   m_pRelation(pRelation)
 {
   m_textCtrlName->SetValidator(StdStringValidator(wxFILTER_ALPHANUMERIC,&m_pRelation->name));
 
-  //for (vector<Object*>::const_iterator it = baseClasses.begin();
+  //for (ObjectSequence::const_iterator it = baseClasses.begin();
   //    it != baseClasses.end();
   //    it++)
   //{
@@ -23,14 +23,14 @@ LitesqlRelationPanel::LitesqlRelationPanel( wxWindow* parent, Relation* pRelatio
   //m_choiceObject2->SetValidator(RelateTypeValidator(m_pRelation->related[1]));
 }
 
-void LitesqlRelationPanel::setBaseClasses(const std::vector<xml::Object*>& baseClasses)
+void LitesqlRelationPanel::setBaseClasses(const ObjectSequence& baseClasses)
 {
   m_choiceObject1->Clear();
-  m_choiceObject1->Append(wxString::FromUTF8(Object::DEFAULT_BASE.name.c_str()));
+  m_choiceObject1->Append(wxString::FromUTF8(Object::DEFAULT_BASE->name.c_str()));
   m_choiceObject2->Clear();
-  m_choiceObject2->Append(wxString::FromUTF8(Object::DEFAULT_BASE.name.c_str()));
+  m_choiceObject2->Append(wxString::FromUTF8(Object::DEFAULT_BASE->name.c_str()));
 
-  for (vector<Object*>::const_iterator it = baseClasses.begin();
+  for (ObjectSequence::const_iterator it = baseClasses.begin();
       it != baseClasses.end();
       it++)
   {
@@ -45,7 +45,7 @@ void LitesqlRelationPanel::setBaseClasses(const std::vector<xml::Object*>& baseC
 /* RelateTypeValidator Implementation */
 IMPLEMENT_DYNAMIC_CLASS(RelateTypeValidator,wxGenericValidator)
 
-RelateTypeValidator::RelateTypeValidator (xml::Relate *val)
+RelateTypeValidator::RelateTypeValidator (xml::Relate::counted_ptr val)
 : m_pRelate(val),
   wxGenericValidator(&value)
 {

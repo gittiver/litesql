@@ -33,17 +33,17 @@ namespace litesql {
     CodeGenerator* const getParentGenerator() const { return m_pParentGenerator; };
     void setParentGenerator(CodeGenerator* parent)  { m_pParentGenerator=parent; };
 
-    bool generate(const std::vector<xml::Object* >& objects);
-    bool generate(const std::vector<xml::Relation* >& relations);
-    virtual bool generate(xml::Object* const object) {return true;};
-    virtual bool generate(xml::Relation* const relation){return true;};
+    bool generate(const xml::ObjectSequence& objects);
+    bool generate(const xml::Relation::sequence& relations);
+    virtual bool generate(const xml::ObjectPtr& object) {return true;};
+    virtual bool generate(const xml::Relation::counted_ptr& relation){return true;};
 
-    bool generate(const std::vector<xml::Object* >& objects,std::ostream& os,size_t indent=2);
-    bool generate(const std::vector<xml::Relation* >& relations,std::ostream& os,size_t indent=2);
+    bool generate(const xml::ObjectSequence& objects,std::ostream& os,size_t indent=2);
+    bool generate(const xml::Relation::sequence& relations,std::ostream& os,size_t indent=2);
     
-    virtual bool generate(xml::Object* const object    ,std::ostream& os, size_t indent=2) {return true;};
+    virtual bool generate(const xml::ObjectPtr& object, std::ostream& os, size_t indent=2) {return true;};
     
-    virtual bool generate(xml::Relation* const relation,std::ostream& os,size_t indent=4){return true;};
+    virtual bool generate(const xml::Relation::counted_ptr& relation, std::ostream& os, size_t indent=4){return true;};
 
     static CodeGenerator* create(const char* target);
 
