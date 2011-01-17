@@ -670,6 +670,7 @@ bool ObjectModel::loadFromFile(const std::string& filename)
       xml::init(db,objects,relations);
     } catch (Except e) {
       Logger::error(e);
+      successfulParsed = false;
     }
   }
   return successfulParsed;
