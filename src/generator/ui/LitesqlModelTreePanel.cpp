@@ -67,7 +67,7 @@ private:
 
 class wxLitesqlObject : public wxCompositeModelItem {
 	public:
-    wxLitesqlObject(ObjectPtr& pObject,ObjectModel* pModel)
+    wxLitesqlObject(ObjectPtr& pObject,ObjectModel::counted_ptr& pModel)
 			:	m_pObject(pObject),m_pModel(pModel)	{};
   ~wxLitesqlObject()  { }
   
@@ -116,7 +116,7 @@ class wxLitesqlObject : public wxCompositeModelItem {
     ObjectPtr& object() {return m_pObject;}
 private:
 		ObjectPtr m_pObject;	
-  ObjectModel* m_pModel;
+    ObjectModel::counted_ptr m_pModel;
 };
 
 class wxLitesqlRelation : public wxCompositeModelItem {
@@ -154,11 +154,11 @@ class wxLitesqlRelation : public wxCompositeModelItem {
 	
 private:
   Relation::counted_ptr m_pRelation;	
-  ObjectModel* m_pModel;
+  ObjectModel::counted_ptr m_pModel;
 };
 
 
-wxLitesqlModel::wxLitesqlModel(ObjectModel* pModel)
+wxLitesqlModel::wxLitesqlModel(ObjectModel::counted_ptr& pModel)
 :	m_pModel(pModel) { 	}
 
 wxWindow* wxLitesqlModel::GetEditPanel(wxWindow *parent) 			
@@ -197,7 +197,7 @@ LitesqlModelTreePanel::~LitesqlModelTreePanel()
 //    delete m_pModel;
 }
 
-void LitesqlModelTreePanel::setObjectModel(litesql::ObjectModel* pModel)
+void LitesqlModelTreePanel::setObjectModel(litesql::ObjectModel::counted_ptr& pModel)
 {
   m_pModel = new wxLitesqlModel(pModel);
   m_modelTreeCtrl->DeleteAllItems();

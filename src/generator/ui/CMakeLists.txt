@@ -11,7 +11,6 @@ set(PROGRAM_visual_litesql_SOURCES
     LitesqlMethodPanel.cpp LitesqlMethodPanel.h
     LitesqlRelationPanel.cpp LitesqlRelationPanel.h
     LitesqlDatabasePanel.cpp LitesqlDatabasePanel.h
-    LitesqlGeneratePanel.cpp LitesqlGeneratePanel.h
     LitesqlModelTreePanel.cpp LitesqlModelTreePanel.h 
     ddx.cpp ddx.h
 )

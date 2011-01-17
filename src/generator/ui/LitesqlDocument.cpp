@@ -30,25 +30,22 @@ using namespace std;
 using namespace litesql;
 
 LitesqlDocument::LitesqlDocument(void)
+: m_pModel(new ObjectModel()) 
 {
-  m_pModel = new ObjectModel();
 }
 
 LitesqlDocument::~LitesqlDocument(void)
 {
-  if (m_pModel) {
-    delete m_pModel;
-  }
 }
 
-ObjectModel* LitesqlDocument::GetModel()
+ObjectModel::counted_ptr& LitesqlDocument::GetModel()
 {
   return m_pModel;
 }
 
 void LitesqlDocument::RemoveField(xml::Field::counted_ptr pField)
 {
-  if ( (m_pModel!=NULL) && (pField.get()!=NULL) ) 
+  if ( (m_pModel.get()!=NULL) && (pField.get()!=NULL) ) 
   {
     if (m_pModel->remove(pField))  
     {
@@ -69,7 +66,7 @@ wxOutputStream& LitesqlDocument::SaveObject(wxOutputStream& stream)
   string fname (GetFilename().mb_str());
   xml_generator.setOutputFilename(fname);
 
-  xml_generator.generateCode(m_pModel);
+  xml_generator.generateCode(m_pModel.get());
   
   return stream;
 }

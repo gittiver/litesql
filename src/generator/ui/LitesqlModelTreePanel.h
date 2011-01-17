@@ -43,17 +43,17 @@ private:
 
 class wxLitesqlModel : public wxCompositeModelItem {
 public:
-  wxLitesqlModel(litesql::ObjectModel* pModel);
+  wxLitesqlModel(litesql::ObjectModel::counted_ptr& pModel);
   wxString GetLabel() const;
   wxWindow* GetEditPanel(wxWindow *parent);
   bool hasChildren() const {	return true; };
-  litesql::ObjectModel* GetModel() {return m_pModel; };
+  litesql::ObjectModel::counted_ptr& GetModel() {return m_pModel; };
   
 protected:
   void InitChildren();
   
 private:
-  litesql::ObjectModel* m_pModel;
+  litesql::ObjectModel::counted_ptr m_pModel;
 };
 
 class LitesqlModelTreePanel : public ui::ModelTreePanel
@@ -73,7 +73,7 @@ public:
     return m_detailNotebook;
   }
 
-  void setObjectModel(litesql::ObjectModel* pModel);
+  void setObjectModel(litesql::ObjectModel::counted_ptr& pModel);
 
   wxTreeItemId AddObject(xml::ObjectPtr& newObject);
   wxTreeItemId AddField();

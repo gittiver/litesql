@@ -2,8 +2,8 @@
 #define GENERATE_VIEW_H
 
 #include <wx/docview.h>
-#include "LitesqlGeneratePanel.h"
 
+class LitesqlGeneratePanel;
 
 class GenerateView: public wxView
 {
