@@ -8,18 +8,20 @@
 
 class wxModelItem;
 
-typedef std::vector<wxModelItem*> wxModelItemArray;
 
 class wxModelItem : public wxTreeItemData {
 public:
+  typedef std::vector<wxModelItem*> sequence;
 	wxModelItem() : wxTreeItemData() { SetId(this);};
 	virtual ~wxModelItem() {}; 
-  virtual wxString GetLabel() const =0 ;
+  virtual wxString GetLabel() {return label;};
 	virtual wxWindow* GetEditPanel(wxWindow *parent) {return NULL; };
 	virtual bool hasChildren() const      {	return false;	};
-	virtual wxModelItemArray* GetChildren()	{	return NULL;	};
+	virtual sequence* GetChildren()	{	return NULL;	};
 
 	static void RefreshTree(wxTreeCtrl* pTree,wxTreeItemId& baseItem,wxModelItem* item);
+protected:
+  wxString label;
 };
 
 
@@ -31,11 +33,11 @@ public:
   virtual ~wxCompositeModelItem(); 
 
 	
-	wxModelItemArray* GetChildren();
+	wxModelItem::sequence* GetChildren();
 	
 protected:
 	virtual void InitChildren()=0;
-	wxModelItemArray m_children;
+	wxModelItem::sequence m_children;
   
 private:
   bool m_childrenInitalized;
@@ -44,7 +46,7 @@ private:
 class wxLitesqlModel : public wxCompositeModelItem {
 public:
   wxLitesqlModel(litesql::ObjectModel::counted_ptr& pModel);
-  wxString GetLabel() const;
+  wxString GetLabel();
   wxWindow* GetEditPanel(wxWindow *parent);
   bool hasChildren() const {	return true; };
   litesql::ObjectModel::counted_ptr& GetModel() {return m_pModel; };
@@ -79,11 +81,14 @@ public:
   wxTreeItemId AddField();
   wxTreeItemId AddMethod();
   wxTreeItemId AddRelation();
+  wxTreeItemId AddRelated();
 
   bool RemoveObject();
   bool RemoveField();
   bool RemoveMethod();
   bool RemoveRelation();
+  bool RemoveRelated();
+
   
 private:
   wxLitesqlModel* m_pModel;

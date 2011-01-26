@@ -24,6 +24,7 @@
 #include <wx/checkbox.h>
 #include <wx/listctrl.h>
 #include <wx/button.h>
+#include <wx/radiobut.h>
 #include <wx/dialog.h>
 #include <wx/filepicker.h>
 #include <wx/checklst.h>
@@ -52,6 +53,27 @@ namespace ui
 		public:
 			ObjectPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,80 ), long style = wxTAB_TRAVERSAL );
 			~ObjectPanel();
+		
+	};
+	
+	///////////////////////////////////////////////////////////////////////////////
+	/// Class RelatePanel
+	///////////////////////////////////////////////////////////////////////////////
+	class RelatePanel : public wxPanel 
+	{
+		private:
+		
+		protected:
+			wxStaticText* lblName;
+			wxTextCtrl* m_textCtrlName;
+			wxStaticText* lblrelatedObject;
+			wxChoice* m_choiceRelatedObject;
+			wxStaticText* lblLimit;
+			wxChoice* m_choiceLimit;
+		
+		public:
+			RelatePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,217 ), long style = wxTAB_TRAVERSAL );
+			~RelatePanel();
 		
 	};
 	
@@ -118,9 +140,7 @@ namespace ui
 			wxStaticText* lblName;
 			wxTextCtrl* m_textCtrlName;
 			wxStaticText* lblObject1;
-			wxChoice* m_choiceObject1;
-			wxStaticText* lblObject2;
-			wxChoice* m_choiceObject2;
+			wxRadioButton* m_radioBtn1;
 		
 		public:
 			RelationPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 318,120 ), long style = wxTAB_TRAVERSAL );
@@ -216,7 +236,7 @@ namespace ui
 			
 		
 		public:
-			ModelTreePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 642,547 ), long style = wxTAB_TRAVERSAL );
+			ModelTreePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 952,547 ), long style = wxTAB_TRAVERSAL );
 			~ModelTreePanel();
 			void m_mainSplitterOnIdle( wxIdleEvent& )
 			{

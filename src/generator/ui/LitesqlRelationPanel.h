@@ -40,10 +40,21 @@ class LitesqlRelationPanel : public ui::RelationPanel
 public:
   /** Constructor */
   LitesqlRelationPanel( wxWindow* parent , xml::Relation::counted_ptr& pRelation);
-  void setBaseClasses(const xml::ObjectSequence& baseClasses);
 
 private:
   xml::Relation::counted_ptr m_pRelation;
+};
+
+/** Implementing RelatePanel */
+class LitesqlRelatePanel : public ui::RelatePanel
+{
+public:
+  /** Constructor */
+  LitesqlRelatePanel( wxWindow* parent , xml::Relate::counted_ptr& pRelate);
+  void setBaseClasses(const xml::ObjectSequence& baseClasses);
+
+private:
+  xml::Relate::counted_ptr m_pRelate;
 };
 
 #endif // __LitesqlRelationPanel__

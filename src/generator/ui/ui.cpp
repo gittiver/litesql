@@ -57,6 +57,56 @@ ObjectPanel::~ObjectPanel()
 {
 }
 
+RelatePanel::RelatePanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
+{
+	this->SetMinSize( wxSize( 250,80 ) );
+	
+	wxFlexGridSizer* gSizer1;
+	gSizer1 = new wxFlexGridSizer( 4, 2, 0, 0 );
+	gSizer1->AddGrowableCol( 1 );
+	gSizer1->SetFlexibleDirection( wxBOTH );
+	gSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	lblName = new wxStaticText( this, wxID_ANY, _("(Handle-)Name"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblName->Wrap( -1 );
+	gSizer1->Add( lblName, 1, wxALL|wxEXPAND, 5 );
+	
+	m_textCtrlName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrlName->SetToolTip( _("if name is empty no handle is generated") );
+	
+	gSizer1->Add( m_textCtrlName, 2, wxALL|wxFIXED_MINSIZE|wxEXPAND, 5 );
+	
+	lblrelatedObject = new wxStaticText( this, wxID_ANY, _("related Object"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblrelatedObject->Wrap( -1 );
+	gSizer1->Add( lblrelatedObject, 0, wxALL|wxEXPAND, 5 );
+	
+	wxArrayString m_choiceRelatedObjectChoices;
+	m_choiceRelatedObject = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceRelatedObjectChoices, 0 );
+	m_choiceRelatedObject->SetSelection( 0 );
+	m_choiceRelatedObject->SetMinSize( wxSize( 150,-1 ) );
+	
+	gSizer1->Add( m_choiceRelatedObject, 1, wxALL|wxEXPAND, 5 );
+	
+	lblLimit = new wxStaticText( this, wxID_ANY, _("Limit"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblLimit->Wrap( -1 );
+	gSizer1->Add( lblLimit, 0, wxALL, 5 );
+	
+	wxString m_choiceLimitChoices[] = { _("one"), _("many"), _("unique") };
+	int m_choiceLimitNChoices = sizeof( m_choiceLimitChoices ) / sizeof( wxString );
+	m_choiceLimit = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceLimitNChoices, m_choiceLimitChoices, 0 );
+	m_choiceLimit->SetSelection( 0 );
+	m_choiceLimit->SetMinSize( wxSize( 150,-1 ) );
+	
+	gSizer1->Add( m_choiceLimit, 0, wxALL|wxEXPAND, 5 );
+	
+	this->SetSizer( gSizer1 );
+	this->Layout();
+}
+
+RelatePanel::~RelatePanel()
+{
+}
+
 FieldPanel::FieldPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
 {
 	this->SetMinSize( wxSize( 300,120 ) );
@@ -187,27 +237,14 @@ RelationPanel::RelationPanel( wxWindow* parent, wxWindowID id, const wxPoint& po
 	m_textCtrlName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( m_textCtrlName, 0, wxALL|wxEXPAND, 5 );
 	
-	lblObject1 = new wxStaticText( this, wxID_ANY, _("Object 1"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblObject1 = new wxStaticText( this, wxID_ANY, _("unidirectional"), wxDefaultPosition, wxDefaultSize, 0 );
 	lblObject1->Wrap( -1 );
 	gSizer1->Add( lblObject1, 1, wxALL, 5 );
 	
-	wxArrayString m_choiceObject1Choices;
-	m_choiceObject1 = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceObject1Choices, 0 );
-	m_choiceObject1->SetSelection( 0 );
-	m_choiceObject1->SetMinSize( wxSize( 150,-1 ) );
+	m_radioBtn1 = new wxRadioButton( this, wxID_ANY, _("unidirectional (= not bidirectional)"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_radioBtn1->SetToolTip( _("true = not bidirectional") );
 	
-	gSizer1->Add( m_choiceObject1, 0, wxALL|wxEXPAND, 5 );
-	
-	lblObject2 = new wxStaticText( this, wxID_ANY, _("Object 2"), wxDefaultPosition, wxDefaultSize, 0 );
-	lblObject2->Wrap( -1 );
-	gSizer1->Add( lblObject2, 1, wxALL, 5 );
-	
-	wxArrayString m_choiceObject2Choices;
-	m_choiceObject2 = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceObject2Choices, 0 );
-	m_choiceObject2->SetSelection( 0 );
-	m_choiceObject2->SetMinSize( wxSize( 150,-1 ) );
-	
-	gSizer1->Add( m_choiceObject2, 0, wxALL|wxEXPAND, 5 );
+	gSizer1->Add( m_radioBtn1, 0, wxALL, 5 );
 	
 	this->SetSizer( gSizer1 );
 	this->Layout();
@@ -343,7 +380,9 @@ ModelTreePanel::ModelTreePanel( wxWindow* parent, wxWindowID id, const wxPoint& 
 	btreePanelSizer = new wxBoxSizer( wxVERTICAL );
 	
 	m_modelTreeCtrl = new wxTreeCtrl( m_treePanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE|wxTR_HIDE_ROOT );
-	btreePanelSizer->Add( m_modelTreeCtrl, 5, wxALL|wxEXPAND, 5 );
+	m_modelTreeCtrl->SetMinSize( wxSize( 270,-1 ) );
+	
+	btreePanelSizer->Add( m_modelTreeCtrl, 5, wxALL, 5 );
 	
 	m_treePanel->SetSizer( btreePanelSizer );
 	m_treePanel->Layout();
@@ -352,9 +391,9 @@ ModelTreePanel::ModelTreePanel( wxWindow* parent, wxWindowID id, const wxPoint& 
 	wxBoxSizer* bDetailPanelSizer;
 	bDetailPanelSizer = new wxBoxSizer( wxVERTICAL );
 	
-  m_detailNotebook = new wxNotebook( m_detailPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_detailNotebook = new wxNotebook( m_detailPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
 	
-  bDetailPanelSizer->Add( m_detailNotebook, 1, wxEXPAND | wxALL, 5 );
+	bDetailPanelSizer->Add( m_detailNotebook, 1, wxEXPAND | wxALL, 5 );
 	
 	m_detailPanel->SetSizer( bDetailPanelSizer );
 	m_detailPanel->Layout();

@@ -210,10 +210,20 @@ void LitesqlView::OnRemoveMethod(wxCommandEvent& WXUNUSED(event) )
 }
 
 void LitesqlView::OnAddRelated(wxCommandEvent& WXUNUSED(event) )
-{}
+{
+  panel->AddRelated();
+  GetDocument()->Modify(true);
+  GetDocument()->UpdateAllViews(this,NULL);
+}
 
 void LitesqlView::OnRemoveRelated(wxCommandEvent& WXUNUSED(event) )
-{}
+{
+  if (panel->RemoveRelated())
+  {
+    GetDocument()->Modify(true);
+    GetDocument()->UpdateAllViews(this,NULL);
+  }
+}
 
 void LitesqlView::OnAddRelation(wxCommandEvent& WXUNUSED(event) )
 {
@@ -223,7 +233,13 @@ void LitesqlView::OnAddRelation(wxCommandEvent& WXUNUSED(event) )
 }
 
 void LitesqlView::OnRemoveRelation(wxCommandEvent& WXUNUSED(event) )
-{}
+{
+  if (panel->RemoveRelation())
+  {
+    GetDocument()->Modify(true);
+    GetDocument()->UpdateAllViews(this,NULL);
+  }
+}
 
 void LitesqlView::OnGenerate(wxCommandEvent& WXUNUSED(event) )
 {
