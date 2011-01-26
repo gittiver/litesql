@@ -696,6 +696,26 @@ bool ObjectModel::remove(Field::counted_ptr& field)
   return false;
 }
 
+bool ObjectModel::remove(Relate::counted_ptr& relate)
+{
+  if (relate.get()!=NULL)
+  {  
+    Relate::sequence::iterator found;
+    for ( Relation::sequence::iterator it= relations.begin();
+      it !=relations.end();
+      it++)
+    {
+      found = find((*it)->related.begin(),(*it)->related.end(),relate);
+      if (found!=(*it)->related.end()) 
+      {
+        (*it)->related.erase(found);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 bool ObjectModel::remove(xml::Method::counted_ptr& method)
 {
   if (method.get()!=NULL)
@@ -730,3 +750,17 @@ bool ObjectModel::remove(xml::ObjectPtr& object)
   return false;
 }
 
+bool ObjectModel::remove(xml::Relation::counted_ptr& relation)
+{
+  if (relation.get()!=NULL)
+  {  
+    xml::Relation::sequence::iterator found = find(relations.begin(),relations.end(),relation);
+    if (found!=relations.end()) 
+    {
+      relations.erase(found);
+      return true;
+    }
+  }
+  return false;
+}
+    

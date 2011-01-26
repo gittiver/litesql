@@ -18,7 +18,11 @@ namespace litesql {
 
     bool remove(xml::Field::counted_ptr& field);
     bool remove(xml::Method::counted_ptr& method);
+    
     bool remove(xml::ObjectPtr& object);
+
+    bool remove(xml::Relation::counted_ptr& relation);
+    bool remove(xml::Relate::counted_ptr& relate);
 
     xml::Relation::sequence relations;
     xml::ObjectSequence objects;
