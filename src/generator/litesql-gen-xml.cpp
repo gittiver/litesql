@@ -64,7 +64,7 @@ void generate(const xml::Method::counted_ptr& pMethod,ostream& os,size_t indent)
     {
       os << indent_string << "  " << "<param " << attribute("type",(*it).type) << attribute("name",(*it).name) << "/>" << endl;
     }
-    os << endtag("method") <<endl;
+    os << indent_string << endtag("method") <<endl;
     
   }
 }
@@ -97,7 +97,7 @@ bool XmlGenerator::generate(const xml::ObjectPtr& object,ostream& os,size_t inde
   return true;
 }
 
-bool XmlGenerator::generate(Relation* const relation,ostream& os,size_t indent)
+bool XmlGenerator::generate(const Relation::counted_ptr &  relation,ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
   os << indent_string << "<relation " 
@@ -127,6 +127,17 @@ bool XmlGenerator::generate(Relation* const relation,ostream& os,size_t indent)
         <<endl;
     
     }
+
+    for (Field::sequence::const_iterator field_it = relation->fields.begin();
+          field_it != relation->fields.end();
+          field_it++)
+    {
+      if (((*field_it)->name!="id") && ((*field_it)->name!="type"))
+      {
+        ::generate(*field_it,os,indent+2);
+      }
+  }
+
     os << indent_string << endtag("relation");
   }
 
