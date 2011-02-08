@@ -9,7 +9,7 @@ IMPLEMENT_DYNAMIC_CLASS(LitesqlFieldPanel,ui::FieldPanel)
 
 /////////////////////////////////////////////////////////////////////////////
 
-LitesqlFieldPanel::LitesqlFieldPanel( wxWindow* parent , Field::counted_ptr pField)
+LitesqlFieldPanel::LitesqlFieldPanel( wxWindow* parent , Field::Ptr pField)
 :
 FieldPanel( parent ),
 m_pField(pField)
@@ -77,7 +77,7 @@ const wxArrayString FieldTypeValidator::FIELDTYPES(sizeof(FTSTRING)/sizeof(FTSTR
 
 IMPLEMENT_DYNAMIC_CLASS(FieldTypeValidator,wxGenericValidator)
 
-FieldTypeValidator::FieldTypeValidator (xml::Field::counted_ptr val)
+FieldTypeValidator::FieldTypeValidator (xml::Field::Ptr val)
 : m_pField(val),
   wxGenericValidator(&value)
 {
@@ -115,7 +115,7 @@ bool FieldTypeValidator::TransferFromWindow()
 
 IMPLEMENT_DYNAMIC_CLASS(FieldIndexedValidator,wxGenericValidator)
 
-FieldIndexedValidator::FieldIndexedValidator (xml::Field::counted_ptr pField)
+FieldIndexedValidator::FieldIndexedValidator (xml::Field::Ptr pField)
 : m_pField(pField),
   wxGenericValidator(&isIndexed)
 {
@@ -155,7 +155,7 @@ bool FieldIndexedValidator::TransferFromWindow()
 
 IMPLEMENT_DYNAMIC_CLASS(FieldUniqueValidator,wxGenericValidator)
 
-FieldUniqueValidator::FieldUniqueValidator (xml::Field::counted_ptr pField)
+FieldUniqueValidator::FieldUniqueValidator (xml::Field::Ptr pField)
 : m_pField(pField),
   wxGenericValidator(&isUnique)
 {
@@ -195,7 +195,7 @@ bool FieldUniqueValidator::TransferFromWindow()
 /****************************************************************************/
 IMPLEMENT_DYNAMIC_CLASS(FieldValuesValidator,wxValidator)
 
-FieldValuesValidator::FieldValuesValidator (Field::counted_ptr val)
+FieldValuesValidator::FieldValuesValidator (Field::Ptr val)
 : m_pField(val),
   wxValidator()
 {

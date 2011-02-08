@@ -14,8 +14,8 @@ public:
   LitesqlDocument(void);
   virtual ~LitesqlDocument(void);
 
-  litesql::ObjectModel::counted_ptr& GetModel();
-  void RemoveField(xml::Field::counted_ptr pField);
+  litesql::ObjectModel::Ptr& GetModel();
+  void RemoveField(xml::Field::Ptr pField);
 
 protected:
 
@@ -28,7 +28,7 @@ protected:
 #endif
 
 private:
-  litesql::ObjectModel::counted_ptr m_pModel; 
+  litesql::ObjectModel::Ptr m_pModel; 
 };
 
 #endif // #ifndef LITESQL_DOCUMENT_H

@@ -20,8 +20,8 @@ const char* Method::TAG="method";
 
 ObjectPtr Object::DEFAULT_BASE(new Object("litesql::Persistent",""));
 
-Field::counted_ptr Object::ID_FIELD(new Field("id", A_field_type_integer, "", A_field_indexed_false, A_field_unique_false));
-Field::counted_ptr Object::TYPE_FIELD(new Field("type", A_field_type_string, "", A_field_indexed_false, A_field_unique_false));
+Field::Ptr Object::ID_FIELD(new Field("id", A_field_type_integer, "", A_field_indexed_false, A_field_unique_false));
+Field::Ptr Object::TYPE_FIELD(new Field("type", A_field_type_string, "", A_field_indexed_false, A_field_unique_false));
 
    
 string validID(const string& s, const string& type="field") {
@@ -141,18 +141,18 @@ static void initSchema(DatabasePtr& db,
                 Relation::sequence& relations) {
     for (size_t i = 0; i < objects.size(); i++) {
         Object& o = *objects[i];
-        map<string, Database::DBField::counted_ptr> fldMap;
-        Database::Table::counted_ptr tbl(new Database::Table);
+        map<string, Database::DBField::Ptr> fldMap;
+        Database::Table::Ptr tbl(new Database::Table);
         tbl->name = o.getTable();
         db->tables.push_back(tbl);
         
         if (!o.parentObject.get()) {
-          Database::Sequence::counted_ptr seq(new Database::Sequence);
+          Database::Sequence::Ptr seq(new Database::Sequence);
           seq->name = o.getSequence();
           seq->table = o.getTable();
           db->sequences.push_back(seq);
         }  else {
-          Database::DBField::counted_ptr id(new Database::DBField); 
+          Database::DBField::Ptr id(new Database::DBField); 
           id->name = "id_";
           id->type = "INTEGER";
           id->primaryKey = true;
@@ -160,8 +160,8 @@ static void initSchema(DatabasePtr& db,
         }
 
         for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
-            Field::counted_ptr f = o.fields[i2];
-            Database::DBField::counted_ptr fld(new Database::DBField);
+            Field::Ptr f = o.fields[i2];
+            Database::DBField::Ptr fld(new Database::DBField);
             fld->name = f->name + "_";
             fldMap[f->name] = fld;
             fld->type = f->getSQLType();
@@ -172,7 +172,7 @@ static void initSchema(DatabasePtr& db,
             tbl->fields.push_back(fld);
             
             if (f->isIndexed()) {
-              Database::DBIndex::counted_ptr idx(new Database::DBIndex);
+              Database::DBIndex::Ptr idx(new Database::DBIndex);
                 idx->name = makeDBName(tbl->name + fld->name + "idx");
                 idx->table = tbl->name;
                 idx->fields.push_back(fld);
@@ -184,7 +184,7 @@ static void initSchema(DatabasePtr& db,
             const Index& idx = *o.indices[i2];
 
             litesql::Split fldNames;
-            Database::DBIndex::counted_ptr index(new Database::DBIndex);
+            Database::DBIndex::Ptr index(new Database::DBIndex);
             for (size_t i3 = 0; i3 < idx.fields.size(); i3++) {
                 if (fldMap.find(idx.fields[i3].name) == fldMap.end())
                     throw litesql::Except("Indexfield " + o.name + "." + idx.fields[i3].name + " is invalid.");
@@ -203,11 +203,11 @@ static void initSchema(DatabasePtr& db,
     }
     for (size_t i = 0; i < relations.size(); i++) {
         Relation& r = *relations[i];
-        Database::Table::counted_ptr tbl(new Database::Table);
+        Database::Table::Ptr tbl(new Database::Table);
         db->tables.push_back(tbl);
         tbl->name = r.getTable();
         Database::DBField::sequence objFields;
-        map<string, Database::DBField::counted_ptr> fldMap;
+        map<string, Database::DBField::Ptr> fldMap;
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
             const xml::Relate& relate = *r.related[i2];
             string extra;
@@ -219,14 +219,14 @@ static void initSchema(DatabasePtr& db,
                 if (i2 == 1 && r.related[0]->hasLimit())
                     extra = " UNIQUE";
             }
-            Database::DBField::counted_ptr fld(new Database::DBField);
+            Database::DBField::Ptr fld(new Database::DBField);
             fld->name = relate.fieldName;
             fld->type = "INTEGER";
             fld->extra = extra;
             tbl->fields.push_back(fld);
             objFields.push_back(fld);
             
-            Database::DBIndex::counted_ptr idx( new Database::DBIndex);
+            Database::DBIndex::Ptr idx( new Database::DBIndex);
             idx->name = makeDBName(tbl->name + fld->name + "idx");
             idx->table = tbl->name;
             idx->fields.push_back(fld);
@@ -235,7 +235,7 @@ static void initSchema(DatabasePtr& db,
         }
         for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
             Field& f = *r.fields[i2];
-            Database::DBField::counted_ptr fld(new Database::DBField);
+            Database::DBField::Ptr fld(new Database::DBField);
             fld->name = f.name + "_";
             fldMap[f.name] = fld;
             fld->type = f.getSQLType();
@@ -246,7 +246,7 @@ static void initSchema(DatabasePtr& db,
             tbl->fields.push_back(fld);
             
             if (f.isIndexed()) {
-              Database::DBIndex::counted_ptr idx( new Database::DBIndex);
+              Database::DBIndex::Ptr idx( new Database::DBIndex);
                 idx->name = makeDBName(tbl->name + fld->name + "idx");
                 idx->table = tbl->name;
                 idx->fields.push_back(fld);
@@ -257,7 +257,7 @@ static void initSchema(DatabasePtr& db,
     
         if (r.related.size() > 1) {
 
-          Database::DBIndex::counted_ptr idx(new Database::DBIndex);
+          Database::DBIndex::Ptr idx(new Database::DBIndex);
             idx->name = makeDBName(tbl->name + "_all_idx");
             idx->table = tbl->name;
             for (size_t i2 = 0; i2 < objFields.size(); i2++)
@@ -268,7 +268,7 @@ static void initSchema(DatabasePtr& db,
             const Index& idx = *r.indices[i2];
 
             litesql::Split fldNames(idx.fields.size());
-            Database::DBIndex::counted_ptr index(new Database::DBIndex);
+            Database::DBIndex::Ptr index(new Database::DBIndex);
             for (size_t i3 = 0; i3 < idx.fields.size(); i3++) {
 //                Database::DBField* fld = new Database::DBField;
                 if (fldMap.find(idx.fields[i3].name) == fldMap.end())
@@ -321,11 +321,11 @@ void init(DatabasePtr& db,
           
     for (Relation::sequence::const_iterator it_rel=relations.begin();it_rel!=relations.end();it_rel++)
     {
-        Relation::counted_ptr rel = *it_rel;
+        Relation::Ptr rel = *it_rel;
         bool same = rel->sameTypes() > 1;
         
         for (size_t i2 = 0; i2 < rel->related.size(); i2++) {
-          Relate::counted_ptr& relate = rel->related[i2];
+          Relate::Ptr& relate = rel->related[i2];
             ObjectPtr& obj = objMap[relate->objectName];
             string num;
             if (same)
@@ -342,7 +342,7 @@ void init(DatabasePtr& db,
                 
                 // make Object's relation handles
 
-              RelationHandle::counted_ptr handle (new RelationHandle(relate->handle, rel,relate,obj));
+              RelationHandle::Ptr handle (new RelationHandle(relate->handle, rel,relate,obj));
                 for (size_t i3 = 0; i3 < rel->related.size(); i3++) {
                     if (i2 != i3) {
                         ObjectPtr& o = objMap[rel->related[i3]->objectName];

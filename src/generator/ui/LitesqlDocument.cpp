@@ -38,12 +38,12 @@ LitesqlDocument::~LitesqlDocument(void)
 {
 }
 
-ObjectModel::counted_ptr& LitesqlDocument::GetModel()
+ObjectModel::Ptr& LitesqlDocument::GetModel()
 {
   return m_pModel;
 }
 
-void LitesqlDocument::RemoveField(xml::Field::counted_ptr pField)
+void LitesqlDocument::RemoveField(xml::Field::Ptr pField)
 {
   if ( (m_pModel.get()!=NULL) && (pField.get()!=NULL) ) 
   {

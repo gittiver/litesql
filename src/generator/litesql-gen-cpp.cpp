@@ -524,7 +524,7 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
 void writeObjRelationHandles(Class& cl, xml::Object& o) {
     for (size_t i = 0; i < o.handles.size(); i++) {
         xml::RelationHandle& handle = *o.handles[i];
-        xml::Relation::counted_ptr& rel = handle.relation;
+        xml::Relation::Ptr& rel = handle.relation;
 
         string className = xml::capitalize(handle.name) + "Handle";
         Class hcl(className,
@@ -542,7 +542,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
 
         for (size_t i2 = 0; i2 < handle.destObjects.size(); i2++) {
             xml::ObjectPtr dest = handle.destObjects[i2].first;
-            xml::Relate::counted_ptr& relate = handle.destObjects[i2].second;
+            xml::Relate::Ptr& relate = handle.destObjects[i2].second;
             Variable var("o" + toString(i2), "const " + dest->name + "&");
             link.param(var);
             unlink.param(var);
@@ -575,7 +575,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
         string extraExpr = " && srcExpr";
         if (handle.destObjects.size() == 1) {
             xml::ObjectPtr& dest = handle.destObjects[0].first;
-            xml::Relate::counted_ptr& relate = handle.destObjects[0].second;
+            xml::Relate::Ptr& relate = handle.destObjects[0].second;
             gen::Method get("get", "litesql::DataSource<" + dest->name + ">");
             get.param(exprParam).param(srcExprParam);
             
@@ -598,7 +598,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
                 hcl.method(getTpl);                
                 for (size_t i2 = 0; i2 < handle.destObjects.size(); i2++) {
                     xml::ObjectPtr& dest = handle.destObjects[i2].first;
-                    xml::Relate::counted_ptr& relate = handle.destObjects[i2].second;
+                    xml::Relate::Ptr& relate = handle.destObjects[i2].second;
                     gen::Method get("get", 
                                "litesql::DataSource<" + dest->name + ">");
                     get.templateSpec("").param(exprParam).param(srcExprParam);
@@ -614,7 +614,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
             } else {
                 for (size_t i2 = 0; i2 < handle.destObjects.size(); i2++) {
                     xml::ObjectPtr& dest = handle.destObjects[i2].first;
-                    xml::Relate::counted_ptr& relate = handle.destObjects[i2].second;
+                    xml::Relate::Ptr& relate = handle.destObjects[i2].second;
                     string num = toString(i2 + 1);
                     gen::Method get("get" + dest->name + num, 
                                "litesql::DataSource<" + dest->name + ">");
@@ -744,9 +744,9 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
         delRecord.body(o.inherits + "::delRecord();");
     gen::Method delRelations("delRelations", "void");
     delRelations.protected_().virtual_();
-    for (map<xml::Relation::counted_ptr, xml::Relate::sequence >::const_iterator i = 
+    for (map<xml::Relation::Ptr, xml::Relate::sequence >::const_iterator i = 
              o.relations.begin(); i != o.relations.end(); i++) {
-               const xml::Relation::counted_ptr &rel = i->first;
+               const xml::Relation::Ptr &rel = i->first;
         const xml::Relate::sequence relates = i->second;
         Split params;
         for (size_t i2 = 0; i2 < relates.size(); i2++)

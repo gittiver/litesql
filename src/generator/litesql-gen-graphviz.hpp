@@ -13,7 +13,7 @@ namespace litesql {
     bool generateCode(const ObjectModel* model);
   protected:   
     bool generate(const xml::ObjectPtr& object     , std::ostream& os , size_t indent);
-    bool generate(const xml::Relation::counted_ptr& relation , std::ostream& os , size_t indent);
+    bool generate(const xml::Relation::Ptr& relation , std::ostream& os , size_t indent);
   };
 }
 

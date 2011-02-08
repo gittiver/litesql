@@ -6,13 +6,31 @@
 #include <stdexcept>
 #include <algorithm>
 #include <map>
-#include "litesql-gen.hpp"
 #include "litesql/split.hpp"
 #include "litesql/string.hpp"
 
 #define NO_MEMBER_TEMPLATES
 #include "litesql/counted_ptr.hpp"
 #undef NO_MEMBER_TEMPLATES
+
+typedef const char* AT_param_type;
+typedef enum { AU_relate_limit, A_relate_limit_one,A_relate_limit_many } AT_relate_limit;
+typedef enum { AU_field_indexed, A_field_indexed_true,A_field_indexed_false } AT_field_indexed;
+typedef enum { AU_relate_unique, A_relate_unique_true,A_relate_unique_false } AT_relate_unique;
+typedef enum { AU_relation_unidir, A_relation_unidir_true,A_relation_unidir_false } AT_relation_unidir;
+typedef enum { AU_index_unique, A_index_unique_true,A_index_unique_false } AT_index_unique;
+typedef enum { AU_field_type, 
+               A_field_type_boolean,
+               A_field_type_integer,
+               A_field_type_string,
+               A_field_type_float,
+               A_field_type_double,
+               A_field_type_time,
+               A_field_type_date,
+               A_field_type_datetime,
+               A_field_type_blob 
+             } AT_field_type;
+typedef enum { AU_field_unique, A_field_unique_true,A_field_unique_false } AT_field_unique;
 
 namespace xml {
 using namespace std;
@@ -42,8 +60,8 @@ public:
 
 class Index {
 public:
-  typedef counted_ptr<Index> counted_ptr;
-  typedef std::vector<counted_ptr> sequence;
+  typedef counted_ptr<Index> Ptr;
+  typedef std::vector<Ptr> sequence;
 
   static const char* TAG;
 
@@ -59,8 +77,8 @@ public:
 
 class Field {
 public:
-  typedef counted_ptr<Field> counted_ptr;
-  typedef std::vector<counted_ptr> sequence;
+  typedef counted_ptr<Field> Ptr;
+  typedef std::vector<Ptr> sequence;
   
   static const char* TAG;
 
@@ -152,7 +170,7 @@ public:
     }
 };
 
-inline bool operator==(const Field::counted_ptr& lhs,const Field::counted_ptr& rhs)
+inline bool operator==(const Field::Ptr& lhs,const Field::Ptr& rhs)
 {
   return lhs.get()==rhs.get();
 }
@@ -169,8 +187,8 @@ public:
 
 class Method {
 public:
-  typedef counted_ptr<Method> counted_ptr;
-  typedef std::vector<counted_ptr> sequence;
+  typedef counted_ptr<Method> Ptr;
+  typedef std::vector<Ptr> sequence;
 
   static const char* TAG;
 
@@ -184,7 +202,7 @@ public:
     }
 };
 
-inline bool operator==(const Method::counted_ptr& lhs,const Method::counted_ptr& rhs)
+inline bool operator==(const Method::Ptr& lhs,const Method::Ptr& rhs)
 {
   return lhs.get()==rhs.get();
 }
@@ -203,8 +221,8 @@ inline bool operator==(const ObjectPtr& lhs,const ObjectPtr& rhs)
 
 class Relate {
 public:
-  typedef counted_ptr<Relate> counted_ptr;
-  typedef std::vector<counted_ptr> sequence;
+  typedef counted_ptr<Relate> Ptr;
+  typedef std::vector<Ptr> sequence;
 
     static const char* TAG;
   
@@ -222,6 +240,8 @@ public:
             throw logic_error("both limit and unique specified in relate: line " /*+ 
                               toString(yylineno)*/);
     }
+
+    // TODO check if this is correct
     bool hasLimit() const {
         return limit == A_relate_limit_one;
     }
@@ -234,22 +254,22 @@ public:
     }
     
   struct CompareByObjectName
-		: public binary_function<counted_ptr, counted_ptr, bool>
+		: public binary_function<Ptr, Ptr, bool>
 	{	// functor for operator<
-	bool operator()(const counted_ptr& _Left, const counted_ptr& _Right) const
+	bool operator()(const Ptr& _Left, const Ptr& _Right) const
 		{	// apply operator< to operands
 		return (_Left->objectName < _Right->objectName);
 		}
 	};
 };
 
-inline bool operator==(const Relate::counted_ptr& lhs,const Relate::counted_ptr& rhs)
+inline bool operator==(const Relate::Ptr& lhs,const Relate::Ptr& rhs)
 { return lhs.get()==rhs.get();  }
 
 class Relation {
 public:
-  typedef counted_ptr<Relation> counted_ptr;
-  typedef std::vector<counted_ptr> sequence;
+  typedef counted_ptr<Relation> Ptr;
+  typedef std::vector<Ptr> sequence;
 
     static const char* TAG;
 
@@ -302,41 +322,41 @@ public:
     }
 };
 
-inline bool operator==(const Relation::counted_ptr& lhs,const Relation::counted_ptr& rhs)
+inline bool operator==(const Relation::Ptr& lhs,const Relation::Ptr& rhs)
 {
   return lhs.get()==rhs.get();
 }
 
-inline bool operator<(const Relation::counted_ptr& lhs,const Relation::counted_ptr& rhs)
+inline bool operator<(const Relation::Ptr& lhs,const Relation::Ptr& rhs)
 {
   return lhs.get() < rhs.get();
 }
 
 class RelationHandle {
 public:
-  typedef counted_ptr<RelationHandle> counted_ptr;
-  typedef std::vector<counted_ptr> sequence;
+  typedef counted_ptr<RelationHandle> Ptr;
+  typedef std::vector<Ptr> sequence;
 
   string name;
-  Relation::counted_ptr relation;
-  Relate::counted_ptr relate;
+  Relation::Ptr relation;
+  Relate::Ptr relate;
   ObjectPtr object;
-  std::vector< pair< ObjectPtr,Relate::counted_ptr > > destObjects;
+  std::vector< pair< ObjectPtr,Relate::Ptr > > destObjects;
 
-  RelationHandle(const string& n, Relation::counted_ptr& r, Relate::counted_ptr& rel, ObjectPtr& o) 
+  RelationHandle(const string& n, Relation::Ptr& r, Relate::Ptr& rel, ObjectPtr& o) 
     : name(n), relation(r), relate(rel), object(o) {}
 };
 
 
 class Object {
 public:
-  typedef counted_ptr<Object> counted_ptr;
-  typedef std::vector<counted_ptr> sequence;
+  typedef counted_ptr<Object> Ptr;
+  typedef std::vector<Ptr> sequence;
 
 
     static ObjectPtr DEFAULT_BASE;
-    static Field::counted_ptr ID_FIELD;
-    static Field::counted_ptr TYPE_FIELD;
+    static Field::Ptr ID_FIELD;
+    static Field::Ptr TYPE_FIELD;
 
     static const char* TAG;
 
@@ -345,7 +365,7 @@ public:
     Method::sequence methods;
     Index::sequence indices;
     RelationHandle::sequence handles;
-    map<Relation::counted_ptr, Relate::sequence > relations;
+    map<Relation::Ptr, Relate::sequence > relations;
     ObjectPtr parentObject;
     ObjectSequence children;
 
@@ -403,8 +423,8 @@ public:
     
     class Sequence {
     public:
-      typedef counted_ptr<Sequence> counted_ptr;
-      typedef std::vector<counted_ptr> sequence;
+      typedef counted_ptr<Sequence> Ptr;
+      typedef std::vector<Ptr> sequence;
     
       string name;
       string table;
@@ -416,12 +436,12 @@ public:
     
     class DBField {
     public:
-      typedef counted_ptr<DBField> counted_ptr;
-      typedef std::vector<counted_ptr> sequence;
+      typedef counted_ptr<DBField> Ptr;
+      typedef std::vector<Ptr> sequence;
 
         string name, type, extra;
         bool primaryKey;
-        Field::counted_ptr field;
+        Field::Ptr field;
         sequence references;
         DBField() : primaryKey(false) {}
         string getSQL(const string& rowIDType) {
@@ -433,8 +453,8 @@ public:
     
     class DBIndex {
     public:
-        typedef counted_ptr<DBIndex> counted_ptr;
-        typedef std::vector<counted_ptr> sequence;
+        typedef counted_ptr<DBIndex> Ptr;
+        typedef std::vector<Ptr> sequence;
 
         string name;
         string table;
@@ -454,8 +474,8 @@ public:
     
     class Table {
     public:
-      typedef counted_ptr<Table> counted_ptr;
-      typedef std::vector<counted_ptr> sequence;
+      typedef counted_ptr<Table> Ptr;
+      typedef std::vector<Ptr> sequence;
 
       string name;
         DBField::sequence fields;

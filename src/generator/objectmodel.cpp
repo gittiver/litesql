@@ -258,7 +258,7 @@ namespace xml {
     Field * fld;
     Field * rel_fld;
     Method * mtd;
-    Index::counted_ptr idx;
+    Index::Ptr idx;
     IndexField* idxField;
 
     ParseState m_parseState;
@@ -326,7 +326,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       }
       else {
         Logger::report("field = ",obj->name);
-        Field::counted_ptr field(fld = pNewField);
+        Field::Ptr field(fld = pNewField);
         obj->fields.push_back(field);
       };
       m_parseState = FIELD;
@@ -338,7 +338,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       }
       else
       {
-        Field::counted_ptr field(rel_fld = pNewField);
+        Field::Ptr field(rel_fld = pNewField);
         rel->fields.push_back(field);
         Logger::report("field = ",rel_fld->name );
       }
@@ -352,7 +352,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
   }
   else if (xmlStrEqual(fullname,(XML_Char*)Index::TAG))
   {
-    Index::counted_ptr ptrIndex(new Index(index_unique(xmlGetAttrValue(atts,"unique"))));
+    Index::Ptr ptrIndex(new Index(index_unique(xmlGetAttrValue(atts,"unique"))));
       
     switch (m_parseState)
     {
@@ -410,7 +410,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     }
     else
     {
-      Method::counted_ptr m(mtd = new Method( safe((char*)xmlGetAttrValue(atts,"name")), 
+      Method::Ptr m(mtd = new Method( safe((char*)xmlGetAttrValue(atts,"name")), 
         safe((char*)xmlGetAttrValue(atts,"returntype")) 
         ));
       obj->methods.push_back(m);
@@ -442,7 +442,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     }
     else
     {
-      Relation::counted_ptr ptrRelation(rel = new Relation(  safe((char*)xmlGetAttrValue(atts,"id")), 
+      Relation::Ptr ptrRelation(rel = new Relation(  safe((char*)xmlGetAttrValue(atts,"id")), 
                                                    safe((char*)xmlGetAttrValue(atts,"name")),
                                                    relation_unidir(xmlGetAttrValue(atts,"unidir")))); 
       m_pObjectModel->relations.push_back(ptrRelation);
@@ -460,7 +460,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     }
     else
     {
-      Relate::counted_ptr ptrRel(
+      Relate::Ptr ptrRel(
         new Relate( safe((char*)xmlGetAttrValue(atts,"object")), 
                     relate_limit(xmlGetAttrValue(atts,"limit")), 
                     relate_unique(xmlGetAttrValue(atts,"unique")), 
@@ -552,7 +552,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     else
     {
       Logger::report("end ", Index::TAG );
-      idx = Index::counted_ptr(NULL);
+      idx = Index::Ptr(NULL);
       m_parseState = history.back();
     }
   }
@@ -676,7 +676,7 @@ bool ObjectModel::loadFromFile(const std::string& filename)
   return successfulParsed;
 }
 
-bool ObjectModel::remove(Field::counted_ptr& field)
+bool ObjectModel::remove(Field::Ptr& field)
 {
   if (field.get()!=NULL)
   {  
@@ -696,7 +696,7 @@ bool ObjectModel::remove(Field::counted_ptr& field)
   return false;
 }
 
-bool ObjectModel::remove(Relate::counted_ptr& relate)
+bool ObjectModel::remove(Relate::Ptr& relate)
 {
   if (relate.get()!=NULL)
   {  
@@ -716,7 +716,7 @@ bool ObjectModel::remove(Relate::counted_ptr& relate)
   return false;
 }
 
-bool ObjectModel::remove(xml::Method::counted_ptr& method)
+bool ObjectModel::remove(xml::Method::Ptr& method)
 {
   if (method.get()!=NULL)
   {  
@@ -750,7 +750,7 @@ bool ObjectModel::remove(xml::ObjectPtr& object)
   return false;
 }
 
-bool ObjectModel::remove(xml::Relation::counted_ptr& relation)
+bool ObjectModel::remove(xml::Relation::Ptr& relation)
 {
   if (relation.get()!=NULL)
   {  

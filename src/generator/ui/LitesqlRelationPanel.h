@@ -18,7 +18,7 @@ class RelateTypeValidator : public wxGenericValidator {
 
 public:
   
-  RelateTypeValidator (xml::Relate::counted_ptr val = xml::Relate::counted_ptr(NULL));
+  RelateTypeValidator (xml::Relate::Ptr val = xml::Relate::Ptr(NULL));
   RelateTypeValidator (const RelateTypeValidator& val);
 
   virtual wxObject *Clone() const;
@@ -30,7 +30,29 @@ public:
   virtual bool TransferFromWindow();
 
 private:
-  xml::Relate::counted_ptr m_pRelate;
+  xml::Relate::Ptr m_pRelate;
+  wxString value; 
+};
+
+class RelateLimitValidator : public wxGenericValidator {
+
+  DECLARE_DYNAMIC_CLASS(RelateLimitValidator)
+
+public:
+  
+  RelateLimitValidator(xml::Relate::Ptr val = xml::Relate::Ptr(NULL));
+  RelateLimitValidator(const RelateLimitValidator& val);
+
+  virtual wxObject *Clone() const;
+    
+  // Called to transfer data to the window
+  virtual bool TransferToWindow();
+
+    // Called to transfer data from the window
+  virtual bool TransferFromWindow();
+
+private:
+  xml::Relate::Ptr m_pRelate;
   wxString value; 
 };
 
@@ -39,10 +61,10 @@ class LitesqlRelationPanel : public ui::RelationPanel
 {
 public:
   /** Constructor */
-  LitesqlRelationPanel( wxWindow* parent , xml::Relation::counted_ptr& pRelation);
+  LitesqlRelationPanel( wxWindow* parent , xml::Relation::Ptr& pRelation);
 
 private:
-  xml::Relation::counted_ptr m_pRelation;
+  xml::Relation::Ptr m_pRelation;
 };
 
 /** Implementing RelatePanel */
@@ -50,11 +72,11 @@ class LitesqlRelatePanel : public ui::RelatePanel
 {
 public:
   /** Constructor */
-  LitesqlRelatePanel( wxWindow* parent , xml::Relate::counted_ptr& pRelate);
+  LitesqlRelatePanel( wxWindow* parent , xml::Relate::Ptr& pRelate);
   void setBaseClasses(const xml::ObjectSequence& baseClasses);
 
 private:
-  xml::Relate::counted_ptr m_pRelate;
+  xml::Relate::Ptr m_pRelate;
 };
 
 #endif // __LitesqlRelationPanel__

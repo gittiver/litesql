@@ -12,7 +12,7 @@ void XmlGenerator::setOutputFilename(const std::string& filename)
 }
 
 
-bool generate(Field::counted_ptr const field, ostream& os,size_t indent)
+bool generate(Field::Ptr const field, ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
        
@@ -45,7 +45,7 @@ bool generate(Field::counted_ptr const field, ostream& os,size_t indent)
   return true;
 }
 
-void generate(const xml::Method::counted_ptr& pMethod,ostream& os,size_t indent)
+void generate(const xml::Method::Ptr& pMethod,ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
   
@@ -97,7 +97,7 @@ bool XmlGenerator::generate(const xml::ObjectPtr& object,ostream& os,size_t inde
   return true;
 }
 
-bool XmlGenerator::generate(const Relation::counted_ptr &  relation,ostream& os,size_t indent)
+bool XmlGenerator::generate(const Relation::Ptr &  relation,ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
   os << indent_string << "<relation " 

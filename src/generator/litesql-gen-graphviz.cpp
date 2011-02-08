@@ -18,7 +18,7 @@ bool GraphvizGenerator::generate(const ObjectPtr& object    ,ostream& os, size_t
   return true;
 }
 
-bool GraphvizGenerator::generate(const Relation::counted_ptr& relation, ostream& os, size_t indent)
+bool GraphvizGenerator::generate(const Relation::Ptr& relation, ostream& os, size_t indent)
 {
   string indents(indent,' ');
   Relation& r = *relation;

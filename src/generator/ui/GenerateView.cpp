@@ -34,18 +34,18 @@ class LitesqlGeneratePanel : public ui::GeneratePanel
 {
 public:
 	/** Constructor */
-  LitesqlGeneratePanel( wxWindow* parent,litesql::ObjectModel::counted_ptr& pModel);
+  LitesqlGeneratePanel( wxWindow* parent,litesql::ObjectModel::Ptr& pModel);
 
 protected:
   virtual void OnRunClick( wxCommandEvent& event );
 private:
-  litesql::ObjectModel::counted_ptr m_pModel;
+  litesql::ObjectModel::Ptr m_pModel;
 };
 
 using namespace std;
 using namespace litesql;
 
-LitesqlGeneratePanel::LitesqlGeneratePanel( wxWindow* parent,litesql::ObjectModel::counted_ptr& pModel )
+LitesqlGeneratePanel::LitesqlGeneratePanel( wxWindow* parent,litesql::ObjectModel::Ptr& pModel )
 :
 GeneratePanel( parent ),
 m_pModel(pModel)

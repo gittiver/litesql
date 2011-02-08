@@ -8,7 +8,7 @@ namespace litesql {
   /** the litesql object model */ 
   class ObjectModel {
   public:
-    typedef counted_ptr<ObjectModel> counted_ptr;
+    typedef counted_ptr<ObjectModel> Ptr;
 
 
     ObjectModel();
@@ -16,13 +16,13 @@ namespace litesql {
     /** load model from xml-file (uses a  specialized XmlParser) */
     bool loadFromFile(const std::string& filename);
 
-    bool remove(xml::Field::counted_ptr& field);
-    bool remove(xml::Method::counted_ptr& method);
+    bool remove(xml::Field::Ptr& field);
+    bool remove(xml::Method::Ptr& method);
     
     bool remove(xml::ObjectPtr& object);
 
-    bool remove(xml::Relation::counted_ptr& relation);
-    bool remove(xml::Relate::counted_ptr& relate);
+    bool remove(xml::Relation::Ptr& relation);
+    bool remove(xml::Relate::Ptr& relate);
 
     xml::Relation::sequence relations;
     xml::ObjectSequence objects;
