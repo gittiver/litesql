@@ -3,8 +3,8 @@
  * The list of contributors at http://litesql.sf.net/ 
  * 
  * See LICENSE for copyright information. */
-#include "mysql.hpp"
 #include "config.h"
+#include "mysql.hpp"
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
