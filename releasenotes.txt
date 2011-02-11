@@ -1,3 +1,9 @@
+Version 0.3.10
+##############
+- better gui
+- changed memory handling inside model (counted_ptr)
+- fixes in autoconf-based build
+
 Version 0.3.9
 #############
 - platform-specific build issues fixed
