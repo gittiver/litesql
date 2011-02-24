@@ -107,7 +107,7 @@ string Blob::toHex(void) const
   }
   else
   {
-    result.reserve(m_length);
+    result.reserve(2*m_length);
     for (size_t i = 0; i < m_length;i++)
     {
       result.push_back( hexDigits[(m_data[i]&0xf0) >>4]);
