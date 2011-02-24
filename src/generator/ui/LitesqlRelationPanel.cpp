@@ -68,25 +68,25 @@ bool RelateLimitValidator::TransferToWindow()
 {
   if (m_pRelate->unique == A_relate_unique_true)
   {
-    value = "unique";
+    value = _T("unique");
     if (m_pRelate->limit!=AU_relate_limit)
     {
-      wxLogWarning("m_pRelate->limit!=AU_relate_limit while m_pRelate->limit!=AU_relate_limit");
+      wxLogWarning(_T("m_pRelate->limit!=AU_relate_limit while m_pRelate->limit!=AU_relate_limit"));
     }
   }
   else { 
     switch(m_pRelate->limit)
     {
     case A_relate_limit_one: 
-      value = "one";
+      value = _T("one");
       break;
 
     case A_relate_limit_many:
-      value = "many";
+      value = _T("many");
       break;
 
     default:
-      value = "";
+      value = _T("");
     }
   }
   return wxGenericValidator::TransferToWindow();
@@ -98,24 +98,24 @@ bool RelateLimitValidator::TransferFromWindow()
   bool rval = wxGenericValidator::TransferFromWindow();
   if (rval)
   {
-    if (value=="one")
+    if (value==_T("one"))
     {
       m_pRelate->limit = A_relate_limit_one;
       m_pRelate->unique = AU_relate_unique;
     } 
-    else if (value=="many")
+    else if (value==_T("many"))
     {
       m_pRelate->limit = A_relate_limit_many;
       m_pRelate->unique = AU_relate_unique;
     }
-    else if (value=="unique")
+    else if (value==_T("unique"))
     {
       m_pRelate->limit = AU_relate_limit;
       m_pRelate->unique = A_relate_unique_true;
     }
     else
     {
-      wxLogWarning("unknown value %s",value);
+      wxLogWarning(_("unknown value %s"),value);
     }
   }
   return rval;

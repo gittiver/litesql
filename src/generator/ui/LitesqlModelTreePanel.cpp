@@ -56,7 +56,7 @@ public:
   ~wxRelateItem()  { }
   
 	wxString GetLabel() { wxString tmp(m_pRelate->objectName.c_str(),wxConvUTF8);
-		return label= "Relate " + tmp;	};
+		return label= _("Relate ") + tmp;	};
 	
   wxWindow* GetEditPanel(wxWindow *parent) 			
   {	
@@ -325,7 +325,12 @@ wxTreeItemId LitesqlModelTreePanel::AddRelated()
       wxRelateItem* relate = new wxRelateItem(newRelate,m_pModel->GetModel());
       relation->AddRelate(relate);
 
-      newItem = m_modelTreeCtrl->InsertItem(selectedItem, -1, relate->GetLabel(), -1, -1, relate);
+      newItem = m_modelTreeCtrl->InsertItem(selectedItem, 
+        -1, 
+        relate->GetLabel(), 
+        -1, 
+        -1, 
+        relate);
       m_modelTreeCtrl->SelectItem(newItem);
     }
   }
@@ -499,7 +504,7 @@ void LitesqlModelTreePanel::OnTreeSelChanged( wxTreeEvent& event )
   }
 }
 
-void LitesqlModelTreePanel::OnTreeSelChanging( wxTreeEvent& event )
+void LitesqlModelTreePanel::OnTreeSelChanging( wxTreeEvent& WXUNUSED(event) )
 {
     //  wxModelItem* pItem = (wxModelItem*)GetTreeCtrl()->GetItemData(event.GetItem());
 }
