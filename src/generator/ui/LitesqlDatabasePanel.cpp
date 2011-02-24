@@ -1,5 +1,5 @@
 #include "LitesqlDatabasePanel.h"
-#include "xmlObjects.hpp"
+#include "xmlobjects.hpp"
 
 #include "ddx.h"
 
