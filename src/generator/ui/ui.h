@@ -72,7 +72,7 @@ namespace ui
 			wxChoice* m_choiceLimit;
 		
 		public:
-			RelatePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,217 ), long style = wxTAB_TRAVERSAL );
+			RelatePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 457,202 ), long style = wxTAB_TRAVERSAL );
 			~RelatePanel();
 		
 	};
@@ -107,7 +107,7 @@ namespace ui
 			
 		
 		public:
-			FieldPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 338,302 ), long style = wxTAB_TRAVERSAL );
+			FieldPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 498,302 ), long style = wxTAB_TRAVERSAL );
 			~FieldPanel();
 		
 	};
@@ -122,9 +122,13 @@ namespace ui
 		protected:
 			wxStaticText* lblName;
 			wxTextCtrl* m_textCtrlName;
+			wxStaticText* lblReturnValue;
+			wxChoice* m_choiceReturnValue;
+			wxStaticText* lblParameters;
+			wxListCtrl* m_listCtrlParameters;
 		
 		public:
-			MethodPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,164 ), long style = wxTAB_TRAVERSAL );
+			MethodPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,271 ), long style = wxTAB_TRAVERSAL );
 			~MethodPanel();
 		
 	};
@@ -164,7 +168,7 @@ namespace ui
 			wxTextCtrl* m_textInclude;
 		
 		public:
-			DatabasePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 300,120 ), long style = wxTAB_TRAVERSAL );
+			DatabasePanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 427,277 ), long style = wxTAB_TRAVERSAL );
 			~DatabasePanel();
 		
 	};

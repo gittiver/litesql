@@ -200,17 +200,35 @@ MethodPanel::MethodPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	this->SetMinSize( wxSize( 300,120 ) );
 	
 	wxFlexGridSizer* gSizer1;
-	gSizer1 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	gSizer1 = new wxFlexGridSizer( 4, 2, 0, 0 );
 	gSizer1->AddGrowableCol( 1 );
 	gSizer1->SetFlexibleDirection( wxBOTH );
 	gSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	lblName = new wxStaticText( this, wxID_ANY, _("Name"), wxDefaultPosition, wxDefaultSize, 0 );
 	lblName->Wrap( -1 );
-	gSizer1->Add( lblName, 0, wxALL, 5 );
+	gSizer1->Add( lblName, 0, wxALL|wxEXPAND, 5 );
 	
 	m_textCtrlName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( m_textCtrlName, 1, wxALL|wxEXPAND, 5 );
+	
+	lblReturnValue = new wxStaticText( this, wxID_ANY, _("Return value"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblReturnValue->Wrap( -1 );
+	gSizer1->Add( lblReturnValue, 0, wxALL|wxEXPAND, 5 );
+	
+	wxArrayString m_choiceReturnValueChoices;
+	m_choiceReturnValue = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceReturnValueChoices, 0 );
+	m_choiceReturnValue->SetSelection( 0 );
+	m_choiceReturnValue->SetMinSize( wxSize( 150,-1 ) );
+	
+	gSizer1->Add( m_choiceReturnValue, 0, wxALL|wxEXPAND, 5 );
+	
+	lblParameters = new wxStaticText( this, wxID_ANY, _("Parameters"), wxDefaultPosition, wxDefaultSize, 0 );
+	lblParameters->Wrap( -1 );
+	gSizer1->Add( lblParameters, 0, wxALL|wxEXPAND, 5 );
+	
+	m_listCtrlParameters = new wxListCtrl( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT );
+	gSizer1->Add( m_listCtrlParameters, 0, wxALL|wxEXPAND, 5 );
 	
 	this->SetSizer( gSizer1 );
 	this->Layout();
