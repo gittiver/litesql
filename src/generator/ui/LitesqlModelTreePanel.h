@@ -12,16 +12,32 @@ class wxModelItem;
 class wxModelItem : public wxTreeItemData {
 public:
   typedef std::vector<wxModelItem*> sequence;
-	wxModelItem() : wxTreeItemData() { SetId(this);};
-	virtual ~wxModelItem() {}; 
-  virtual wxString GetLabel() {return label;};
+  wxModelItem(const std::string& _labelPrefix) 
+    : wxTreeItemData(),
+      labelPrefix(_labelPrefix) 
+  { SetId(this);};
+	
+  virtual ~wxModelItem() {}; 
+  const wxString& GetLabelPrefix() const { return labelPrefix; };
+	virtual wxString GetLabel() const = 0;
+  virtual int GetItemImage() { return -1; }
+  virtual int GetSelectedItemImage() { return GetItemImage(); }
+
+  
+  virtual wxString GetItemText() 
+  { wxString tmp = GetLabelPrefix();
+    tmp += _T(" ");
+    tmp+= GetLabel();
+    return tmp;
+  };
+	
 	virtual wxWindow* GetEditPanel(wxWindow *parent) {return NULL; };
 	virtual bool hasChildren() const      {	return false;	};
 	virtual sequence* GetChildren()	{	return NULL;	};
 
 	static void RefreshTree(wxTreeCtrl* pTree,wxTreeItemId& baseItem,wxModelItem* item);
 protected:
-  wxString label;
+  wxString labelPrefix;
 };
 
 
@@ -29,7 +45,7 @@ protected:
 
 class wxCompositeModelItem : public wxModelItem {
 public:
-	wxCompositeModelItem(); 
+  wxCompositeModelItem(const std::string& _labelPrefix); 
   virtual ~wxCompositeModelItem(); 
 
 	
@@ -46,7 +62,7 @@ private:
 class wxLitesqlModel : public wxCompositeModelItem {
 public:
   wxLitesqlModel(litesql::ObjectModel::Ptr& pModel);
-  wxString GetLabel();
+  wxString GetLabel() const ;
   wxWindow* GetEditPanel(wxWindow *parent);
   bool hasChildren() const {	return true; };
   litesql::ObjectModel::Ptr& GetModel() {return m_pModel; };

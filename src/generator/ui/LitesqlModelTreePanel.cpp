@@ -10,7 +10,8 @@ using namespace xml;
 using namespace litesql;
 using namespace ui;
 
-wxCompositeModelItem::wxCompositeModelItem(): wxModelItem(),m_childrenInitalized(false) {};
+ 
+wxCompositeModelItem::wxCompositeModelItem(const std::string& _labelPrefix): wxModelItem(_labelPrefix),m_childrenInitalized(false) {};
 
 wxCompositeModelItem::~wxCompositeModelItem() 
 {}
@@ -28,11 +29,13 @@ wxModelItem::sequence* wxCompositeModelItem::GetChildren()
 class wxFieldItem : public wxModelItem 
 {
 public:
-	wxFieldItem(Field::Ptr pField) : m_pField(pField) {}
+	wxFieldItem(Field::Ptr pField) : wxModelItem(_("Field")),m_pField(pField) {}
   ~wxFieldItem()  { }
   
-	wxString GetLabel() { wxString tmp(m_pField->name.c_str(),wxConvUTF8);
-		return label=tmp;	};
+	wxString GetLabel() const
+  { 
+    return wxString::FromUTF8(m_pField->name.c_str());
+  }
 	
   wxWindow* GetEditPanel(wxWindow *parent) 			
   {	
@@ -52,11 +55,12 @@ class wxRelateItem : public wxModelItem
 {
 public:
 	wxRelateItem(Relate::Ptr& pRelate,ObjectModel::Ptr& pModel) 
-    : m_pRelate(pRelate), m_pModel(pModel) {}
+    : wxModelItem(_("Relate")),m_pRelate(pRelate), m_pModel(pModel) {}
   ~wxRelateItem()  { }
   
-	wxString GetLabel() { wxString tmp(m_pRelate->objectName.c_str(),wxConvUTF8);
-		return label= _("Relate ") + tmp;	};
+	wxString GetLabel()  const { 
+    return wxString::FromUTF8(m_pRelate->objectName.c_str());
+  };
 	
   wxWindow* GetEditPanel(wxWindow *parent) 			
   {	
@@ -71,14 +75,14 @@ private:
   ObjectModel::Ptr m_pModel;
 };
 
+
 class wxMethodItem: public wxModelItem 
 {
 public:
-	wxMethodItem(Method::Ptr& pMethod) : m_pMethod(pMethod) {}
+	wxMethodItem(Method::Ptr& pMethod) : wxModelItem(_("Method")),m_pMethod(pMethod) {}
 	~wxMethodItem()  {}
   
-  wxString GetLabel() 		{ wxString tmp(m_pMethod->name.c_str(),wxConvUTF8);
-		return label=tmp;	};
+  wxString GetLabel() const		{ return wxString::FromUTF8(m_pMethod->name.c_str()); };
   
   wxWindow* GetEditPanel(wxWindow *parent) 			
   {	
@@ -93,11 +97,10 @@ private:
 class wxLitesqlObject : public wxCompositeModelItem {
 	public:
     wxLitesqlObject(ObjectPtr& pObject,ObjectModel::Ptr& pModel)
-			:	m_pObject(pObject),m_pModel(pModel)	{};
+			:	wxCompositeModelItem(_("Object")),m_pObject(pObject),m_pModel(pModel)	{};
   ~wxLitesqlObject()  { }
   
-  wxString GetLabel() 		{ wxString tmp(m_pObject->name.c_str(),wxConvUTF8);
-		return label=tmp;	};
+  wxString GetLabel()  const 		{ return wxString::FromUTF8(m_pObject->name.c_str());	};
 
   wxWindow* GetEditPanel(wxWindow *parent) 			
   {	
@@ -147,11 +150,10 @@ private:
 class wxLitesqlRelation : public wxCompositeModelItem {
 	public:
     wxLitesqlRelation(Relation::Ptr& pRelation,ObjectModel::Ptr& pModel)
-			:	m_pRelation(pRelation),m_pModel(pModel)	{};
+			:	wxCompositeModelItem(_("Relation")),m_pRelation(pRelation),m_pModel(pModel)	{};
   ~wxLitesqlRelation()  { }
   
-  wxString GetLabel() { wxString tmp(m_pRelation->name.c_str(),wxConvUTF8);
-		return label=tmp;	};
+  wxString GetLabel() const { return wxString::FromUTF8(m_pRelation->name.c_str()); };
 
   wxWindow* GetEditPanel(wxWindow *parent) 			
   {	
@@ -199,7 +201,7 @@ private:
 
 
 wxLitesqlModel::wxLitesqlModel(ObjectModel::Ptr& pModel)
-:	m_pModel(pModel) { 	}
+:	wxCompositeModelItem(_("Model")),m_pModel(pModel) { 	}
 
 wxWindow* wxLitesqlModel::GetEditPanel(wxWindow *parent) 			
 {	
@@ -208,10 +210,9 @@ wxWindow* wxLitesqlModel::GetEditPanel(wxWindow *parent)
 }
 
 
-wxString wxLitesqlModel::GetLabel() {
-  wxString tmp(m_pModel->db->name.c_str(),wxConvUTF8);
-
-  return label=tmp; };
+wxString wxLitesqlModel::GetLabel() const {
+  return wxString::FromUTF8(m_pModel->db->name.c_str());
+}
 
 void   wxLitesqlModel::InitChildren()
 {
@@ -251,7 +252,7 @@ wxTreeItemId LitesqlModelTreePanel::AddObject(ObjectPtr& newObject)
 {
   wxLitesqlObject* pObject = new wxLitesqlObject(newObject,m_pModel->GetModel());
   m_pModel->GetModel()->objects.push_back(newObject);
-  wxTreeItemId newItem = m_modelTreeCtrl->InsertItem(m_pModel->GetId(), -1, pObject->GetLabel(), -1, -1, pObject);
+  wxTreeItemId newItem = m_modelTreeCtrl->InsertItem(m_pModel->GetId(), -1, pObject->GetItemText(), -1, -1, pObject);
 
   m_modelTreeCtrl->SelectItem(newItem);
 
@@ -264,7 +265,7 @@ wxTreeItemId LitesqlModelTreePanel::AddRelation()
   m_pModel->GetModel()->relations.push_back(r);
   
   wxLitesqlRelation* pRelation = new wxLitesqlRelation(r,m_pModel->GetModel());
-  wxTreeItemId newItem = m_modelTreeCtrl->InsertItem(m_pModel->GetId(), -1, pRelation->GetLabel(), -1, -1, pRelation);
+  wxTreeItemId newItem = m_modelTreeCtrl->InsertItem(m_pModel->GetId(), -1, pRelation->GetItemText(), -1, -1, pRelation);
   m_modelTreeCtrl->SelectItem(newItem);
 
   return newItem;
@@ -286,7 +287,7 @@ wxTreeItemId LitesqlModelTreePanel::AddField()
       Field::Ptr newField(new xml::Field("newField",AU_field_type,"",AU_field_indexed,AU_field_unique));
       wxFieldItem* field = new wxFieldItem(newField);
       data->AddField(field);
-      newItem = m_modelTreeCtrl->InsertItem(selectedItem, -1, field->GetLabel(), -1, -1, field);
+      newItem = m_modelTreeCtrl->InsertItem(selectedItem, -1, field->GetItemText(), -1, -1, field);
       m_modelTreeCtrl->SelectItem(newItem);
     }
     else 
@@ -297,7 +298,7 @@ wxTreeItemId LitesqlModelTreePanel::AddField()
         Field::Ptr newField(new xml::Field("newField",AU_field_type,"",AU_field_indexed,AU_field_unique));
         wxFieldItem* field = new wxFieldItem(newField);
         relation->AddField(field);
-        newItem = m_modelTreeCtrl->InsertItem(selectedItem, -1, field->GetLabel(), -1, -1, field);
+        newItem = m_modelTreeCtrl->InsertItem(selectedItem, -1, field->GetItemText(), -1, -1, field);
         m_modelTreeCtrl->SelectItem(newItem);
       }
     }
@@ -327,7 +328,7 @@ wxTreeItemId LitesqlModelTreePanel::AddRelated()
 
       newItem = m_modelTreeCtrl->InsertItem(selectedItem, 
         -1, 
-        relate->GetLabel(), 
+        relate->GetItemText(), 
         -1, 
         -1, 
         relate);
@@ -349,7 +350,7 @@ wxTreeItemId LitesqlModelTreePanel::AddMethod()
       Method::Ptr ptrMethod(new xml::Method("newMethod", ""));
       wxMethodItem* method = new wxMethodItem(ptrMethod);
       data->AddMethod(method);
-      newItem = m_modelTreeCtrl->InsertItem(selectedItem, -1, method->GetLabel(), -1, -1, method);
+      newItem = m_modelTreeCtrl->InsertItem(selectedItem, -1, method->GetItemText(), -1, -1, method);
       m_modelTreeCtrl->SelectItem(newItem);
     }
   }
@@ -485,7 +486,7 @@ void LitesqlModelTreePanel::OnTreeSelChanged( wxTreeEvent& event )
     wxModelItem* pOldItem = (wxModelItem*)GetTreeCtrl()->GetItemData(event.GetOldItem());
     if (pOldItem)
     {
-      GetTreeCtrl()->SetItemText(event.GetOldItem(), pOldItem->GetLabel());
+      GetTreeCtrl()->SetItemText(event.GetOldItem(), pOldItem->GetItemText());
     }
   }                            
   
@@ -495,7 +496,7 @@ void LitesqlModelTreePanel::OnTreeSelChanged( wxTreeEvent& event )
     wxWindow *pPage = pItem->GetEditPanel(GetDetailNotebook());
     if (pPage)
     {
-      GetDetailNotebook()->AddPage(pPage,pItem->GetLabel());
+      GetDetailNotebook()->AddPage(pPage,pItem->GetItemText());
       
       GetDetailNotebook()->Layout();
       pPage->Layout();
@@ -511,7 +512,7 @@ void LitesqlModelTreePanel::OnTreeSelChanging( wxTreeEvent& WXUNUSED(event) )
 
 void wxModelItem::RefreshTree(wxTreeCtrl* pTree,wxTreeItemId& baseItem,wxModelItem* item)
 {
-	wxTreeItemId itemId = pTree->InsertItem(baseItem,item->GetId(), item->GetLabel());
+  wxTreeItemId itemId = pTree->InsertItem(baseItem,item->GetId(), item->GetItemText());
   pTree->SetItemData(itemId, item);
 	if (item->hasChildren())
 	{
