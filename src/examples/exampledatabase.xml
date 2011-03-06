@@ -56,7 +56,7 @@
     </relation>
   <object name="ThingWithMethods">
     <method name="sayHello">
-      <param type="string" name="text" />
+      <param type="std::string" name="text" />
       <param type="int" name="repeat" />
 
     </method>  
