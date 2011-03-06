@@ -12,7 +12,7 @@ class wxModelItem;
 class wxModelItem : public wxTreeItemData {
 public:
   typedef std::vector<wxModelItem*> sequence;
-  wxModelItem(const std::string& _labelPrefix) 
+  wxModelItem(const wxChar* _labelPrefix) 
     : wxTreeItemData(),
       labelPrefix(_labelPrefix) 
   { SetId(this);};
@@ -45,7 +45,7 @@ protected:
 
 class wxCompositeModelItem : public wxModelItem {
 public:
-  wxCompositeModelItem(const std::string& _labelPrefix); 
+  wxCompositeModelItem(const wxChar* _labelPrefix); 
   virtual ~wxCompositeModelItem(); 
 
 	
@@ -105,6 +105,7 @@ public:
   bool RemoveRelation();
   bool RemoveRelated();
 
+  
   
 private:
   wxLitesqlModel* m_pModel;

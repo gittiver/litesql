@@ -11,7 +11,7 @@ using namespace litesql;
 using namespace ui;
 
  
-wxCompositeModelItem::wxCompositeModelItem(const std::string& _labelPrefix): wxModelItem(_labelPrefix),m_childrenInitalized(false) {};
+wxCompositeModelItem::wxCompositeModelItem(const wxChar* _labelPrefix): wxModelItem(_labelPrefix),m_childrenInitalized(false) {};
 
 wxCompositeModelItem::~wxCompositeModelItem() 
 {}
@@ -145,6 +145,27 @@ class wxLitesqlObject : public wxCompositeModelItem {
 private:
 		ObjectPtr m_pObject;	
     ObjectModel::Ptr m_pModel;
+};
+
+class wxRelatedItem : public wxModelItem 
+{
+public:
+	wxRelatedItem(RelationHandle::Ptr pRelated) : wxModelItem(_T("Related")),m_pRelated(pRelated) {}
+  ~wxRelatedItem()  { }
+  
+	wxString GetLabel() const			{ wxString label(m_pRelated->name.c_str(),wxConvUTF8);
+		return label;	};
+	
+  /* wxWindow* GetEditPanel(wxWindow *parent) 			
+  {	
+    LitesqlFieldPanel* pPanel = new LitesqlFieldPanel(parent,m_pField);
+    return pPanel;
+  };
+   */  
+  RelationHandle::Ptr& related() { return m_pRelated; }
+private:
+	RelationHandle::Ptr m_pRelated;
+  
 };
 
 class wxLitesqlRelation : public wxCompositeModelItem {
@@ -468,7 +489,6 @@ bool LitesqlModelTreePanel::RemoveRelation()
   }
   return success;
 }
-
 
 void LitesqlModelTreePanel::OnTreeSelChanged( wxTreeEvent& event )
 {
