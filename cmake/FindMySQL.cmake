@@ -15,11 +15,19 @@ if(MYSQL_INCLUDE_DIR AND MYSQL_LIBRARIES)
 
 else(MYSQL_INCLUDE_DIR AND MYSQL_LIBRARIES)
 
+  # read environment variables and change \ to /
+  SET(PROGRAM_FILES_32 $ENV{ProgramFiles})
+  STRING(REGEX REPLACE "\\\\" "/" PROGRAM_FILES_32 ${PROGRAM_FILES_32})
+  SET(PROGRAM_FILES_64 $ENV{ProgramW6432})
+  STRING(REGEX REPLACE "\\\\" "/" PROGRAM_FILES_64 ${PROGRAM_FILES_64})
+
   find_path(MYSQL_INCLUDE_DIR mysql.h
       /usr/include/mysql
       /usr/local/include/mysql
       $ENV{ProgramFiles}/MySQL/*/include
       $ENV{SystemDrive}/MySQL/*/include
+      ${PROGRAM_FILES_32}/MySQL/*/include
+      ${PROGRAM_FILES_64}/MySQL/*/include
       )
 
 if(WIN32 AND MSVC)
@@ -27,6 +35,9 @@ if(WIN32 AND MSVC)
       PATHS
       $ENV{ProgramFiles}/MySQL/*/lib/opt
       $ENV{SystemDrive}/MySQL/*/lib/opt
+      $ENV{SystemDrive}/MySQL/*/lib
+      ${PROGRAM_FILES_32}/MySQL/*/lib
+      ${PROGRAM_FILES_64}/MySQL/*/lib
       )
 else(WIN32 AND MSVC)
   find_library(MYSQL_LIBRARIES NAMES mysqlclient

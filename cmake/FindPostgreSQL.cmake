@@ -15,12 +15,20 @@ if(POSTGRESQL_INCLUDE_DIR AND POSTGRESQL_LIBRARIES)
 
 else(POSTGRESQL_INCLUDE_DIR AND POSTGRESQL_LIBRARIES)
 
+  # read environment variables and change \ to /
+  SET(PROGRAM_FILES_32 $ENV{ProgramFiles})
+  STRING(REGEX REPLACE "\\\\" "/" PROGRAM_FILES_32 ${PROGRAM_FILES_32})
+  SET(PROGRAM_FILES_64 $ENV{ProgramW6432})
+  STRING(REGEX REPLACE "\\\\" "/" PROGRAM_FILES_64 ${PROGRAM_FILES_64})
+
   find_path(POSTGRESQL_INCLUDE_DIR libpq-fe.h
       /usr/include/pgsql
       /usr/local/include/pgsql
       /usr/include/postgresql
       $ENV{ProgramFiles}/PostgreSQL/*/include
       $ENV{SystemDrive}/PostgreSQL/*/include
+      ${PROGRAM_FILES_32}/PostgreSQL/*/include
+      ${PROGRAM_FILES_64}/PostgreSQL/*/include
       )
 
   find_library(POSTGRESQL_LIBRARIES NAMES pq libpq
@@ -30,8 +38,12 @@ else(POSTGRESQL_INCLUDE_DIR AND POSTGRESQL_LIBRARIES)
       /usr/lib/postgresql
       $ENV{ProgramFiles}/PostgreSQL/*/lib/ms
       $ENV{SystemDrive}/PostgreSQL/*/lib/ms
+      $ENV{ProgramFiles}/PostgreSQL/*/lib
+      $ENV{SystemDrive}/PostgreSQL/*/lib
+      ${PROGRAM_FILES_32}/PostgreSQL/*/lib
+      ${PROGRAM_FILES_64}/PostgreSQL/*/lib
       )
-     
+
   if(POSTGRESQL_INCLUDE_DIR AND POSTGRESQL_LIBRARIES)
     set(POSTGRESQL_FOUND TRUE)
     message(STATUS "Found PostgreSQL: ${POSTGRESQL_INCLUDE_DIR}, ${POSTGRESQL_LIBRARIES}")
