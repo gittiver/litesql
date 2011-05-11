@@ -210,7 +210,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 litesqlincludedir = $(includedir)/litesql
-litesqlinclude_HEADERS = backend.hpp     except.hpp  operations.hpp  selectquery.hpp  types.hpp  cursor.hpp      expr.hpp    persistent.hpp  split.hpp        updatequery.hpp  database.hpp    field.hpp   utils.hpp  datasource.hpp  relation.hpp    string.hpp datetime.hpp
+litesqlinclude_HEADERS = backend.hpp     except.hpp  operations.hpp  selectquery.hpp  types.hpp  cursor.hpp      expr.hpp    persistent.hpp  split.hpp        updatequery.hpp  database.hpp    field.hpp   utils.hpp  datasource.hpp  relation.hpp    string.hpp datetime.hpp counted_ptr.hpp
 all: all-am
 
 .SUFFIXES:
