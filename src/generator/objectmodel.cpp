@@ -85,21 +85,6 @@ AT_field_type litesql::field_type(const char* value)
   return t;
 }
 
-static const char* toString(AT_relate_limit t)
-{
-  switch (t) 
-  {
-  case A_relate_limit_one:
-    return "one";
-  case A_relate_limit_many:
-    return "many";
-  case AU_relate_limit:
-  default:
-    return "unknown";   
-  }
-}
-
-
 static AT_field_unique field_unique(const XML_Char* value)
 {
   AT_field_unique t;

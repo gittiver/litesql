@@ -97,6 +97,20 @@ bool XmlGenerator::generate(const xml::ObjectPtr& object,ostream& os,size_t inde
   return true;
 }
 
+static const char* relateLimitToString(AT_relate_limit t)
+{
+  switch (t) 
+  {
+  case A_relate_limit_one:
+    return "one";
+  case A_relate_limit_many:
+    return "many";
+  case AU_relate_limit:
+  default:
+    return "unknown";   
+  }
+}
+
 bool XmlGenerator::generate(const Relation::Ptr &  relation,ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
@@ -119,7 +133,7 @@ bool XmlGenerator::generate(const Relation::Ptr &  relation,ostream& os,size_t i
       os << indent_string << "  " 
         <<  "<relate " 
         <<  attribute("object",(*it)->objectName)
-        <<  ((*it)->hasLimit() ? attribute("limit",toString((*it)->limit)):"")
+        <<  ((*it)->hasLimit() ? attribute("limit",relateLimitToString((*it)->limit)):"")
         <<  attribute("handle",(*it)->handle)
         <<  ((*it)->isUnique() ? attribute("unique","true"):"")
         
