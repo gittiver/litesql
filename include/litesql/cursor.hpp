@@ -40,7 +40,7 @@ public:
     /** steps to next record */
     Cursor<T> & operator++(int) { return operator++();}
     /** returns the rest of the result set in vector */
-    vector<T> dump();
+    std::vector<T> dump();
     /** returns current record */
     T operator*();
     /** returns true if there are records left in the result set */
@@ -72,8 +72,8 @@ Cursor<T> & Cursor<T>::operator++() {
 }
 
 template <class T>
-vector<T> Cursor<T>::dump() {
-    vector<T> res;
+std::vector<T> Cursor<T>::dump() {
+    std::vector<T> res;
     for (;!done;operator++())
         res.push_back(operator*());
     return res;

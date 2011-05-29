@@ -18,7 +18,7 @@ using namespace std;
 /** returns SelectQuery which selects objects of type T 
  *  \param fdatas fields of class T
     \param e optional filter expression */
-SelectQuery selectObjectQuery(const vector<FieldType>& fdatas, 
+SelectQuery selectObjectQuery(const std::vector<FieldType>& fdatas, 
                                const Expr & e=Expr());
    
 /** returns SelectQuery which selects objects of type T 
@@ -82,7 +82,7 @@ public:
         return *cursor();
     }
     /** returns all objects in result set. */
-    vector<T> all() const {
+    std::vector<T> all() const {
         // \TODO a cursor is not appropriate here, because we fetch all results of the query 
         return cursor().dump();
     }

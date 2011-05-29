@@ -110,9 +110,9 @@ std::string convert<const Time&, std::string>(const Time& value);
 template <>
 std::string convert<const DateTime&, std::string>(const DateTime& value);
 
-ostream& operator << (ostream& os, const Date& d);
-ostream& operator << (ostream& os, const Time& d);
-ostream& operator << (ostream& os, const DateTime& d);
+std::ostream& operator << (std::ostream& os, const Date& d);
+std::ostream& operator << (std::ostream& os, const Time& d);
+std::ostream& operator << (std::ostream& os, const DateTime& d);
 }
 
 #endif

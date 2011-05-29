@@ -32,12 +32,12 @@ namespace litesql {
  * */
 class Persistent {
 protected:
-    typedef map<string, vector<pair<FieldType, string> > > Updates;
+    typedef std::map<std::string, std::vector<pair<FieldType, std::string> > > Updates;
     /** executed when object is created into database */    
-    string insert(Record& tables, 
+    std::string insert(Record& tables, 
                   Records& fieldRecs,
                   Records& values,
-                  const string& sequence);
+                  const std::string& sequence);
     void update(const Updates& updates); 
     template <class T>
     void updateField(litesql::Persistent::Updates& updates, 
@@ -49,8 +49,8 @@ protected:
             fld.setModified(false);
         }
     }
-    void prepareUpdate(Updates& updates, const string& table);
-    void deleteFromTable(const string& table, const string& id);
+    void prepareUpdate(Updates& updates, const std::string& table);
+    void deleteFromTable(const std::string& table, const std::string& id);
     /** pointer to current Database Persistent is assigned to. 
         It is not a reference because Persistents must be assignable using
         operator= */

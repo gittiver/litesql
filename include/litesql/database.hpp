@@ -60,12 +60,12 @@ protected:
     void storeSchemaItem(const SchemaItem& s) const;
     /** returns database schema.
         \return SchemaItem-objects */
-    virtual vector<SchemaItem> getSchema() const { 
-        return vector<SchemaItem>(); 
+    virtual std::vector<SchemaItem> getSchema() const { 
+        return std::vector<SchemaItem>(); 
     }
     /** queries 'schema' - table and converts results to SchemaItem-objects
         \return SchemaItem-objects */
-    vector<SchemaItem> getCurrentSchema() const;
+    std::vector<SchemaItem> getCurrentSchema() const;
     /** adds missing and removes extra fields to/from table 
         (tries to preserve data).
         copies data to a temporary table and then back to upgraded table

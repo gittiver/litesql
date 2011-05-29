@@ -15,7 +15,6 @@
 /** \file field.hpp
     contains FieldType- and Field-classes */
 namespace litesql {
-using namespace std;
 
 /** holds field name, type and table information */
 class In;
@@ -24,25 +23,25 @@ class SelectQuery;
 
 class FieldType {
 protected:
-    typedef vector< pair<string, string> > Values;
+    typedef std::vector< std::pair<std::string, std::string> > Values;
 public:
     FieldType() {};
-    FieldType(const string& n, 
-              const string& t, 
-              const string& tbl,
+    FieldType(const std::string& n, 
+              const std::string& t, 
+              const std::string& tbl,
               const Values& vals = Values())
         : _name(n), _type(t), _table(tbl), _values(vals) {}
-    string fullName() const { return  table() + "." + name(); }
-    string name() const { return _name; }
-    string type() const { return _type; }
-    string table() const { return _table; }
-    vector< pair<string, string> > values() { return _values; }
+    std::string fullName() const { return  table() + "." + name(); }
+    std::string name() const { return _name; }
+    std::string type() const { return _type; }
+    std::string table() const { return _table; }
+    std::vector< std::pair<std::string, std::string> > values() { return _values; }
     /** syntactic sugar to Expr-API, Object::field_.in(set) */
-    In in(const string& set) const;
+    In in(const std::string& set) const;
     /** syntactic sugar to Expr-API, Object::field_.in(sel) */
     In in(const SelectQuery& sel) const;
     /** syntactic sugar to Expr-API, Object::field_.like(s) */
-    Like like(const string& s) const;
+    Like like(const std::string& s) const;
     bool operator==(const FieldType & fd) const {
         return fd.fullName() == fullName();
     }
@@ -50,7 +49,7 @@ public:
         return ! (*this == fd);
     }
 private:
-    string _name, _type, _table;
+    std::string _name, _type, _table;
     Values _values;
 };
 
@@ -77,16 +76,16 @@ class Field {
     T _value;
 public:
     Field(const FieldType & f) : field(&f), _modified(true) {}
-    string fullName() const { return field->fullName(); }   
-    string name() const { return field->name(); }
-    string type() const { return field->type(); }
-    string table() const { return field->table(); }
+    std::string fullName() const { return field->fullName(); }   
+    std::string name() const { return field->name(); }
+    std::string type() const { return field->type(); }
+    std::string table() const { return field->table(); }
     T value() const { return _value; }
     const FieldType & fieldType() const { return *field; } 
     bool modified() const { return _modified; }
     void setModified(bool state) { _modified = state; }
-    const Field & operator=(const string& v) { 
-        _value = convert<const string&, T>(v);
+    const Field & operator=(const std::string& v) { 
+        _value = convert<const std::string&, T>(v);
         _modified = true;
         return *this;
     }
@@ -105,31 +104,30 @@ public:
     bool operator==(const T2& v) const {
         return litesql::toString(_value) == litesql::toString(v);
     }
-    template <class T2>
-    bool operator!=(const T2& v) const { return !(*this == v); }
-    
+	template <class T2>
+	bool operator!=(const T2& v) const { return !(*this == v); }
 
-    operator string() const { return toString(value()); }
+    operator std::string() const { return toString(value()); }
 
     operator T() const { return value(); }
 };
 
 template <>
-class Field<string> {
+class Field<std::string> {
     const FieldType * field; 
     bool _modified;
-    string _value;
+    std::string _value;
 public:
     Field(const FieldType & f) : field(&f), _modified(true) {}
-    string fullName() const { return field->fullName(); }   
-    string name() const { return field->name(); }
-    string type() const { return field->type(); }
-    string table() const { return field->table(); }
-    string value() const { return _value; }
+    std::string fullName() const { return field->fullName(); }   
+    std::string name() const { return field->name(); }
+    std::string type() const { return field->type(); }
+    std::string table() const { return field->table(); }
+    std::string value() const { return _value; }
     const FieldType & fieldType() const { return *field; } 
     bool modified() const { return _modified; }
     void setModified(bool state) { _modified = state; }
-    const Field & operator=(string v) { 
+    const Field & operator=(std::string v) { 
         _value = v;
         _modified = true;
         return *this;
@@ -142,7 +140,7 @@ public:
     template <class T2>
     const Field & operator=(T2 v) { 
         _modified = true;
-        _value = litesql::convert<T2, string>(v); 
+        _value = litesql::convert<T2, std::string>(v); 
         return *this;
     }
     template <class T2>
@@ -152,7 +150,7 @@ public:
     template <class T2>
     bool operator!=(const T2& v) const { return !(*this == v); }
 
-    operator string() const { return value(); }
+    operator std::string() const { return value(); }
 };
 
 typedef unsigned char u8_t;
@@ -161,7 +159,7 @@ class Blob {
 public:
   static const Blob nil;
   Blob()                            : m_data(NULL),m_length(0)               {};
-  Blob(const string & value) : m_data(NULL),m_length(0)
+  Blob(const std::string & value) : m_data(NULL),m_length(0)
   {
     initWithHexString(value);
   };
@@ -183,7 +181,7 @@ public:
     return *this;
   }
 
-  string toHex()            const ;
+  std::string toHex()            const ;
   size_t length()           const  { return m_length;      };
   bool   isNull()           const  { return m_data==NULL;  }; 
   u8_t   data(size_t index) const  { return m_data[index]; };
@@ -193,14 +191,14 @@ private:
   size_t m_length;
 
   void initWithData(const u8_t* data, size_t length);
-  void initWithHexString(const string& hexString);
+  void initWithHexString(const std::string& hexString);
 };
 
-ostream& operator << (ostream& os, const Blob& blob);
+std::ostream& operator << (std::ostream& os, const Blob& blob);
 template <>
-Blob convert<const string&, Blob>(const string& value);
+Blob convert<const std::string&, Blob>(const std::string& value);
 template <>
-string convert<const Blob&, string>(const Blob& value);
+std::string convert<const Blob&, std::string>(const Blob& value);
 
 template <>
 class Field<Blob> {
@@ -209,10 +207,10 @@ class Field<Blob> {
     Blob _value;
 public:
     Field(const FieldType & f) : field(&f), _modified(true) {}
-    string fullName() const { return field->fullName(); }   
-    string name() const { return field->name(); }
-    string type() const { return field->type(); }
-    string table() const { return field->table(); }
+    std::string fullName() const { return field->fullName(); }   
+    std::string name() const { return field->name(); }
+    std::string type() const { return field->type(); }
+    std::string table() const { return field->table(); }
     Blob value() const { return _value; }
     const FieldType & fieldType() const { return *field; } 
     bool modified() const { return _modified; }
@@ -243,7 +241,7 @@ const Field& operator=(const char * v) {
     bool operator!=(const T2& v) const { return !(*this == v); }
 */
 
-    operator string() const { return _value.toHex(); }
+    operator std::string() const { return _value.toHex(); }
 };
 
 template <class T>
