@@ -14,6 +14,6 @@ Description: Persistent Object Framework for C++
 Version: @PACKAGE_VERSION@
 URL: http://litesql.sourceforge.net
 @pkg_config_reqs_tv@
-Libs: -L${libdir} -llitesql @PGSQL_LDFLAGS@ @PGSQL_LIBS@ @MYSQL_LIBS@
+Libs: -L${libdir} -llitesql -llitesql-util @PGSQL_LDFLAGS@ @PGSQL_LIBS@ @MYSQL_LIBS@
 Cflags: -I${includedir} @PGSQL_CXXFLAGS@ @MYSQL_CXXFLAGS@
 

@@ -5,7 +5,7 @@
 %define release	    1
 
 Name: %{name}
-Summary: LiteSQL provides C++ object persistence in SQLite, MySQL, or PostgreSQL.
+Summary: LiteSQL provides C++ object persistence in SQLite, MySQL or PostgreSQL.
 Version: %{version}
 Release: %{release}
 License: BSD
