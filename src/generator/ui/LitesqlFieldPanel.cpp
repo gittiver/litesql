@@ -36,13 +36,13 @@ m_pField(pField)
   m_listValues->InsertColumn(1, _("Value"), wxLIST_FORMAT_LEFT, wxLIST_AUTOSIZE );
 }
 
-void LitesqlFieldPanel::OnAddValue( wxCommandEvent& event )
+void LitesqlFieldPanel::OnAddValue( wxCommandEvent& WXUNUSED(event) )
 {
   long index = m_listValues->InsertItem(m_listValues->GetItemCount(), _("newValue"));
   m_listValues->SetItem(index, 1, _("?"));
 }
 
-void LitesqlFieldPanel::OnRemoveValue( wxCommandEvent& event )
+void LitesqlFieldPanel::OnRemoveValue( wxCommandEvent& WXUNUSED(event) )
 {
   long item = -1;
   for ( ;; )

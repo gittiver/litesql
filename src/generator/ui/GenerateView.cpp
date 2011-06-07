@@ -59,7 +59,7 @@ m_pModel(pModel)
 }
 
 
-void LitesqlGeneratePanel::OnRunClick( wxCommandEvent& event )
+void LitesqlGeneratePanel::OnRunClick( wxCommandEvent& WXUNUSED(event) )
 {
   m_gaugeRunProgress->SetLabel(_("Running"));
 
@@ -128,7 +128,7 @@ bool GenerateView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
     return true;
 }
 
-void GenerateView::OnUpdate(wxView *sender, wxObject *hint) 
+void GenerateView::OnUpdate(wxView * WXUNUSED(sender), wxObject * WXUNUSED(hint) ) 
 {
 }
     
