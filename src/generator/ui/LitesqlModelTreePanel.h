@@ -35,7 +35,6 @@ public:
 	virtual bool hasChildren() const      {	return false;	};
 	virtual sequence* GetChildren()	{	return NULL;	};
 
-	static void RefreshTree(wxTreeCtrl* pTree,wxTreeItemId& baseItem,wxModelItem* item);
 protected:
   wxString labelPrefix;
 };
@@ -93,6 +92,7 @@ public:
 
   void setObjectModel(litesql::ObjectModel::Ptr& pModel);
 
+  wxTreeItemId InsertItem(const wxTreeItemId& parent,wxModelItem* pItem);
   wxTreeItemId AddObject(xml::ObjectPtr& newObject);
   wxTreeItemId AddField();
   wxTreeItemId AddMethod();

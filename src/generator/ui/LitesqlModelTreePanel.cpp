@@ -265,19 +265,41 @@ void LitesqlModelTreePanel::setObjectModel(litesql::ObjectModel::Ptr& pModel)
 {
   m_pModel = new wxLitesqlModel(pModel);
   m_modelTreeCtrl->DeleteAllItems();
+
   wxTreeItemId rootId = m_modelTreeCtrl->AddRoot(_("root"));
-  wxModelItem::RefreshTree(m_modelTreeCtrl,rootId,m_pModel);
+  InsertItem(rootId,m_pModel);
 }
 
 wxTreeItemId LitesqlModelTreePanel::AddObject(ObjectPtr& newObject)
 {
   wxLitesqlObject* pObject = new wxLitesqlObject(newObject,m_pModel->GetModel());
   m_pModel->GetModel()->objects.push_back(newObject);
-  wxTreeItemId newItem = m_modelTreeCtrl->InsertItem(m_pModel->GetId(), -1, pObject->GetItemText(), -1, -1, pObject);
+  wxTreeItemId newItem = InsertItem(m_pModel->GetId(),pObject);
 
   m_modelTreeCtrl->SelectItem(newItem);
 
   return newItem;
+}
+
+/** insert a modelItem recursively */
+wxTreeItemId LitesqlModelTreePanel::InsertItem(const wxTreeItemId& parent,wxModelItem* pItem)
+{
+	wxTreeItemId newItem = m_modelTreeCtrl->InsertItem(	parent, 
+										m_modelTreeCtrl->GetLastChild(parent), 
+										pItem->GetItemText(), 
+										pItem->GetItemImage(),
+										pItem->GetSelectedItemImage(), 
+										pItem);
+	if (pItem->hasChildren())
+	{
+		for (wxModelItem::sequence::iterator child = pItem->GetChildren()->begin();
+				child != pItem->GetChildren()->end();
+				child++)
+		{
+			InsertItem(newItem,*child);
+		}
+	}
+	return newItem;
 }
 
 wxTreeItemId LitesqlModelTreePanel::AddRelation()
@@ -285,8 +307,7 @@ wxTreeItemId LitesqlModelTreePanel::AddRelation()
   xml::Relation::Ptr r(new xml::Relation("","",AU_relation_unidir));
   m_pModel->GetModel()->relations.push_back(r);
   
-  wxLitesqlRelation* pRelation = new wxLitesqlRelation(r,m_pModel->GetModel());
-  wxTreeItemId newItem = m_modelTreeCtrl->InsertItem(m_pModel->GetId(), -1, pRelation->GetItemText(), -1, -1, pRelation);
+  wxTreeItemId newItem = InsertItem(m_pModel->GetId(),new wxLitesqlRelation(r,m_pModel->GetModel()));
   m_modelTreeCtrl->SelectItem(newItem);
 
   return newItem;
@@ -308,7 +329,7 @@ wxTreeItemId LitesqlModelTreePanel::AddField()
       Field::Ptr newField(new xml::Field("newField",AU_field_type,"",AU_field_indexed,AU_field_unique));
       wxFieldItem* field = new wxFieldItem(newField);
       data->AddField(field);
-      newItem = m_modelTreeCtrl->InsertItem(selectedItem, -1, field->GetItemText(), -1, -1, field);
+      newItem = InsertItem(selectedItem, field);
       m_modelTreeCtrl->SelectItem(newItem);
     }
     else 
@@ -319,7 +340,7 @@ wxTreeItemId LitesqlModelTreePanel::AddField()
         Field::Ptr newField(new xml::Field("newField",AU_field_type,"",AU_field_indexed,AU_field_unique));
         wxFieldItem* field = new wxFieldItem(newField);
         relation->AddField(field);
-        newItem = m_modelTreeCtrl->InsertItem(selectedItem, -1, field->GetItemText(), -1, -1, field);
+        newItem = InsertItem(selectedItem, field);
         m_modelTreeCtrl->SelectItem(newItem);
       }
     }
@@ -347,12 +368,7 @@ wxTreeItemId LitesqlModelTreePanel::AddRelated()
       wxRelateItem* relate = new wxRelateItem(newRelate,m_pModel->GetModel());
       relation->AddRelate(relate);
 
-      newItem = m_modelTreeCtrl->InsertItem(selectedItem, 
-        -1, 
-        relate->GetItemText(), 
-        -1, 
-        -1, 
-        relate);
+      newItem = InsertItem(selectedItem, relate);
       m_modelTreeCtrl->SelectItem(newItem);
     }
   }
@@ -371,7 +387,7 @@ wxTreeItemId LitesqlModelTreePanel::AddMethod()
       Method::Ptr ptrMethod(new xml::Method("newMethod", ""));
       wxMethodItem* method = new wxMethodItem(ptrMethod);
       data->AddMethod(method);
-      newItem = m_modelTreeCtrl->InsertItem(selectedItem, -1, method->GetItemText(), -1, -1, method);
+      newItem = InsertItem(selectedItem, method);
       m_modelTreeCtrl->SelectItem(newItem);
     }
   }
@@ -528,22 +544,6 @@ void LitesqlModelTreePanel::OnTreeSelChanged( wxTreeEvent& event )
 void LitesqlModelTreePanel::OnTreeSelChanging( wxTreeEvent& WXUNUSED(event) )
 {
     //  wxModelItem* pItem = (wxModelItem*)GetTreeCtrl()->GetItemData(event.GetItem());
-}
-
-void wxModelItem::RefreshTree(wxTreeCtrl* pTree,wxTreeItemId& baseItem,wxModelItem* item)
-{
-  wxTreeItemId itemId = pTree->InsertItem(baseItem,item->GetId(), item->GetItemText());
-  pTree->SetItemData(itemId, item);
-	if (item->hasChildren())
-	{
-    wxModelItem::sequence* pChildren = item->GetChildren();
-		for(wxModelItem::sequence::iterator it =  pChildren->begin(); 
-        it != pChildren->end();
-        it++)
-		{
-			RefreshTree(pTree,itemId,(wxModelItem*)(*it));
-		}
-	}
 }
 
 
