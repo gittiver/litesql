@@ -154,6 +154,7 @@ public:
 };
 
 typedef unsigned char u8_t;
+typedef long long bigint;
 
 class Blob {
 public:

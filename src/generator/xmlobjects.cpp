@@ -297,13 +297,13 @@ void init(DatabasePtr& db,
 
     for (ObjectSequence::const_iterator object = objects.begin();
       object != objects.end();
-      object++)
+      ++object)
     {
       objMap[(*object)->name] = (*object);
     }
     // make Object's class hierarchy mapping (parent and children)
 
-    for (size_t i = 0; i < objects.size(); i++) 
+    for (size_t i = 0; i < objects.size(); ++i) 
       if (objMap.find(objects[i]->inherits) != objMap.end()) {
             objects[i]->parentObject = objMap[objects[i]->inherits];
             objects[i]->parentObject->children.push_back(objects[i]);
@@ -314,12 +314,12 @@ void init(DatabasePtr& db,
 
     // sort objects of relations alphabetically (ascii)
 
-    for (Relation::sequence::const_iterator it_rel=relations.begin();it_rel!=relations.end();it_rel++)
+    for (Relation::sequence::const_iterator it_rel=relations.begin();it_rel!=relations.end();++it_rel)
     {
         sort((*it_rel)->related.begin(), (*it_rel)->related.end(),Relate::CompareByObjectName());
     }
           
-    for (Relation::sequence::const_iterator it_rel=relations.begin();it_rel!=relations.end();it_rel++)
+    for (Relation::sequence::const_iterator it_rel=relations.begin();it_rel!=relations.end();++it_rel)
     {
         Relation::Ptr rel = *it_rel;
         bool same = rel->sameTypes() > 1;

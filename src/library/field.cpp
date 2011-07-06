@@ -10,6 +10,7 @@
 
 namespace litesql {
 using namespace std;
+
 In FieldType::in(const string& set) const {
     return In(*this, set);
 }
@@ -19,24 +20,37 @@ In FieldType::in(const SelectQuery& sel) const {
 Like FieldType::like(const string& s) const {
     return Like(*this, s);
 }
+
 template <> 
 string convert<int, string>(int value) {
     return toString(value);
 }
+
+template <> 
+string convert<bigint, string>(bigint value) {
+    return toString(value);
+}
+
 template <>
 string convert<float, string>(float value) {
     return toString(value);
 }
+
 template <>
 string convert<double, string>(double value) {
     return toString(value);
 }
 
-
 template <> 
 string convert<const int&, string>(const int& value) {
     return toString(value);
 }
+
+template <> 
+string convert<const bigint&, string>(const bigint& value) {
+    return toString(value);
+}
+
 template <>
 string convert<const float&, string>(const float& value) {
     return toString(value);
@@ -56,13 +70,25 @@ template <>
 int convert<const string&, int>(const string& value) {
     return strtol(value.c_str(), NULL, 10);
 }
+
+template <>
+bigint convert<const string&, bigint>(const string& value) {
+    return strtoll(value.c_str(), NULL, 10);
+}
+
 template <>
 bool convert<int, bool>(int value) {
     return value!=0;
 }
+
+template <> 
+bigint convert<int, bigint>(int value) {
+    return (bigint)value;
+}
+
 template <> 
 float convert<int, float>(int value) {
-    return (float)value;
+    return (float)value; 
 }
 
 template <> 
@@ -74,14 +100,12 @@ template <>
 bool convert<const string&, bool>(const string& value) {
     return convert<const string&, int>(value);
 }
-template <>
-long long convert<const string&, long long>(const string& value) {
-    return strtoll(value.c_str(), NULL, 10);
-}
+
 template <>
 float convert<const string&, float>(const string& value) {
     return strtof(value.c_str(), NULL);
 }
+
 template <>
 double convert<const string&, double>(const string& value) {
     return strtod(value.c_str(), NULL);
@@ -117,7 +141,7 @@ string Blob::toHex(void) const
   return result;
 }
 
-int hex(char c)
+u8_t hex(char c)
 {
   switch(c)
   {
@@ -181,9 +205,9 @@ void Blob::initWithHexString(const string& hexString)
   {
     m_length = hexString.size()/2;
     m_data = (u8_t*) malloc(m_length);
-    for (size_t i = 0; i < m_length;i++)
+    for (size_t i = 0; i < hexString.size();i+=2)
     {
-      m_data[i] = (hex(hexString[2*i])<<4) | hex(hexString[2*i+1]);
+      m_data[i/2] = (hex(hexString[i])<<4) | hex(hexString[i+1]);
     }
   }
 }

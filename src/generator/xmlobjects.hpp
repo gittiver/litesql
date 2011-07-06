@@ -22,6 +22,7 @@ typedef enum { AU_index_unique, A_index_unique_true,A_index_unique_false } AT_in
 typedef enum { AU_field_type, 
                A_field_type_boolean,
                A_field_type_integer,
+               A_field_type_bigint,
                A_field_type_string,
                A_field_type_float,
                A_field_type_double,
@@ -109,6 +110,7 @@ public:
     bool hasQuotedValues() const {
        switch(type) {
        case A_field_type_integer:
+       case A_field_type_bigint:
        case A_field_type_float: 
        case A_field_type_double: 
        case A_field_type_boolean: 
@@ -143,6 +145,7 @@ public:
     string getSQLType() const {
        switch(type) {
            case A_field_type_integer: return "INTEGER";
+           case A_field_type_bigint: return "BIGINT";
            case A_field_type_string: return "TEXT";
            case A_field_type_float: return "FLOAT";
            case A_field_type_double: return "DOUBLE";
@@ -156,15 +159,16 @@ public:
     }
     string getCPPType() const {
        switch(type) {
-           case A_field_type_integer: return "int";
-           case A_field_type_string: return "std::string";
-           case A_field_type_float: return "float";
-           case A_field_type_double: return "double";
-           case A_field_type_boolean: return "bool";
-           case A_field_type_date: return "litesql::Date";
-           case A_field_type_time: return "litesql::Time";
+           case A_field_type_integer : return "int";
+		   case A_field_type_bigint  : return "litesql::bigint";
+           case A_field_type_string  : return "std::string";
+           case A_field_type_float   : return "float";
+           case A_field_type_double  : return "double";
+           case A_field_type_boolean : return "bool";
+           case A_field_type_date    : return "litesql::Date";
+           case A_field_type_time    : return "litesql::Time";
            case A_field_type_datetime: return "litesql::DateTime";
-           case A_field_type_blob: return "litesql::Blob";
+           case A_field_type_blob    : return "litesql::Blob";
            default: return "";
        }
     }

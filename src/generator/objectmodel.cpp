@@ -16,6 +16,8 @@ const char* litesql::toString(AT_field_type t)
   {
   case A_field_type_boolean:
     return "boolean";
+  case A_field_type_bigint:
+    return "bigint";
   case A_field_type_integer:
     return "integer";
   case A_field_type_string:
@@ -49,6 +51,10 @@ AT_field_type litesql::field_type(const char* value)
   else if (!xmlStrcasecmp(value,(XML_Char*)"integer"))
   {
     t = A_field_type_integer;
+  }
+  else if (!xmlStrcasecmp(value,(XML_Char*)"bigint"))
+  {
+    t = A_field_type_bigint;
   }
   else if (!xmlStrcasecmp(value,(XML_Char*)"string"))
   {

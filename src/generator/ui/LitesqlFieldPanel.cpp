@@ -64,6 +64,7 @@ const wxString FTSTRING[] = {
                _(""),
                _("boolean"),
                _("integer"),
+               _("bigint"),
                _("string"),
                _("float"),
                _("double"),
