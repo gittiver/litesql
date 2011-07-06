@@ -1,3 +1,7 @@
+Version 0.3.11
+##############
+- support for bigint datatype
+
 Version 0.3.10
 ##############
 - better gui
