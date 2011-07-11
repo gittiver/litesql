@@ -15,6 +15,10 @@ install(TARGETS litesql-util EXPORT litesql-util
 			ARCHIVE DESTINATION lib/static 
 			COMPONENT devel)
 install(EXPORT litesql-util DESTINATION lib)
+if (MSVC)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/litesql-utild.lib DESTINATION lib/static
+	COMPONENT devel)
+endif(MSVC)
 
 ##############################################################################
 # litesql library
