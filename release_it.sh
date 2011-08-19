@@ -7,6 +7,11 @@ AM_BUILDDIR=build/autotools/$HOST_ARCH-$HOST_SYSTEM
 CMAKE_BUILDDIR=build/cmake/$HOST_ARCH-$HOST_SYSTEM
 STARTDIR=`pwd`
 
+if [ "$HOST_SYSTEM" = "Linux" ] 
+then MYSQL_CONFIG=mysql_config
+else MYSQL_CONFIG=mysql_config5
+fi
+
 mkdir -p $CMAKE_BUILDDIR
 
 cd $CMAKE_BUILDDIR
@@ -17,6 +22,6 @@ cd $STARTDIR
 
 mkdir -p $AM_BUILDDIR
 cd $AM_BUILDDIR
-$STARTDIR/configure MYSQL_CONFIG=mysql_config5
+$STARTDIR/configure MYSQL_CONFIG=$MYSQL_CONFIG
 make distcheck
 cd $STARTDIR
