@@ -23,6 +23,6 @@ bin_PROGRAMS=litesql-gen
 litesql_gen_SOURCES=	litesql-gen-main.cpp \
 						litesql-gen.hpp
 
-litesql_gen_LDADD=../library/liblitesql.la ../library/liblitesql-util.la libmodel.a
+litesql_gen_LDADD=../library/liblitesql-util.la libmodel.a
 
 EXTRA_DIST=CMakeLists.txt
