@@ -14,7 +14,7 @@ namespace litesql {
   class CodeGenerator {
 
   public:
-    typedef enum generation_mode_t { REFRESH=0,OVERWRITE };
+    enum generation_mode_t { REFRESH=0,OVERWRITE };
 
     CodeGenerator();
     virtual ~CodeGenerator();
@@ -38,12 +38,22 @@ namespace litesql {
     virtual bool generate(const xml::ObjectPtr& object) {return true;};
     virtual bool generate(const xml::Relation::Ptr& relation){return true;};
 
-    bool generate(const xml::ObjectSequence& objects,std::ostream& os,size_t indent=2);
-    bool generate(const xml::Relation::sequence& relations,std::ostream& os,size_t indent=2);
+    bool generate(const xml::ObjectSequence& objects,
+		  std::ostream& os,
+		  size_t indent=2);
+    bool generate(const xml::Relation::sequence& relations,
+		  std::ostream& os,
+		  size_t indent=2);
     
-    virtual bool generate(const xml::ObjectPtr& object, std::ostream& os, size_t indent=2) {return true;};
+    virtual bool generate(const xml::ObjectPtr& object, 
+			  std::ostream& os, 
+			  size_t indent=2) 
+    {return true;};
     
-    virtual bool generate(const xml::Relation::Ptr& relation, std::ostream& os, size_t indent=4){return true;};
+    virtual bool generate(const xml::Relation::Ptr& relation, 
+			  std::ostream& os, 
+			  size_t indent=4)
+    {return true;};
 
     static CodeGenerator* create(const char* target);
 
@@ -69,6 +79,7 @@ namespace litesql {
     public:
       FactoryMap();
       ~FactoryMap();
+      bool registerFactory(AbstractFactory* f);
     };
 
     static FactoryMap& getFactoryMap();

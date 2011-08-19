@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "generator.hpp"
 #include "litesql-gen-cpp.hpp"
 #include "litesql-gen-ruby-activerecord.hpp"
@@ -10,14 +12,11 @@ using namespace xml;
 
 CodeGenerator::FactoryMap::FactoryMap()
 {
-  registerFactory(new CodeGenerator::Factory<CppGenerator>(CppGenerator::NAME));
-  
-  registerFactory(new CodeGenerator::Factory<RubyActiveRecordGenerator>(RubyActiveRecordGenerator::NAME));
-  registerFactory(new CodeGenerator::Factory<ActiveRecordClassGenerator>(ActiveRecordClassGenerator::NAME));
-  registerFactory(new CodeGenerator::Factory<RubyMigrationsGenerator>(RubyMigrationsGenerator::NAME));
-
-  registerFactory(new CodeGenerator::Factory<GraphvizGenerator>(GraphvizGenerator::NAME));
-
+  registerFactory(new Factory<CppGenerator>(CppGenerator::NAME));
+  registerFactory(new Factory<RubyActiveRecordGenerator>(RubyActiveRecordGenerator::NAME));
+  registerFactory(new Factory<ActiveRecordClassGenerator>(ActiveRecordClassGenerator::NAME));
+  registerFactory(new Factory<RubyMigrationsGenerator>(RubyMigrationsGenerator::NAME));
+  registerFactory(new Factory<GraphvizGenerator>(GraphvizGenerator::NAME));
 }
 
 CodeGenerator::FactoryMap::~FactoryMap()
@@ -30,13 +29,14 @@ CodeGenerator::FactoryMap::~FactoryMap()
   }
 }
 
+
 CodeGenerator::FactoryMap& CodeGenerator::getFactoryMap()
 {
   static FactoryMap instance;
   return instance;
 }
 
-bool CodeGenerator::registerFactory(AbstractFactory* pFactory)
+bool CodeGenerator::FactoryMap::registerFactory(AbstractFactory* pFactory)
 {
   if (!pFactory)
   {
@@ -44,10 +44,14 @@ bool CodeGenerator::registerFactory(AbstractFactory* pFactory)
   }
   else
   {
-    getFactoryMap()[pFactory->getName()] = pFactory;  
+    pair<const char*,AbstractFactory*> value(pFactory->getName(),pFactory);
+    insert(value);
     return true;
   }
 }
+
+bool CodeGenerator::registerFactory(AbstractFactory* pFactory)
+{ return getFactoryMap().registerFactory(pFactory); }
 
 CodeGenerator* CodeGenerator::create(const char* target)
 {
@@ -141,13 +145,11 @@ bool CodeGenerator::generate(const Relation::sequence& relations,ostream& os,siz
   return true;
 }
 
-
 void CompositeGenerator::add(CodeGenerator* g)
 {
   g->setParentGenerator(this);
   g->setOutputDirectory(getOutputDirectory());
   generators.push_back(g);
-
 }
 
 void CompositeGenerator::setOutputDirectory(const string& directory) 

@@ -50,8 +50,9 @@ LitesqlGeneratePanel::LitesqlGeneratePanel( wxWindow* parent,litesql::ObjectMode
 GeneratePanel( parent ),
 m_pModel(pModel)
 {
-  for (CodeGenerator::FactoryMap::iterator it  = CodeGenerator::getFactoryMap().begin();
-                                           it != CodeGenerator::getFactoryMap().end();
+  CodeGenerator::FactoryMap& map = CodeGenerator::getFactoryMap();
+  for (CodeGenerator::FactoryMap::iterator it  =map.begin();
+                                           it != map.end();
                                            it++ )
   {
     m_checkListGenerators->Append(wxString::FromUTF8(it->first.c_str()));
