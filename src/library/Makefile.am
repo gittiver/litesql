@@ -1,4 +1,4 @@
-AM_CXXFLAGS=-I$(srcdir)/../../include
+AM_CXXFLAGS=-I$(srcdir)/../../include $(MYSQL_INCLUDES)
 
 lib_LTLIBRARIES=liblitesql.la liblitesql-util.la
 
@@ -29,5 +29,5 @@ EXTRA_DIST= compatibility.hpp \
 	    sqlite3ext.h \
 	    CMakeLists.txt
 
-liblitesql_la_LDFLAGS = -version-info 3:6 
+#liblitesql_la_LDFLAGS = -version-info 3:6 
 #`echo $(VERSION)|sed -e 's/\./:/g'`
