@@ -115,7 +115,7 @@ bool RelateLimitValidator::TransferFromWindow()
     }
     else
     {
-      wxLogWarning(_("unknown value %s"),value);
+      wxLogWarning(_("unknown value %s"),value.c_str());
     }
   }
   return rval;
