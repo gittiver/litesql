@@ -6,13 +6,15 @@
 #include "config.h"
 #include "mysql.hpp"
 
+#include <string>
+#include "mysql.hpp"
+
 #ifdef HAVE_LIBMYSQLCLIENT
 
 #ifdef WIN32
 #include <winsock2.h>				/* For windows */
 #endif
 
-#include <string>
 #include <mysql.h>
 
 using namespace litesql;
@@ -78,7 +80,7 @@ Records MySQL::Result::records() const {
     return recs;
 }
 
-MySQL::MySQL(const string& connInfo) {
+MySQL::MySQL(const std::string& connInfo) {
     Split params(connInfo,";");
     host = "localhost";
     int port = 0;
