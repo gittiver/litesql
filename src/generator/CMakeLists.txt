@@ -10,6 +10,7 @@ set(libmodel_SOURCES
 			xmlobjects.hpp 
 			litesql-gen-graphviz.cpp litesql-gen-graphviz.hpp 
 			litesql-gen-ruby-activerecord.cpp litesql-gen-ruby-activerecord.hpp 
+			litesql-gen-wxformbuilder.cpp litesql-gen-wxformbuilder.hpp 
 	)
 
 set(litesql-gen_SOURCES 

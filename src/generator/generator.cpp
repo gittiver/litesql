@@ -4,7 +4,7 @@
 #include "litesql-gen-cpp.hpp"
 #include "litesql-gen-ruby-activerecord.hpp"
 #include "litesql-gen-graphviz.hpp"
-
+#include "litesql-gen-wxformbuilder.hpp"
 
 using namespace std;
 using namespace litesql;
@@ -17,6 +17,7 @@ CodeGenerator::FactoryMap::FactoryMap()
   registerFactory(new Factory<ActiveRecordClassGenerator>(ActiveRecordClassGenerator::NAME));
   registerFactory(new Factory<RubyMigrationsGenerator>(RubyMigrationsGenerator::NAME));
   registerFactory(new Factory<GraphvizGenerator>(GraphvizGenerator::NAME));
+  registerFactory(new Factory<wxFormBuilderGenerator>(wxFormBuilderGenerator::NAME));
 }
 
 CodeGenerator::FactoryMap::~FactoryMap()
