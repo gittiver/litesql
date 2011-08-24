@@ -305,6 +305,11 @@ DateTime convert<int, DateTime>(int value) {
     return DateTime(value);
 }
 
+template <> 
+DateTime convert<time_t, DateTime>(time_t value) { 
+    return DateTime(value); 
+} 
+
 template <>
 std::string convert<const Date&, std::string>(const Date& value) {
     return toString(value.timeStamp());
