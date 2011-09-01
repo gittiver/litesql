@@ -24,50 +24,8 @@ static bool generateFieldUI(const xml::Field::Ptr& field,ostream& os,size_t inde
         << "                    <property name=\"flag\">wxALL|wxEXPAND</property>" << endl
         << "                    <property name=\"proportion\">1</property>" << endl
         << "                    <object class=\"wxStaticText\" expanded=\"1\">" << endl
-        << "                        <property name=\"bg\" />" << endl
-        << "                        <property name=\"context_help\" />" << endl
-        << "                        <property name=\"enabled\">1</property>" << endl
-        << "                        <property name=\"fg\" />" << endl
-        << "                        <property name=\"font\" />" << endl
-        << "                        <property name=\"hidden\">0</property>" << endl
-        << "                        <property name=\"id\">wxID_ANY</property>" << endl
         << "                        <property name=\"label\">" << capitalize(field->name)    << "</property>" << endl
-        << "                        <property name=\"maximum_size\" />" << endl
-        << "                        <property name=\"minimum_size\" />" << endl
         << "                        <property name=\"name\">lbl_" << capitalize(field->name) << "</property>" << endl
-        << "                        <property name=\"permission\">protected</property>" << endl
-        << "                        <property name=\"pos\" />" << endl
-        << "                        <property name=\"size\" />" << endl
-        << "                        <property name=\"style\" />" << endl
-        << "                        <property name=\"subclass\" />" << endl
-        << "                        <property name=\"tooltip\" />" << endl
-        << "                        <property name=\"window_extra_style\" />" << endl
-        << "                        <property name=\"window_name\" />" << endl
-        << "                        <property name=\"window_style\" />" << endl
-        << "                        <property name=\"wrap\">-1</property>" << endl
-        << "                        <event name=\"OnChar\" />" << endl
-        << "                        <event name=\"OnEnterWindow\" />" << endl
-        << "                        <event name=\"OnEraseBackground\" />" << endl
-        << "                        <event name=\"OnKeyDown\" />" << endl
-        << "                        <event name=\"OnKeyUp\" />" << endl
-        << "                        <event name=\"OnKillFocus\" />" << endl
-        << "                        <event name=\"OnLeaveWindow\" />" << endl
-        << "                        <event name=\"OnLeftDClick\" />" << endl
-        << "                        <event name=\"OnLeftDown\" />" << endl
-        << "                        <event name=\"OnLeftUp\" />" << endl
-        << "                        <event name=\"OnMiddleDClick\" />" << endl
-        << "                        <event name=\"OnMiddleDown\" />" << endl
-        << "                        <event name=\"OnMiddleUp\" />" << endl
-        << "                        <event name=\"OnMotion\" />" << endl
-        << "                        <event name=\"OnMouseEvents\" />" << endl
-        << "                        <event name=\"OnMouseWheel\" />" << endl
-        << "                        <event name=\"OnPaint\" />" << endl
-        << "                        <event name=\"OnRightDClick\" />" << endl
-        << "                        <event name=\"OnRightDown\" />" << endl
-        << "                        <event name=\"OnRightUp\" />" << endl
-        << "                        <event name=\"OnSetFocus\" />" << endl
-        << "                        <event name=\"OnSize\" />" << endl
-        << "                        <event name=\"OnUpdateUI\" />" << endl
         << "                    </object>" << endl
         << "                </object>" << endl
         << "                <object class=\"sizeritem\" expanded=\"1\">" << endl
@@ -79,66 +37,29 @@ static bool generateFieldUI(const xml::Field::Ptr& field,ostream& os,size_t inde
             case A_field_type_boolean:
                 os << "                    <object class=\"wxCheckBox\" expanded=\"1\">" << endl;
                 break;
+            case A_field_type_integer:
+                os << "                    <object class=\"wxSpinCtrl\" expanded=\"1\">" << endl
+                   << "                        <property name=\"name\">m_spin_" << capitalize(field->name) << "</property>" << endl;
+          break;
 
             case A_field_type_date:
+                os << "                    <object class=\"wxDatePickerCtrl\" expanded=\"1\">" << endl
+                   << "                        <property name=\"name\">m_datePicker_" << capitalize(field->name) << "</property>" << endl;
+        
+                break;
+
             case A_field_type_datetime:
             case A_field_type_time:
-            
+                
             case A_field_type_string:
             default:
-                os << "                    <object class=\"wxTextCtrl\" expanded=\"1\">" << endl;
+                os << "                    <object class=\"wxTextCtrl\" expanded=\"1\">"  << endl
+                   << "                        <property name=\"maxlength\">0</property>" << endl
+                   << "                        <property name=\"name\">m_textCtrl_" << capitalize(field->name) << "</property>" << endl;
         }
         
-        os << "                        <property name=\"bg\" />" << endl
-        << "                        <property name=\"context_help\" />" << endl
-        << "                        <property name=\"enabled\">1</property>" << endl
-        << "                        <property name=\"fg\" />" << endl
-        << "                        <property name=\"font\" />" << endl
-        << "                        <property name=\"hidden\">0</property>" << endl
-        << "                        <property name=\"id\">wxID_ANY</property>" << endl
-        << "                        <property name=\"maximum_size\" />" << endl
-        << "                        <property name=\"maxlength\">0</property>" << endl
-        << "                        <property name=\"minimum_size\">-1,-1</property>" << endl
-        << "                        <property name=\"name\">m_textCtrl_" << capitalize(field->name) << "</property>" << endl
-        << "                        <property name=\"permission\">protected</property>" << endl
-        << "                        <property name=\"pos\" />" << endl
-        << "                        <property name=\"size\" />" << endl
-        << "                        <property name=\"style\" />" << endl
-        << "                        <property name=\"subclass\" />" << endl
-        << "                        <property name=\"tooltip\" />" << endl
-        << "                        <property name=\"value\" />" << endl
-        << "                        <property name=\"window_extra_style\" />" << endl
-        << "                        <property name=\"window_name\" />" << endl
-        << "                        <property name=\"window_style\" />" << endl
-        << "                        <event name=\"OnChar\" />" << endl
-        << "                        <event name=\"OnEnterWindow\" />" << endl
-        << "                        <event name=\"OnEraseBackground\" />" << endl
-        << "                        <event name=\"OnKeyDown\" />" << endl
-        << "                        <event name=\"OnKeyUp\" />" << endl
-        << "                        <event name=\"OnKillFocus\" />" << endl
-        << "                        <event name=\"OnLeaveWindow\" />" << endl
-        << "                        <event name=\"OnLeftDClick\" />" << endl
-        << "                        <event name=\"OnLeftDown\" />" << endl
-        << "                        <event name=\"OnLeftUp\" />" << endl
-        << "                        <event name=\"OnMiddleDClick\" />" << endl
-        << "                        <event name=\"OnMiddleDown\" />" << endl
-        << "                        <event name=\"OnMiddleUp\" />" << endl
-        << "                        <event name=\"OnMotion\" />" << endl
-        << "                        <event name=\"OnMouseEvents\" />" << endl
-        << "                        <event name=\"OnMouseWheel\" />" << endl
-        << "                        <event name=\"OnPaint\" />" << endl
-        << "                        <event name=\"OnRightDClick\" />" << endl
-        << "                        <event name=\"OnRightDown\" />" << endl
-        << "                        <event name=\"OnRightUp\" />" << endl
-        << "                        <event name=\"OnSetFocus\" />" << endl
-        << "                        <event name=\"OnSize\" />" << endl
-        << "                        <event name=\"OnText\" />" << endl
-        << "                        <event name=\"OnTextEnter\" />" << endl
-        << "                        <event name=\"OnTextMaxLen\" />" << endl
-        << "                        <event name=\"OnTextURL\" />" << endl
-        << "                        <event name=\"OnUpdateUI\" />" << endl
-        << "                    </object>" << endl
-        << "                </object>" << endl;
+        os  << "                    </object>" << endl
+            << "                </object>" << endl;
     return true;
 }
 
@@ -146,47 +67,10 @@ static bool generateFieldUI(const xml::Field::Ptr& field,ostream& os,size_t inde
 static bool generateDetailPanel(const xml::ObjectPtr& object,ostream& os,size_t indent)
 {
     os << "      <object class=\"Panel\" expanded=\"0\">" << endl
-        << "            <property name=\"bg\" />" << endl
-        << "            <property name=\"context_help\" />" << endl
-        << "            <property name=\"enabled\">1</property>" << endl
-        << "            <property name=\"fg\" />" << endl
-        << "            <property name=\"font\" />" << endl
-        << "            <property name=\"hidden\">0</property>" << endl
-        << "            <property name=\"id\">wxID_ANY</property>" << endl
-        << "            <property name=\"maximum_size\" />" << endl
-        << "            <property name=\"minimum_size\">250,80</property>" << endl
+        << "            <property name=\"minimum_size\">280,80</property>" << endl
         << "            <property name=\"name\">" << object->name << "Panel</property>" << endl
         << "            <property name=\"pos\" />" << endl
-        << "            <property name=\"size\">" << object->fields.size() *15 << ",80</property>" << endl
-        << "            <property name=\"subclass\" />" << endl
-        << "            <property name=\"tooltip\" />" << endl
-        << "            <property name=\"window_extra_style\" />" << endl
-        << "            <property name=\"window_name\" />" << endl
-        << "            <property name=\"window_style\">wxTAB_TRAVERSAL</property>" << endl
-        << "            <event name=\"OnChar\" />" << endl
-        << "            <event name=\"OnEnterWindow\" />" << endl
-        << "            <event name=\"OnEraseBackground\" />" << endl
-        << "            <event name=\"OnInitDialog\" />" << endl
-        << "            <event name=\"OnKeyDown\" />" << endl
-        << "            <event name=\"OnKeyUp\" />" << endl
-        << "            <event name=\"OnKillFocus\" />" << endl
-        << "            <event name=\"OnLeaveWindow\" />" << endl
-        << "            <event name=\"OnLeftDClick\" />" << endl
-        << "            <event name=\"OnLeftDown\" />" << endl
-        << "            <event name=\"OnLeftUp\" />" << endl
-        << "            <event name=\"OnMiddleDClick\" />" << endl
-        << "            <event name=\"OnMiddleDown\" />" << endl
-        << "            <event name=\"OnMiddleUp\" />" << endl
-        << "            <event name=\"OnMotion\" />" << endl
-        << "            <event name=\"OnMouseEvents\" />" << endl
-        << "            <event name=\"OnMouseWheel\" />" << endl
-        << "            <event name=\"OnPaint\" />" << endl
-        << "            <event name=\"OnRightDClick\" />" << endl
-        << "            <event name=\"OnRightDown\" />" << endl
-        << "            <event name=\"OnRightUp\" />" << endl
-        << "            <event name=\"OnSetFocus\" />" << endl
-        << "            <event name=\"OnSize\" />" << endl
-        << "            <event name=\"OnUpdateUI\" />" << endl
+        << "            <property name=\"size\">280," << object->fields.size() * 20 << "</property>" << endl
         << "            <object class=\"wxFlexGridSizer\" expanded=\"1\">" << endl
         << "                <property name=\"cols\">2</property>" << endl
         << "                <property name=\"flexible_direction\">wxBOTH</property>" << endl
@@ -194,7 +78,7 @@ static bool generateDetailPanel(const xml::ObjectPtr& object,ostream& os,size_t 
         << "                <property name=\"growablerows\" />" << endl
         << "                <property name=\"hgap\">0</property>" << endl
         << "                <property name=\"minimum_size\" />" << endl
-        << "                <property name=\"name\">gSizer1</property>" << endl
+        << "                <property name=\"name\">gFieldSizer</property>" << endl
         << "                <property name=\"non_flexible_grow_mode\">wxFLEX_GROWMODE_SPECIFIED</property>" << endl
         << "                <property name=\"permission\">none</property>" << endl
         << "                <property name=\"rows\">" << object->fields.size()<< "</property>" << endl
