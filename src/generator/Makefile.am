@@ -13,7 +13,9 @@ libmodel_a_SOURCES = 	\
 					litesql-gen-xml.cpp litesql-gen-xml.hpp \
 					litesql-gen-cpp.cpp litesql-gen-cpp.hpp \
 					litesql-gen-graphviz.cpp litesql-gen-graphviz.hpp \
-				 	litesql-gen-ruby-activerecord.cpp litesql-gen-ruby-activerecord.hpp
+				 	litesql-gen-ruby-activerecord.cpp litesql-gen-ruby-activerecord.hpp \
+					litesql-gen-wxformbuilder.cpp litesql-gen-wxformbuilder.hpp
+
 
 
 bin_PROGRAMS=litesql-gen
