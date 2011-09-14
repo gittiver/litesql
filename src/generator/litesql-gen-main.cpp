@@ -1,8 +1,6 @@
 #include "litesql.hpp"
 #include "generator.hpp"
 #include "litesql-gen-cpp.hpp"
-#include "litesql-gen-graphviz.hpp"
-#include "litesql-gen-ruby-activerecord.hpp"
 #include "logger.hpp"
 #include "objectmodel.hpp"
 
@@ -102,27 +100,24 @@ int generateCode(ObjectModel& model)
     
     for (vector<string>::const_iterator target= options.targets.begin(); target!=options.targets.end();target++)
     {
+        CodeGenerator* pGen = CodeGenerator::create(target->c_str());
+        if (!pGen)
+        {
+            throw litesql::Except("unsupported target: " + *target);
+        }
+        else
+        {
+            generator.add(pGen);
 
-      if (*target == "c++") 
-      {
-        CppGenerator* pCppGen = new CppGenerator();
-        pCppGen->setOutputSourcesDirectory(options.output_sources);
-        pCppGen->setOutputIncludesDirectory(options.output_includes);
+            // special case for c++
+            CppGenerator* pCppGen= dynamic_cast<CppGenerator*>(pGen);
+            if (pCppGen) 
+            {
+                pCppGen->setOutputSourcesDirectory(options.output_sources);
+                pCppGen->setOutputIncludesDirectory(options.output_includes);
+            }    
+        }
 
-        generator.add(pCppGen);
-      }    
-      else if (*target == "graphviz") 
-      {
-        generator.add(new GraphvizGenerator());
-      }
-      else if (*target == "ruby-activerecord") 
-      {
-        generator.add(new RubyActiveRecordGenerator());
-      }
-      else 
-      {
-        throw litesql::Except("unsupported target: " + *target);
-      }
     }
 
     return generator.generateCode(&model)? 0 : 1 ;
