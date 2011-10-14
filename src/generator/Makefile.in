@@ -57,14 +57,14 @@ am_libmodel_a_OBJECTS = logger.$(OBJEXT) xmlparser.$(OBJEXT) \
 	objectmodel.$(OBJEXT) xmlobjects.$(OBJEXT) md5.$(OBJEXT) \
 	generator.$(OBJEXT) litesql-gen-xml.$(OBJEXT) \
 	litesql-gen-cpp.$(OBJEXT) litesql-gen-graphviz.$(OBJEXT) \
-	litesql-gen-ruby-activerecord.$(OBJEXT)
+	litesql-gen-ruby-activerecord.$(OBJEXT) \
+	litesql-gen-wxformbuilder.$(OBJEXT)
 libmodel_a_OBJECTS = $(am_libmodel_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_litesql_gen_OBJECTS = litesql-gen-main.$(OBJEXT)
 litesql_gen_OBJECTS = $(am_litesql_gen_OBJECTS)
-litesql_gen_DEPENDENCIES = ../library/liblitesql.la \
-	../library/liblitesql-util.la libmodel.a
+litesql_gen_DEPENDENCIES = ../library/liblitesql-util.la libmodel.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -238,12 +238,13 @@ libmodel_a_SOURCES = \
 					litesql-gen-xml.cpp litesql-gen-xml.hpp \
 					litesql-gen-cpp.cpp litesql-gen-cpp.hpp \
 					litesql-gen-graphviz.cpp litesql-gen-graphviz.hpp \
-				 	litesql-gen-ruby-activerecord.cpp litesql-gen-ruby-activerecord.hpp
+				 	litesql-gen-ruby-activerecord.cpp litesql-gen-ruby-activerecord.hpp \
+					litesql-gen-wxformbuilder.cpp litesql-gen-wxformbuilder.hpp
 
 litesql_gen_SOURCES = litesql-gen-main.cpp \
-						litesql-gen.hpp
+                        litesql-gen.hpp
 
-litesql_gen_LDADD = ../library/liblitesql.la ../library/liblitesql-util.la libmodel.a
+litesql_gen_LDADD = ../library/liblitesql-util.la libmodel.a
 EXTRA_DIST = CMakeLists.txt
 all: all-am
 
@@ -258,9 +259,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign src/generator/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/generator/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign src/generator/Makefile
+	  $(AUTOMAKE) --gnu src/generator/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -344,6 +345,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-graphviz.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-ruby-activerecord.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-wxformbuilder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-xml.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/logger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/md5.Po@am__quote@

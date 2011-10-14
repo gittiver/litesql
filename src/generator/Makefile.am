@@ -17,13 +17,10 @@ libmodel_a_SOURCES = 	\
 					litesql-gen-wxformbuilder.cpp litesql-gen-wxformbuilder.hpp
 
 
-
 bin_PROGRAMS=litesql-gen
 
-
-
-litesql_gen_SOURCES=	litesql-gen-main.cpp \
-						litesql-gen.hpp
+litesql_gen_SOURCES=    litesql-gen-main.cpp \
+                        litesql-gen.hpp
 
 litesql_gen_LDADD=../library/liblitesql-util.la libmodel.a
 
