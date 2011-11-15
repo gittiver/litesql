@@ -124,18 +124,23 @@ const Blob Blob::nil;
 
 string Blob::toHex(void) const
 {
+	return toHex(m_data,m_length);
+}
+
+string Blob::toHex(const u8_t *data, size_t length)
+{
   string result;
-  if (!m_data) 
+  if (!data) 
   {
     result ="NULL";  
   }
   else
   {
-    result.reserve(2*m_length);
-    for (size_t i = 0; i < m_length;i++)
+    result.reserve(2*length);
+    for (size_t i = 0; i < length;i++)
     {
-      result.push_back( hexDigits[(m_data[i]&0xf0) >>4]);
-      result.push_back( hexDigits[m_data[i]&0x0f]);
+      result.push_back( hexDigits[(data[i]&0xf0) >>4]);
+      result.push_back( hexDigits[data[i]&0x0f]);
     }
   }
   return result;
@@ -203,7 +208,7 @@ void Blob::initWithHexString(const string& hexString)
   }
   else
   {
-    m_length = hexString.size()/2;
+    m_length = (hexString.size()+1)/2;
     m_data = (u8_t*) malloc(m_length);
     for (size_t i = 0; i < hexString.size();i+=2)
     {

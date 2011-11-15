@@ -182,6 +182,7 @@ public:
     return *this;
   }
 
+  static std::string toHex(const u8_t* data, size_t length);
   std::string toHex()            const ;
   size_t length()           const  { return m_length;      };
   bool   isNull()           const  { return m_data==NULL;  }; 
