@@ -42,6 +42,7 @@ set(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 option(LITESQL_WITH_MYSQL "build with mysql Backend" ${MYSQL_FOUND})
 option(LITESQL_WITH_SQLITE3 "build with sqlite3 backend(sources integrated)" ON)
 option(LITESQL_WITH_POSTGRES "build with postgres backend" OFF)
+option(LITESQL_WITH_OCILIB "build with ocilib Backend" ${OCILIB_FOUND})
 #option(LITESQL_WITH_ODBC "build with ODBC Backend" ON)
 option(LITESQL_WITH_DOCS "generate Documentation" OFF)
 option(LITESQL_WITH_SAX_PARSER "use new SAX parser" ON)
@@ -53,6 +54,7 @@ option(CMAKE_SUPPRESS_REGENERATION "suppress rules to re-run cmake on changes (w
 include(cmake/FindMySQL.cmake)
 include(cmake/FindPostgreSQL.cmake)
 include(cmake/FindSQLite3.cmake)
+include(cmake/FindOCILib.cmake)
 
 
 if(LITESQL_WITH_TESTS)
@@ -85,6 +87,20 @@ else(LITESQL_WITH_MYSQL AND MYSQL_FOUND)
   message("can not use mysql")
   set(LITESQL_WITH_MYSQL OFF)
 endif (LITESQL_WITH_MYSQL AND MYSQL_FOUND)
+
+if (LITESQL_WITH_OCILIB AND OCILIB_FOUND)
+  set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS HAVE_OCILIB)
+  list(APPEND BACKEND_INCLUDES ${OCILIB_INCLUDE_DIR})
+  list(APPEND BACKEND_LIBRARIES litesql_ocilib ${OCILIB_LIBRARIES})
+  list(APPEND BACKEND_DEFINITIONS ${OCILIB_DEFINITIONS})
+  # the precompiled ocilib client libraries are compiled with libcmt - this causes duplicate symbols
+  if (MSVC)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
+  endif(MSVC)
+else(LITESQL_WITH_OCILIB AND OCILIB_FOUND)
+  message("can not use ocilib")
+  set(LITESQL_WITH_OCILIB OFF)
+endif (LITESQL_WITH_OCILIB AND OCILIB_FOUND)
 
 if (LITESQL_WITH_POSTGRES AND POSTGRESQL_FOUND)
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBPQ)
