@@ -58,47 +58,54 @@ void OCILib::Cursor::setCacheSize(int s) {
 }
 
 Record OCILib::Cursor::fetchOneRow() const{
-	if(!OCI_FetchNext(res))
-	{
-		return Record(); //done
-	}
+    if(!OCI_FetchNext(res))
+    {
+        return Record(); //done
+    }
 
-	unsigned int nFields =cTypes.size();
-	Record row(nFields);
-	for (size_t i2 = 1; i2 <= nFields; i2++) 
-	{
-		unsigned int colType=cTypes[i2-1];
-		if(colType==OCI_CDT_LOB)
-		{
-			OCI_Lob *l= OCI_GetLob(res,i2);
-			if(l)
-			{
-				big_uint len=OCI_LobGetLength(l);
-				if(len>=big_uint(INT_MAX))
-				{
-					throw MemoryError("Not supporting really big LOBs");
-				}
-				size_t blen=(size_t)len;
-				size_t clen=0;
-				litesql::u8_t *buff = (litesql::u8_t *)malloc(len+1);
-				if(OCI_LobRead2(l,buff,&clen,&blen))
-				{
-					row.push_back(litesql::Blob::toHex(buff,blen));
-				}
-				else row.push_back("NULL");
-			}
-			else row.push_back("NULL");
-		}
-		else if(colType==OCI_CDT_TEXT)
-		{
-			const char *val=OCI_GetString(res,i2);
-			row.push_back((val) ? val : "");
-		}
-		else 
-		{
-			const char *val=OCI_GetString(res,i2);
-			row.push_back((val) ? val : "NULL");
-		}
+    unsigned int nFields =cTypes.size();
+    Record row(nFields);
+    for (size_t i2 = 1; i2 <= nFields; i2++) 
+    {
+        unsigned int colType=cTypes[i2-1];
+        switch (colType) 
+        {
+        case OCI_CDT_LOB:
+            {
+                OCI_Lob *l= OCI_GetLob(res,i2);
+                if(l)
+                {
+                    big_uint len=OCI_LobGetLength(l);
+                    if(len>=big_uint(INT_MAX))
+                    {
+                        throw MemoryError("Not supporting really big LOBs");
+                    }
+                    size_t blen=(size_t)len;
+                    size_t clen=0;
+                    litesql::u8_t *buff = (litesql::u8_t *)malloc(len+1);
+                    if(OCI_LobRead2(l,buff,&clen,&blen))
+                    {
+                        row.push_back(litesql::Blob::toHex(buff,blen));
+                    }
+                    else row.push_back("NULL");
+                }
+                else row.push_back("NULL");
+            }
+            break;
+
+        case OCI_CDT_TEXT:
+            {
+                const char *val=OCI_GetString(res,i2);
+                row.push_back((val) ? val : "");
+            }
+            break;
+
+        default:
+            {
+                const char *val=OCI_GetString(res,i2);
+                row.push_back((val) ? val : "NULL");
+            }
+        }
 	}
 
 	return row;
@@ -252,10 +259,13 @@ Backend::Cursor* OCILib::cursor(const string& query) const {
 	return new Cursor(0,0); // never come here.
 }
 
+string OCILib::getCreateSequenceSQL(const string& name) const
+{
+    return "CREATE SEQUENCE " + name + " START WITH 1 INCREMENT BY 1";	
+}
 
 string OCILib::getSeqSQL(const string& sname) const{
-	string ret="SELECT ";
-	ret=ret+ sname + ".NEXTVAL FROM DUAL";
+    string ret="SELECT "+ sname + ".NEXTVAL FROM DUAL";
 	return ret;
 }
 #endif

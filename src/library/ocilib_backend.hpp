@@ -35,8 +35,10 @@ public:
 	virtual string getTextType() const {
 				return "VARCHAR(4000)";
 			}
-	virtual string getSeqSQL(const string& sname) const;
-	virtual string queryTerm() const { return "";}
+	virtual string getCreateSequenceSQL(const string& name) const;
+    virtual string getSeqSQL(const string& sname) const;
+
+	//virtual string queryTerm() const { return "";}
     virtual bool supportsSequences() const;
     virtual void begin() const;
     virtual void commit() const;

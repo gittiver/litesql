@@ -1103,24 +1103,29 @@ void writeRelMethods(const xml::DatabasePtr& database,
 
 
 
-void getSchema(const xml::DatabasePtr& db,
-               //const ObjectSequence& objects,
-//               const vector<xml::Relation*>& relations,
-gen::Method& mtd) {    
+void getSchema(const xml::DatabasePtr& db, gen::Method& mtd) {    
 //    Records recs;
     Split rec;
     mtd.body("vector<Database::SchemaItem> res;");
+
+    mtd.body("string TEXT = backend->getTextType();");
+
     rec.push_back(quote("schema_"));
     rec.push_back(quote("table"));
-    rec.push_back(quote("CREATE TABLE schema_ (name_ TEXT, type_ TEXT, sql_ TEXT);"));
+	Split r2;
+	r2.push_back(quote("CREATE TABLE schema_ (name_ "));r2.push_back("TEXT");
+	r2.push_back(quote(", type_ "));r2.push_back("TEXT");
+	r2.push_back(quote(", sql_ "));r2.push_back("TEXT");
+	r2.push_back(quote(")"));
+	rec.push_back(r2.join("+"));
 //    recs.push_back(rec);
     mtd.body("res.push_back(Database::SchemaItem(" + rec.join(",") + "));");
     mtd.body("if (backend->supportsSequences()) {");
     for (size_t i = 0; i < db->sequences.size(); i++) {
-        Split rec;
+        Split rec(3);
         rec.push_back(quote(db->sequences[i]->name));
         rec.push_back(quote("sequence"));
-        rec.push_back(quote(db->sequences[i]->getSQL()));
+        rec.push_back("backend->getCreateSequenceSQL(" + quote(db->sequences[i]->name) + ")");
         mtd.body("    res.push_back(Database::SchemaItem(" + rec.join(",") + "));");
     }
     mtd.body("}");

@@ -27,15 +27,31 @@
 #include "odbc_backend.hpp"
 #endif
 
+
+#ifdef HAVE_OCILIB
+#include "ocilib_backend.hpp"
+#endif
+
 using namespace litesql;
 using namespace std;    
+
+string Backend::getCreateSequenceSQL(const string& name) const
+{
+    return "CREATE SEQUENCE " + name + " START 1 INCREMENT 1";
+}
+
+string Backend::getSeqSQL(const string& sname) const
+{
+    string ret="SELECT nextval('"+ sname + "');";
+    return ret;
+}
 
 string Backend::groupInsert(Record tables, Records fields, Records values,
                    const string& sequence) const {
     string id = values[0][0];
     
     if (supportsSequences() && values[0][0] == "NULL") {
-      Result * r = execute("SELECT nextval('" + sequence + "');");
+      Result * r = execute(getSeqSQL(sequence));
       id = r->records()[0][0];
       delete r;
     } 
@@ -80,6 +96,11 @@ Backend* Backend::getBackend(const string & backendType,const string& connInfo)
 #ifdef HAVE_LIBSQLITE3
         if (backendType == "sqlite3") {
           backend = new SQLite3(connInfo);
+        } else
+#endif
+#ifdef HAVE_OCILIB
+        if (backendType == "oracle") {
+          backend = new OCILib(connInfo);
         } else
 #endif
         { 
