@@ -35,6 +35,23 @@
 using namespace litesql;
 using namespace std;    
 
+string Backend::getSQLType(AT_field_type fieldType) const
+{
+    switch(fieldType) {
+    case A_field_type_integer: return "INTEGER";
+    case A_field_type_bigint: return "BIGINT";
+    case A_field_type_string: return "TEXT";
+    case A_field_type_float: return "FLOAT";
+    case A_field_type_double: return "DOUBLE";
+    case A_field_type_boolean: return "INTEGER";
+    case A_field_type_date: return "INTEGER";
+    case A_field_type_time: return "INTEGER";
+    case A_field_type_datetime: return "INTEGER";
+    case A_field_type_blob: return "BLOB";
+    default: return "";
+    }
+}
+
 string Backend::getCreateSequenceSQL(const string& name) const
 {
     return "CREATE SEQUENCE " + name + " START 1 INCREMENT 1";
