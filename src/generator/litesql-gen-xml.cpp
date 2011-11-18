@@ -186,7 +186,7 @@ bool XmlGenerator::generate(const Relation::Ptr &  relation,ostream& os,size_t i
 
 bool XmlGenerator::generateDatabase(ostream& os,const ObjectModel* model)
 {
-  os << "<" << Database::TAG << " " 
+  os << "<" << xml::Database::TAG << " " 
      << attribute("name",model->db->name) 
      << attribute("namespace", model->db->nspace) 
      << ">" << endl;
@@ -194,7 +194,7 @@ bool XmlGenerator::generateDatabase(ostream& os,const ObjectModel* model)
   CodeGenerator::generate(model->objects,os,2);
   CodeGenerator::generate(model->relations,os,2);
   
-  os << "</"<<  Database::TAG <<">" << endl;
+  os << "</"<<  xml::Database::TAG <<">" << endl;
   return true;
 }
 
