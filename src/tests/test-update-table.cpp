@@ -72,6 +72,11 @@ int main(int argc, char *argv[]) {
     success &= Updater::testUpgradeTable(pg_db);
 #endif
 
+#ifdef HAVE_OCILIB
+    Database oracle_db("oracle","database=test-update-table.db");
+    success &= Updater::testUpgradeTable(oracle_db);
+#endif
+
 #ifdef HAVE_ODBC
     Database odbc_db("odbc","database=test-update-table.db");
     success &= Updater::testUpgradeTable(odbc_db);
