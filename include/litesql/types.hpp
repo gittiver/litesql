@@ -26,4 +26,17 @@ public:
 typedef std::vector<Record> Records;
 
 }
+typedef enum { AU_field_type, 
+               A_field_type_boolean,
+               A_field_type_integer,
+               A_field_type_bigint,
+               A_field_type_string,
+               A_field_type_float,
+               A_field_type_double,
+               A_field_type_time,
+               A_field_type_date,
+               A_field_type_datetime,
+               A_field_type_blob 
+             } AT_field_type;
+
 #endif

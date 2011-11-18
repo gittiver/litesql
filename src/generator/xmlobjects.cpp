@@ -51,9 +51,19 @@ string validID(const string& s, const string& type="field") {
 }
 
 string makeDBName(const string& s) {
-    if (s.size() > 31)
+if(true)
+{
+	//ORACLE allows only 30 chars and leading alphabet is a must
+	if (s.size() > 30)
+		return "O" + md5HexDigest(s).substr(0,29);
+    return s;
+}
+else
+{
+	if (s.size() > 31)
         return "_" + md5HexDigest(s);
     return s;
+}
 }
 static void sanityCheck(DatabasePtr& db,
                         const ObjectSequence& objects,
@@ -153,8 +163,8 @@ static void initSchema(DatabasePtr& db,
           db->sequences.push_back(seq);
         }  else {
           Database::DBField::Ptr id(new Database::DBField); 
-          id->name = "id_";
-          id->type = "INTEGER";
+          id->field->name = "id";
+          id->field->type = A_field_type_integer;
           id->primaryKey = true;
           tbl->fields.push_back(id);
         }
@@ -162,9 +172,27 @@ static void initSchema(DatabasePtr& db,
         for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
             Field::Ptr f = o.fields[i2];
             Database::DBField::Ptr fld(new Database::DBField);
-            fld->name = f->name + "_";
+            fld->field->name = f->name;
             fldMap[f->name] = fld;
-            fld->type = f->getSQLType();
+            fld->field->type = f->type;
+			if(false)
+			{
+				//ORACLE
+				if(f->type==A_field_type_string)
+				{
+				//	fld->type="VARCHAR";
+					fld->extra="(4000)";
+				}
+				else if( f->type== A_field_type_float)
+				{
+				//	fld->type="BINARY_FLOAT";
+				}
+				else if (f->type==A_field_type_double)
+				{
+				//	fld->type="BINARY_DOUBLE";
+				}
+			}
+
             fld->primaryKey = (f->name == "id");
             if (f->isUnique())
                 fld->extra = " UNIQUE";
@@ -173,7 +201,7 @@ static void initSchema(DatabasePtr& db,
             
             if (f->isIndexed()) {
               Database::DBIndex::Ptr idx(new Database::DBIndex);
-                idx->name = makeDBName(tbl->name + fld->name + "idx");
+                idx->name = makeDBName(tbl->name + fld->name() + "idx");
                 idx->table = tbl->name;
                 idx->fields.push_back(fld);
                 db->indices.push_back(idx);
@@ -203,9 +231,12 @@ static void initSchema(DatabasePtr& db,
     }
     for (size_t i = 0; i < relations.size(); i++) {
         Relation& r = *relations[i];
+        
         Database::Table::Ptr tbl(new Database::Table);
-        db->tables.push_back(tbl);
         tbl->name = r.getTable();
+        
+        db->tables.push_back(tbl);
+        
         Database::DBField::sequence objFields;
         map<string, Database::DBField::Ptr> fldMap;
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
@@ -220,14 +251,14 @@ static void initSchema(DatabasePtr& db,
                     extra = " UNIQUE";
             }
             Database::DBField::Ptr fld(new Database::DBField);
-            fld->name = relate.fieldName;
-            fld->type = "INTEGER";
+            fld->field->name = relate.fieldName;
+            fld->field->type = A_field_type_integer;
             fld->extra = extra;
             tbl->fields.push_back(fld);
             objFields.push_back(fld);
             
             Database::DBIndex::Ptr idx( new Database::DBIndex);
-            idx->name = makeDBName(tbl->name + fld->name + "idx");
+            idx->name = makeDBName(tbl->name + fld->name() + "idx");
             idx->table = tbl->name;
             idx->fields.push_back(fld);
             db->indices.push_back(idx);
@@ -236,9 +267,9 @@ static void initSchema(DatabasePtr& db,
         for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
             Field& f = *r.fields[i2];
             Database::DBField::Ptr fld(new Database::DBField);
-            fld->name = f.name + "_";
+            fld->field->name = f.name;
             fldMap[f.name] = fld;
-            fld->type = f.getSQLType();
+            fld->field->type = f.type;
             fld->primaryKey = false;
             if (f.isUnique())
                 fld->extra = " UNIQUE";
@@ -247,7 +278,7 @@ static void initSchema(DatabasePtr& db,
             
             if (f.isIndexed()) {
               Database::DBIndex::Ptr idx( new Database::DBIndex);
-                idx->name = makeDBName(tbl->name + fld->name + "idx");
+                idx->name = makeDBName(tbl->name + fld->name() + "idx");
                 idx->table = tbl->name;
                 idx->fields.push_back(fld);
                 db->indices.push_back(idx);
@@ -354,8 +385,7 @@ void init(DatabasePtr& db,
             }
         }
     }
-    
-
+ 
     initSchema(db, objects, relations);
 
 }
