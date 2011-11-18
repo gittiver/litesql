@@ -54,6 +54,8 @@ namespace litesql {
             virtual bool supportsSequences() const {
                 return false;
             }
+
+            virtual string getSQLType(AT_field_type fieldType) const;
 //            virtual string getCreateIndexSQL(const string& name) const;
             virtual string getCreateSequenceSQL(const string& name) const;
 
