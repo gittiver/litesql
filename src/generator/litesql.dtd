@@ -12,7 +12,7 @@
 <!ELEMENT field (value)*>
 <!ATTLIST field 
           name NMTOKEN #REQUIRED
-          type (boolean|integer|string|float|double|time|date|datetime|blob) #REQUIRED
+          type (boolean|integer|bigint|string|float|double|time|date|datetime|blob) #REQUIRED
           default CDATA #IMPLIED
           indexed (true|false) "false"
           unique (true|false) "false">
