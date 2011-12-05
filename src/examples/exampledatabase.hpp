@@ -3,6 +3,7 @@
 #include "litesql.hpp"
 namespace example {
 class user;
+class newObject;
 class Person;
 class Role;
 class Student;
@@ -182,6 +183,44 @@ public:
     std::auto_ptr<user> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, user o);
+class newObject : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+protected:
+    void defaults();
+public:
+    newObject(const litesql::Database& db);
+    newObject(const litesql::Database& db, const litesql::Record& rec);
+    newObject(const newObject& obj);
+    const newObject& operator=(const newObject& obj);
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<newObject> upcast();
+    std::auto_ptr<newObject> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, newObject o);
 class Person : public litesql::Persistent {
 public:
     class Own {
@@ -192,7 +231,7 @@ public:
     public:
         static const int Male;
         static const int Female;
-        SexType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
+        SexType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
     };
     class Sex {
     public:
@@ -542,7 +581,7 @@ public:
     ThingWithMethods(const litesql::Database& db, const litesql::Record& rec);
     ThingWithMethods(const ThingWithMethods& obj);
     const ThingWithMethods& operator=(const ThingWithMethods& obj);
-    virtual void sayHello(string text, int repeat);
+    virtual void sayHello(std::string text, int repeat);
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();

@@ -353,7 +353,7 @@ void writeObjFields(Class & cl, const xml::Object & o) {
 
     Class ownData("Own");
     Variable ftype("Id", ftypeClass, 
-                   quote("id_") + "," + quote("INTEGER") 
+                   quote("id_") + "," + "A_field_type_"+toAttributeString(A_field_type_integer) //+ quote("INTEGER") 
                    + "," + quote(o.getTable()));
     ftype.static_();
     ownData.variable(ftype);
@@ -363,7 +363,7 @@ void writeObjFields(Class & cl, const xml::Object & o) {
     for (size_t i = 0; i < o.fields.size(); i++) {
         const xml::Field& fld = *o.fields[i];
         string data = quote(fld.name + "_") + "," +
-            quote(fld.getSQLType()) + "," +
+            "A_field_type_"+ toAttributeString(fld.type) + "," +
             "table__";
         if (!fld.values.empty()) {
             data += "," + fld.name + "_values"; 
@@ -385,7 +385,7 @@ void writeObjFields(Class & cl, const xml::Object & o) {
             gen::Method cons(ftypeClass);
             ftypeClass = "const " + o.name + "::" + ftypeClass;
             cons.param(Variable("n", "const std::string&"))
-                .param(Variable("t", "const std::string&"))
+                .param(Variable("t", "AT_field_type" /*"iconst std::string&"*/))
                 .param(Variable("tbl", "const std::string&"))
                 .param(Variable("vals", "const litesql::FieldType::Values&", "Values()"))
                 .constructor("litesql::FieldType(n,t,tbl,vals)");
@@ -839,14 +839,14 @@ void writeStaticRelData(Class& cl, const xml::Relation& r) {
         Variable ftype(r.related[i2]->fieldTypeName,
                        "const litesql::FieldType",
                        quote(r.related[i2]->fieldName)
-                       + "," + quote("INTEGER") + "," + "table__");
+                       + "," + "A_field_type_"+toAttributeString(A_field_type_integer) + "," + "table__");
         ftype.static_();
         cl.variable(ftype);
     }
     for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
         const xml::Field& fld = *r.fields[i2];
         string data = quote(fld.name + "_") + "," +
-                      quote(fld.getSQLType()) + "," +
+                      "A_field_type_"+toAttributeString(fld.type) + "," +
 
                       "table__";
         if (!fld.values.empty()) {

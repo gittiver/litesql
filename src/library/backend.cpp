@@ -37,7 +37,7 @@ using namespace std;
 
 string Backend::getSQLType(AT_field_type fieldType) const
 {
-    switch(fieldType) {
+  switch(fieldType) {
     case A_field_type_integer: return "INTEGER";
     case A_field_type_bigint: return "BIGINT";
     case A_field_type_string: return "TEXT";
@@ -49,8 +49,9 @@ string Backend::getSQLType(AT_field_type fieldType) const
     case A_field_type_datetime: return "INTEGER";
     case A_field_type_blob: return "BLOB";
     default: return "";
-    }
+  }
 }
+
 
 string Backend::getCreateSequenceSQL(const string& name) const
 {

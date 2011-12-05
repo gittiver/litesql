@@ -11,6 +11,7 @@
 #include <utility>
 #include <string>
 #include "litesql/string.hpp"
+#include "litesql/commontypes.h"
 
 /** \file field.hpp
     contains FieldType- and Field-classes */
@@ -27,13 +28,13 @@ protected:
 public:
     FieldType() {};
     FieldType(const std::string& n, 
-              const std::string& t, 
+              AT_field_type t, 
               const std::string& tbl,
               const Values& vals = Values())
-        : _name(n), _type(t), _table(tbl), _values(vals) {}
+        : _name(n), _table(tbl), _type(t), _values(vals) {}
     std::string fullName() const { return  table() + "." + name(); }
     std::string name() const { return _name; }
-    std::string type() const { return _type; }
+    AT_field_type type() const { return _type; }
     std::string table() const { return _table; }
     std::vector< std::pair<std::string, std::string> > values() { return _values; }
     /** syntactic sugar to Expr-API, Object::field_.in(set) */
@@ -49,7 +50,8 @@ public:
         return ! (*this == fd);
     }
 private:
-    std::string _name, _type, _table;
+    std::string _name, _table;
+    AT_field_type _type;
     Values _values;
 };
 
@@ -78,7 +80,7 @@ public:
     Field(const FieldType & f) : field(&f), _modified(true) {}
     std::string fullName() const { return field->fullName(); }   
     std::string name() const { return field->name(); }
-    std::string type() const { return field->type(); }
+    AT_field_type type() const { return field->type(); }
     std::string table() const { return field->table(); }
     T value() const { return _value; }
     const FieldType & fieldType() const { return *field; } 
@@ -121,7 +123,7 @@ public:
     Field(const FieldType & f) : field(&f), _modified(true) {}
     std::string fullName() const { return field->fullName(); }   
     std::string name() const { return field->name(); }
-    std::string type() const { return field->type(); }
+    AT_field_type type() const { return field->type(); }
     std::string table() const { return field->table(); }
     std::string value() const { return _value; }
     const FieldType & fieldType() const { return *field; } 
@@ -211,7 +213,7 @@ public:
     Field(const FieldType & f) : field(&f), _modified(true) {}
     std::string fullName() const { return field->fullName(); }   
     std::string name() const { return field->name(); }
-    std::string type() const { return field->type(); }
+//    std::string type() const { return field->type(); }
     std::string table() const { return field->table(); }
     Blob value() const { return _value; }
     const FieldType & fieldType() const { return *field; } 

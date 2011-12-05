@@ -20,7 +20,7 @@ const char* Method::TAG="method";
 
 ObjectPtr Object::DEFAULT_BASE(new Object("litesql::Persistent",""));
 
-Field::Ptr Object::ID_FIELD(new Field("id", A_field_type_integer, "", A_field_indexed_false, A_field_unique_false));
+Field::Ptr Object::ID_FIELD(new Field("id", A_field_type_integer, "", A_field_indexed_true, A_field_unique_true));
 Field::Ptr Object::TYPE_FIELD(new Field("type", A_field_type_string, "", A_field_indexed_false, A_field_unique_false));
 
    
@@ -163,7 +163,7 @@ static void initSchema(DatabasePtr& db,
           db->sequences.push_back(seq);
         }  else {
           Database::DBField::Ptr id(new Database::DBField); 
-          id->field->name = "id";
+          id->name("id");
           id->field->type = A_field_type_integer;
           id->primaryKey = true;
           tbl->fields.push_back(id);
@@ -172,10 +172,11 @@ static void initSchema(DatabasePtr& db,
         for (size_t i2 = 0; i2 < o.fields.size(); i2++) {
             Field::Ptr f = o.fields[i2];
             Database::DBField::Ptr fld(new Database::DBField);
-            fld->field->name = f->name;
+            fld->name(f->name);
             fldMap[f->name] = fld;
             fld->field->type = f->type;
-			if(false)
+          // TODO
+          if(false)
 			{
 				//ORACLE
 				if(f->type==A_field_type_string)
@@ -251,7 +252,7 @@ static void initSchema(DatabasePtr& db,
                     extra = " UNIQUE";
             }
             Database::DBField::Ptr fld(new Database::DBField);
-            fld->field->name = relate.fieldName;
+            fld->name(relate.fieldName);
             fld->field->type = A_field_type_integer;
             fld->extra = extra;
             tbl->fields.push_back(fld);
@@ -267,7 +268,7 @@ static void initSchema(DatabasePtr& db,
         for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
             Field& f = *r.fields[i2];
             Database::DBField::Ptr fld(new Database::DBField);
-            fld->field->name = f.name;
+            fld->name(f.name);
             fldMap[f.name] = fld;
             fld->field->type = f.type;
             fld->primaryKey = false;

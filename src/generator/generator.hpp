@@ -65,6 +65,7 @@ namespace litesql {
     class AbstractFactory {
     public: 
       AbstractFactory(const char* pszName) : name(pszName) {};
+      virtual ~AbstractFactory() {};
       const char* getName() { return name;};
       virtual CodeGenerator* create() =0;
 

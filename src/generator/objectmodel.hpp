@@ -30,7 +30,6 @@ namespace litesql {
     xml::DatabasePtr db;   
   };
 
-  const char* toString(AT_field_type t);
   AT_field_type field_type(const char* value);
 
 }

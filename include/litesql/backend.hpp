@@ -11,6 +11,8 @@
 #define litesql_backend_hpp
 #include <memory>
 #include "litesql/types.hpp"
+#include "litesql/commontypes.h"
+
 namespace litesql {
     using namespace std;
 
@@ -70,6 +72,7 @@ namespace litesql {
             virtual string getRowIDType() const {
                 return "INTEGER PRIMARY KEY";
             }
+      
             /** if backend supports this, new primary key of the last insert 
               is returned */
             virtual string getInsertID() const { return ""; }

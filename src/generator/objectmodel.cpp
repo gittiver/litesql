@@ -10,7 +10,7 @@ using namespace xml;
 #define xmlStrcasecmp(s1,s2)  ((s1==NULL) ? (s2!=NULL) : strcmp(s1,s2))
 #define xmlStrEqual(s1,s2)   (!strcmp(s1,s2))
 
-const char* litesql::toString(AT_field_type t)
+const char* toAttributeString(AT_field_type t)
 {
   switch (t) 
   {
@@ -644,7 +644,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
 }
 
 ObjectModel::ObjectModel()
-: db(NULL)
+: db(new xml::Database())
 {}
 
 ObjectModel::~ObjectModel()
