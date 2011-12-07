@@ -64,9 +64,6 @@ namespace litesql {
 //            virtual string queryTerm() const { return ";";}
 			virtual string getSeqSQL(const string& sname) const;
 
-			virtual string getTextType() const {
-				return "TEXT";
-			}
             /** backend may want to set an AUTO_INCREMENT-attribute for table's primary 
               key field. this method is to deliver the details to database schema */
             virtual string getRowIDType() const {

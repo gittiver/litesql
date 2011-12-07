@@ -838,7 +838,7 @@ void writeStaticRelData(Class& cl, const xml::Relation& r) {
     for (size_t i2 = 0; i2 < r.related.size(); i2++) {
         Variable ftype(r.related[i2]->fieldTypeName,
                        "const litesql::FieldType",
-                       quote(r.related[i2]->fieldName)
+                       quote(r.related[i2]->fieldName+"_")
                        + "," + "A_field_type_"+toAttributeString(A_field_type_integer) + "," + "table__");
         ftype.static_();
         cl.variable(ftype);
@@ -1108,8 +1108,8 @@ void getSchema(const xml::DatabasePtr& db, gen::Method& mtd) {
     Split rec;
     mtd.body("vector<Database::SchemaItem> res;");
 
-    mtd.body("string TEXT = backend->getTextType();");
-
+    mtd.body("string TEXT = backend->getSQLType(A_field_type_string);");
+    
     rec.push_back(quote("schema_"));
     rec.push_back(quote("table"));
 	Split r2;
