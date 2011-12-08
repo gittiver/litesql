@@ -1,3 +1,15 @@
+Version 0.3.13
+##############
+- support for oracle backend (ocilib) 
+- database specific datatypes are used (needed for oracle backend)
+
+Version 0.3.12
+##############
+- Visual Litesql Link installed in Menu
+- fixed error in codegenerator factory map in it on linux
+- codegenerator for wxformbuilder added (Initial version)
+- autotools support updated
+
 Version 0.3.11
 ##############
 - support for bigint datatype
