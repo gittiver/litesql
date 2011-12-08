@@ -1109,6 +1109,7 @@ void getSchema(const xml::DatabasePtr& db, gen::Method& mtd) {
     mtd.body("vector<Database::SchemaItem> res;");
 
     mtd.body("string TEXT = backend->getSQLType(A_field_type_string);");
+    mtd.body("string rowIdType = backend->getRowIDType();");
     
     rec.push_back(quote("schema_"));
     rec.push_back(quote("table"));
@@ -1133,7 +1134,7 @@ void getSchema(const xml::DatabasePtr& db, gen::Method& mtd) {
         Split rec;
         rec.push_back(quote(db->tables[i]->name));
         rec.push_back(quote("table"));
-        rec.push_back(quote(db->tables[i]->getSQL("\" + backend->getRowIDType() + \"")));
+        rec.push_back(quote(db->tables[i]->getSQL("\" + rowIdType + \"")));
         mtd.body("res.push_back(Database::SchemaItem(" + rec.join(",") + "));");
     }
     for (size_t i = 0; i < db->indices.size(); i++) {
