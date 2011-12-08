@@ -34,6 +34,7 @@ set(litesql_SOURCES    database.cpp
             compatibility.hpp 
             compatibility.cpp 
             datetime.cpp
+            ../../include/litesql/commontypes.h
             ../../include/litesql/database.hpp 
             ../../include/litesql/expr.hpp 
             ../../include/litesql/selectquery.hpp 
