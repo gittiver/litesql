@@ -175,28 +175,11 @@ static void initSchema(DatabasePtr& db,
             fld->name(f->name);
             fldMap[f->name] = fld;
             fld->field->type = f->type;
-          // TODO
-          if(false)
-			{
-				//ORACLE
-				if(f->type==A_field_type_string)
-				{
-				//	fld->type="VARCHAR";
-					fld->extra="(4000)";
-				}
-				else if( f->type== A_field_type_float)
-				{
-				//	fld->type="BINARY_FLOAT";
-				}
-				else if (f->type==A_field_type_double)
-				{
-				//	fld->type="BINARY_DOUBLE";
-				}
-			}
-
             fld->primaryKey = (f->name == "id");
-            if (f->isUnique())
-                fld->extra = " UNIQUE";
+            fld->field->unique =  (f->isUnique()) 
+                                 ? A_field_unique_true
+                                 : A_field_unique_false;
+
             fld->field = o.fields[i2];
             tbl->fields.push_back(fld);
             
@@ -242,19 +225,23 @@ static void initSchema(DatabasePtr& db,
         map<string, Database::DBField::Ptr> fldMap;
         for (size_t i2 = 0; i2 < r.related.size(); i2++) {
             const xml::Relate& relate = *r.related[i2];
-            string extra;
+            AT_field_unique unique = A_field_unique_false;
             if (relate.isUnique())
-                    extra = " UNIQUE";
+            {
+                unique = A_field_unique_true;
+            }
             else if (r.related.size() == 2) { 
-                if (i2 == 0 && r.related[1]->hasLimit())
-                    extra = " UNIQUE";
-                if (i2 == 1 && r.related[0]->hasLimit())
-                    extra = " UNIQUE";
+                if (i2 == 0 && r.related[1]->hasLimit()) {
+                    unique = A_field_unique_true;
+                }
+                if (i2 == 1 && r.related[0]->hasLimit()) {
+                    unique = A_field_unique_true;
+                }
             }
             Database::DBField::Ptr fld(new Database::DBField);
             fld->name(relate.fieldName);
             fld->field->type = A_field_type_integer;
-            fld->extra = extra;
+            fld->field->unique = unique;
             tbl->fields.push_back(fld);
             objFields.push_back(fld);
             
@@ -272,8 +259,7 @@ static void initSchema(DatabasePtr& db,
             fldMap[f.name] = fld;
             fld->field->type = f.type;
             fld->primaryKey = false;
-            if (f.isUnique())
-                fld->extra = " UNIQUE";
+            fld->field->unique = f.isUnique() ? A_field_unique_true : A_field_unique_false;
             fld->field = r.fields[i2];
             tbl->fields.push_back(fld);
             

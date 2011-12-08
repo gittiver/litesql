@@ -99,7 +99,7 @@ wxObject *FieldTypeValidator::Clone() const
   // Called to transfer data to the window
 bool FieldTypeValidator::TransferToWindow() 
 {
-  value = wxString::FromUTF8(litesql::toString(m_pField->type));
+  value = wxString::FromUTF8(toAttributeString(m_pField->type));
   return wxGenericValidator::TransferToWindow();
 }
 

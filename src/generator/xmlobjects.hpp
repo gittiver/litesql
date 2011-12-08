@@ -410,19 +410,12 @@ public:
       typedef counted_ptr<DBField> Ptr;
       typedef std::vector<Ptr> sequence;
 
-        string /*name, type,*/ extra;
       string name() const {return field->name +"_"; };
       void name(const string& fieldname) {field->name=fieldname;};
         bool primaryKey;
         Field::Ptr field;
         sequence references;
         DBField() : primaryKey(false), field(new Field("",A_field_type_integer,"",A_field_indexed_false,A_field_unique_false)) {}
- /*
-  string getSQL(const string& rowIDType) {
-            string sqlfieldtype = (primaryKey) ? rowIDType : field->getSQLType();
-            return name() + " " + sqlfieldtype + extra;
-        }
-  */
     };
     
     class DBIndex {
@@ -456,9 +449,16 @@ public:
         string getSQL(const string& rowIDType) {
             litesql::Split flds;
             for (size_t i = 0; i < fields.size(); i++)
-              //  flds.push_back(fields[i]->getSQL(rowIDType));
-              flds.push_back(fields[i]->name() + " \"+ backend->getSQLType(" + "A_field_type_"+toAttributeString(fields[i]->field->type) + ")+\"");
-            return "CREATE TABLE " + name + " (" + flds.join(",") + ")";
+            {
+              if (fields[i]->primaryKey)
+                flds.push_back(fields[i]->name() + " " + rowIDType);
+              else
+                flds.push_back(fields[i]->name() 
+                              + " \" + backend->getSQLType(" + "A_field_type_"+toAttributeString(fields[i]->field->type) + ")" + " + \""
+                              +(fields[i]->field->isUnique() ? " UNIQUE" : "") + + "\" +"
+                              +"\"");
+             }
+             return "CREATE TABLE " + name + " (" + flds.join(",") + ")";
         }
 
     };
