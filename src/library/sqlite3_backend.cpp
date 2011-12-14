@@ -127,19 +127,19 @@ string SQLite3::getInsertID() const {
 }
 void SQLite3::begin() const {
     if (!transaction) {
-        delete execute("BEGIN;");
+        delete execute("BEGIN");
         transaction = true;
     }
 }
 void SQLite3::commit() const {
     if (transaction) {
-        delete execute("COMMIT;");
+        delete execute("COMMIT");
         transaction = false;
     }
 }
 void SQLite3::rollback() const {
     if (transaction) {
-        delete execute("ROLLBACK;");
+        delete execute("ROLLBACK");
         transaction = false;
     }
 }
@@ -167,11 +167,13 @@ void SQLite3::throwError(int status) const {
     }
 }
 Backend::Result* SQLite3::execute(const string& query) const {
+    string q(query);
+    q.append(";");
     Result * r = new Result;
     char * errMsg;
     int status;
     do {
-        status = sqlite3_exec(db, query.c_str(), callback, r, &errMsg);
+        status = sqlite3_exec(db, q.c_str(), callback, r, &errMsg);
         switch(status) {         
             case SQLITE_BUSY: 
             case SQLITE_LOCKED: 

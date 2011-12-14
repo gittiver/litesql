@@ -82,12 +82,15 @@ Record OCILib::Cursor::fetchOneRow() const{
                     }
                     size_t blen=(size_t)len;
                     size_t clen=0;
+                    
                     litesql::u8_t *buff = (litesql::u8_t *)malloc(len+1);
                     if(OCI_LobRead2(l,buff,&clen,&blen))
                     {
                         row.push_back(litesql::Blob::toHex(buff,blen));
                     }
-                    else row.push_back("NULL");
+                    else 
+                        row.push_back("NULL");
+                    free(buff);
                 }
                 else row.push_back("NULL");
             }
@@ -147,20 +150,19 @@ size_t OCILib::Result::recordNum() const {
 	return OCI_GetRowCount(res);
 }  
 Records OCILib::Result::records() const {
-	if (!res)
-		return Records();
 	Records recs;
-	while(true)
-	{
-		Record r=OCILib::Cursor::fetchOneRow();
-		if(r.empty()) 
-			break;
-		recs.push_back(r);
-	}
-	return recs;
+    if (res)
+    {
+        while(true)
+        {
+            Record r=OCILib::Cursor::fetchOneRow();
+            if(r.empty()) 
+                break;
+            recs.push_back(r);
+        }
+    }
+    return recs;
 }
-
-
 
 bool OCILib::oci_init=false;
 void err_handler(OCI_Error *err)
@@ -257,6 +259,23 @@ Backend::Cursor* OCILib::cursor(const string& query) const {
 		checkError();
 	}
 	return new Cursor(0,0); // never come here.
+}
+
+string OCILib::getSQLType(AT_field_type fieldType) const
+{
+  switch(fieldType) {
+    case A_field_type_integer: return "INTEGER";
+    case A_field_type_bigint: return "BIGINT";
+    case A_field_type_string: return "VARCHAR(4000)";
+    case A_field_type_float: return "BINARY_FLOAT";
+    case A_field_type_double: return "BINARY_DOUBLE";
+    case A_field_type_boolean: return "INTEGER";
+    case A_field_type_date: return "INTEGER";
+    case A_field_type_time: return "INTEGER";
+    case A_field_type_datetime: return "INTEGER";
+    case A_field_type_blob: return "BLOB";
+    default: return "";
+  }
 }
 
 string OCILib::getCreateSequenceSQL(const string& name) const

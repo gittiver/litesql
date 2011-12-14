@@ -37,7 +37,7 @@ public:
 			}
 	virtual string getCreateSequenceSQL(const string& name) const;
     virtual string getSeqSQL(const string& sname) const;
-
+    /* virtual */ string  getSQLType(AT_field_type fieldType) const;
 	//virtual string queryTerm() const { return "";}
     virtual bool supportsSequences() const;
     virtual void begin() const;

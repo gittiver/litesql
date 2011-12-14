@@ -60,7 +60,7 @@ string Backend::getCreateSequenceSQL(const string& name) const
 
 string Backend::getSeqSQL(const string& sname) const
 {
-    string ret="SELECT nextval('"+ sname + "');";
+    string ret="SELECT nextval('"+ sname + "')";
     return ret;
 }
 
@@ -68,7 +68,7 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
                    const string& sequence) const {
     string id = values[0][0];
     
-    if (supportsSequences() && values[0][0] == "NULL") {
+    if (supportsSequences() && id == "NULL") {
       Result * r = execute(getSeqSQL(sequence));
       id = r->records()[0][0];
       delete r;
@@ -83,7 +83,7 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
             valueSplit[i2] = escapeSQL(valueSplit[i2]);
         valueString = valueSplit.join(",");
         string query = "INSERT INTO " + tables[i] + " (" + fieldString
-            + ") VALUES (" + valueString + ");";
+            + ") VALUES (" + valueString + ")";
         delete execute(query);
         if (!supportsSequences() && id == "NULL") 
             id = getInsertID();
