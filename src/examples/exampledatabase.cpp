@@ -11,8 +11,8 @@ PersonPersonRelationMother::Row::Row(const litesql::Database& db, const litesql:
     }
 }
 const std::string PersonPersonRelationMother::table__("Person_Person_Mother");
-const litesql::FieldType PersonPersonRelationMother::Person1("Person1",A_field_type_integer,table__);
-const litesql::FieldType PersonPersonRelationMother::Person2("Person2",A_field_type_integer,table__);
+const litesql::FieldType PersonPersonRelationMother::Person1("Person1_",A_field_type_integer,table__);
+const litesql::FieldType PersonPersonRelationMother::Person2("Person2_",A_field_type_integer,table__);
 void PersonPersonRelationMother::link(const litesql::Database& db, const example::Person& o0, const example::Person& o1) {
     Record values;
     Split fields;
@@ -60,8 +60,8 @@ PersonPersonRelationFather::Row::Row(const litesql::Database& db, const litesql:
     }
 }
 const std::string PersonPersonRelationFather::table__("Person_Person_Father");
-const litesql::FieldType PersonPersonRelationFather::Person1("Person1",A_field_type_integer,table__);
-const litesql::FieldType PersonPersonRelationFather::Person2("Person2",A_field_type_integer,table__);
+const litesql::FieldType PersonPersonRelationFather::Person1("Person1_",A_field_type_integer,table__);
+const litesql::FieldType PersonPersonRelationFather::Person2("Person2_",A_field_type_integer,table__);
 void PersonPersonRelationFather::link(const litesql::Database& db, const example::Person& o0, const example::Person& o1) {
     Record values;
     Split fields;
@@ -109,8 +109,8 @@ PersonPersonRelationSiblings::Row::Row(const litesql::Database& db, const litesq
     }
 }
 const std::string PersonPersonRelationSiblings::table__("Person_Person_Siblings");
-const litesql::FieldType PersonPersonRelationSiblings::Person1("Person1",A_field_type_integer,table__);
-const litesql::FieldType PersonPersonRelationSiblings::Person2("Person2",A_field_type_integer,table__);
+const litesql::FieldType PersonPersonRelationSiblings::Person1("Person1_",A_field_type_integer,table__);
+const litesql::FieldType PersonPersonRelationSiblings::Person2("Person2_",A_field_type_integer,table__);
 void PersonPersonRelationSiblings::link(const litesql::Database& db, const example::Person& o0, const example::Person& o1) {
     Record values;
     Split fields;
@@ -166,8 +166,8 @@ PersonPersonRelationChildren::Row::Row(const litesql::Database& db, const litesq
     }
 }
 const std::string PersonPersonRelationChildren::table__("Person_Person_Children");
-const litesql::FieldType PersonPersonRelationChildren::Person1("Person1",A_field_type_integer,table__);
-const litesql::FieldType PersonPersonRelationChildren::Person2("Person2",A_field_type_integer,table__);
+const litesql::FieldType PersonPersonRelationChildren::Person1("Person1_",A_field_type_integer,table__);
+const litesql::FieldType PersonPersonRelationChildren::Person2("Person2_",A_field_type_integer,table__);
 void PersonPersonRelationChildren::link(const litesql::Database& db, const example::Person& o0, const example::Person& o1) {
     Record values;
     Split fields;
@@ -215,8 +215,8 @@ RoleRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 const std::string RoleRelation::table__("Person_Role_Roles");
-const litesql::FieldType RoleRelation::Person("Person1",A_field_type_integer,table__);
-const litesql::FieldType RoleRelation::Role("Role2",A_field_type_integer,table__);
+const litesql::FieldType RoleRelation::Person("Person1_",A_field_type_integer,table__);
+const litesql::FieldType RoleRelation::Role("Role2_",A_field_type_integer,table__);
 void RoleRelation::link(const litesql::Database& db, const example::Person& o0, const example::Role& o1) {
     Record values;
     Split fields;
@@ -264,8 +264,8 @@ SchoolStudentRelation::Row::Row(const litesql::Database& db, const litesql::Reco
     }
 }
 const std::string SchoolStudentRelation::table__("School_Student_");
-const litesql::FieldType SchoolStudentRelation::School("School1",A_field_type_integer,table__);
-const litesql::FieldType SchoolStudentRelation::Student("Student2",A_field_type_integer,table__);
+const litesql::FieldType SchoolStudentRelation::School("School1_",A_field_type_integer,table__);
+const litesql::FieldType SchoolStudentRelation::Student("Student2_",A_field_type_integer,table__);
 void SchoolStudentRelation::link(const litesql::Database& db, const example::School& o0, const example::Student& o1) {
     Record values;
     Split fields;
@@ -313,8 +313,8 @@ EmployeeOfficeRelation::Row::Row(const litesql::Database& db, const litesql::Rec
     }
 }
 const std::string EmployeeOfficeRelation::table__("Employee_Office_");
-const litesql::FieldType EmployeeOfficeRelation::Employee("Employee1",A_field_type_integer,table__);
-const litesql::FieldType EmployeeOfficeRelation::Office("Office2",A_field_type_integer,table__);
+const litesql::FieldType EmployeeOfficeRelation::Employee("Employee1_",A_field_type_integer,table__);
+const litesql::FieldType EmployeeOfficeRelation::Office("Office2_",A_field_type_integer,table__);
 void EmployeeOfficeRelation::link(const litesql::Database& db, const example::Employee& o0, const example::Office& o1) {
     Record values;
     Split fields;
@@ -491,126 +491,6 @@ std::ostream & operator<<(std::ostream& os, user o) {
     os << o.type.name() << " = " << o.type << std::endl;
     os << o.name.name() << " = " << o.name << std::endl;
     os << o.passwd.name() << " = " << o.passwd << std::endl;
-    os << "-------------------------------------" << std::endl;
-    return os;
-}
-const litesql::FieldType newObject::Own::Id("id_",A_field_type_integer,"newObject_");
-const std::string newObject::type__("newObject");
-const std::string newObject::table__("newObject_");
-const std::string newObject::sequence__("newObject_seq");
-const litesql::FieldType newObject::Id("id_",A_field_type_integer,table__);
-const litesql::FieldType newObject::Type("type_",A_field_type_string,table__);
-void newObject::defaults() {
-    id = 0;
-}
-newObject::newObject(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type) {
-    defaults();
-}
-newObject::newObject(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type) {
-    defaults();
-    size_t size = (rec.size() > 2) ? 2 : rec.size();
-    switch(size) {
-    case 2: type = convert<const std::string&, std::string>(rec[1]);
-        type.setModified(false);
-    case 1: id = convert<const std::string&, int>(rec[0]);
-        id.setModified(false);
-    }
-}
-newObject::newObject(const newObject& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type) {
-}
-const newObject& newObject::operator=(const newObject& obj) {
-    if (this != &obj) {
-        id = obj.id;
-        type = obj.type;
-    }
-    litesql::Persistent::operator=(obj);
-    return *this;
-}
-std::string newObject::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
-    tables.push_back(table__);
-    litesql::Record fields;
-    litesql::Record values;
-    fields.push_back(id.name());
-    values.push_back(id);
-    id.setModified(false);
-    fields.push_back(type.name());
-    values.push_back(type);
-    type.setModified(false);
-    fieldRecs.push_back(fields);
-    valueRecs.push_back(values);
-    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
-}
-void newObject::create() {
-    litesql::Record tables;
-    litesql::Records fieldRecs;
-    litesql::Records valueRecs;
-    type = type__;
-    std::string newID = insert(tables, fieldRecs, valueRecs);
-    if (id == 0)
-        id = newID;
-}
-void newObject::addUpdates(Updates& updates) {
-    prepareUpdate(updates, table__);
-    updateField(updates, table__, id);
-    updateField(updates, table__, type);
-}
-void newObject::addIDUpdates(Updates& updates) {
-}
-void newObject::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
-    ftypes.push_back(Id);
-    ftypes.push_back(Type);
-}
-void newObject::delRecord() {
-    deleteFromTable(table__, id);
-}
-void newObject::delRelations() {
-}
-void newObject::update() {
-    if (!inDatabase) {
-        create();
-        return;
-    }
-    Updates updates;
-    addUpdates(updates);
-    if (id != oldKey) {
-        if (!typeIsCorrect()) 
-            upcastCopy()->addIDUpdates(updates);
-    }
-    litesql::Persistent::update(updates);
-    oldKey = id;
-}
-void newObject::del() {
-    if (typeIsCorrect() == false) {
-        std::auto_ptr<newObject> p(upcastCopy());
-        p->delRelations();
-        p->onDelete();
-        p->delRecord();
-    } else {
-        onDelete();
-        delRecord();
-    }
-    inDatabase = false;
-}
-bool newObject::typeIsCorrect() {
-    return type == type__;
-}
-std::auto_ptr<newObject> newObject::upcast() {
-    return auto_ptr<newObject>(new newObject(*this));
-}
-std::auto_ptr<newObject> newObject::upcastCopy() {
-    newObject* np = new newObject(*this);
-    np->id = id;
-    np->type = type;
-    np->inDatabase = inDatabase;
-    return auto_ptr<newObject>(np);
-}
-std::ostream & operator<<(std::ostream& os, newObject o) {
-    os << "-------------------------------------" << std::endl;
-    os << o.id.name() << " = " << o.id << std::endl;
-    os << o.type.name() << " = " << o.type << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -1727,52 +1607,50 @@ ExampleDatabase::ExampleDatabase(std::string backendType, std::string connInfo)
 }
 std::vector<litesql::Database::SchemaItem> ExampleDatabase::getSchema() const {
     vector<Database::SchemaItem> res;
-    string TEXT = backend->getTextType();
+    string TEXT = backend->getSQLType(A_field_type_string);
+    string rowIdType = backend->getRowIDType();
     res.push_back(Database::SchemaItem("schema_","table","CREATE TABLE schema_ (name_ "+TEXT+", type_ "+TEXT+", sql_ "+TEXT+")"));
     if (backend->supportsSequences()) {
         res.push_back(Database::SchemaItem("user_seq","sequence",backend->getCreateSequenceSQL("user_seq")));
-        res.push_back(Database::SchemaItem("newObject_seq","sequence",backend->getCreateSequenceSQL("newObject_seq")));
         res.push_back(Database::SchemaItem("Person_seq","sequence",backend->getCreateSequenceSQL("Person_seq")));
         res.push_back(Database::SchemaItem("Role_seq","sequence",backend->getCreateSequenceSQL("Role_seq")));
         res.push_back(Database::SchemaItem("School_seq","sequence",backend->getCreateSequenceSQL("School_seq")));
         res.push_back(Database::SchemaItem("Office_seq","sequence",backend->getCreateSequenceSQL("Office_seq")));
         res.push_back(Database::SchemaItem("ThingWithMethods_seq","sequence",backend->getCreateSequenceSQL("ThingWithMethods_seq")));
     }
-    res.push_back(Database::SchemaItem("user_","table","CREATE TABLE user_ (id_ "+ backend->getSQLType(A_field_type_integer)+",type_ "+ backend->getSQLType(A_field_type_string)+",name_ "+ backend->getSQLType(A_field_type_string)+",passwd_ "+ backend->getSQLType(A_field_type_string)+")"));
-    res.push_back(Database::SchemaItem("newObject_","table","CREATE TABLE newObject_ (id_ "+ backend->getSQLType(A_field_type_integer)+",type_ "+ backend->getSQLType(A_field_type_string)+")"));
-    res.push_back(Database::SchemaItem("Person_","table","CREATE TABLE Person_ (id_ "+ backend->getSQLType(A_field_type_integer)+",type_ "+ backend->getSQLType(A_field_type_string)+",name_ "+ backend->getSQLType(A_field_type_string)+",age_ "+ backend->getSQLType(A_field_type_integer)+",image_ "+ backend->getSQLType(A_field_type_blob)+",aDoubleValue_ "+ backend->getSQLType(A_field_type_double)+",sex_ "+ backend->getSQLType(A_field_type_integer)+")"));
-    res.push_back(Database::SchemaItem("Role_","table","CREATE TABLE Role_ (id_ "+ backend->getSQLType(A_field_type_integer)+",type_ "+ backend->getSQLType(A_field_type_string)+")"));
-    res.push_back(Database::SchemaItem("Student_","table","CREATE TABLE Student_ (id_ "+ backend->getSQLType(A_field_type_integer)+")"));
-    res.push_back(Database::SchemaItem("Employee_","table","CREATE TABLE Employee_ (id_ "+ backend->getSQLType(A_field_type_integer)+")"));
-    res.push_back(Database::SchemaItem("School_","table","CREATE TABLE School_ (id_ "+ backend->getSQLType(A_field_type_integer)+",type_ "+ backend->getSQLType(A_field_type_string)+",name_ "+ backend->getSQLType(A_field_type_string)+")"));
-    res.push_back(Database::SchemaItem("Office_","table","CREATE TABLE Office_ (id_ "+ backend->getSQLType(A_field_type_integer)+",type_ "+ backend->getSQLType(A_field_type_string)+")"));
-    res.push_back(Database::SchemaItem("ThingWithMethods_","table","CREATE TABLE ThingWithMethods_ (id_ "+ backend->getSQLType(A_field_type_integer)+",type_ "+ backend->getSQLType(A_field_type_string)+")"));
-    res.push_back(Database::SchemaItem("Person_Person_Mother","table","CREATE TABLE Person_Person_Mother (Person1_ "+ backend->getSQLType(A_field_type_integer)+",Person2_ "+ backend->getSQLType(A_field_type_integer)+")"));
-    res.push_back(Database::SchemaItem("Person_Person_Father","table","CREATE TABLE Person_Person_Father (Person1_ "+ backend->getSQLType(A_field_type_integer)+",Person2_ "+ backend->getSQLType(A_field_type_integer)+")"));
-    res.push_back(Database::SchemaItem("Person_Person_Siblings","table","CREATE TABLE Person_Person_Siblings (Person1_ "+ backend->getSQLType(A_field_type_integer)+",Person2_ "+ backend->getSQLType(A_field_type_integer)+")"));
-    res.push_back(Database::SchemaItem("Person_Person_Children","table","CREATE TABLE Person_Person_Children (Person1_ "+ backend->getSQLType(A_field_type_integer)+",Person2_ "+ backend->getSQLType(A_field_type_integer)+")"));
-    res.push_back(Database::SchemaItem("Person_Role_Roles","table","CREATE TABLE Person_Role_Roles (Person1_ "+ backend->getSQLType(A_field_type_integer)+",Role2_ "+ backend->getSQLType(A_field_type_integer)+")"));
-    res.push_back(Database::SchemaItem("School_Student_","table","CREATE TABLE School_Student_ (School1_ "+ backend->getSQLType(A_field_type_integer)+",Student2_ "+ backend->getSQLType(A_field_type_integer)+")"));
-    res.push_back(Database::SchemaItem("Employee_Office_","table","CREATE TABLE Employee_Office_ (Employee1_ "+ backend->getSQLType(A_field_type_integer)+",Office2_ "+ backend->getSQLType(A_field_type_integer)+")"));
+    res.push_back(Database::SchemaItem("user_","table","CREATE TABLE user_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string) + "" +",name_ " + backend->getSQLType(A_field_type_string) + "" +",passwd_ " + backend->getSQLType(A_field_type_string) + "" +")"));
+    res.push_back(Database::SchemaItem("Person_","table","CREATE TABLE Person_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string) + "" +",name_ " + backend->getSQLType(A_field_type_string) + "" +",age_ " + backend->getSQLType(A_field_type_integer) + "" +",image_ " + backend->getSQLType(A_field_type_blob) + "" +",aDoubleValue_ " + backend->getSQLType(A_field_type_double) + "" +",sex_ " + backend->getSQLType(A_field_type_integer) + "" +")"));
+    res.push_back(Database::SchemaItem("Role_","table","CREATE TABLE Role_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string) + "" +")"));
+    res.push_back(Database::SchemaItem("Student_","table","CREATE TABLE Student_ (id_ " + rowIdType + ")"));
+    res.push_back(Database::SchemaItem("Employee_","table","CREATE TABLE Employee_ (id_ " + rowIdType + ")"));
+    res.push_back(Database::SchemaItem("School_","table","CREATE TABLE School_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string) + "" +",name_ " + backend->getSQLType(A_field_type_string) + "" +")"));
+    res.push_back(Database::SchemaItem("Office_","table","CREATE TABLE Office_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string) + "" +")"));
+    res.push_back(Database::SchemaItem("ThingWithMethods_","table","CREATE TABLE ThingWithMethods_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string) + "" +")"));
+    res.push_back(Database::SchemaItem("Person_Person_Mother","table","CREATE TABLE Person_Person_Mother (Person1_ " + backend->getSQLType(A_field_type_integer) + " UNIQUE" +",Person2_ " + backend->getSQLType(A_field_type_integer) + "" +")"));
+    res.push_back(Database::SchemaItem("Person_Person_Father","table","CREATE TABLE Person_Person_Father (Person1_ " + backend->getSQLType(A_field_type_integer) + " UNIQUE" +",Person2_ " + backend->getSQLType(A_field_type_integer) + "" +")"));
+    res.push_back(Database::SchemaItem("Person_Person_Siblings","table","CREATE TABLE Person_Person_Siblings (Person1_ " + backend->getSQLType(A_field_type_integer) + "" +",Person2_ " + backend->getSQLType(A_field_type_integer) + "" +")"));
+    res.push_back(Database::SchemaItem("Person_Person_Children","table","CREATE TABLE Person_Person_Children (Person1_ " + backend->getSQLType(A_field_type_integer) + "" +",Person2_ " + backend->getSQLType(A_field_type_integer) + "" +")"));
+    res.push_back(Database::SchemaItem("Person_Role_Roles","table","CREATE TABLE Person_Role_Roles (Person1_ " + backend->getSQLType(A_field_type_integer) + "" +",Role2_ " + backend->getSQLType(A_field_type_integer) + " UNIQUE" +")"));
+    res.push_back(Database::SchemaItem("School_Student_","table","CREATE TABLE School_Student_ (School1_ " + backend->getSQLType(A_field_type_integer) + "" +",Student2_ " + backend->getSQLType(A_field_type_integer) + " UNIQUE" +")"));
+    res.push_back(Database::SchemaItem("Employee_Office_","table","CREATE TABLE Employee_Office_ (Employee1_ " + backend->getSQLType(A_field_type_integer) + "" +",Office2_ " + backend->getSQLType(A_field_type_integer) + "" +")"));
     res.push_back(Database::SchemaItem("user_id_idx","index","CREATE INDEX user_id_idx ON user_ (id_)"));
-    res.push_back(Database::SchemaItem("newObject_id_idx","index","CREATE INDEX newObject_id_idx ON newObject_ (id_)"));
     res.push_back(Database::SchemaItem("Person_id_idx","index","CREATE INDEX Person_id_idx ON Person_ (id_)"));
     res.push_back(Database::SchemaItem("Person__name_age_idx","index","CREATE UNIQUE INDEX Person__name_age_idx ON Person_ (name_,age_)"));
     res.push_back(Database::SchemaItem("Role_id_idx","index","CREATE INDEX Role_id_idx ON Role_ (id_)"));
     res.push_back(Database::SchemaItem("School_id_idx","index","CREATE INDEX School_id_idx ON School_ (id_)"));
     res.push_back(Database::SchemaItem("Office_id_idx","index","CREATE INDEX Office_id_idx ON Office_ (id_)"));
     res.push_back(Database::SchemaItem("ThingWithMethods_id_idx","index","CREATE INDEX ThingWithMethods_id_idx ON ThingWithMethods_ (id_)"));
-    res.push_back(Database::SchemaItem("O31dc3a3e38d892b30cf8a1e203d99","index","CREATE INDEX O31dc3a3e38d892b30cf8a1e203d99 ON Person_Person_Mother (Person1_)"));
-    res.push_back(Database::SchemaItem("O0e0d9ee99bc76e958506fa420efc7","index","CREATE INDEX O0e0d9ee99bc76e958506fa420efc7 ON Person_Person_Mother (Person2_)"));
+    res.push_back(Database::SchemaItem("Oee4eb2b8f280ef74d4d9b000ad762","index","CREATE INDEX Oee4eb2b8f280ef74d4d9b000ad762 ON Person_Person_Mother (Person1_)"));
+    res.push_back(Database::SchemaItem("O534e82725f31f0ed55507bb93876f","index","CREATE INDEX O534e82725f31f0ed55507bb93876f ON Person_Person_Mother (Person2_)"));
     res.push_back(Database::SchemaItem("Person_Person_Mother_all_idx","index","CREATE INDEX Person_Person_Mother_all_idx ON Person_Person_Mother (Person1_,Person2_)"));
-    res.push_back(Database::SchemaItem("O808719f0e252825408c279266e38b","index","CREATE INDEX O808719f0e252825408c279266e38b ON Person_Person_Father (Person1_)"));
-    res.push_back(Database::SchemaItem("O1cb501a354a580e72d6475c01c34e","index","CREATE INDEX O1cb501a354a580e72d6475c01c34e ON Person_Person_Father (Person2_)"));
+    res.push_back(Database::SchemaItem("O015cdc2a9b96a2fe227389cb205e1","index","CREATE INDEX O015cdc2a9b96a2fe227389cb205e1 ON Person_Person_Father (Person1_)"));
+    res.push_back(Database::SchemaItem("Ob6198f9bf01ff852985e22535b63c","index","CREATE INDEX Ob6198f9bf01ff852985e22535b63c ON Person_Person_Father (Person2_)"));
     res.push_back(Database::SchemaItem("Person_Person_Father_all_idx","index","CREATE INDEX Person_Person_Father_all_idx ON Person_Person_Father (Person1_,Person2_)"));
-    res.push_back(Database::SchemaItem("Ob82a0564e5fed39452f6d9445fb8f","index","CREATE INDEX Ob82a0564e5fed39452f6d9445fb8f ON Person_Person_Siblings (Person1_)"));
-    res.push_back(Database::SchemaItem("O5b1c2485e1b748514755374ab14da","index","CREATE INDEX O5b1c2485e1b748514755374ab14da ON Person_Person_Siblings (Person2_)"));
+    res.push_back(Database::SchemaItem("O83113b1dbe037a340a4b4fb558318","index","CREATE INDEX O83113b1dbe037a340a4b4fb558318 ON Person_Person_Siblings (Person1_)"));
+    res.push_back(Database::SchemaItem("Oa2ca8dcfc753ed5593154e5c78dd9","index","CREATE INDEX Oa2ca8dcfc753ed5593154e5c78dd9 ON Person_Person_Siblings (Person2_)"));
     res.push_back(Database::SchemaItem("Person_Person_Siblings_all_idx","index","CREATE INDEX Person_Person_Siblings_all_idx ON Person_Person_Siblings (Person1_,Person2_)"));
-    res.push_back(Database::SchemaItem("O3caed8bc9fed17fcccca0ca55e6fc","index","CREATE INDEX O3caed8bc9fed17fcccca0ca55e6fc ON Person_Person_Children (Person1_)"));
-    res.push_back(Database::SchemaItem("O0322ba609ac35be68615a68ff4d01","index","CREATE INDEX O0322ba609ac35be68615a68ff4d01 ON Person_Person_Children (Person2_)"));
+    res.push_back(Database::SchemaItem("O7e9a52474b6d215cf914b0521bd38","index","CREATE INDEX O7e9a52474b6d215cf914b0521bd38 ON Person_Person_Children (Person1_)"));
+    res.push_back(Database::SchemaItem("Obe20d0fd80388c3efb79c932f5d78","index","CREATE INDEX Obe20d0fd80388c3efb79c932f5d78 ON Person_Person_Children (Person2_)"));
     res.push_back(Database::SchemaItem("Person_Person_Children_all_idx","index","CREATE INDEX Person_Person_Children_all_idx ON Person_Person_Children (Person1_,Person2_)"));
     res.push_back(Database::SchemaItem("Person_Role_RolesPerson1_idx","index","CREATE INDEX Person_Role_RolesPerson1_idx ON Person_Role_Roles (Person1_)"));
     res.push_back(Database::SchemaItem("Person_Role_RolesRole2_idx","index","CREATE INDEX Person_Role_RolesRole2_idx ON Person_Role_Roles (Role2_)"));

@@ -1,4 +1,4 @@
-set PATH=%PATH%;D:\Program Files\CMake 2.8\bin
+set PATH=%PATH%;C:\Program Files\CMake 2.8\bin
 
 set CMAKE_BUILDDIR=build\cmake\vc
 set STARTDIR=%CD%
