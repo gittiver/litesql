@@ -120,6 +120,7 @@ void Database::upgradeTable(string name,
     query(newSchema);
     // oldfields as ...
     Split cols;
+	Split colNames;
     string s;
 
     for (ColumnDefinitions::iterator it = commonFields.begin();it!= commonFields.end();it++)
@@ -128,6 +129,7 @@ void Database::upgradeTable(string name,
         s.append(" AS ");
         s.append(it->name);
         cols.push_back(s);
+		colNames.push_back(it->name);
     }
     
     for (ColumnDefinitions::iterator it = toAdd.begin();it!= toAdd.end();it++)
@@ -136,9 +138,10 @@ void Database::upgradeTable(string name,
         s.append(" AS ");
         s.append(it->name);
         cols.push_back(s);
+		colNames.push_back(it->name);
     }
 
-    query(" INSERT INTO " + name + " SELECT "+ cols.join(",")+" FROM " + bkp_name); 
+	query(" INSERT INTO " + name +" ("+colNames.join(",") +") SELECT "+ cols.join(",")+" FROM " + bkp_name); 
     query(" DROP TABLE " + bkp_name); 
     commit();
 }

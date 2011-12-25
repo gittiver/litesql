@@ -11,7 +11,6 @@
 
 #ifdef HAVE_OCILIB
 
-
 #include "litesql/except.hpp"
 #include "litesql/types.hpp"
 #include "litesql/string.hpp"
@@ -20,11 +19,8 @@
 typedef struct OCI_Connection OCI_Connection;
 
 namespace litesql {
-
 class OCILib : public Backend {
 	OCI_Connection *conn;
-	// database is same as ora service
-	std::string user, passwd, database;
 	static bool oci_init;
 public:
   class Cursor;
@@ -45,8 +41,11 @@ public:
     virtual void rollback() const;
   Backend::Result* execute(const std::string& query) const;
   Backend::Cursor* cursor(const std::string& query) const;
+
+  static bool verbose;
+
 protected:
-	void checkError() const;
+	std::string checkError(bool shouldThrow=true) const;
 };
 }
 #endif // #ifdef HAVE_OCILIB

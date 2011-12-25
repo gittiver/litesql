@@ -24,6 +24,7 @@ using namespace std;
 class SQLite3 : public Backend {
     sqlite3 *db;
     mutable bool transaction;
+	string beginTrans;
 protected:
     void throwError(int status) const;     
 public:

@@ -21,6 +21,38 @@ using namespace std;
 
 #include "litesql/field.hpp"
 
+#include <map>
+class PoolFactory{
+private:
+	PoolFactory(){}
+	std::map<std::string,OCI_Pool*> m_pools;
+public:
+	static PoolFactory& instance(){
+		static PoolFactory theInstance;
+		return theInstance;
+	}
+	OCI_Pool* getPool(const std::string& database, const std::string& user, const std::string& passwd, int poolsize)
+	{
+		std::string conn=database+";"+user;
+		if(m_pools.find(conn)==m_pools.end())
+		{
+			OCI_Pool* p=OCI_PoolCreate((database.empty())?0:database.c_str(), user.c_str(), passwd.c_str(), OCI_POOL_CONNECTION, OCI_SESSION_DEFAULT, 0, poolsize, 1);
+			if(p!=NULL){ m_pools[conn]=p;}
+			return p;
+		}
+		return m_pools[conn];
+	}
+	virtual ~PoolFactory()
+	{
+		std::map<std::string,OCI_Pool*>::iterator it=m_pools.begin();
+		while(it!=m_pools.end())
+		{
+			OCI_Pool* p=it->second;
+			m_pools.erase(it++);
+			OCI_PoolFree(p);
+		}
+	}
+};
 
 /** OCILib - Cursor */
 class OCILib::Cursor : public Backend::Cursor {
@@ -150,9 +182,9 @@ size_t OCILib::Result::recordNum() const {
 	return OCI_GetRowCount(res);
 }  
 Records OCILib::Result::records() const {
+	if (!res)
+		return Records();
 	Records recs;
-    if (res)
-    {
         while(true)
         {
             Record r=OCILib::Cursor::fetchOneRow();
@@ -160,32 +192,43 @@ Records OCILib::Result::records() const {
                 break;
             recs.push_back(r);
         }
-    }
     return recs;
 }
 
+
+
 bool OCILib::oci_init=false;
+bool OCILib::verbose=false;
 void err_handler(OCI_Error *err)
 {
 	int   err_type = OCI_ErrorGetType(err);
 	const char *err_msg  = OCI_ErrorGetString(err);
+	if(OCILib::verbose)
 	printf("%s - %s\n", err_type == OCI_ERR_WARNING ? "warning" : "error", err_msg);
 }
 
-void OCILib::checkError() const
+std::string OCILib::checkError(bool shouldThrow) const
 {
 	OCI_Error *err=OCI_GetLastError();
 	if(err){
 		int   err_type = OCI_ErrorGetType(err);
 		const char *err_msg  = OCI_ErrorGetString(err);
 		int ocode=OCI_ErrorGetOCICode(err);
+		err_handler(err);//it prints
 		if(err_type != OCI_ERR_WARNING && ocode!=1408)
 		{
-			throw DatabaseError(err_msg);
+			if(shouldThrow)
+				throw DatabaseError(err_msg);
+			else
+				return std::string(err_msg);
 		}
 	}
+	return std::string();
 }
 OCILib::OCILib(const std::string& connInfo):conn(0) {
+	// database is same as ora service
+	std::string user, passwd, database;
+	int poolsize=0;
 	Split params(connInfo,";");
 	for (size_t i = 0; i < params.size(); i++) {
 		Split param(params[i], "=");
@@ -197,16 +240,32 @@ OCILib::OCILib(const std::string& connInfo):conn(0) {
 			passwd = param[1];
 		else if (param[0] == "user")
 			user = param[1];
+		else if (param[0] == "poolsize")
+		{
+			poolsize = atoi(param[1]);
+	}
+		else if (param[0] == "verbose")
+			verbose = (param[1]=="yes");
 	}
 	if(!oci_init)
 	{
-		if (!OCI_Initialize(err_handler, 0, OCI_ENV_DEFAULT|OCI_ENV_THREADED|OCI_ENV_CONTEXT ))
+		if (!OCI_Initialize(NULL, 0, OCI_ENV_DEFAULT|OCI_ENV_THREADED|OCI_ENV_CONTEXT ))
 		{
 			throw DatabaseError("OCILib initialization failure");
 		}
+		if(verbose)
 		OCI_EnableWarnings(TRUE);
 	}
+	if(poolsize>0)
+	{
+		OCI_Pool* p=PoolFactory::instance().getPool(database,user,passwd,poolsize);
+		if(!p) checkError();
+		conn = OCI_PoolGetConnection(p,NULL);
+	}
+	else
+	{
 	conn = OCI_ConnectionCreate((database.empty())?0:database.c_str(), user.c_str(), passwd.c_str(), OCI_SESSION_DEFAULT);
+	}
 	if(!conn)
 	{
 		printf("error with %s; %s",database.c_str(),user.c_str());
@@ -242,8 +301,10 @@ Backend::Result* OCILib::execute(const string& query) const {
 	}
 	else
 	{
+		string msg=checkError();
 		OCI_FreeStatement(st);
-		checkError();
+		if(msg.size()>0)
+			throw DatabaseError(msg);
 	}
 	return new Result(0,0); // never come here.
 }
@@ -255,8 +316,11 @@ Backend::Cursor* OCILib::cursor(const string& query) const {
 	}
 	else
 	{
+		string msg=checkError();
 		OCI_FreeStatement(st);
 		checkError();
+		if(msg.size()>0)
+			throw DatabaseError(msg);
 	}
 	return new Cursor(0,0); // never come here.
 }

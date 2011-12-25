@@ -101,7 +101,7 @@ SQLite3::Cursor::~Cursor() {
         sqlite3_finalize(stmt);
     }
 }
-SQLite3::SQLite3(const string& connInfo) : db(NULL), transaction(false) {
+SQLite3::SQLite3(const string& connInfo) : db(NULL), transaction(false),beginTrans("BEGIN") {
     Split params(connInfo,";");
     string database;
     for (size_t i = 0; i < params.size(); i++) {
@@ -110,6 +110,11 @@ SQLite3::SQLite3(const string& connInfo) : db(NULL), transaction(false) {
             continue;
         if (param[0] == "database")
             database = param[1];
+		else if (param[0] == "transaction")
+		{
+            if(param[1]=="immediate") beginTrans="BEGIN IMMEDIATE";
+			else if (param[1]=="exclusive") beginTrans="BEGIN EXCLUSIVE";
+    }
     }
     if (database.empty())
         throw DatabaseError("no database-param specified");
@@ -127,7 +132,7 @@ string SQLite3::getInsertID() const {
 }
 void SQLite3::begin() const {
     if (!transaction) {
-        delete execute("BEGIN");
+        delete execute(beginTrans);
         transaction = true;
     }
 }
