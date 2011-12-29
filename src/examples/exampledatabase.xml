@@ -3,7 +3,7 @@
 <database name="ExampleDatabase" namespace="example">
   <include name="auth.xml" />
     <object name="Person">
-        <field name="name" type="string"/>
+        <field name="name" type="string" length="256"/>
         <field name="age" type="integer" default="15"/>
       <field name="image" type="blob"/>
       <field name="aDoubleValue" type="double"/>
@@ -42,7 +42,7 @@
         <relate object="Role" handle="person"/>
     </relation>
     <object name="School">
-        <field name="name" type="string"/>
+        <field name="name" type="string" length="512"/>
     </object>
     <relation>
         <relate object="Student" handle="school"/>

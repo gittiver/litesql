@@ -325,12 +325,17 @@ Backend::Cursor* OCILib::cursor(const string& query) const {
 	return new Cursor(0,0); // never come here.
 }
 
-string OCILib::getSQLType(AT_field_type fieldType) const
+string OCILib::getSQLType(AT_field_type fieldType, const string& length) const
 {
+	Split s;
   switch(fieldType) {
     case A_field_type_integer: return "INTEGER";
     case A_field_type_bigint: return "BIGINT";
-    case A_field_type_string: return "VARCHAR(4000)";
+    case A_field_type_string: 
+		s.push_back("VARCHAR(");
+		(length.size()>0)?(s.push_back(length)):(s.push_back("4000"));
+		s.push_back(")");
+		return s.join("");
     case A_field_type_float: return "BINARY_FLOAT";
     case A_field_type_double: return "BINARY_DOUBLE";
     case A_field_type_boolean: return "INTEGER";

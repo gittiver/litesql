@@ -109,6 +109,15 @@ static AT_field_unique field_unique(const XML_Char* value)
   return t;
 }
 
+static std::string field_length(const XML_Char* value)
+{
+	if(value==NULL) 
+		return string();
+
+	return string(value);
+}
+
+
 static AT_index_unique index_unique(const XML_Char* value)
 {
   AT_index_unique t;
@@ -306,7 +315,8 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       field_type(xmlGetAttrValue(atts,"type")),
       safe(  (char*)xmlGetAttrValue(atts,"default")),
       field_indexed(xmlGetAttrValue(atts,"indexed")),
-      field_unique(xmlGetAttrValue(atts,"unique"))
+      field_unique(xmlGetAttrValue(atts,"unique")),
+	  field_length(xmlGetAttrValue(atts,"length"))
       );
 
     switch(m_parseState)

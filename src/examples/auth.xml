@@ -2,7 +2,7 @@
 <!DOCTYPE database SYSTEM "litesql.dtd">
 <database name="ExampleDatabase" namespace="example">
   <object name="user">
-        <field name="name" type="string"/>
+        <field name="name" type="string" length="256"/>
         <field name="passwd" type="string"/>
          <method name="sayHello"/>
     </object>

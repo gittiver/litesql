@@ -35,7 +35,7 @@
 using namespace litesql;
 using namespace std;    
 
-string Backend::getSQLType(AT_field_type fieldType) const
+string Backend::getSQLType(AT_field_type fieldType, const string& length) const
 {
   switch(fieldType) {
     case A_field_type_integer: return "INTEGER";

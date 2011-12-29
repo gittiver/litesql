@@ -57,7 +57,7 @@ namespace litesql {
                 return false;
             }
 
-            virtual string getSQLType(AT_field_type fieldType) const;
+            virtual string getSQLType(AT_field_type fieldType, const string& length="") const;
 //            virtual string getCreateIndexSQL(const string& name) const;
             virtual string getCreateSequenceSQL(const string& name) const;
 

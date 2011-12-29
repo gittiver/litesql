@@ -28,12 +28,9 @@ public:
 
   OCILib(const std::string& connInfo);
     virtual ~OCILib();
-	virtual string getTextType() const {
-				return "VARCHAR(4000)";
-			}
 	virtual string getCreateSequenceSQL(const string& name) const;
     virtual string getSeqSQL(const string& sname) const;
-    /* virtual */ string  getSQLType(AT_field_type fieldType) const;
+    /* virtual */ string  getSQLType(AT_field_type fieldType,const string& length="") const;
 	//virtual string queryTerm() const { return "";}
     virtual bool supportsSequences() const;
     virtual void begin() const;

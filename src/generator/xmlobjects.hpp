@@ -75,8 +75,9 @@ public:
     AT_field_indexed indexed;
     AT_field_unique unique;
     vector<Value> values;
-    Field(const string& n, AT_field_type t, const string& d, AT_field_indexed i, AT_field_unique u) 
-        : name(n), fieldTypeName(capitalize(n)), type(t), default_(d), indexed(i), unique(u) {
+	string length;
+    Field(const string& n, AT_field_type t, const string& d, AT_field_indexed i, AT_field_unique u, const string& l="") 
+        : name(n), fieldTypeName(capitalize(n)), type(t), default_(d), indexed(i), unique(u),length(l) {
     }
     void value(const Value& v) {
         values.push_back(v);
@@ -454,7 +455,7 @@ public:
                 flds.push_back(fields[i]->name() + " " + rowIDType);
               else
                 flds.push_back(fields[i]->name() 
-                              + " \" + backend->getSQLType(" + "A_field_type_"+toAttributeString(fields[i]->field->type) + ")" + " + \""
+                              + " \" + backend->getSQLType(" + "A_field_type_"+toAttributeString(fields[i]->field->type) +",\""+fields[i]->field->length+ "\")" + " + \""
                               +(fields[i]->field->isUnique() ? " UNIQUE" : "") + + "\" +"
                               +"\"");
              }
