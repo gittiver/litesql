@@ -58,11 +58,8 @@ namespace litesql {
             }
 
             virtual string getSQLType(AT_field_type fieldType, const string& length="") const;
-//            virtual string getCreateIndexSQL(const string& name) const;
             virtual string getCreateSequenceSQL(const string& name) const;
-
-//            virtual string queryTerm() const { return ";";}
-			virtual string getSeqSQL(const string& sname) const;
+            virtual string getSeqSQL(const string& sname) const;
 
             /** backend may want to set an AUTO_INCREMENT-attribute for table's primary 
               key field. this method is to deliver the details to database schema */
