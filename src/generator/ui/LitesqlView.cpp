@@ -104,7 +104,8 @@ bool LitesqlView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 #endif
 
 	panel = new LitesqlModelTreePanel(frame);
-	panel->Layout();
+    panel->setObjectModel(((LitesqlDocument*) doc)->GetModel());
+    panel->Layout();
 	frame->Show(true);
 	Activate(true);
 
