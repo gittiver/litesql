@@ -151,7 +151,7 @@ void SQLite3::rollback() const {
 
 static int callback(void *r, int argc, char **argv, char **azColName) {
     SQLite3::Result * res = (SQLite3::Result*) r;
-    if (res->flds.size() == 0) 
+    if (res->flds.empty()) 
         for (int i = 0; i < argc; i++)
             res->flds.push_back(azColName[i]);
     Record rec(argc); 
@@ -172,23 +172,29 @@ void SQLite3::throwError(int status) const {
     }
 }
 Backend::Result* SQLite3::execute(const string& query) const {
-    string q(query);
-    q.append(";");
-    Result * r = new Result;
-    char * errMsg;
-    int status;
-    do {
-        status = sqlite3_exec(db, q.c_str(), callback, r, &errMsg);
-        switch(status) {         
-            case SQLITE_BUSY: 
-            case SQLITE_LOCKED: 
-                usleep(250000); 
-                break; 
-            case SQLITE_OK: break;
-            default: throwError(status); 
-        }
-    } while (status != SQLITE_OK); 
-    return r;    
+  string q(query);
+  q.append(";");
+  Result * r = new Result;
+  char * errMsg;
+  int status;
+  do {
+    status = sqlite3_exec(db, q.c_str(), callback, r, &errMsg);
+    switch(status) {         
+      case SQLITE_BUSY: 
+      case SQLITE_LOCKED: 
+        usleep(250000); 
+        break; 
+      case SQLITE_OK: break;
+      default: 
+        //fix for bug #3531292 (free resources before throwing error) 
+        delete r;
+        sqlite3_free(errMsg);
+        //end: fix for bug #3531292 (free resources before throwing error) 
+        
+        throwError(status); 
+    }
+  } while (status != SQLITE_OK); 
+  return r;    
 }
 
 Backend::Cursor* SQLite3::cursor(const string& query) const {
