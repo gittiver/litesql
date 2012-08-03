@@ -13,3 +13,7 @@ EXTRA_DIST=CMakeLists.txt \
 	   exampledatabase.png \
 	   example_output.txt \
 	   example_queries.txt
+
+$(srcdir)/exampledatabase.cpp \
+$(srcdir)/exampledatabase.hpp: $(srcdir)/exampledatabase.xml
+	litesql-gen -t c++ $(srcdir)/exampledatabase.xml  
