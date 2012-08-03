@@ -7,7 +7,6 @@
 #include "mysql.hpp"
 
 #include <string>
-#include "mysql.hpp"
 
 #ifdef HAVE_LIBMYSQLCLIENT
 
