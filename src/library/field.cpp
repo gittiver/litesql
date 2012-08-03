@@ -116,9 +116,7 @@ string convert<const string&, string>(const string& value) {
     return value;
 }
 
-
-
-const char hexDigits[] = "0123456789abcdef";
+const char hexDigits[] = "0123456789ABCDEF";
 
 const Blob Blob::nil;
 
@@ -227,6 +225,22 @@ void   Blob::data(const char* pszData)
 		  pszData!=NULL ? strlen(pszData)+1 : 0 );
 }
 
+void Blob::getData(u8_t* pBuffer,size_t& length, size_t offset)
+{
+    if (!pBuffer)
+    {
+        length=0;
+    }
+    else if ( offset>m_length )
+    {
+        length = 0;
+    }
+    else 
+    {
+        length = min(length,m_length-offset);
+        memcpy(pBuffer,m_data+offset,length);
+    }
+}
 
 void Blob::initWithData(const u8_t* data, size_t length)
 {

@@ -190,6 +190,8 @@ public:
   bool   isNull()           const  { return m_data==NULL;  }; 
   u8_t   data(size_t index) const  { return m_data[index]; };
   void   data(const char* pszData);
+  void	 getData(u8_t* pData,size_t &length, size_t offset=0);
+
 private:
   u8_t* m_data;
   size_t m_length;

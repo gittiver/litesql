@@ -9,9 +9,11 @@
 #ifndef HAVE_STRTOLL
 long long int strtoll(const char *nptr, char **endptr, int base);
 #endif
+
 #ifndef HAVE_STRTOF
 float strtof (const char *nptr, char **endptr);
 #endif
+
 #ifndef HAVE_LOCALTIME_R
 #ifdef WIN32
 #include <time.h>
