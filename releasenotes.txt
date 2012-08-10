@@ -1,3 +1,7 @@
+Version 0.3.15
+##############
+- bugfix and extension for blobs
+
 Version 0.3.14
 ##############
 - bugfix for memory leak on sqlite-backend (https://sourceforge.net/tracker/?func=detail&aid=3531292&group_id=113304&atid=664757) 
