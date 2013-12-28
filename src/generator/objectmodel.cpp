@@ -259,8 +259,7 @@ namespace xml {
     Field * rel_fld;
     Method * mtd;
     Index::Ptr idx;
-    IndexField* idxField;
-
+ 
     ParseState m_parseState;
     vector<ParseState> history;
   };
