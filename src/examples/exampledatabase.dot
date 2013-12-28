@@ -3,7 +3,6 @@ digraph database {
   subgraph inheritance {
     edge[style=dashed,dir=forward,arrowhead=normal];
     "user";
-    "newObject";
     "Person";
     "Role";
     "Student" -> "Role";

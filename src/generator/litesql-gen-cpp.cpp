@@ -759,23 +759,28 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
 
     gen::Method del("del", "void");
     del.virtual_()
-        .body("if (typeIsCorrect() == false) {")
+        .body("if (!typeIsCorrect()) {")
         .body("    std::auto_ptr<" + o.name + "> p(upcastCopy());")
         .body("    p->delRelations();")
         .body("    p->onDelete();")
         .body("    p->delRecord();")
         .body("} else {")
+        .body("    delRelations();")
         .body("    onDelete();")
         .body("    delRecord();")
         .body("}")
         .body("inDatabase = false;");
 
 
-    gen::Method typeIsCorrect("typeIsCorrect", "bool");    
+    gen::Method typeIsCorrect("typeIsCorrect", "bool");
+    typeIsCorrect.isConst = true;
     typeIsCorrect.body("return type == type__;").virtual_();
     
     gen::Method upcast("upcast", "std::auto_ptr<" + o.name + ">");
+    upcast.isConst = true;
+  
     gen::Method upcastCopy("upcastCopy", "std::auto_ptr<" + o.name + ">");
+    upcastCopy.isConst = true;
     Split childrenNames;
     o.getChildrenNames(childrenNames);
     
