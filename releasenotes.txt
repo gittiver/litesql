@@ -1,3 +1,7 @@
+Version 0.3.16
+##############
+- bugfix for #31 "delRelations not called on delete record" 
+
 Version 0.3.15
 ##############
 - bugfix and extension for blobs
