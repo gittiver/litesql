@@ -1,0 +1,16 @@
+*.pj
+
+*.obj
+*.ilk
+*.pdb
+*.pch
+*.aps 
+*.tlog
+*.opensdf
+*.sdf
+*.suo
+
+*.bak
+*~
+
+build/**

@@ -34,8 +34,8 @@ public:
     virtual ~MySQL();
 
     virtual bool supportsSequences() const;
-    virtual string getRowIDType() const;
-    virtual string getInsertID() const;
+    virtual std::string getRowIDType() const;
+    virtual std::string getInsertID() const;
     virtual void begin() const;
     virtual void commit() const;
     virtual void rollback() const;
