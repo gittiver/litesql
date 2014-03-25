@@ -120,7 +120,7 @@ void Database::upgradeTable(string name,
     query(newSchema);
     // oldfields as ...
     Split cols;
-	Split colNames;
+   Split colNames;
     string s;
 
     for (ColumnDefinitions::iterator it = commonFields.begin();it!= commonFields.end();it++)
@@ -129,7 +129,7 @@ void Database::upgradeTable(string name,
         s.append(" AS ");
         s.append(it->name);
         cols.push_back(s);
-		colNames.push_back(it->name);
+      colNames.push_back(it->name);
     }
     
     for (ColumnDefinitions::iterator it = toAdd.begin();it!= toAdd.end();it++)
@@ -138,10 +138,10 @@ void Database::upgradeTable(string name,
         s.append(" AS ");
         s.append(it->name);
         cols.push_back(s);
-		colNames.push_back(it->name);
+      colNames.push_back(it->name);
     }
 
-	query(" INSERT INTO " + name +" ("+colNames.join(",") +") SELECT "+ cols.join(",")+" FROM " + bkp_name); 
+   query(" INSERT INTO " + name +" ("+colNames.join(",") +") SELECT "+ cols.join(",")+" FROM " + bkp_name); 
     query(" DROP TABLE " + bkp_name); 
     commit();
 }
@@ -239,8 +239,12 @@ Database::Database(const string& backend, const string& conn)
         command += escapeSQL(r[i]) + ")";
         query(command);
     }
-    string Database::groupInsert(Record tables, Records fields, Records values, 
-                     string sequence) const {
+    
+    string Database::groupInsert(const Record& tables, 
+                                 const Records& fields, 
+                                 const Records& values, 
+                                 const string& sequence) const 
+    {
         if (verbose) {
             cerr << "groupInsert" << endl;
             for (size_t i = 0; i < tables.size(); i++) {

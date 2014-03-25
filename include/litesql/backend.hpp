@@ -90,7 +90,9 @@ namespace litesql {
               \param values record of values per table
               \param sequence sequence where row id-numbers are pulled
               \return new row id */
-            virtual std::string groupInsert(Record tables, Records fields, Records values,
+            virtual std::string groupInsert(const Record& tables, 
+                                 const Records& fields, 
+                                 const Records& values, 
                     const std::string& sequence) const;
     /** returns a backend according to Backendtype in type, parameters are specific to backend and are separated by semicolon.
       \param type type of the database backend (supported are : "mysql","postgresql","sqlite3","odbc"

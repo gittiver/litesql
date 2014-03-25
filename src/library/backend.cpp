@@ -64,10 +64,13 @@ string Backend::getSeqSQL(const string& sname) const
     return ret;
 }
 
-string Backend::groupInsert(Record tables, Records fields, Records values,
-                   const string& sequence) const {
-    string id = values[0][0];
-    
+string Backend::groupInsert(const Record& tables, 
+                            const Records& fields, 
+                            const Records& _values, 
+                            const string& sequence) const 
+{
+    string id = _values[0][0];
+    Records insertValues = _values;     
     if (supportsSequences() && id == "NULL") {
       Result * r = execute(getSeqSQL(sequence));
       id = r->records()[0][0];
@@ -76,9 +79,9 @@ string Backend::groupInsert(Record tables, Records fields, Records values,
     for (int i = tables.size()-1; i >= 0; i--) {
       string fieldString = Split::join(fields[i],",");
         string valueString;
-        if (!values[i].empty())
-            values[i][0] = id;
-        Split valueSplit(values[i]);
+        if (!insertValues[i].empty())
+            insertValues[i][0] = id;
+        Split valueSplit(insertValues[i]);
         for (size_t i2 = 0; i2 < valueSplit.size(); i2++)
             valueSplit[i2] = escapeSQL(valueSplit[i2]);
         valueString = valueSplit.join(",");

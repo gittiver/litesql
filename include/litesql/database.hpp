@@ -129,8 +129,10 @@ public:
         \param values record of values per table
         \param sequence sequence where row id-numbers are pulled
         \return new row id */
-    string groupInsert(Record tables, Records fields, Records values, 
-                     string sequence) const;
+    string groupInsert(const Record& tables, 
+                       const Records& fields, 
+                       const Records& values, 
+                       const string& sequence) const;
     /** deletes rows from single table, deleted rows are selected by Expr 
         if specified
         \param table target table
