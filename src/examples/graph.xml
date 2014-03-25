@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE database SYSTEM "litesql.dtd"> 
+<database name="GraphDatabase" namespace="graph">
+  <object name="Node">
+    <field name="name" type="string" length="512"/>
+    <field name="nodecolor" type="integer">
+      <value name="Red" value="0"/>
+      <value name="Blue" value="1"/>
+    </field>
+  </object>
+
+  <relation id="Edges">
+    <relate object="Node" handle="edges"/>
+    <relate object="Node" name="y"/>
+    <field name="color" type="integer">
+      <value name="Red" value="0"/>
+      <value name="Blue" value="1"/>
+    </field>
+  </relation>
+</database>
