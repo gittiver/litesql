@@ -111,10 +111,10 @@ static AT_field_unique field_unique(const XML_Char* value)
 
 static std::string field_length(const XML_Char* value)
 {
-	if(value==NULL) 
-		return string();
+   if(value==NULL) 
+      return string();
 
-	return string(value);
+   return string(value);
 }
 
 
@@ -315,7 +315,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       safe(  (char*)xmlGetAttrValue(atts,"default")),
       field_indexed(xmlGetAttrValue(atts,"indexed")),
       field_unique(xmlGetAttrValue(atts,"unique")),
-	  field_length(xmlGetAttrValue(atts,"length"))
+     field_length(xmlGetAttrValue(atts,"length"))
       );
 
     switch(m_parseState)
@@ -388,19 +388,30 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
   }
   else if (xmlStrEqual(fullname,(XML_Char*)Value::TAG))
   {
-    if (m_parseState!=FIELD)
+    Value v((char*)xmlGetAttrValue(atts,"name"), (char*)xmlGetAttrValue(atts,"value"));
+    switch(m_parseState)
     {
-      m_parseState = ERROR;
-    }
-    else
-    {
+    case FIELD:
       if (fld) 
       {
-        fld->value(Value((char*)xmlGetAttrValue(atts,"name"), (char*)xmlGetAttrValue(atts,"value")));
+        fld->value(v);
+        Logger::report("object value : ",v.name + "=" +v.value);
       }
-      Logger::report("value = " );
-    }
+      else if (rel_fld) 
+      {
+         rel_fld->value(v);
+         Logger::report("relation value: ",v.name + "=" +v.value );
+      }
+      else
+      {
+         Logger::error("!fld or !rel_fld");
+      }
+      break;
 
+    default:
+      m_parseState = ERROR;
+      break;
+    }
   } 
   else if (xmlStrEqual(fullname,(XML_Char*)Method::TAG))
   {
@@ -540,6 +551,7 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
     {
       Logger::report("end ",xml::Field::TAG );
       fld = NULL;
+      rel_fld = NULL;
       m_parseState = history.back();
     }
   } 
@@ -570,15 +582,16 @@ void LitesqlParser::onEndElement(const XML_Char *fullname)
   }
   else if (xmlStrEqual(fullname,(XML_Char*)Value::TAG))
   {
-    if (m_parseState!=FIELD)
-    {
-      m_parseState = ERROR;
-    }
-    else
-    {
-      Logger::report("end ", Value::TAG );
-    }
+     switch(m_parseState)
+     {
+     case FIELD:
+     case RELATION:
+        Logger::report("end ", Value::TAG );
+        break;
 
+     default:
+        m_parseState = ERROR;
+     }
   } 
   else if (xmlStrEqual(fullname,(XML_Char*)Method::TAG))
   {
