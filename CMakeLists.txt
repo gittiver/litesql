@@ -13,11 +13,11 @@ if (MSVC)
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
   endif (LITESQL_MSVC_MT)
   
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /INCREMENTAL:NO")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /INCREMENTAL:NO")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4")
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4")
   
-  set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS)
+  set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS   _CRT_SECURE_NO_WARNINGS)
 else(MSVC)
   list(APPEND CMAKE_CXX_FLAGS "-Wall -Wunused-variable -Wno-long-long")
    #-pedantic 
@@ -39,6 +39,11 @@ set(PROJECT_VERSION_MINOR 3)
 set(PROJECT_VERSION_PATCH 16)
 set(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH} )
 
+include(cmake/FindMySQL.cmake)
+include(cmake/FindPostgreSQL.cmake)
+include(cmake/FindSQLite3.cmake)
+include(cmake/FindOCILib.cmake)
+
 option(LITESQL_WITH_MYSQL "build with mysql Backend" ${MYSQL_FOUND})
 option(LITESQL_WITH_SQLITE3 "build with sqlite3 backend(sources integrated)" ON)
 option(LITESQL_WITH_POSTGRES "build with postgres backend" OFF)
@@ -49,13 +54,6 @@ option(LITESQL_WITH_SAX_PARSER "use new SAX parser" ON)
 option(LITESQL_WITH_UI "build also GUI-Version of generator" OFF)
 option(LITESQL_WITH_TESTS "enable testing" ON)
 option(CMAKE_SUPPRESS_REGENERATION "suppress rules to re-run cmake on changes (warning: no dependency checks!)?" OFF)
-
-
-include(cmake/FindMySQL.cmake)
-include(cmake/FindPostgreSQL.cmake)
-include(cmake/FindSQLite3.cmake)
-include(cmake/FindOCILib.cmake)
-
 
 if(LITESQL_WITH_TESTS)
   enable_testing()
@@ -79,10 +77,24 @@ if (LITESQL_WITH_MYSQL AND MYSQL_FOUND)
   list(APPEND BACKEND_INCLUDES ${MYSQL_INCLUDE_DIR})
   list(APPEND BACKEND_LIBRARIES litesql_mysql ${MYSQL_LIBRARIES})
   list(APPEND BACKEND_DEFINITIONS ${MYSQL_DEFINITIONS})
-  # the precompiled mysql client libraries are compiled with libcmt - this causes duplicate symbols
+  
   if (MSVC)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
-  endif(MSVC)
+    # the precompiled mysql client libraries are compiled with libcmt 
+    # - this causes duplicate symbols
+    # if MySQL Connector is older than this then LIBCMT will be disabled
+    # C Connector 6.1 works fine with VS 2013 WITH LIBCMT, 
+    # I haven't tested older versions
+    set(deprecated_connector_threshold "MySQL Connector C 6.0")
+    # now to figure out the mysql C connector version number
+    string(REGEX MATCH "MySQL Connector C [0-9]+\\.[0-9]+" curr_version ${MYSQL_INCLUDE_DIR})
+    if(${curr_version} STRGREATER ${deprecated_connector_threshold})
+      message("MySQL backend: LIBCMT enabled")
+    else(${curr_version} STRGREATER ${deprecated_connector_threshold})
+      message("MySQL backend: LIBCMT disabled")
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
+    endif(${curr_version} STRGREATER ${deprecated_connector_threshold})
+  endif (MSVC)
+  
 else(LITESQL_WITH_MYSQL AND MYSQL_FOUND)
   message("can not use mysql")
   set(LITESQL_WITH_MYSQL OFF)
@@ -139,18 +151,18 @@ if (LITESQL_WITH_SAX_PARSER)
 endif (LITESQL_WITH_SAX_PARSER)
 
 if(MSVC)
-	set(CMAKE_FIND_LIBRARY_PREFIXES "")
-	set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
-	set(CMAKE_STATIC_LIBRARY_PREFIX "")
-	set(CMAKE_STATIC_LIBRARY_SUFFIX ".lib")
-	set(CMAKE_SHARED_LIBRARY_PREFIX "")          # lib
-	set(CMAKE_SHARED_LIBRARY_SUFFIX ".dll")          # .so
-	set(CMAKE_IMPORT_LIBRARY_PREFIX "")
-	set(CMAKE_IMPORT_LIBRARY_SUFFIX ".lib")
-	set(CMAKE_EXECUTABLE_SUFFIX ".exe")          # .exe
-	set(CMAKE_LINK_LIBRARY_SUFFIX ".lib")
-	set(CMAKE_DL_LIBS "")
-	set(CMAKE_DEBUG_POSTFIX "d") 
+  set(CMAKE_FIND_LIBRARY_PREFIXES "")
+  set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
+  set(CMAKE_STATIC_LIBRARY_PREFIX "")
+  set(CMAKE_STATIC_LIBRARY_SUFFIX ".lib")
+  set(CMAKE_SHARED_LIBRARY_PREFIX "")         # lib
+  set(CMAKE_SHARED_LIBRARY_SUFFIX ".dll")         # .so
+  set(CMAKE_IMPORT_LIBRARY_PREFIX "")
+  set(CMAKE_IMPORT_LIBRARY_SUFFIX ".lib")
+  set(CMAKE_EXECUTABLE_SUFFIX ".exe")         # .exe
+  set(CMAKE_LINK_LIBRARY_SUFFIX ".lib")
+  set(CMAKE_DL_LIBS "")
+  set(CMAKE_DEBUG_POSTFIX "d") 
     link_directories(${CMAKE_CURRENT_SOURCE_DIR}/win32/lib/)
 endif(MSVC)
 
@@ -176,25 +188,25 @@ check_function_exists(localtime_r HAVE_LOCALTIME_R)
 
 # create config.h
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake 
-		${CMAKE_CURRENT_BINARY_DIR}/config.h)
+    ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 # set include directories
 get_filename_component(CONFIG_INCLUDE ${CMAKE_CURRENT_BINARY_DIR}/config.h PATH)
 include_directories(include ${CONFIG_INCLUDE} ${BACKEND_INCLUDES})
 
 install(DIRECTORY include DESTINATION . 
-	COMPONENT devel 
-	FILES_MATCHING PATTERN "*.hpp"
-	PATTERN .svn EXCLUDE 
-	)
+                          COMPONENT devel 
+                          FILES_MATCHING PATTERN "*.hpp"
+                          PATTERN .svn EXCLUDE 
+)
 install(DIRECTORY include DESTINATION . 
-	COMPONENT devel 
-	FILES_MATCHING PATTERN "*.h"
-	PATTERN .svn EXCLUDE 
-	)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h 
-	DESTINATION include/litesql 
-	COMPONENT devel)
+                          COMPONENT devel 
+                          FILES_MATCHING PATTERN "*.h"
+                          PATTERN .svn EXCLUDE 
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/litesql
+          COMPONENT devel)
 
 add_subdirectory(src)
  
@@ -228,8 +240,8 @@ set(CPACK_SOURCE_IGNORE_FILES "/docs/html;/autom4te.cache;/build/;/win32/;/.svn/
 if(WIN32 AND NOT UNIX)
   set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}\\\\${PROJECT_VERSION}")
   # There is a bug in NSI that does not handle full unix paths properly. Make
-  # sure there is at least one set of four (4) backlasshes.
-  #  set(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
+  # sure there is at least one set of four (4) backlashes.
+  # set(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
   set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\${PROJECT_NAME}.exe")
   set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} ${PROJECT_NAME}")
   set(CPACK_NSIS_HELP_LINK "http://litesql.sourceforge.net/")
