@@ -164,11 +164,12 @@ void SQLite3::throwError(int status) const {
     string error = sqlite3_errmsg(db);
     error = toString(status) + "=status code : " + error;
     switch(status) {
-    case SQLITE_ERROR: throw SQLError(error);
-    case SQLITE_INTERNAL: throw InternalError(error);
-    case SQLITE_NOMEM: throw MemoryError(error);
-    case SQLITE_FULL: throw InsertionError(error);
-    default: throw UnknownError("compile failed: " + error);
+    case SQLITE_ERROR:      throw SQLError(error);
+    case SQLITE_INTERNAL:   throw InternalError(error);
+    case SQLITE_NOMEM:      throw MemoryError(error);
+    case SQLITE_FULL:       throw InsertionError(error);
+    case SQLITE_CONSTRAINT: throw ConstraintError(error);
+    default:                throw UnknownError("compile failed: " + error);
     }
 }
 Backend::Result* SQLite3::execute(const string& query) const {
