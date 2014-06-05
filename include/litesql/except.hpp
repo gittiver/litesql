@@ -58,6 +58,12 @@ class InsertionError : public Except {
 public:
     InsertionError(std::string m) : Except("Database full: "+m){}
 };
+
+class ConstraintError : public Except {
+public:
+    ConstraintError(std::string m) : Except("Contraint error: "+m){}
+};
+
 /** exception thrown when none of other exceptions match */
 class UnknownError : public Except {
     // handles the rest
