@@ -2939,7 +2939,7 @@ fi
 # Define the identity of the package.
 
  PACKAGE=litesql
- VERSION=0.3.16
+ VERSION=0.3.17
 
 
 cat >>confdefs.h <<_ACEOF
