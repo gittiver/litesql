@@ -41,22 +41,22 @@ public:
         const PostgreSQL& pq;
         static int sid;
         static size_t cacheSize;
-        string name;
+        std::string name;
         Records cache;
         size_t cachePos;
     public:
         virtual void setCacheSize(int v);
-        Cursor(const PostgreSQL& p, string q);
+        Cursor(const PostgreSQL& p, std::string q);
         virtual Record fetchOne();
         virtual ~Cursor();
     };
-    PostgreSQL(const string& connInfo);
+    PostgreSQL(const std::string& connInfo);
     virtual bool supportsSequences() const;
     virtual void begin() const;
     virtual void commit() const;
     virtual void rollback() const;
-    Backend::Result* execute(const string& query) const;
-    Backend::Cursor* cursor(const string& query) const;
+    Backend::Result* execute(const std::string& query) const;
+    Backend::Cursor* cursor(const std::string& query) const;
     virtual ~PostgreSQL();
 };
 }

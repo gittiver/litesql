@@ -51,14 +51,14 @@ public:
         virtual Record fetchOne();
         virtual ~Cursor();
     };
-    ODBCBackend(const string& database);
+    ODBCBackend(const std::string& database);
     virtual bool supportsSequences() const;
-    virtual string getInsertID() const;
+    virtual std::string getInsertID() const;
     virtual void begin() const;
     virtual void commit() const;
     virtual void rollback() const;
-    Backend::Result* execute(string query) const;
-    Backend::Cursor* cursor(string query) const;
+    Backend::Result* execute(const std::string& query) const;
+    Backend::Cursor* cursor(const std::string& query) const;
     virtual ~ODBCBackend();
 };
 }

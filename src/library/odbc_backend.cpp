@@ -152,7 +152,7 @@ string error = ODBCBackend_errmsg(db);
     }
 }
 
-Backend::Result* ODBCBackend::execute(string query) const {
+Backend::Result* ODBCBackend::execute(const string& query) const {
     Result * r = new Result;
     char * errMsg;
     int status;
@@ -169,7 +169,7 @@ Backend::Result* ODBCBackend::execute(string query) const {
     //} while (status != SQLITE_OK); 
     return r;    
 }
-Backend::Cursor* ODBCBackend::cursor(string query) const {
+Backend::Cursor* ODBCBackend::cursor(const string& query) const {
     while (1) {
 //        HSTMT stmt;
         //int status = ODBCBackend_prepare(db, query.c_str(), query.size(), 
