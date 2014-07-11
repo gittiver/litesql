@@ -26,9 +26,9 @@ bool startsWith(const std::string& what, const std::string& with);
 /** returns true if 'what' end with 'with' */
 bool endsWith(const std::string& what, const std::string& with);
 /** returns lower-case version of the string */
-std::string toLower(std::string s);
+std::string toLower(const std::string& s);
 /** returns upper-case version of the string */
-std::string toUpper(std::string s);
+std::string toUpper(const std::string& s);
 
 std::string capitalize(const std::string& s);
 std::string decapitalize(const std::string& s);

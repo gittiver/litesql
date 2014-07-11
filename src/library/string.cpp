@@ -15,40 +15,43 @@ using namespace std;
 bool startsWith(const string& what, const string& with) {
     if (what.size() < with.size())
         return false;
-    if (what.substr(0, with.size()) == with)
-        return true;
-    return false;
+    return (what.substr(0, with.size()) == with);
 }
+
 bool endsWith(const string& what, const string& with) {
     if (what.size() < with.size())
         return false;
-    if (what.substr(what.size()-with.size(), what.size()) == with)
-        return true;
-    return false;
+    return (what.substr(what.size()-with.size(), what.size()) == with);
 }
 
-string toLower(string s) {
+string toLower(const string& s) {
+    string result(s);
     for (unsigned int i = 0; i < s.size(); i++)
-        s[i] = tolower(s[i]);
+        result[i] = static_cast<char>(tolower(s[i]));
     return s;	
 }
-string toUpper(string s) {
+string toUpper(const string& s) {
+    string result(s);
     for (unsigned int i = 0; i < s.size(); i++)
-        s[i] = toupper(s[i]);
-    return s;	
+        result[i] = static_cast<char>(toupper(s[i]));
+    return s;
 }
 
 string capitalize(const string& s) {
-    if (s.empty())
-        return s;
-    char buf[2] = {toupper(s[0]), 0};
-    return string(buf) + s.substr(1, s.size());
+   string result(s); 
+   if (!s.empty())
+   {
+      result[0]=static_cast<char>(toupper(s[0]));
+   }
+   return result;
 }
 string decapitalize(const string& s) {
-    if (s.empty())
-        return s;
-    char buf[2] = {tolower(s[0]), 0};
-    return string(buf) + s.substr(1, s.size());
+   string result(s); 
+   if (!s.empty())
+   {
+      result[0]=static_cast<char>(tolower(s[0]));
+   }
+   return result;
 }
 
 string rstrip(const string& s) {

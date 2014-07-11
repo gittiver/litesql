@@ -1,3 +1,9 @@
+Version 0.3.17
+##############
+- bugfix for #34 Missing constants for values in fields of relations
+- applied suggested patch #12 MySQL Connector C /NODEFAULTLIB:LIBCMT 
+- bugfix for #36 fatal error: exampledatabase.hpp: No such file or directory 
+
 Version 0.3.16
 ##############
 - bugfix for #31 "delRelations not called on delete record" 
