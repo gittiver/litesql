@@ -28,13 +28,13 @@ string toLower(const string& s) {
     string result(s);
     for (unsigned int i = 0; i < s.size(); i++)
         result[i] = static_cast<char>(tolower(s[i]));
-    return s;	
+    return result;
 }
 string toUpper(const string& s) {
     string result(s);
     for (unsigned int i = 0; i < s.size(); i++)
         result[i] = static_cast<char>(toupper(s[i]));
-    return s;
+    return result;
 }
 
 string capitalize(const string& s) {
