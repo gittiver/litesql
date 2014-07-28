@@ -49,7 +49,9 @@ int main(int argc, char **argv) {
         Person jill(db);
         jill.name = "Jill";
         jill.sex = Person::Sex::Female;
-        jill.image = Blob::nil;
+      
+        Blob null_image;
+        jill.image = null_image;
         jill.age = 33;
         jill.update();
         Person jack(db);

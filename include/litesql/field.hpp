@@ -160,7 +160,6 @@ typedef long long bigint;
 
 class Blob {
 public:
-  static const Blob nil;
   Blob()                            : m_data(NULL),m_length(0)               {};
   Blob(const std::string & value) : m_data(NULL),m_length(0)
   {
