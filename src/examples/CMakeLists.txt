@@ -1,9 +1,9 @@
 set(EXECUTABLES example)
 
-set(example_SOURCES example.cpp ExampleDatabase.cpp ExampleDatabase.hpp exampledatabase.xml auth.xml ExampleDatabase.dot)
+set(example_SOURCES example.cpp exampledatabase.cpp exampledatabase.hpp exampledatabase.xml auth.xml ExampleDatabase.dot)
 
 add_custom_command(
-   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/ExampleDatabase.cpp ${CMAKE_CURRENT_SOURCE_DIR}/ExampleDatabase.hpp 
+   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/exampledatabase.cpp ${CMAKE_CURRENT_SOURCE_DIR}/exampledatabase.hpp
    COMMAND litesql-gen -v -t c++ exampledatabase.xml
    MAIN_DEPENDENCY exampledatabase.xml
    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -11,7 +11,7 @@ add_custom_command(
    )
 
 add_custom_command(
-   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/ExampleDatabase.dot
+   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/exampledatabase.dot
    COMMAND litesql-gen -t graphviz exampledatabase.xml
    MAIN_DEPENDENCY exampledatabase.xml
    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
