@@ -29,6 +29,7 @@ else(MYSQL_INCLUDE_DIR AND MYSQL_LIBRARIES)
   find_path(MYSQL_INCLUDE_DIR mysql.h
       /usr/include/mysql
       /usr/local/include/mysql
+      /usr/local/mysql/include
       /opt/local/include/mysql*/mysql
       $ENV{ProgramFiles}/MySQL/*/include
       $ENV{SystemDrive}/MySQL/*/include
@@ -44,14 +45,15 @@ if(WIN32 AND MSVC)
       $ENV{SystemDrive}/MySQL/*/lib
       ${PROGRAM_FILES_32}/MySQL/*/lib
       ${PROGRAM_FILES_64}/MySQL/*/lib
- )
+      )
 else(WIN32 AND MSVC)
   find_library(MYSQL_LIBRARIES NAMES mysqlclient
       PATHS
       /usr/lib/mysql
       /usr/local/lib/mysql
+      /usr/local/mysql/lib
       /opt/local/lib/mysql*/mysql
-     )
+      )
 endif(WIN32 AND MSVC)
 
   if(MYSQL_INCLUDE_DIR AND MYSQL_LIBRARIES)

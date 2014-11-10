@@ -1,6 +1,5 @@
 set(LIBNAME litesql)
 
-          
 ##############################################################################
 # litesql-util library
 ##############################################################################
@@ -9,9 +8,11 @@ set(litesql_util_SOURCES split.cpp
                ../../include/litesql/split.hpp 
             ../../include/litesql/string.hpp 
             )    
+
 add_library(litesql-util STATIC ${litesql_util_SOURCES})
 install(TARGETS litesql-util EXPORT litesql-util
-            RUNTIME DESTINATION lib 
+            RUNTIME DESTINATION lib
+            LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib/static 
             COMPONENT devel)
 install(EXPORT litesql-util DESTINATION lib)
@@ -48,6 +49,7 @@ set(litesql_SOURCES    database.cpp
 add_library(  ${LIBNAME} STATIC ${litesql_SOURCES})
 install(TARGETS ${LIBNAME} EXPORT ${LIBNAME}
             RUNTIME DESTINATION lib 
+            LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib/static 
             COMPONENT devel)
 install(EXPORT ${LIBNAME} DESTINATION lib)
@@ -73,6 +75,7 @@ add_library(${LIBNAME}_sqlite STATIC ${${LIBNAME}_sqlite_SRC})
 
 install(TARGETS ${LIBNAME}_sqlite  EXPORT ${LIBNAME}_sqlite  
             RUNTIME DESTINATION lib 
+            LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib/static 
             COMPONENT devel)
 install(EXPORT ${LIBNAME}_sqlite DESTINATION lib)
@@ -82,12 +85,13 @@ endif(MSVC)
 endif (LITESQL_WITH_SQLITE3)
 
 if (LITESQL_WITH_MYSQL)
-  add_library(  ${LIBNAME}_mysql STATIC
+  add_library(  ${LIBNAME}_mysql SHARED
                         mysql.cpp
    
   )
   install(TARGETS ${LIBNAME}_mysql  EXPORT ${LIBNAME}_mysql 
             RUNTIME DESTINATION lib 
+            LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib/static 
             COMPONENT devel)
   install(EXPORT ${LIBNAME}_mysql DESTINATION lib)
@@ -98,13 +102,14 @@ endif(MSVC)
 endif (LITESQL_WITH_MYSQL)
 
 if (LITESQL_WITH_OCILIB)
-  add_library(  ${LIBNAME}_ocilib STATIC
+  add_library(  ${LIBNAME}_ocilib SHARED
                         ocilib_backend.cpp
                         ocilib_backend.hpp
    
   )
   install(TARGETS ${LIBNAME}_ocilib  EXPORT ${LIBNAME}_ocilib 
             RUNTIME DESTINATION lib 
+            LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib/static 
             COMPONENT devel)
   install(EXPORT ${LIBNAME}_ocilib DESTINATION lib)
@@ -115,11 +120,12 @@ endif(MSVC)
 endif (LITESQL_WITH_OCILIB)
 
 if (LITESQL_WITH_POSTGRES)
-  add_library(  ${LIBNAME}_postgresql STATIC
+  add_library(  ${LIBNAME}_postgresql SHARED
                 postgresql.cpp 
   )
   install(TARGETS ${LIBNAME}_postgresql EXPORT ${LIBNAME}_postgresql  
             RUNTIME DESTINATION lib 
+            LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib/static 
             COMPONENT devel)
 if (MSVC)
@@ -128,12 +134,13 @@ endif(MSVC)
 endif (LITESQL_WITH_POSTGRES)
 
 if (LITESQL_WITH_ODBC)
-  add_library(  ${LIBNAME}_odbc STATIC
+  add_library(  ${LIBNAME}_odbc SHARED
                       odbc_backend.cpp 
                       odbc_backend.hpp 
   )
   install(TARGETS ${LIBNAME}_odbc EXPORT ${LIBNAME}_odbc 
             RUNTIME DESTINATION lib 
+            LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib/static 
             COMPONENT devel)
 if (MSVC)

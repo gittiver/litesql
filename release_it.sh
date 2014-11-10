@@ -9,7 +9,7 @@ STARTDIR=`pwd`
 
 if [ "$HOST_SYSTEM" = "Linux" ] 
 then MYSQL_CONFIG=mysql_config
-else MYSQL_CONFIG=mysql_config5
+else MYSQL_CONFIG=/opt/local/lib/mysql56/bin/mysql_config
 fi
 
 mkdir -p $CMAKE_BUILDDIR

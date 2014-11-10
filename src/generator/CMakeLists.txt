@@ -11,6 +11,7 @@ set(libmodel_SOURCES
 			litesql-gen-graphviz.cpp litesql-gen-graphviz.hpp 
 			litesql-gen-ruby-activerecord.cpp litesql-gen-ruby-activerecord.hpp 
 			litesql-gen-wxformbuilder.cpp litesql-gen-wxformbuilder.hpp 
+            litesql-gen-protobuf.cpp litesql-gen-protobuf.hpp
 	)
 
 set(litesql-gen_SOURCES 

@@ -31,6 +31,7 @@ const char* help =
 //"  'php'        PHP target (.php)\n"
 //"  'python'     Python target (.py)\n"
 "  'graphviz'   Graphviz file (.dot)\n"
+"  'protobuf'   ProtoBuf file (.proto)\n"
 "\n\n"
 ;
 

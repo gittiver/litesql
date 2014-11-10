@@ -107,7 +107,8 @@ am_libmodel_a_OBJECTS = logger.$(OBJEXT) xmlparser.$(OBJEXT) \
 	generator.$(OBJEXT) litesql-gen-xml.$(OBJEXT) \
 	litesql-gen-cpp.$(OBJEXT) litesql-gen-graphviz.$(OBJEXT) \
 	litesql-gen-ruby-activerecord.$(OBJEXT) \
-	litesql-gen-wxformbuilder.$(OBJEXT)
+	litesql-gen-wxformbuilder.$(OBJEXT) \
+	litesql-gen-protobuf.$(OBJEXT)
 libmodel_a_OBJECTS = $(am_libmodel_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
@@ -345,7 +346,8 @@ libmodel_a_SOURCES = \
 					litesql-gen-cpp.cpp litesql-gen-cpp.hpp \
 					litesql-gen-graphviz.cpp litesql-gen-graphviz.hpp \
 				 	litesql-gen-ruby-activerecord.cpp litesql-gen-ruby-activerecord.hpp \
-					litesql-gen-wxformbuilder.cpp litesql-gen-wxformbuilder.hpp
+					litesql-gen-wxformbuilder.cpp litesql-gen-wxformbuilder.hpp \
+litesql-gen-protobuf.cpp litesql-gen-protobuf.hpp
 
 litesql_gen_SOURCES = litesql-gen-main.cpp \
                         litesql-gen.hpp
@@ -458,6 +460,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-cpp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-graphviz.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-protobuf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-ruby-activerecord.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-wxformbuilder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/litesql-gen-xml.Po@am__quote@
