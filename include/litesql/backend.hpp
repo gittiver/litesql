@@ -28,7 +28,7 @@ namespace litesql {
                       iteration, this method is used to set cache size. 
                       All backends do not react to this request.
                       */
-                    virtual void setCacheSize(int s) {}
+                    virtual void setCacheSize(int /*s*/ ) {}
                     /** returns one result row. empty row means that result set is 
                      *  iterated through */
                     virtual Record fetchOne()=0;  
