@@ -4504,7 +4504,7 @@ fi
 
 
 # Doxygen
-DOXYGEN_OUTPUT_DIR=".."
+DOXYGEN_OUTPUT_DIR=.
 
  if test "x$DOXYGEN" = "xdoxygen"; then
   HAVE_DOXYGEN_TRUE=
