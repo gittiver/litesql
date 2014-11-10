@@ -360,6 +360,8 @@ const litesql::FieldType user::Id("id_",A_field_type_integer,table__);
 const litesql::FieldType user::Type("type_",A_field_type_string,table__);
 const litesql::FieldType user::Name("name_",A_field_type_string,table__);
 const litesql::FieldType user::Passwd("passwd_",A_field_type_string,table__);
+void user::initValues() {
+}
 void user::defaults() {
     id = 0;
 }
@@ -603,7 +605,7 @@ const litesql::FieldType Person::Age("age_",A_field_type_integer,table__);
 const litesql::FieldType Person::Image("image_",A_field_type_blob,table__);
 const litesql::FieldType Person::ADoubleValue("aDoubleValue_",A_field_type_double,table__);
 std::vector < std::pair< std::string, std::string > > Person::sex_values;
-const Person::SexType Person::Sex("sex_",A_field_type_integer,table__,sex_values);
+const litesql::FieldType Person::Sex("sex_",A_field_type_integer,table__);
 void Person::initValues() {
     sex_values.clear();
     sex_values.push_back(make_pair<std::string, std::string>("Male","0"));
@@ -612,7 +614,7 @@ void Person::initValues() {
 void Person::defaults() {
     id = 0;
     age = 15;
-    image = Blob::nil;
+    image = Blob();
     aDoubleValue = 0.0;
     sex = 0;
 }
@@ -822,6 +824,8 @@ const std::string Role::table__("Role_");
 const std::string Role::sequence__("Role_seq");
 const litesql::FieldType Role::Id("id_",A_field_type_integer,table__);
 const litesql::FieldType Role::Type("type_",A_field_type_string,table__);
+void Role::initValues() {
+}
 void Role::defaults() {
     id = 0;
 }
@@ -1216,6 +1220,8 @@ const std::string School::sequence__("School_seq");
 const litesql::FieldType School::Id("id_",A_field_type_integer,table__);
 const litesql::FieldType School::Type("type_",A_field_type_string,table__);
 const litesql::FieldType School::Name("name_",A_field_type_string,table__);
+void School::initValues() {
+}
 void School::defaults() {
     id = 0;
 }
@@ -1369,6 +1375,8 @@ const std::string Office::table__("Office_");
 const std::string Office::sequence__("Office_seq");
 const litesql::FieldType Office::Id("id_",A_field_type_integer,table__);
 const litesql::FieldType Office::Type("type_",A_field_type_string,table__);
+void Office::initValues() {
+}
 void Office::defaults() {
     id = 0;
 }
@@ -1494,6 +1502,8 @@ const std::string ThingWithMethods::table__("ThingWithMethods_");
 const std::string ThingWithMethods::sequence__("ThingWithMethods_seq");
 const litesql::FieldType ThingWithMethods::Id("id_",A_field_type_integer,table__);
 const litesql::FieldType ThingWithMethods::Type("type_",A_field_type_string,table__);
+void ThingWithMethods::initValues() {
+}
 void ThingWithMethods::defaults() {
     id = 0;
 }

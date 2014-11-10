@@ -156,6 +156,7 @@ public:
     litesql::Field<std::string> name;
     static const litesql::FieldType Passwd;
     litesql::Field<std::string> passwd;
+    static void initValues();
 protected:
     void defaults();
 public:
@@ -262,7 +263,7 @@ public:
 protected:
     static std::vector < std::pair< std::string, std::string > > sex_values;
 public:
-    static const Person::SexType Sex;
+    static const litesql::FieldType Sex;
     litesql::Field<int> sex;
     static void initValues();
 protected:
@@ -318,6 +319,7 @@ public:
     litesql::Field<int> id;
     static const litesql::FieldType Type;
     litesql::Field<std::string> type;
+    static void initValues();
 protected:
     void defaults();
 public:
@@ -448,6 +450,7 @@ public:
     litesql::Field<std::string> type;
     static const litesql::FieldType Name;
     litesql::Field<std::string> name;
+    static void initValues();
 protected:
     void defaults();
 public:
@@ -496,6 +499,7 @@ public:
     litesql::Field<int> id;
     static const litesql::FieldType Type;
     litesql::Field<std::string> type;
+    static void initValues();
 protected:
     void defaults();
 public:
@@ -535,6 +539,7 @@ public:
     litesql::Field<int> id;
     static const litesql::FieldType Type;
     litesql::Field<std::string> type;
+    static void initValues();
 protected:
     void defaults();
 public:
