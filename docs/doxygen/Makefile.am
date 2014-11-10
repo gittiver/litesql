@@ -11,6 +11,7 @@ BUILT_SOURCES = dummy0
 CLEANFILES = dummy0
 
 dummy0: doxygen.conf
+	-mkdir -p $(DOXYGEN_OUTPUT_SUBDIRS)
 	$(DOXYGEN) doxygen.conf && touch dummy0
 
 dist-hook:
