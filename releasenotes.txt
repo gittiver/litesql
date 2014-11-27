@@ -1,8 +1,13 @@
 Version 0.3.17
 ##############
-- bugfix for #34 Missing constants for values in fields of relations
-- applied suggested patch #12 MySQL Connector C /NODEFAULTLIB:LIBCMT 
-- bugfix for #36 fatal error: exampledatabase.hpp: No such file or directory 
+* fix for #39 MD5 hash bug, UINT4 is now an uint32_t, which should work also correct on 64bit systems
+* updated examples
+* applied patch #15 without changes for mysql - added protobuf generator
+* removed Blob::nil (patch #13)
+* parser error fixed for relation::field::values (values inside relations are not parsed before)
+* bugfix for #36 fatal error: exampledatabase.hpp: No such file or directory 
+* bugfix for #34 Missing constants for values in fields of relations
+* applied suggested patch #12 MySQL Connector C /NODEFAULTLIB:LIBCMT 
 
 Version 0.3.16
 ##############
