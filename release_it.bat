@@ -2,7 +2,7 @@ set PATH=%PATH%;D:\Program Files\CMake 2.8\bin
 
 set CMAKE_BUILDDIR=build\cmake\vc
 set STARTDIR=%CD%
-set WXDIR=%STARTDIR%\..\..\wxWidgets\2.9.5
+set WXDIR=%STARTDIR%\..\wxWidgets\3.0.2
 
 
 @if NOT "%VS100COMNTOOLS%"=="" (call "%VS100COMNTOOLS%\vsvars32.bat" & goto VS_END)
@@ -18,7 +18,7 @@ cd %CMAKE_BUILDDIR%
 
 del CMakeCache.txt
 
-cmake -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=ON -D LITESQL_WITH_SQLITE:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=ON -D LITESQL_MSVC_MT:BOOL=OFF -D wxWidgets_ROOT_DIR=%WXDIR% -D wxWidgets_LIB_DIR=%WXDIR%\lib\vc_lib %STARTDIR%
+cmake -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=ON -D LITESQL_WITH_SQLITE:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=ON -D LITESQL_MSVC_MT:BOOL=ON -D wxWidgets_ROOT_DIR=%WXDIR% -D wxWidgets_LIB_DIR=%WXDIR%\lib\vc_lib %STARTDIR%
 
 devenv litesql.sln /Rebuild Debug /Project ALL_BUILD /ProjectConfig Debug
 devenv /Rebuild Release litesql.sln /Project ALL_BUILD /ProjectConfig Debug

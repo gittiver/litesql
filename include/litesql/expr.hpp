@@ -24,7 +24,7 @@ public:
   /// constant for True expression
   static const char* True; 
     // default expression is true
-    virtual string asString() const { return True; }
+    virtual std::string asString() const { return True; }
 
 
     Split getExtraTables() const { 
@@ -34,26 +34,26 @@ public:
 };
 /** used to inject custom expression into WHERE-clause */
 class RawExpr : public Expr {
-    string expr;
+    std::string expr;
 public:
-    RawExpr(string e) : expr(e) {}
-    virtual string asString() const { return expr; }
+    RawExpr(std::string  e) : expr(e) {}
+    virtual std::string  asString() const { return expr; }
 };
 /** used to connect two expressions */
 class Connective : public Expr {
 private:
-    string op;
+    std::string op;
 protected:
     const Expr &e1, &e2;
     
-    Connective(string o, const Expr & e1_, const Expr & e2_)
+    Connective(std::string o, const Expr & e1_, const Expr & e2_)
         : op(o), e1(e1_), e2(e2_) { }
     
 public:        
     virtual ~Connective() {}
     
-    virtual string asString() const {
-        string res = "(" + e1.asString() + ") " + op 
+    virtual std::string asString() const {
+        std::string res = "(" + e1.asString() + ") " + op 
             + " (" + e2.asString() + ")";
         return res;
     }
@@ -62,7 +62,7 @@ public:
 class And : public Connective {
 public:
     And(const Expr & e1_, const Expr & e2_) : Connective("and", e1_, e2_) {}
-    virtual string asString() const {     
+    virtual std::string asString() const {     
         if (e1.asString() == True)
             return e2.asString();
         else if (e2.asString() == True)
@@ -76,7 +76,7 @@ class Or : public Connective {
 public:
     Or(const Expr & e1_, const Expr & e2_) 
         : Connective("or", e1_, e2_) {}
-    virtual string asString() const {
+    virtual std::string asString() const {
         if ((e1.asString() == True)||(e2.asString() == True))
             return True;
         else
@@ -89,7 +89,7 @@ private:
     const Expr & exp;
 public:
     Not(const Expr & _exp) : exp(_exp) {}
-    virtual string asString() const {    
+    virtual std::string asString() const {    
         return "not ("+exp.asString()+")";
     }
         
@@ -98,22 +98,22 @@ public:
 class Oper : public Expr {
 protected:
     const FieldType & field;
-    string op;
-    string data;
+    std::string op;
+    std::string data;
     bool escape;
     
-    Oper(const FieldType & fld, const string& o, const string& d) 
+    Oper(const FieldType & fld, const std::string& o, const std::string& d) 
         : field(fld), op(o), data(d), escape(true) {
         extraTables.push_back(fld.table());
     }
-    Oper(const FieldType & fld, const string& o, const FieldType &f2) 
+    Oper(const FieldType & fld, const std::string& o, const FieldType &f2) 
         : field(fld), op(o), data(f2.fullName()), escape(false) {
         extraTables.push_back(fld.table());
     }
 
 public:
-    virtual string asString() const {
-        string res;
+    virtual std::string asString() const {
+        std::string res;
         res += field.fullName() + " " + op + " " + (escape ? escapeSQL(data) : data);
         return res;
     }
@@ -121,7 +121,7 @@ public:
 /** equality operator */
 class Eq : public Oper {
 public:
-    Eq(const FieldType & fld, const string& d)
+    Eq(const FieldType & fld, const std::string& d)
         : Oper(fld, "=", d) {}
     Eq(const FieldType & fld, const FieldType & f2)
         : Oper(fld, "=", f2) {}
@@ -130,7 +130,7 @@ public:
 /** inequality operator */
 class NotEq : public Oper {
 public:
-    NotEq(const FieldType & fld, const string& d)
+    NotEq(const FieldType & fld, const std::string& d)
         : Oper(fld, "<>", d) {}
     NotEq(const FieldType & fld, const FieldType & f2)
         : Oper(fld, "<>", f2) {
@@ -140,7 +140,7 @@ public:
 /** greater than operator */
 class Gt : public Oper {
 public:
-    Gt(const FieldType & fld, const string& d)
+    Gt(const FieldType & fld, const std::string& d)
         : Oper(fld, ">", d) {}
     Gt(const FieldType & fld, const FieldType& d)
         : Oper(fld, ">", d) {}
@@ -149,7 +149,7 @@ public:
 /** greater or equal operator */
 class GtEq : public Oper {
 public:
-    GtEq(const FieldType & fld, const string& d)
+    GtEq(const FieldType & fld, const std::string& d)
         : Oper(fld, ">=", d) {}
     GtEq(const FieldType & fld, const FieldType& d)
         : Oper(fld, ">=", d) {}
@@ -158,7 +158,7 @@ public:
 /** less than operator */
 class Lt : public Oper {
 public:
-    Lt(const FieldType & fld, const string& d)
+    Lt(const FieldType & fld, const std::string& d)
         : Oper(fld, "<", d) {}
     Lt(const FieldType & fld, const FieldType& d)
         : Oper(fld, "<", d) {}
@@ -167,7 +167,7 @@ public:
 /** less than or equal operator */
 class LtEq : public Oper {
 public:
-    LtEq(const FieldType & fld, const string& d)
+    LtEq(const FieldType & fld, const std::string& d)
         : Oper(fld, "<=", d) {}
     LtEq(const FieldType & fld, const FieldType& d)
         : Oper(fld, "<=", d) {}
@@ -176,17 +176,17 @@ public:
 /** like operator */
 class Like : public Oper {
 public:
-    Like(const FieldType & fld, const string& d)
+    Like(const FieldType & fld, const std::string& d)
         : Oper(fld, "like", d) {}
 };
 class SelectQuery;
 /** in operator */
 class In : public Oper {
 public:
-    In(const FieldType & fld, const string& set)
+    In(const FieldType & fld, const std::string& set)
         : Oper(fld, "in", "("+set+")") {};
     In(const FieldType & fld, const SelectQuery& s);
-    virtual string asString() const {
+    virtual std::string asString() const {
         return field.fullName() + " " + op + " " + data;
     }
     

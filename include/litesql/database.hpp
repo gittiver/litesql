@@ -21,11 +21,11 @@ using namespace std;
 
 class ColumnDefinition {
 public:
-  string name;
-  string type;
+  std::string name;
+  std::string type;
 
   class EqualName {
-    string m_name;
+    std::string m_name;
   public: 
     EqualName(const std::string& name) : m_name(name) {};
     bool operator()(ColumnDefinition d) { return d.name==m_name;};
@@ -38,9 +38,9 @@ class Database {
   friend class Updater;
 private:
     /** name of the backend */
-    string backendType;
+    std::string backendType;
     /** connection info "param=value param=value ..." */
-    string connInfo;
+    std::string connInfo;
     /** assignment is forbidden */
     Database &operator=(const Database &op);
     /** opens connection to backend */
@@ -52,8 +52,8 @@ protected:
         table, index or sequence */
     class SchemaItem {
     public:
-        string name, type, sql;
-        SchemaItem(const string& n, const string& t, const string& s) 
+        std::string name, type, sql;
+        SchemaItem(const std::string& n, const std::string& t, const std::string& s) 
             : name(n), type(t), sql(s) {}
     };
     /** stores SchemaItem to 'schema' - table (deletes old versions) */
@@ -74,20 +74,20 @@ protected:
     \param name table name
     \param oldSchema current schema of table 
     \param newSchema upgraded schema of table */
-    void upgradeTable(string name, string oldSchema, string newSchema) const;
+    void upgradeTable(std::string name, std::string oldSchema, std::string newSchema) const;
 
-    bool addColumn(const string & name,const ColumnDefinition & column_def) const;
+    bool addColumn(const std::string & name,const ColumnDefinition & column_def) const;
 
 public:
     /** verbosity, prints queries to cerr if true */
-	bool verbose;
+   bool verbose;
     /** opens connection to backend, throw exception if fails or cannot
         found a Backend class
         \param backendType backend type ("postgresql","mysql" or "sqlite3")
         \param connInfo connection params, syntax "param=value param=value ..."
                valid keys: host,user,password,database and port 
-		*/
-    Database(const string& backendType, const string& connInfo);
+      */
+    Database(const std::string& backendType, const std::string& connInfo);
     /** opens new connection to same database 
         \param op opened Database */
     Database(const Database &op);
@@ -104,11 +104,11 @@ public:
     /** tries to upgrade database on disk so that schemas would be compatible */
     void upgrade() const;
     /** executes SQL query 
-        \param query query string 
+        \param query query std::string 
         \return result set */
-    Records query(const string &query) const;
+    Records query(const std::string &query) const;
     template <class T> 
-        Cursor<T> cursor(const string& query) const {
+        Cursor<T> cursor(const std::string& query) const {
         if (verbose)
             cerr << query << endl;
         return Cursor<T>(*this, backend->cursor(query));
@@ -120,7 +120,7 @@ public:
         \param fields field names
         Values are escaped using escapeSQL - function */
     
-    void insert(const string &table, const Record &r,
+    void insert(const std::string &table, const Record &r,
                 const Split& fields=Split()) const;
     /** executes multiple INSERT-statements and assigns same 'row id'
         for first field of every record
@@ -129,15 +129,15 @@ public:
         \param values record of values per table
         \param sequence sequence where row id-numbers are pulled
         \return new row id */
-    string groupInsert(const Record& tables, 
+    std::string groupInsert(const Record& tables, 
                        const Records& fields, 
                        const Records& values, 
-                       const string& sequence) const;
+                       const std::string& sequence) const;
     /** deletes rows from single table, deleted rows are selected by Expr 
         if specified
         \param table target table
         \param e selection expression */
-    void delete_(const string &table, const Expr& e= Expr()) const; 
+    void delete_(const std::string &table, const Expr& e= Expr()) const; 
     /** begins SQL transaction */
     void begin() const { backend->begin(); }
     /** commits SQL transaction */
