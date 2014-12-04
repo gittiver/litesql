@@ -194,12 +194,12 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
 get_filename_component(CONFIG_INCLUDE ${CMAKE_CURRENT_BINARY_DIR}/config.h PATH)
 include_directories(include ${CONFIG_INCLUDE} ${BACKEND_INCLUDES})
 
-install(DIRECTORY include DESTINATION . 
+install(DIRECTORY include/ DESTINATION include 
                           COMPONENT devel 
                           FILES_MATCHING PATTERN "*.hpp"
                           PATTERN .svn EXCLUDE 
 )
-install(DIRECTORY include DESTINATION . 
+install(DIRECTORY include/ DESTINATION include 
                           COMPONENT devel 
                           FILES_MATCHING PATTERN "*.h"
                           PATTERN .svn EXCLUDE 
