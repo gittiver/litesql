@@ -219,6 +219,9 @@ add_subdirectory(src)
  
 project( ${PROJECT_NAME} )
 
+export(EXPORT litesql)
+install(EXPORT litesql DESTINATION LIBRARY)
+
 include(InstallRequiredSystemLibraries)
 
 set(CPACK_GENERATOR TGZ ZIP)
