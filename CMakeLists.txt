@@ -219,8 +219,10 @@ add_subdirectory(src)
  
 project( ${PROJECT_NAME} )
 
-export(EXPORT litesql)
-install(EXPORT litesql DESTINATION LIBRARY)
+export(EXPORT litesql-util)
+install(EXPORT litesql DESTINATION litesql.cmake)
+export(EXPORT model)
+install(EXPORT model DESTINATION model.cmake)
 
 include(InstallRequiredSystemLibraries)
 
