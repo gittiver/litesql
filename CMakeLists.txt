@@ -199,9 +199,16 @@ install(DIRECTORY include/ DESTINATION include
                           FILES_MATCHING PATTERN "*.hpp"
                           PATTERN .svn EXCLUDE 
 )
+
 install(DIRECTORY include/ DESTINATION include 
                           COMPONENT devel 
                           FILES_MATCHING PATTERN "*.h"
+                          PATTERN .svn EXCLUDE 
+)
+
+install(DIRECTORY src/generator/ DESTINATION include/litesql 
+                          COMPONENT devel 
+                          FILES_MATCHING PATTERN "*.hpp"
                           PATTERN .svn EXCLUDE 
 )
 
