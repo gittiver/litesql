@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
+cmake_policy(SET CMP0048 NEW)
 
 enable_language(C)
 enable_language(CXX)
@@ -32,12 +33,7 @@ include (${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake)
 include (${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 
-set(PROJECT_NAME "litesql")
-
-set(PROJECT_VERSION_MAJOR 0)
-set(PROJECT_VERSION_MINOR 3)
-set(PROJECT_VERSION_PATCH 17)
-set(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH} )
+set(PROJECT_NAME "litesql" VERSION 0.3.17.4)
 
 include(cmake/FindMySQL.cmake)
 include(cmake/FindPostgreSQL.cmake)
