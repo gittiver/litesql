@@ -4,7 +4,7 @@ AC_CONFIG_SRCDIR([src/library/database.cpp])
 AM_INIT_AUTOMAKE([litesql], [0.3.17])
 AM_CONFIG_HEADER(config.h)
 
-if [ ! -d m4 ]; then
+if [[ ! -d m4 ]]; then
     mkdir m4;
 fi
 AC_CONFIG_MACRO_DIR([m4])
