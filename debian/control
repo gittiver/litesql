@@ -1,7 +1,7 @@
 Source: liblitesql
 Priority: optional
 Maintainer: Tero Laitinen <tero.laitinen@iki.fi>
-Build-Depends: debhelper (>= 4.0.0), autotools-dev
+Build-Depends: debhelper (>= 4.0.0), autotools-dev, libpq-dev, libmysqlclient-dev, libsqlite3-dev
 Standards-Version: 3.6.2
 Section: libs
 
@@ -9,17 +9,17 @@ Package: liblitesql-dev
 Section: libdevel
 Architecture: any
 Depends: liblitesql (= 0.3.9)
-Suggests: libpq-dev, libmysqlclient14-dev, libsqlite3-dev 
+Suggests: libpq-dev, libmysqlclient-dev, libsqlite3-dev
 Description: C++ object-relational persistence framework - development files
 
 Package: liblitesql
 Section: libs
-Architecture: i386
-Suggests: libpq4, libmysqlclient14, libsqlite3-0
+Architecture: i386 amd64
+Suggests: libpq4, libmysqlclient, libsqlite3-0
 Description: C++ object-relational persistence framework library
 
 Package: visual-litesql
 Section: libs
-Architecture: i386
+Architecture: i386 amd64
 Suggests: liblitesql, liblitesql-dev
 Description: C++ object-relational persistence framework library

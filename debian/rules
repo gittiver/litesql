@@ -105,7 +105,7 @@ binary-arch: build install
 #	dh_python
 #	dh_makeshlibs
 	dh_installdeb
-	dh_shlibdeps
+	dh_shlibdeps -l$(CURDIR)/debian/tmp/usr/lib --dpkg-shlibdeps-params=--ignore-missing-info
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb

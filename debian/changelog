@@ -1,12 +1,17 @@
+liblitesql (0.3.17) unstable; urgency=low
+
+  * bugfix release
+
+ -- Adam Jiang <chaoj@capricorn102.com>  Sun,  4 Apr 2015 12:59:19 +0900
+
 liblitesql (0.3.4) unstable; urgency=low
 
-  * bugfix release 
+  * bugfix release
 
  -- Tero Laitinen <tero.laitinen@iki.fi>  Sun,  6 Nov 2005 15:23:49 +0200
 
 liblitesql (0.3.2) unstable; urgency=low
 
-  * Initial release 
+  * Initial release
 
  -- Tero Laitinen <tero.laitinen@iki.fi>  Sun,  6 Nov 2005 15:23:49 +0200
-

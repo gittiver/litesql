@@ -3034,7 +3034,7 @@ fi
 ac_config_headers="$ac_config_headers config.h"
 
 
-if  ! -d m4 ; then
+if [ ! -d m4 ]; then
     mkdir m4;
 fi
 
