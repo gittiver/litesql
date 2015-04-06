@@ -66,7 +66,7 @@ if(wxWidgets_FOUND)
     endif(MSVC)
     install(TARGETS ${PROGRAM_visual_litesql} 
                 RUNTIME DESTINATION bin 
-                BUNDLE DESTINATION /Applications)    
+                BUNDLE DESTINATION .)    
 
 else(wxWidgets_FOUND)
     # For convenience. When we cannot continue, inform the user
