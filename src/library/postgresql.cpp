@@ -119,6 +119,24 @@ Backend::Result* PostgreSQL::execute(const string& _query) const {
 Backend::Cursor* PostgreSQL::cursor(const string& query) const {
     return new Cursor(*this, query + ";");
 }
+
+string PostgreSQL::getSQLType(AT_field_type fieldType, const string& length) const
+{
+    switch(fieldType) {
+        case A_field_type_integer: return "INTEGER";
+		case A_field_type_bigint: return "BIGINT";
+		case A_field_type_string: return "TEXT";
+		case A_field_type_float: return "FLOAT";
+		case A_field_type_double: return "DOUBLE PRECISION";
+		case A_field_type_boolean: return "INTEGER";
+		case A_field_type_date: return "INTEGER";
+		case A_field_type_time: return "INTEGER";
+		case A_field_type_datetime: return "INTEGER";
+		case A_field_type_blob: return "BLOB";
+		default: return "";
+	}
+}
+
 PostgreSQL::~PostgreSQL() {
     if (transaction)
         commit();

@@ -57,6 +57,8 @@ public:
     virtual void rollback() const;
     Backend::Result* execute(const std::string& query) const;
     Backend::Cursor* cursor(const std::string& query) const;
+	string getSQLType(AT_field_type fieldType, const string& length) const;
+
     virtual ~PostgreSQL();
 };
 }
