@@ -1,1 +1,5 @@
 language: C++
+before_install:
+- sudo apt-get update -qq
+- sudo apt-get install -qq libwxgtk3.0-dev
+script: ./release_it.sh
