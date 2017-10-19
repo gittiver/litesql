@@ -13,6 +13,7 @@ EXTRA_DIST=CMakeLists.txt \
 
 ACLOCAL_AMFLAGS=-I m4
 AUTOMAKE_OPTIONS=foreign
+README: README.md
 
 dist-hook:
 	find $(distdir) -name \.svn
