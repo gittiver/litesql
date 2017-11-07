@@ -737,11 +737,11 @@ void Person::delRecord() {
     deleteFromTable(table__, id);
 }
 void Person::delRelations() {
+    PersonPersonRelationChildren::del(*db, (PersonPersonRelationChildren::Person1 == id) || (PersonPersonRelationChildren::Person2 == id));
+    RoleRelation::del(*db, (RoleRelation::Person == id));
     PersonPersonRelationMother::del(*db, (PersonPersonRelationMother::Person1 == id) || (PersonPersonRelationMother::Person2 == id));
     PersonPersonRelationFather::del(*db, (PersonPersonRelationFather::Person1 == id) || (PersonPersonRelationFather::Person2 == id));
     PersonPersonRelationSiblings::del(*db, (PersonPersonRelationSiblings::Person1 == id) || (PersonPersonRelationSiblings::Person2 == id));
-    PersonPersonRelationChildren::del(*db, (PersonPersonRelationChildren::Person1 == id) || (PersonPersonRelationChildren::Person2 == id));
-    RoleRelation::del(*db, (RoleRelation::Person == id));
 }
 void Person::update() {
     if (!inDatabase) {
@@ -1658,17 +1658,17 @@ std::vector<litesql::Database::SchemaItem> ExampleDatabase::getSchema() const {
     res.push_back(Database::SchemaItem("School_id_idx","index","CREATE INDEX School_id_idx ON School_ (id_)"));
     res.push_back(Database::SchemaItem("Office_id_idx","index","CREATE INDEX Office_id_idx ON Office_ (id_)"));
     res.push_back(Database::SchemaItem("ThingWithMethods_id_idx","index","CREATE INDEX ThingWithMethods_id_idx ON ThingWithMethods_ (id_)"));
-    res.push_back(Database::SchemaItem("O31dc3a3e38d892b30cf8a1e203d99","index","CREATE INDEX O31dc3a3e38d892b30cf8a1e203d99 ON Person_Person_Mother (Person1_)"));
-    res.push_back(Database::SchemaItem("O0e0d9ee99bc76e958506fa420efc7","index","CREATE INDEX O0e0d9ee99bc76e958506fa420efc7 ON Person_Person_Mother (Person2_)"));
+    res.push_back(Database::SchemaItem("Oee4eb2b8f280ef74d4d9b000ad762","index","CREATE INDEX Oee4eb2b8f280ef74d4d9b000ad762 ON Person_Person_Mother (Person1_)"));
+    res.push_back(Database::SchemaItem("O534e82725f31f0ed55507bb93876f","index","CREATE INDEX O534e82725f31f0ed55507bb93876f ON Person_Person_Mother (Person2_)"));
     res.push_back(Database::SchemaItem("Person_Person_Mother_all_idx","index","CREATE INDEX Person_Person_Mother_all_idx ON Person_Person_Mother (Person1_,Person2_)"));
-    res.push_back(Database::SchemaItem("O808719f0e252825408c279266e38b","index","CREATE INDEX O808719f0e252825408c279266e38b ON Person_Person_Father (Person1_)"));
-    res.push_back(Database::SchemaItem("O1cb501a354a580e72d6475c01c34e","index","CREATE INDEX O1cb501a354a580e72d6475c01c34e ON Person_Person_Father (Person2_)"));
+    res.push_back(Database::SchemaItem("O015cdc2a9b96a2fe227389cb205e1","index","CREATE INDEX O015cdc2a9b96a2fe227389cb205e1 ON Person_Person_Father (Person1_)"));
+    res.push_back(Database::SchemaItem("Ob6198f9bf01ff852985e22535b63c","index","CREATE INDEX Ob6198f9bf01ff852985e22535b63c ON Person_Person_Father (Person2_)"));
     res.push_back(Database::SchemaItem("Person_Person_Father_all_idx","index","CREATE INDEX Person_Person_Father_all_idx ON Person_Person_Father (Person1_,Person2_)"));
-    res.push_back(Database::SchemaItem("Ob82a0564e5fed39452f6d9445fb8f","index","CREATE INDEX Ob82a0564e5fed39452f6d9445fb8f ON Person_Person_Siblings (Person1_)"));
-    res.push_back(Database::SchemaItem("O5b1c2485e1b748514755374ab14da","index","CREATE INDEX O5b1c2485e1b748514755374ab14da ON Person_Person_Siblings (Person2_)"));
+    res.push_back(Database::SchemaItem("O83113b1dbe037a340a4b4fb558318","index","CREATE INDEX O83113b1dbe037a340a4b4fb558318 ON Person_Person_Siblings (Person1_)"));
+    res.push_back(Database::SchemaItem("Oa2ca8dcfc753ed5593154e5c78dd9","index","CREATE INDEX Oa2ca8dcfc753ed5593154e5c78dd9 ON Person_Person_Siblings (Person2_)"));
     res.push_back(Database::SchemaItem("Person_Person_Siblings_all_idx","index","CREATE INDEX Person_Person_Siblings_all_idx ON Person_Person_Siblings (Person1_,Person2_)"));
-    res.push_back(Database::SchemaItem("O3caed8bc9fed17fcccca0ca55e6fc","index","CREATE INDEX O3caed8bc9fed17fcccca0ca55e6fc ON Person_Person_Children (Person1_)"));
-    res.push_back(Database::SchemaItem("O0322ba609ac35be68615a68ff4d01","index","CREATE INDEX O0322ba609ac35be68615a68ff4d01 ON Person_Person_Children (Person2_)"));
+    res.push_back(Database::SchemaItem("O7e9a52474b6d215cf914b0521bd38","index","CREATE INDEX O7e9a52474b6d215cf914b0521bd38 ON Person_Person_Children (Person1_)"));
+    res.push_back(Database::SchemaItem("Obe20d0fd80388c3efb79c932f5d78","index","CREATE INDEX Obe20d0fd80388c3efb79c932f5d78 ON Person_Person_Children (Person2_)"));
     res.push_back(Database::SchemaItem("Person_Person_Children_all_idx","index","CREATE INDEX Person_Person_Children_all_idx ON Person_Person_Children (Person1_,Person2_)"));
     res.push_back(Database::SchemaItem("Person_Role_RolesPerson1_idx","index","CREATE INDEX Person_Role_RolesPerson1_idx ON Person_Role_Roles (Person1_)"));
     res.push_back(Database::SchemaItem("Person_Role_RolesRole2_idx","index","CREATE INDEX Person_Role_RolesRole2_idx ON Person_Role_Roles (Role2_)"));
