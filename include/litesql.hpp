@@ -3,7 +3,6 @@
  * The list of contributors at http://litesql.sf.net/ 
  * 
  * See LICENSE for copyright information. */
- */
 /** \file litesql.hpp
     include this from your project */
 
