@@ -1,5 +1,6 @@
 Version 0.3.17
 ##############
+* fix fot #45 license corrected
 * fix for #39 MD5 hash bug, UINT4 is now an uint32_t, which should work also correct on 64bit systems
 * updated examples
 * applied patch #15 without changes for mysql - added protobuf generator
