@@ -31,9 +31,9 @@ There is a lot of interesting tasks available (the list of [active tickets](http
 Please acknowledge the license of the project before contributing. Only contributions that can be released under the license will be included.
 
 # Documentation
- * [Quick Start](@ref quickstart) -- a simple complete example
- * [Contributors](@ref contributors) -- the persons who have dedicated their precious time for a good purpose
- * [Examples](@ref examples) -- code snippets for doing simple things
- * [Defining Database](@ref defining_database) -- how to write an XML database definition file
- * [OR-mapping model](@ref mapping_objects_to_database) -- how the objects are stored in the database
+ * [Quick Start](docs/quickstart.md) -- a simple complete example
+ * [Contributors](docs/contributors.md) -- the persons who have dedicated their precious time for a good purpose
+ * [Examples](docs/examples.md) -- code snippets for doing simple things
+ * [Defining Database](docs/defining_database.md) -- how to write an XML database definition file
+ * [OR-mapping model](docs/mapping_objects_to_database.md) -- how the objects are stored in the database
  
