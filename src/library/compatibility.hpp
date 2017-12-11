@@ -22,7 +22,9 @@ struct tm *localtime_r(const time_t *clock, struct tm *result);
 #endif
 
 #ifdef WIN32
+#if _MSC_VER < 1700
 #define snprintf _snprintf
+#endif
 #endif
 
 #endif
