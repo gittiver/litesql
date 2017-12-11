@@ -1,6 +1,7 @@
 set(EXECUTABLES example)
 
-set(example_SOURCES example.cpp exampledatabase.cpp exampledatabase.hpp exampledatabase.xml auth.xml exampledatabase.dot)
+set(example_SOURCES example.cpp exampledatabase.cpp exampledatabase.hpp
+                    exampledatabase.xml auth.xml exampledatabase.dot exampledatabase.go)
 
 add_custom_command(
    OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/exampledatabase.cpp ${CMAKE_CURRENT_SOURCE_DIR}/exampledatabase.hpp
@@ -15,11 +16,19 @@ add_custom_command(
    COMMAND litesql-gen -t graphviz exampledatabase.xml
    MAIN_DEPENDENCY exampledatabase.xml
    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-   DEPENDS litesql-gen exampledatabase.xml 
+   DEPENDS litesql-gen exampledatabase.xml
+   )
+
+add_custom_command(
+   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/exampledatabase.go
+   COMMAND litesql-gen -t golang exampledatabase.xml
+   MAIN_DEPENDENCY exampledatabase.xml
+   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+   DEPENDS litesql-gen exampledatabase.xml
    )
 
 
- 
+
 add_executable(example ${example_SOURCES} ${example_HEADERS})
 
 target_link_libraries (example litesql litesql-util ${BACKEND_LIBRARIES})
@@ -33,7 +42,7 @@ endif (WIN32 AND MSVC)
 install(TARGETS example RUNTIME DESTINATION bin COMPONENT examples)
 
 add_custom_command(
-   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/graphdatabase.cpp ${CMAKE_CURRENT_SOURCE_DIR}/graphdatabase.hpp 
+   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/graphdatabase.cpp ${CMAKE_CURRENT_SOURCE_DIR}/graphdatabase.hpp
    COMMAND litesql-gen -v -t c++ graph.xml
    MAIN_DEPENDENCY graph.xml
    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}

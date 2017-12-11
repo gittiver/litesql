@@ -6,6 +6,7 @@
 #include "litesql-gen-graphviz.hpp"
 #include "litesql-gen-wxformbuilder.hpp"
 #include "litesql-gen-protobuf.hpp"
+#include "litesql-gen-golang.hpp"
 
 using namespace std;
 using namespace litesql;
@@ -20,6 +21,7 @@ CodeGenerator::FactoryMap::FactoryMap()
   registerFactory(new Factory<GraphvizGenerator>(GraphvizGenerator::NAME));
   registerFactory(new Factory<wxFormBuilderGenerator>(wxFormBuilderGenerator::NAME));
   registerFactory(new Factory<ProtoBufClassGenerator>(ProtoBufClassGenerator::NAME));
+  registerFactory(new Factory<GolangGenerator>(GolangGenerator::NAME));
 }
 
 CodeGenerator::FactoryMap::~FactoryMap()
@@ -72,15 +74,15 @@ CodeGenerator* CodeGenerator::create(const char* target)
 
 CodeGenerator::CodeGenerator()
 {}
-  
+
 CodeGenerator::~CodeGenerator()
 {}
 
-void CodeGenerator::setOutputDirectory(const string& directory) 
+void CodeGenerator::setOutputDirectory(const string& directory)
 {
   m_directory = directory;
 }
-const string& CodeGenerator::getOutputDirectory() const 
+const string& CodeGenerator::getOutputDirectory() const
 {
   return m_directory;
 }
@@ -97,10 +99,10 @@ std::string CodeGenerator::getOutputFilename(const std::string& name) const
     fname.append("/");
 #endif // #ifdef _WINDOWS_
   }
-  fname.append(name); 
+  fname.append(name);
   return fname;
 }
-    
+
 const char* CodeGenerator::getTarget() const
 {return m_target;}
 
@@ -155,7 +157,7 @@ void CompositeGenerator::add(CodeGenerator* g)
   generators.push_back(g);
 }
 
-void CompositeGenerator::setOutputDirectory(const string& directory) 
+void CompositeGenerator::setOutputDirectory(const string& directory)
 {
   CodeGenerator::setOutputDirectory(directory);
   for(vector<CodeGenerator*>::iterator it = generators.begin(); it != generators.end();it++)

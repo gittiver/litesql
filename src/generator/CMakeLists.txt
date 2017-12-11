@@ -1,25 +1,26 @@
-set(libmodel_SOURCES 
+set(libmodel_SOURCES
 			generator.cpp generator.hpp
-			litesql-gen-xml.cpp litesql-gen-xml.hpp 
+		 	litesql-gen-xml.cpp litesql-gen-xml.hpp
 			litesql-gen-cpp.cpp litesql-gen-cpp.hpp
 			logger.cpp logger.hpp
-			xmlobjects.cpp 
-			md5.cpp 
-			xmlobjects.hpp 
-			md5.hpp 
-			xmlobjects.hpp 
-			litesql-gen-graphviz.cpp litesql-gen-graphviz.hpp 
-			litesql-gen-ruby-activerecord.cpp litesql-gen-ruby-activerecord.hpp 
-			litesql-gen-wxformbuilder.cpp litesql-gen-wxformbuilder.hpp 
+			xmlobjects.cpp
+			md5.cpp
+			xmlobjects.hpp
+			md5.hpp
+			xmlobjects.hpp
+			litesql-gen-graphviz.cpp litesql-gen-graphviz.hpp
+			litesql-gen-ruby-activerecord.cpp litesql-gen-ruby-activerecord.hpp
+			litesql-gen-golang.cpp litesql-gen-golang.hpp
+			litesql-gen-wxformbuilder.cpp litesql-gen-wxformbuilder.hpp
             litesql-gen-protobuf.cpp litesql-gen-protobuf.hpp
 	)
 
-set(litesql-gen_SOURCES 
-			litesql-gen-main.cpp 
+set(litesql-gen_SOURCES
+			litesql-gen-main.cpp
 	)
 
-set(ddl2litesql_SOURCES 
-			ddl2litesql.cpp 
+set(ddl2litesql_SOURCES
+			ddl2litesql.cpp
 	)
 
 # for new parser
@@ -27,23 +28,23 @@ if (LITESQL_WITH_SAX_PARSER)
    list(APPEND libmodel_SOURCES xmlparser.cpp
                                 xmlparser.hpp
                                 objectmodel.cpp
-                                objectmodel.hpp 
+                                objectmodel.hpp
 )
 else (LITESQL_WITH_SAX_PARSER)
-   list(APPEND libmodel_SOURCES 
-          litesql-gen-actions.cpp 
-          litesql-gen.cpp 
+   list(APPEND libmodel_SOURCES
+          litesql-gen-actions.cpp
+          litesql-gen.cpp
           litesql-gen.hpp)
 endif(LITESQL_WITH_SAX_PARSER)
 
 add_library(model STATIC ${libmodel_SOURCES})
 install(TARGETS model EXPORT model
-            RUNTIME DESTINATION lib 
+            RUNTIME DESTINATION lib
             LIBRARY DESTINATION lib
-            ARCHIVE DESTINATION lib/static 
+            ARCHIVE DESTINATION lib/static
             COMPONENT devel)
 install(EXPORT model DESTINATION lib)
- 
+
 add_executable(litesql-gen ${litesql-gen_SOURCES})
 add_executable(ddl2litesql ${ddl2litesql_SOURCES})
 
