@@ -222,7 +222,7 @@ Database::Database(const string& backend, const string& conn)
     Records Database::query(const string &q) const {
         if (verbose)
             cerr << q << endl;
-        auto_ptr<Backend::Result> r(backend->execute(q));
+        unique_ptr<Backend::Result> r(backend->execute(q));
         return r->records();
     }
 
