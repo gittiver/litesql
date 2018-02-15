@@ -20,7 +20,7 @@ if (MSVC)
   
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS   _CRT_SECURE_NO_WARNINGS)
 else(MSVC)
-  list(APPEND CMAKE_CXX_FLAGS "-Wall -Wunused-variable -Wno-long-long")
+  list(APPEND CMAKE_CXX_FLAGS "-Wall -Wextra -Wunused-variable -Wno-long-long")
    #-pedantic 
   list(APPEND CMAKE_C_FLAGS "-Wall -Wunused-variable -Wno-long-long")
 endif(MSVC)
