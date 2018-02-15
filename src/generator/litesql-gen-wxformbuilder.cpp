@@ -17,7 +17,7 @@ void wxFormBuilderGenerator::setOutputFilename(const std::string& filename)
     m_outputFilename=filename;
 }
 
-static bool generateFieldUI(const xml::Field::Ptr& field,ostream& os,size_t indent)
+static bool generateFieldUI(const xml::Field::Ptr& field,ostream& os,size_t UNUSED_ARG(indent))
 {
     os  << "                <object class=\"sizeritem\" expanded=\"1\">" << endl
         << "                    <property name=\"border\">5</property>" << endl
@@ -110,7 +110,9 @@ bool wxFormBuilderGenerator::generate(const xml::ObjectPtr& object,ostream& os,s
 }
 
 
-bool wxFormBuilderGenerator::generate(const Relation::Ptr &  relation,ostream& os,size_t indent)
+bool wxFormBuilderGenerator::generate(const Relation::Ptr&  UNUSED_ARG(relation),
+                                      ostream& UNUSED_ARG(os),
+                                      size_t UNUSED_ARG(indent))
 {
     return true;
 }

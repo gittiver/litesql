@@ -30,13 +30,13 @@ namespace litesql {
     virtual const char* getTarget() const;
     virtual bool generateCode(const ObjectModel* model)=0;
 
-    CodeGenerator* const getParentGenerator() const { return m_pParentGenerator; };
+    const CodeGenerator* getParentGenerator() const { return m_pParentGenerator; };
     void setParentGenerator(CodeGenerator* parent)  { m_pParentGenerator=parent; };
 
     bool generate(const xml::ObjectSequence& objects);
     bool generate(const xml::Relation::sequence& relations);
-    virtual bool generate(const xml::ObjectPtr& object) {return true;};
-    virtual bool generate(const xml::Relation::Ptr& relation){return true;};
+    virtual bool generate(const xml::ObjectPtr& UNUSED_ARG(object) ) {return true;};
+    virtual bool generate(const xml::Relation::Ptr& /*relation*/){return true;};
 
     bool generate(const xml::ObjectSequence& objects,
 		  std::ostream& os,
@@ -45,15 +45,14 @@ namespace litesql {
 		  std::ostream& os,
 		  size_t indent=2);
     
-    virtual bool generate(const xml::ObjectPtr& object, 
-			  std::ostream& os, 
-			  size_t indent=2) 
+    virtual bool generate(const xml::ObjectPtr& UNUSED_ARG(object), 
+			  std::ostream& UNUSED_ARG(os), 
+			  size_t UNUSED_ARG(indent)=2)
     {return true;};
-    
-    virtual bool generate(const xml::Relation::Ptr& relation, 
-			  std::ostream& os, 
-			  size_t indent=4)
-    {return true;};
+    virtual bool generate(const xml::Relation::Ptr& UNUSED_ARG(relation),
+			  std::ostream& UNUSED_ARG(os),
+			  size_t UNUSED_ARG(indent)=4)
+    {return true;}
 
     static CodeGenerator* create(const char* target);
 

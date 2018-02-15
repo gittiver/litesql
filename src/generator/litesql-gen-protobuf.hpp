@@ -16,7 +16,7 @@ namespace litesql
         ;
         bool generateCode(const ObjectModel* model);
     protected:
-        bool generate(const xml::ObjectPtr& object)
+        bool generate(const xml::ObjectPtr& UNUSED_ARG(object))
         {
             return false;
         }
