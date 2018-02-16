@@ -13,11 +13,13 @@ namespace litesql {
 
   class GolangModuleGenerator : public CodeGenerator {
   public:
-     static const char* NAME;
-    GolangModuleGenerator() : CodeGenerator(NAME) { };
-    bool generateCode(const ObjectModel* model);
+    static const char* NAME;
+    GolangModuleGenerator();
+    bool generateCode(const ObjectModel* model) override;
   protected:
-    bool generate(const xml::ObjectPtr& object);
+    virtual bool generate(const xml::ObjectPtr& object,
+                          std::ostream& os,
+                          size_t indent=2) override;
   };
 }
 
