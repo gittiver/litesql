@@ -14,4 +14,8 @@ add_executable(test-update-table test-update-table.cpp)
 target_link_libraries (test-update-table litesql litesql-util ${BACKEND_LIBRARIES})
 add_test(test-update-table ${EXECUTABLE_OUTPUT_PATH}/test-update-table update-table)
 
+add_executable(test-backend-loading test-backend-loading.cpp)
+target_link_libraries (test-backend-loading litesql litesql-util litesql_backend_sqlite)
+add_test(test-backend-loading ${EXECUTABLE_OUTPUT_PATH}/test-backend-loading backend-loading)
+
 INCLUDE_DIRECTORIES(../library)
