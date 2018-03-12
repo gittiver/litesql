@@ -56,8 +56,9 @@ public:
 };
 }
 
-int main(int argc, char *argv[]) {
-  bool success;
+int main(int /*argc*/, char * /*argv*/ []) {
+
+  bool success = false;
   try {
     Database sqlite3_db("sqlite3","database=test-update-table.db");
     success = Updater::testUpgradeTable(sqlite3_db);

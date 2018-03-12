@@ -8,7 +8,7 @@
 using namespace litesql;
 using namespace graph;
 
-int main(int argc, char **argv) {
+int main(int UNUSED_ARG(argc), char ** UNUSED_ARG(argv)) {
 
     try {
         // using SQLite3 as backend

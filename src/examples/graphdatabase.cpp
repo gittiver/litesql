@@ -221,7 +221,7 @@ void Node::update() {
 }
 void Node::del() {
     if (!typeIsCorrect()) {
-        std::auto_ptr<Node> p(upcastCopy());
+        std::unique_ptr<Node> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
@@ -235,17 +235,17 @@ void Node::del() {
 bool Node::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Node> Node::upcast() const {
-    return auto_ptr<Node>(new Node(*this));
+std::unique_ptr<Node> Node::upcast() const {
+    return unique_ptr<Node>(new Node(*this));
 }
-std::auto_ptr<Node> Node::upcastCopy() const {
+std::unique_ptr<Node> Node::upcastCopy() const {
     Node* np = new Node(*this);
     np->id = id;
     np->type = type;
     np->name = name;
     np->nodecolor = nodecolor;
     np->inDatabase = inDatabase;
-    return auto_ptr<Node>(np);
+    return unique_ptr<Node>(np);
 }
 std::ostream & operator<<(std::ostream& os, Node o) {
     os << "-------------------------------------" << std::endl;

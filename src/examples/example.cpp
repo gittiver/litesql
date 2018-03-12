@@ -12,7 +12,7 @@ void example::user::sayHello() {
     std::cout << "Hi! My name is " << name << std::endl;
 }
 
-void example::ThingWithMethods::sayHello(std::string text,int repeat) {
+void example::ThingWithMethods::sayHello(std::string text,int UNUSED_ARG(repeat)) {
 	std::cout << "Hi! I want to say :" << text << std::endl;
 }
 
@@ -21,7 +21,7 @@ void example::ThingWithMethods::sayHello(std::string text,int repeat) {
 using namespace litesql;
 using namespace example;
 
-int main(int argc, char **argv) {
+int main(int UNUSED_ARG(argc), char **UNUSED_ARG(argv)) {
 
     try {
         // using SQLite3 as backend

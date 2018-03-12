@@ -179,8 +179,8 @@ public:
     virtual void update();
     virtual void del();
     virtual bool typeIsCorrect() const;
-    std::auto_ptr<user> upcast() const;
-    std::auto_ptr<user> upcastCopy() const;
+    std::unique_ptr<user> upcast() const;
+    std::unique_ptr<user> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, user o);
 class Person : public litesql::Persistent {
@@ -293,8 +293,8 @@ public:
     virtual void update();
     virtual void del();
     virtual bool typeIsCorrect() const;
-    std::auto_ptr<Person> upcast() const;
-    std::auto_ptr<Person> upcastCopy() const;
+    std::unique_ptr<Person> upcast() const;
+    std::unique_ptr<Person> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Person o);
 class Role : public litesql::Persistent {
@@ -342,8 +342,8 @@ public:
     virtual void update();
     virtual void del();
     virtual bool typeIsCorrect() const;
-    std::auto_ptr<Role> upcast() const;
-    std::auto_ptr<Role> upcastCopy() const;
+    std::unique_ptr<Role> upcast() const;
+    std::unique_ptr<Role> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Role o);
 class Student : public Role {
@@ -382,8 +382,8 @@ public:
     virtual void update();
     virtual void del();
     virtual bool typeIsCorrect() const;
-    std::auto_ptr<Student> upcast() const;
-    std::auto_ptr<Student> upcastCopy() const;
+    std::unique_ptr<Student> upcast() const;
+    std::unique_ptr<Student> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Student o);
 class Employee : public Role {
@@ -422,8 +422,8 @@ public:
     virtual void update();
     virtual void del();
     virtual bool typeIsCorrect() const;
-    std::auto_ptr<Employee> upcast() const;
-    std::auto_ptr<Employee> upcastCopy() const;
+    std::unique_ptr<Employee> upcast() const;
+    std::unique_ptr<Employee> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Employee o);
 class School : public litesql::Persistent {
@@ -473,8 +473,8 @@ public:
     virtual void update();
     virtual void del();
     virtual bool typeIsCorrect() const;
-    std::auto_ptr<School> upcast() const;
-    std::auto_ptr<School> upcastCopy() const;
+    std::unique_ptr<School> upcast() const;
+    std::unique_ptr<School> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, School o);
 class Office : public litesql::Persistent {
@@ -522,8 +522,8 @@ public:
     virtual void update();
     virtual void del();
     virtual bool typeIsCorrect() const;
-    std::auto_ptr<Office> upcast() const;
-    std::auto_ptr<Office> upcastCopy() const;
+    std::unique_ptr<Office> upcast() const;
+    std::unique_ptr<Office> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Office o);
 class ThingWithMethods : public litesql::Persistent {
@@ -562,8 +562,8 @@ public:
     virtual void update();
     virtual void del();
     virtual bool typeIsCorrect() const;
-    std::auto_ptr<ThingWithMethods> upcast() const;
-    std::auto_ptr<ThingWithMethods> upcastCopy() const;
+    std::unique_ptr<ThingWithMethods> upcast() const;
+    std::unique_ptr<ThingWithMethods> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, ThingWithMethods o);
 class ExampleDatabase : public litesql::Database {

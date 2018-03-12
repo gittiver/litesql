@@ -101,29 +101,34 @@ SQLite3::Cursor::~Cursor() {
         sqlite3_finalize(stmt);
     }
 }
-SQLite3::SQLite3(const string& connInfo) : db(NULL), transaction(false),beginTrans("BEGIN") {
-    Split params(connInfo,";");
-    string database;
-    for (size_t i = 0; i < params.size(); i++) {
-        Split param(params[i], "=");
-        if (param.size() == 1)
-            continue;
-        if (param[0] == "database")
-            database = param[1];
-		else if (param[0] == "transaction")
-		{
-            if(param[1]=="immediate") beginTrans="BEGIN IMMEDIATE";
-			else if (param[1]=="exclusive") beginTrans="BEGIN EXCLUSIVE";
-    }
-    }
-    if (database.empty())
-        throw DatabaseError("no database-param specified");
 
-    if (sqlite3_open(database.c_str(), &db)) {
-        throw DatabaseError(sqlite3_errmsg(db));
+SQLite3::SQLite3(const string& connInfo)
+: db(NULL)
+, transaction(false)
+, beginTrans("BEGIN")
+{
+  Split params(connInfo,";");
+  string database;
+  for (size_t i = 0; i < params.size(); i++) {
+    Split param(params[i], "=");
+    if (param.size() == 1)
+      continue;
+    if (param[0] == "database")
+      database = param[1];
+    else if (param[0] == "transaction")
+    {
+      if(param[1]=="immediate") beginTrans="BEGIN IMMEDIATE";
+      else if (param[1]=="exclusive") beginTrans="BEGIN EXCLUSIVE";
     }
-
+  }
+  if (database.empty()) {
+    throw DatabaseError("no database-param specified");
+  }
+  else if (sqlite3_open(database.c_str(), &db)) {
+    throw DatabaseError(sqlite3_errmsg(db));
+  }
 }
+
 bool SQLite3::supportsSequences() const {
     return false;
 }

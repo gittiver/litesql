@@ -96,8 +96,8 @@ public:
     virtual void update();
     virtual void del();
     virtual bool typeIsCorrect() const;
-    std::auto_ptr<Node> upcast() const;
-    std::auto_ptr<Node> upcastCopy() const;
+    std::unique_ptr<Node> upcast() const;
+    std::unique_ptr<Node> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Node o);
 class GraphDatabase : public litesql::Database {

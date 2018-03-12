@@ -462,7 +462,7 @@ void user::update() {
 }
 void user::del() {
     if (!typeIsCorrect()) {
-        std::auto_ptr<user> p(upcastCopy());
+        std::unique_ptr<user> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
@@ -476,17 +476,17 @@ void user::del() {
 bool user::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<user> user::upcast() const {
-    return auto_ptr<user>(new user(*this));
+std::unique_ptr<user> user::upcast() const {
+    return unique_ptr<user>(new user(*this));
 }
-std::auto_ptr<user> user::upcastCopy() const {
+std::unique_ptr<user> user::upcastCopy() const {
     user* np = new user(*this);
     np->id = id;
     np->type = type;
     np->name = name;
     np->passwd = passwd;
     np->inDatabase = inDatabase;
-    return auto_ptr<user>(np);
+    return unique_ptr<user>(np);
 }
 std::ostream & operator<<(std::ostream& os, user o) {
     os << "-------------------------------------" << std::endl;
@@ -737,11 +737,11 @@ void Person::delRecord() {
     deleteFromTable(table__, id);
 }
 void Person::delRelations() {
-    PersonPersonRelationChildren::del(*db, (PersonPersonRelationChildren::Person1 == id) || (PersonPersonRelationChildren::Person2 == id));
-    RoleRelation::del(*db, (RoleRelation::Person == id));
     PersonPersonRelationMother::del(*db, (PersonPersonRelationMother::Person1 == id) || (PersonPersonRelationMother::Person2 == id));
     PersonPersonRelationFather::del(*db, (PersonPersonRelationFather::Person1 == id) || (PersonPersonRelationFather::Person2 == id));
     PersonPersonRelationSiblings::del(*db, (PersonPersonRelationSiblings::Person1 == id) || (PersonPersonRelationSiblings::Person2 == id));
+    PersonPersonRelationChildren::del(*db, (PersonPersonRelationChildren::Person1 == id) || (PersonPersonRelationChildren::Person2 == id));
+    RoleRelation::del(*db, (RoleRelation::Person == id));
 }
 void Person::update() {
     if (!inDatabase) {
@@ -759,7 +759,7 @@ void Person::update() {
 }
 void Person::del() {
     if (!typeIsCorrect()) {
-        std::auto_ptr<Person> p(upcastCopy());
+        std::unique_ptr<Person> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
@@ -773,10 +773,10 @@ void Person::del() {
 bool Person::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Person> Person::upcast() const {
-    return auto_ptr<Person>(new Person(*this));
+std::unique_ptr<Person> Person::upcast() const {
+    return unique_ptr<Person>(new Person(*this));
 }
-std::auto_ptr<Person> Person::upcastCopy() const {
+std::unique_ptr<Person> Person::upcastCopy() const {
     Person* np = new Person(*this);
     np->id = id;
     np->type = type;
@@ -786,7 +786,7 @@ std::auto_ptr<Person> Person::upcastCopy() const {
     np->aDoubleValue = aDoubleValue;
     np->sex = sex;
     np->inDatabase = inDatabase;
-    return auto_ptr<Person>(np);
+    return unique_ptr<Person>(np);
 }
 std::ostream & operator<<(std::ostream& os, Person o) {
     os << "-------------------------------------" << std::endl;
@@ -914,7 +914,7 @@ void Role::update() {
 }
 void Role::del() {
     if (!typeIsCorrect()) {
-        std::auto_ptr<Role> p(upcastCopy());
+        std::unique_ptr<Role> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
@@ -928,14 +928,14 @@ void Role::del() {
 bool Role::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Role> Role::upcast() const {
+std::unique_ptr<Role> Role::upcast() const {
     if (type == Student::type__)
-        return auto_ptr<Role>(new Student(select<Student>(*db, Id == id).one()));
+        return unique_ptr<Role>(new Student(select<Student>(*db, Id == id).one()));
     if (type == Employee::type__)
-        return auto_ptr<Role>(new Employee(select<Employee>(*db, Id == id).one()));
-    return auto_ptr<Role>(new Role(*this));
+        return unique_ptr<Role>(new Employee(select<Employee>(*db, Id == id).one()));
+    return unique_ptr<Role>(new Role(*this));
 }
-std::auto_ptr<Role> Role::upcastCopy() const {
+std::unique_ptr<Role> Role::upcastCopy() const {
     Role* np = NULL;
     if (type == "Student")
         np = new Student(*db);
@@ -944,7 +944,7 @@ std::auto_ptr<Role> Role::upcastCopy() const {
     np->id = id;
     np->type = type;
     np->inDatabase = inDatabase;
-    return auto_ptr<Role>(np);
+    return unique_ptr<Role>(np);
 }
 std::ostream & operator<<(std::ostream& os, Role o) {
     os << "-------------------------------------" << std::endl;
@@ -1045,7 +1045,7 @@ void Student::update() {
 }
 void Student::del() {
     if (!typeIsCorrect()) {
-        std::auto_ptr<Student> p(upcastCopy());
+        std::unique_ptr<Student> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
@@ -1059,13 +1059,13 @@ void Student::del() {
 bool Student::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Student> Student::upcast() const {
-    return auto_ptr<Student>(new Student(*this));
+std::unique_ptr<Student> Student::upcast() const {
+    return unique_ptr<Student>(new Student(*this));
 }
-std::auto_ptr<Student> Student::upcastCopy() const {
+std::unique_ptr<Student> Student::upcastCopy() const {
     Student* np = new Student(*this);
     np->inDatabase = inDatabase;
-    return auto_ptr<Student>(np);
+    return unique_ptr<Student>(np);
 }
 std::ostream & operator<<(std::ostream& os, Student o) {
     os << "-------------------------------------" << std::endl;
@@ -1166,7 +1166,7 @@ void Employee::update() {
 }
 void Employee::del() {
     if (!typeIsCorrect()) {
-        std::auto_ptr<Employee> p(upcastCopy());
+        std::unique_ptr<Employee> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
@@ -1180,13 +1180,13 @@ void Employee::del() {
 bool Employee::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Employee> Employee::upcast() const {
-    return auto_ptr<Employee>(new Employee(*this));
+std::unique_ptr<Employee> Employee::upcast() const {
+    return unique_ptr<Employee>(new Employee(*this));
 }
-std::auto_ptr<Employee> Employee::upcastCopy() const {
+std::unique_ptr<Employee> Employee::upcastCopy() const {
     Employee* np = new Employee(*this);
     np->inDatabase = inDatabase;
-    return auto_ptr<Employee>(np);
+    return unique_ptr<Employee>(np);
 }
 std::ostream & operator<<(std::ostream& os, Employee o) {
     os << "-------------------------------------" << std::endl;
@@ -1318,7 +1318,7 @@ void School::update() {
 }
 void School::del() {
     if (!typeIsCorrect()) {
-        std::auto_ptr<School> p(upcastCopy());
+        std::unique_ptr<School> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
@@ -1332,16 +1332,16 @@ void School::del() {
 bool School::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<School> School::upcast() const {
-    return auto_ptr<School>(new School(*this));
+std::unique_ptr<School> School::upcast() const {
+    return unique_ptr<School>(new School(*this));
 }
-std::auto_ptr<School> School::upcastCopy() const {
+std::unique_ptr<School> School::upcastCopy() const {
     School* np = new School(*this);
     np->id = id;
     np->type = type;
     np->name = name;
     np->inDatabase = inDatabase;
-    return auto_ptr<School>(np);
+    return unique_ptr<School>(np);
 }
 std::ostream & operator<<(std::ostream& os, School o) {
     os << "-------------------------------------" << std::endl;
@@ -1465,7 +1465,7 @@ void Office::update() {
 }
 void Office::del() {
     if (!typeIsCorrect()) {
-        std::auto_ptr<Office> p(upcastCopy());
+        std::unique_ptr<Office> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
@@ -1479,15 +1479,15 @@ void Office::del() {
 bool Office::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Office> Office::upcast() const {
-    return auto_ptr<Office>(new Office(*this));
+std::unique_ptr<Office> Office::upcast() const {
+    return unique_ptr<Office>(new Office(*this));
 }
-std::auto_ptr<Office> Office::upcastCopy() const {
+std::unique_ptr<Office> Office::upcastCopy() const {
     Office* np = new Office(*this);
     np->id = id;
     np->type = type;
     np->inDatabase = inDatabase;
-    return auto_ptr<Office>(np);
+    return unique_ptr<Office>(np);
 }
 std::ostream & operator<<(std::ostream& os, Office o) {
     os << "-------------------------------------" << std::endl;
@@ -1588,7 +1588,7 @@ void ThingWithMethods::update() {
 }
 void ThingWithMethods::del() {
     if (!typeIsCorrect()) {
-        std::auto_ptr<ThingWithMethods> p(upcastCopy());
+        std::unique_ptr<ThingWithMethods> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
@@ -1602,15 +1602,15 @@ void ThingWithMethods::del() {
 bool ThingWithMethods::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<ThingWithMethods> ThingWithMethods::upcast() const {
-    return auto_ptr<ThingWithMethods>(new ThingWithMethods(*this));
+std::unique_ptr<ThingWithMethods> ThingWithMethods::upcast() const {
+    return unique_ptr<ThingWithMethods>(new ThingWithMethods(*this));
 }
-std::auto_ptr<ThingWithMethods> ThingWithMethods::upcastCopy() const {
+std::unique_ptr<ThingWithMethods> ThingWithMethods::upcastCopy() const {
     ThingWithMethods* np = new ThingWithMethods(*this);
     np->id = id;
     np->type = type;
     np->inDatabase = inDatabase;
-    return auto_ptr<ThingWithMethods>(np);
+    return unique_ptr<ThingWithMethods>(np);
 }
 std::ostream & operator<<(std::ostream& os, ThingWithMethods o) {
     os << "-------------------------------------" << std::endl;
