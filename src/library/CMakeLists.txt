@@ -89,14 +89,14 @@ endif(MSVC)
 ###########################
 # backend as shared library
 ###########################
-add_library(${LIBNAME}_backend_sqlite SHARED ${${LIBNAME}_sqlite_SRC}
+add_library(${LIBNAME}_backend_sqlite3 SHARED ${${LIBNAME}_sqlite_SRC}
 sqlite3_backend_plugin.cpp
 )
-target_link_libraries(${LIBNAME}_backend_sqlite PRIVATE litesql PRIVATE litesql-util)
+target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE litesql PRIVATE litesql-util)
 if(SQLITE3_FOUND)
-target_link_libraries(${LIBNAME}_backend_sqlite PRIVATE ${SQLITE3_LIBRARIES})
+target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE ${SQLITE3_LIBRARIES})
 endif(SQLITE3_FOUND)
-endif (LITESQL_WITH_SQLITE3)
+endif(LITESQL_WITH_SQLITE3)
 
 if (LITESQL_WITH_MYSQL)
   add_library(  ${LIBNAME}_mysql SHARED

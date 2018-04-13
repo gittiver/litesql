@@ -35,7 +35,7 @@ namespace litesql {
         class Cursor;
         class Result;
 
-        SQLite3(const std::string& database);
+        SQLite3(const std::string& database) throw(DatabaseError);
         virtual ~SQLite3();
 
         virtual bool supportsSequences() const;
