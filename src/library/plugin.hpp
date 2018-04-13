@@ -2,26 +2,30 @@
 #define PLUGIN_HPP
 
 #include "sharedlibrary.hpp"
-class Backend;
+namespace litesql {
+  class Backend;
 
 class Plugin {
   typedef Backend* (*fpCreateBackend)(const std::string& param);
-  typedef void (*fpDeleteBackend)(Backend* backend);
+  typedef void (*fpDeleteBackend)(litesql::Backend* backend);
 
   friend class PluginLoader;
 public:
-  static std::unique_ptr<Plugin> load(const char* libname);
+  virtual ~Plugin();
+
+  static Plugin* load(const char* libname);
   Backend* create(const std::string& parameter);
   void destroy(Backend* pBackend);
 protected:
-  Plugin(std::shared_ptr<SharedLibrary> sharedLib,
-         std::shared_ptr<SharedLibrary::Symbol> fCreate,
-         std::shared_ptr<SharedLibrary::Symbol> fDestroy );
+  Plugin(SharedLibrary* sharedLib,
+         void* fCreate,
+         void* fDestroy );
 private:
 
-  std::shared_ptr<SharedLibrary> m_sharedLib;
-  std::shared_ptr<SharedLibrary::Symbol> m_fCreate;
-  std::shared_ptr<SharedLibrary::Symbol> m_fDestroy;
+  void* m_fCreate;
+  void* m_fDestroy;
+  SharedLibrary* m_sharedLib;
 };
+}
 #endif // #ifndef PLUGIN_HPP
 

@@ -51,7 +51,7 @@ namespace litesql {
             virtual ~Backend() {}
             /** return true if backend supports CREATE SEQUENCE - 
               SQL-statements */
-            virtual bool supportsSequences() const {
+            virtual bool supportsSequences() const  {
                 return false;
             }
 
@@ -99,7 +99,7 @@ namespace litesql {
       \param connInfo database connection specific parameters (parameters are separated by semicolon)
        @throw DatabaseError if no backend is found
       */
-    static Backend* getBackend(const std::string& type,const std::string& connInfo);
+      static std::unique_ptr<Backend> getBackend(const std::string& type,const std::string& connInfo) throw (DatabaseError);
       
     };
 }

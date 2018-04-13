@@ -5,43 +5,76 @@
  * See LICENSE for copyright information. */
 
 #include "litesql/database.hpp"
-
+#include "plugin.hpp"
 /*
 */
 using namespace litesql;
 
-int main(int /*argc*/, char * /*argv*/ []) {
-
+bool testBackendLoadingWithValidConnectionInfo(const char* backend_name) {
+  const char* connInfo = "database=test-backend-loading.db";
   bool success = false;
+  shared_ptr<Backend> backend;
   try {
-    Database sqlite3_db("sqlite3","database=test-update-table.db");
+    backend = Backend::getBackend(backend_name, connInfo);
+  } catch(const DatabaseError& e) {
     success = false;
+  }
+  if (backend)
+  {
+    success = false;
+    backend->execute("");
+    success = true;
+  }
+  system("rm test-backend-loading.db");
+  return success;
+}
 
+bool testBackendLoadingWithInvalidParameters(const char* backend_name) {
+  static const char* connInfo = "param=b1";
+  bool success = false;
+  shared_ptr<Backend> backend;
+  try {
+    backend = Backend::getBackend(backend_name, connInfo);
+  } catch(const DatabaseError& e) {
+    success = true;
+  }
+  return success;
+}
+
+bool testPluginLoading(const char* sharedLib_filename, const char* db_creation_parameter) {
+  bool success = false;
+
+  auto plugin = Plugin::load(sharedLib_filename);
+  if (plugin)
+  {
+    litesql::Backend* b1=nullptr;
+    try {
+      string error;
+      b1 = plugin->create(db_creation_parameter);
+    } catch (DatabaseError ) {
+      success = true;
+      // this is ok, because the params are invalid
+    }
+    plugin->destroy(b1);
+    delete plugin;
+  }
+  return success;
+}
+
+int main(int /*argc*/, char * /*argv*/ []) {
+  bool success = testPluginLoading("/Users/gulliver/Projects/litesql/litesql/build/cmake/x86_64-Darwin/src/library/liblitesql_backend_sqlite.dylib", "param=b1");
+  success = success && testBackendLoadingWithInvalidParameters("sqlite3");
+  success = success && testBackendLoadingWithValidConnectionInfo("sqlite3");
 #ifdef HAVE_LIBMYSQLCLIENT
-    Database mysql_db("mysql","database=test-update-table.db");
-    success &= Updater::testUpgradeTable(mysql_db);
+  success &&= testPluginLoading("/Users/gulliver/Projects/litesql/litesql/build/cmake/x86_64-Darwin/src/library/liblitesql_backend_mysql.dylib", "param=b1");
+  success &&= testBackendLoadingWithInvalidParameters("mysql");
 #endif
 
 #ifdef HAVE_LIBPQ
-    Database pg_db("postgresql","host=localhost;database=test-update-table;user=litesql;password=litesql");
-    success &= Updater::testUpgradeTable(pg_db);
+  success &&= testPluginLoading("/Users/gulliver/Projects/litesql/litesql/build/cmake/x86_64-Darwin/src/library/liblitesql_backend_pq.dylib", "param=b1");
 #endif
 
-#ifdef HAVE_OCILIB
-    Database oracle_db("oracle","database=test-update-table.db");
-    success &= Updater::testUpgradeTable(oracle_db);
-#endif
-
-#ifdef HAVE_ODBC
-    Database odbc_db("odbc","database=test-update-table.db");
-    success &= Updater::testUpgradeTable(odbc_db);
-#endif
-
-  } catch (Except e) {
-      cerr << e << endl;
-      return -1;
-  }
-    return success ? 0 : -1;
+  return success ? 0 : -1;
 }
 
 
