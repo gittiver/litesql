@@ -5,10 +5,19 @@ using namespace litesql;
 
 extern "C" Backend* createBackend(const std::string& parameter)
 {
-  return new SQLite3(parameter);
+  Backend* pBackend = nullptr;
+  try {
+    pBackend = new SQLite3(parameter);
+  } catch(const DatabaseError& ex) {
+    pBackend = nullptr;
+  }
+  return pBackend;
 }
 
 extern "C" void deleteBackend(Backend* backend)
 {
-  delete backend;
+  if (backend)
+  {
+    delete backend;
+  }
 }

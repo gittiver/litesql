@@ -6,7 +6,6 @@ using namespace std;
 
 SharedLibrary::SharedLibrary(void* handle)
 : dlHandle(handle)
-//, functions()
 {
   cout << "loaded shared lib" << endl;
 }
@@ -20,62 +19,37 @@ SharedLibrary::~SharedLibrary()
   }
 }
 
-shared_ptr<SharedLibrary> SharedLibrary::load(const char* libname)
+SharedLibrary* SharedLibrary::load(const char* libname, std::string* pError)
 {
-  shared_ptr<SharedLibrary> library;
+  SharedLibrary* library = nullptr;
 
   void* dlHandle = dlopen(libname, RTLD_NOW);
   if (!dlHandle) {
-    cerr << "opening dlib " << libname << endl;
+    if (pError) {
+      *pError = dlerror();
+    }
   }
   else {
-    library = shared_ptr<SharedLibrary>(new SharedLibrary(dlHandle));
+    library = new SharedLibrary(dlHandle);
   }
   return library;
 }
 
-std::string SharedLibrary::getError() {
-  string e;
-  const char* pErrorString = dlerror();
-  if (pErrorString)
-  {
-    e = pErrorString;
-  }
-  return e;
-}
-
-shared_ptr<SharedLibrary::Symbol> SharedLibrary::loadSymbol(const char* symbolname)
+void* SharedLibrary::loadSymbol(const char* symbolname, std::string* pError)
 {
-  SharedLibrary::Symbol* symbol = nullptr;
+  void* symbol = nullptr;
   if (!dlHandle) {
-    
+    if (pError)
+    {
+      *pError = "no dlHandle";
+    }
   } else {
-//    auto f = functions.find(symbolname);
-//    if (f==functions.end()) {
-      void *symHandle = dlsym(dlHandle, symbolname);
-      if (!symHandle) {
-        cerr << "symbol not found " << symbolname << endl;
-      } else {
-        symbol = new Symbol(this,symHandle,symbolname);
+      symbol = dlsym(dlHandle, symbolname);
+      if (!symbol) {
+        if (pError) {
+          *pError = dlerror();
+        }
       }
     }
-//  }
-  return unique_ptr<Symbol>(symbol);
+  return symbol;
 }
-
-SharedLibrary::Symbol::Symbol(SharedLibrary* /*lib*/,void* symbolHandle,const string& name)
-: //library(lib) ,
-m_symbolHandle(symbolHandle)
-, m_name(name)
-{}
-
-SharedLibrary::Symbol::~Symbol()
-{
-  //  library->functions.erase(m_name);
-}
-
-const std::string& SharedLibrary::Symbol::getName() const
-{ return m_name; }
-
-void* SharedLibrary::Symbol::getHandle()
-{ return m_symbolHandle; }

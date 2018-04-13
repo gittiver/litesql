@@ -4,42 +4,50 @@
 #include "litesql/backend.hpp"
 
 using namespace std;
+using namespace litesql;
 
-Plugin::Plugin( std::shared_ptr<SharedLibrary> sharedLib,
-                std::shared_ptr<SharedLibrary::Symbol> fCreate,
-                std::shared_ptr<SharedLibrary::Symbol> fDestroy )
-: m_sharedLib(sharedLib)
-, m_fCreate(fCreate)
+Plugin::Plugin( SharedLibrary* sharedLib,
+                void* fCreate,
+                void* fDestroy )
+: m_fCreate(fCreate)
 , m_fDestroy(fDestroy)
+, m_sharedLib(sharedLib)
 {}
-               
-unique_ptr<Plugin> Plugin::load(const char* libname)
+Plugin::~Plugin()
+{
+  delete m_sharedLib;
+}
+
+Plugin* Plugin::load(const char* libname)
 {
   Plugin* pPlugin=nullptr;
-
-  auto lib = SharedLibrary::load(libname);
+  std::string error;
+  auto lib = SharedLibrary::load(libname,&error);
   if (!lib) {
-    cerr  << SharedLibrary::getError()  << endl;
+    cerr  << error  << endl;
   } else {
-    auto createFunction = lib->loadSymbol("createBackend");
+    auto createFunction = lib->loadSymbol("createBackend",&error);
     if (!createFunction) {
-      cerr << lib->getError() << endl;
+      delete lib;
+      cerr << error << endl;
     } else {
-      auto destroyFunction = lib->loadSymbol("deleteBackend");
+      auto destroyFunction = lib->loadSymbol("deleteBackend",&error);
       if (!destroyFunction) {
-        cerr << lib->getError() << endl;
+        delete lib;
+        cerr << error << endl;
       } else {
         pPlugin = new Plugin(lib,createFunction,destroyFunction);
       }
     }
   }
-  return unique_ptr<Plugin>(pPlugin);
+  return pPlugin;
 }
 
 Backend*  Plugin::create(const std::string& parameter) {
-  return ((fpCreateBackend)m_fCreate->getHandle())(parameter);
+  return ((fpCreateBackend)m_fCreate)(parameter);
 }
 
 void  Plugin::destroy(Backend* pBackend) {
-  ((fpDeleteBackend)m_fDestroy->getHandle())(pBackend);
+  if (pBackend)
+    ((fpDeleteBackend)m_fDestroy)(pBackend);
 }

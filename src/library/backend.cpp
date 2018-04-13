@@ -11,16 +11,18 @@
 #include "litesql/string.hpp"
 #include "litesql/types.hpp"
 
+#include "plugin.hpp"
+
+#ifdef HAVE_LIBSQLITE3
+#include "sqlite3.hpp"
+#endif
+
 #ifdef HAVE_LIBMYSQLCLIENT
 #include "mysql.hpp"
 #endif
 
 #ifdef HAVE_LIBPQ
 #include "postgresql.hpp"
-#endif
-
-#ifdef HAVE_LIBSQLITE3
-#include "sqlite3.hpp"
 #endif
 
 #ifdef HAVE_ODBC
@@ -96,37 +98,123 @@ string Backend::groupInsert(const Record& tables,
     return id;
 }
 
-Backend* Backend::getBackend(const string & backendType,const string& connInfo)
-{
-  Backend* backend;
+class LoadedBackend : public Backend {
+public:
+  LoadedBackend(Plugin* p, Backend* pBackend)
+  : plugin(p)
+  , backend(pBackend) {}
+  ~LoadedBackend() {
+    plugin->destroy(backend);
+    backend = nullptr;
+  }
 
-#ifdef HAVE_LIBMYSQLCLIENT
+  virtual bool supportsSequences() const override {
+    return backend->supportsSequences();
+  }
+
+  virtual std::string getSQLType(AT_field_type fieldType, const std::string& length="") const override
+  { return backend->getSQLType(fieldType,length); }
+
+virtual std::string getCreateSequenceSQL(const std::string& name) const override
+  { return backend->getCreateSequenceSQL(name); }
+  virtual std::string getSeqSQL(const std::string& sname) const override
+  { return backend->getSeqSQL(sname); }
+
+  /** backend may want to set an AUTO_INCREMENT-attribute for table's primary
+   key field. this method is to deliver the details to database schema */
+  virtual std::string getRowIDType() const override {
+    return backend->getRowIDType();
+  }
+
+  virtual std::string getInsertID() const override
+  { return backend->getInsertID(); }
+
+  virtual void begin() const override
+  { backend->begin(); }
+
+  virtual void commit() const override
+  { backend->commit(); }
+
+  virtual void rollback() const override
+  { backend->rollback(); }
+
+  litesql::Backend::Result *execute(const std::string &query) const override
+  { return backend->execute(query); }
+
+  litesql::Backend::Cursor *cursor(const std::string &query) const override
+  {return backend->cursor(query);}
+
+  static Backend* load(const char* sharedLib_filename, const string& db_creation_parameter) {
+    Backend* lb = nullptr;
+    Plugin* plugin = Plugin::load(sharedLib_filename);
+    if (plugin)
+    {
+      Backend* backend = plugin->create(db_creation_parameter);
+      if (!backend) {
+        delete plugin;
+      }
+      else
+        lb = new LoadedBackend(plugin,backend);
+    }
+    return lb;
+  }
+
+private:
+  shared_ptr<Plugin> plugin;
+  Backend* backend;
+};
+
+const char* BACKEND_LIBRARYNAME[5][2] = {
+  {"sqlite3","liblitesql_backend_sqlite3.dylib"},
+  {"mysql","liblitesql_backend_mysql.dylib"},
+  {"postgresql","liblitesql_backend_postgresql.dylib"},
+  {"odbc","liblitesql_backend_odbc.dylib"},
+  {"oracle","liblitesql_backend_oracle.dylib"}
+};
+
+static const char* getLibraryName(const char* backendType) {
+  const char* libName = nullptr;
+  for(size_t i = 0;
+      i < 5;
+      i++)
+  {
+    if(!strcmp(backendType, BACKEND_LIBRARYNAME[i][0])) {
+      libName = BACKEND_LIBRARYNAME[i][1];
+      break;
+    }
+  }
+  return libName;
+}
+
+unique_ptr<Backend> Backend::getBackend(const string& backendType,const string& connInfo) throw(DatabaseError)
+{
+  Backend* backend=nullptr;
+
   if (backendType == "mysql") {
+#ifdef HAVE_LIBMYSQLCLIENT
     backend = new MySQL(connInfo);
-  } else
 #endif
+  } else if (backendType == "postgresql") {
 #ifdef HAVE_LIBPQ
-    if (backendType == "postgresql") {
-      backend = new PostgreSQL(connInfo);
-    } else
+    backend = new PostgreSQL(connInfo);
 #endif
+  } else if (backendType == "odbc") {
 #ifdef HAVE_ODBC
-      if (backendType == "odbc") {
-        backend = new ODBCBackend(connInfo);
-      } else
+    backend = new ODBCBackend(connInfo);
 #endif
+  } else if (backendType=="sqlite3") {
 #ifdef HAVE_LIBSQLITE3
-        if (backendType == "sqlite3") {
-          backend = new SQLite3(connInfo);
-        } else
+    backend = LoadedBackend::load(getLibraryName(backendType.c_str()),connInfo);
+    if (!backend)
+      throw DatabaseError("could not load plugin");
 #endif
+  } else if (backendType == "oracle") {
 #ifdef HAVE_OCILIB
-        if (backendType == "oracle") {
-          backend = new OCILib(connInfo);
-        } else
+    backend = new OCILib(connInfo);
 #endif
-        { 
-          backend = NULL;
-        };
-        return backend;
+  } else
+  {
+    //  backend = NULL;
+  };
+  return unique_ptr<Backend>(backend);
 }

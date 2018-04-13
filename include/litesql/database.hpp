@@ -44,10 +44,10 @@ private:
     /** assignment is forbidden */
     Database &operator=(const Database &op);
     /** opens connection to backend */
-    void openDatabase();
+    void openDatabase() throw(DatabaseError);
 protected:
     /** backend implementation */
-    Backend* backend;
+    unique_ptr<Backend> backend;
     /** intermediate representation of single entity in relational database,
         table, index or sequence */
     class SchemaItem {
