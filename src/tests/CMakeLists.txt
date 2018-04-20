@@ -20,8 +20,8 @@ add_dependencies(test-backend-loading liblitesql_backend_sqlite3)
 
 add_test(test-backend-loading ${EXECUTABLE_OUTPUT_PATH}/test-backend-loading backend-loading)
 set_tests_properties(test-backend-loading PROPERTIES
-ENVIRONMENT LD_LIBRARY_PATH=/Users/gulliver/Projects/litesql/litesql/build/cmake/xcode/src/library/Debug/
-ENVIRONMENT DYLD_LIBRARY_PATH=/Users/gulliver/Projects/litesql/litesql/build/cmake/xcode/src/library/Debug/
+ENVIRONMENT LD_LIBRARY_PATH=${EXECUTABLE_OUTPUT_PATH}
+ENVIRONMENT DYLD_LIBRARY_PATH=${EXECUTABLE_OUTPUT_PATH}
 )
 
 INCLUDE_DIRECTORIES(../library)
