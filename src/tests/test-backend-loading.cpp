@@ -62,16 +62,16 @@ bool testPluginLoading(const char* sharedLib_filename, const char* db_creation_p
 }
 
 int main(int /*argc*/, char * /*argv*/ []) {
-  bool success = testPluginLoading("/Users/gulliver/Projects/litesql/litesql/build/cmake/x86_64-Darwin/src/library/liblitesql_backend_sqlite.dylib", "param=b1");
+  bool success = testPluginLoading("liblitesql_backend_sqlite.dylib", "param=b1");
   success = success && testBackendLoadingWithInvalidParameters("sqlite3");
   success = success && testBackendLoadingWithValidConnectionInfo("sqlite3");
 #ifdef HAVE_LIBMYSQLCLIENT
-  success &&= testPluginLoading("/Users/gulliver/Projects/litesql/litesql/build/cmake/x86_64-Darwin/src/library/liblitesql_backend_mysql.dylib", "param=b1");
+  success &&= testPluginLoading("liblitesql_backend_mysql.dylib", "param=b1");
   success &&= testBackendLoadingWithInvalidParameters("mysql");
 #endif
 
 #ifdef HAVE_LIBPQ
-  success &&= testPluginLoading("/Users/gulliver/Projects/litesql/litesql/build/cmake/x86_64-Darwin/src/library/liblitesql_backend_pq.dylib", "param=b1");
+  success &&= testPluginLoading("liblitesql_backend_pq.dylib", "param=b1");
 #endif
 
   return success ? 0 : -1;
