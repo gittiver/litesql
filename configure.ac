@@ -12,6 +12,7 @@ AC_CONFIG_MACRO_DIR([m4])
 # Program Checks
 AC_PROG_CC
 AC_PROG_CXX
+AX_CXX_COMPILE_STDCXX_11()
 AC_PROG_INSTALL
 AC_CHECK_PROG([DOXYGEN], [doxygen], [doxygen], [not found])
 # Doxygen

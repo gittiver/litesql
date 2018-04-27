@@ -3,6 +3,7 @@ cmake_policy(SET CMP0048 NEW)
 
 enable_language(C)
 enable_language(CXX)
+set(CMAKE_CXX_STANDARD 11)
 
 if (MSVC)
   option(LITESQL_MSVC_MT "link with /MT instead of /MD (use dlls versus static linked, change also wxWidgets_LIB_DIR)" ON) 
