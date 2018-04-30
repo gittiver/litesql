@@ -147,7 +147,7 @@ namespace litesql {
   }
 
   Database::Database(const string& backend, const string& conn)
-  : backendType(backend), connInfo(conn), backend(NULL), verbose(false) {
+  : backendType(backend), connInfo(conn), backend(), verbose(false) {
     openDatabase();
   }
   Database::Database(const Database &op)
