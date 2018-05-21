@@ -10,6 +10,7 @@ set(litesql_util_SOURCES split.cpp
             )    
 
 add_library(litesql-util STATIC ${litesql_util_SOURCES})
+target_compile_options(litesql-util PUBLIC -fPIC)
 install(TARGETS litesql-util EXPORT litesql-util
             RUNTIME DESTINATION lib
             LIBRARY DESTINATION lib
@@ -50,6 +51,7 @@ set(litesql_SOURCES    database.cpp
 )
 
 add_library(  ${LIBNAME} STATIC ${litesql_SOURCES})
+target_compile_options(${LIBNAME} PUBLIC -fPIC)
 install(TARGETS ${LIBNAME} EXPORT ${LIBNAME}
             RUNTIME DESTINATION lib 
             LIBRARY DESTINATION lib

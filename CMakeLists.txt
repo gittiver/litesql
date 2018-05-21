@@ -22,7 +22,7 @@ if (MSVC)
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS   _CRT_SECURE_NO_WARNINGS)
 else(MSVC)
   list(APPEND CMAKE_CXX_FLAGS "-Wall -Wextra -Wunused-variable -Wno-long-long")
-   #-pedantic 
+  #-pedantic 
   list(APPEND CMAKE_C_FLAGS "-Wall -Wunused-variable -Wno-long-long")
 endif(MSVC)
 
@@ -55,6 +55,8 @@ option(CMAKE_SUPPRESS_REGENERATION "suppress rules to re-run cmake on changes (w
 if(LITESQL_WITH_TESTS)
   enable_testing()
 endif(LITESQL_WITH_TESTS)
+
+list(APPEND BACKEND_LIBRARIES ${CMAKE_DL_LIBS})
 
 if (LITESQL_WITH_SQLITE3)
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBSQLITE3)
