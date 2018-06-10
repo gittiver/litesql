@@ -16,7 +16,7 @@ mkdir -p $CMAKE_BUILDDIR
 
 cd $CMAKE_BUILDDIR
 rm CMakeCache.txt
-cmake -D WITH_DOCS:bool=ON -D WITH_MYSQL:bool=ON -D WITH_SQLITE:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=ON $STARTDIR
+cmake -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=ON -D LITESQL_WITH_SQLITE:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=OFF $STARTDIR
 cmake --build . --target all --target test 
 cmake --build . --target package 
 cmake --build . --target dist
