@@ -4,6 +4,14 @@
 #include <map>
 #include <string>
 
+#ifdef WIN32
+#include <Windows.h>
+#define HSHAREDLIBRARY HMODULE
+#else
+#include <dlfcn.h>
+#define HSHAREDLIBRARY void*
+#endif //#ifdef WIN32
+
 /** contains the ability to load symbols from shared Libraries on *NIX and OSX
  * or dynamic link Libraries on windows.
  * The loaded symbols cann be used to call functions or access data
@@ -32,8 +40,8 @@ public:
   void* loadSymbol(const char* symbolname, std::string* pError);
 
 private:
-  SharedLibrary(void* handle);
+  SharedLibrary(HSHAREDLIBRARY handle);
 
-  void* dlHandle;
+  HSHAREDLIBRARY dlHandle;
 };
 #endif //#ifndef SHAREDLIBRARY_HPP
