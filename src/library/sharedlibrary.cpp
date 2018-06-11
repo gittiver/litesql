@@ -4,6 +4,7 @@
 using namespace std;
 
 SharedLibrary::SharedLibrary(HSHAREDLIBRARY handle)
+: dlHandle(handle)
 {
   cout << "loaded shared lib" << endl;
 }
