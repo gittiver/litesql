@@ -13,17 +13,19 @@ using namespace litesql;
 bool testBackendLoadingWithValidConnectionInfo(const char* backend_name) {
   const char* connInfo = "database=test-backend-loading.db";
   bool success = false;
-  shared_ptr<Backend> backend;
-  try {
-    backend = Backend::getBackend(backend_name, connInfo);
-  } catch(const DatabaseError& e) {
-    success = false;
-  }
-  if (backend)
   {
-    success = false;
-    backend->execute("");
-    success = true;
+    shared_ptr<Backend> backend;
+    try {
+      backend = Backend::getBackend(backend_name, connInfo);
+    } catch(const DatabaseError& e) {
+      success = false;
+    }
+    if (backend)
+    {
+      success = false;
+      backend->execute("");
+      success = true;
+    }
   }
   system("rm test-backend-loading.db");
   return success;
