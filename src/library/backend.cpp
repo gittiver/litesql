@@ -164,12 +164,13 @@ private:
   Backend* backend;
 };
 
+#define LIBNAME(name) CMAKE_SHARED_LIBRARY_PREFIX #name CMAKE_SHARED_LIBRARY_SUFFIX 
 const char* BACKEND_LIBRARYNAME[5][2] = {
-  {"sqlite3","liblitesql_backend_sqlite3.dylib"},
-  {"mysql","liblitesql_backend_mysql.dylib"},
-  {"postgresql","liblitesql_backend_postgresql.dylib"},
-  {"odbc","liblitesql_backend_odbc.dylib"},
-  {"oracle","liblitesql_backend_oracle.dylib"}
+  {"sqlite3",LIBNAME(litesql_backend_sqlite3)},
+  {"mysql",LIBNAME(litesql_backend_mysql)},
+  {"postgresql",LIBNAME(litesql_backend_postgresql)},
+  {"odbc",LIBNAME(litesql_backend_odbc)},
+  {"oracle",LIBNAME(litesql_backend_oracle)}
 };
 
 static const char* getLibraryName(const char* backendType) {
@@ -178,6 +179,7 @@ static const char* getLibraryName(const char* backendType) {
       i < 5;
       i++)
   {
+    std::cerr << "libname:" << libName << endl;
     if(!strcmp(backendType, BACKEND_LIBRARYNAME[i][0])) {
       libName = BACKEND_LIBRARYNAME[i][1];
       break;
