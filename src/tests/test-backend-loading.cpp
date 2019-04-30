@@ -6,6 +6,8 @@
 
 #include "litesql/database.hpp"
 #include "plugin.hpp"
+
+#include "config.h"
 /*
 */
 using namespace litesql;
@@ -50,30 +52,35 @@ bool testPluginLoading(const char* sharedLib_filename, const char* db_creation_p
   if (plugin)
   {
     litesql::Backend* b1=nullptr;
-    try {
-      string error;
-      b1 = plugin->create(db_creation_parameter);
-    } catch (DatabaseError ) {
-      success = true;
-      // this is ok, because the params are invalid
-    }
+    string error;
+    b1 = plugin->create(db_creation_parameter);
+    cout << "after create " << b1 << endl;
+    success = (b1==nullptr);
+    // this is ok, because the params are invalid
     plugin->destroy(b1);
     delete plugin;
   }
   return success;
 }
 
+#define LIBNAME(name) CMAKE_SHARED_LIBRARY_PREFIX #name CMAKE_SHARED_LIBRARY_SUFFIX 
 int main(int /*argc*/, char * /*argv*/ []) {
-  bool success = testPluginLoading("liblitesql_backend_sqlite.dylib", "param=b1");
+  bool success = testPluginLoading(LIBNAME(litesql_backend_sqlite3), "param=b1");
+  cout << "testPluginLoading:" << (success ? "OK" : "FAIL") << endl;
+
   success = success && testBackendLoadingWithInvalidParameters("sqlite3");
+  cout << "testBackendLoadingWithInvalidParameters" << (success ? "OK" : "FAIL") << endl;
+
   success = success && testBackendLoadingWithValidConnectionInfo("sqlite3");
+  cout << "testBackendLoadingWithValidConnectionInfo" << (success ? "OK" : "FAIL") << endl;
+ 
 #ifdef HAVE_LIBMYSQLCLIENT
-  success &&= testPluginLoading("liblitesql_backend_mysql.dylib", "param=b1");
+  success &&= testPluginLoading(LIBNAME(litesql_backend_mysql), "param=b1");
   success &&= testBackendLoadingWithInvalidParameters("mysql");
 #endif
 
 #ifdef HAVE_LIBPQ
-  success &&= testPluginLoading("liblitesql_backend_pq.dylib", "param=b1");
+  success &&= testPluginLoading(LIBNAME(litesql_backend_pq), "param=b1");
 #endif
 
   return success ? 0 : -1;
