@@ -4,6 +4,7 @@
  * 
  * See LICENSE for copyright information. */
 #include <cstdlib>
+#include <algorithm>
 #include "compatibility.hpp"
 #include "litesql.hpp"
 #include "litesql/field.hpp"

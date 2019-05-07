@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 cmake_policy(SET CMP0048 NEW)
+cmake_policy(SET CMP0042 NEW)
 
 enable_language(C)
 enable_language(CXX)
@@ -22,7 +23,7 @@ if (MSVC)
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS   _CRT_SECURE_NO_WARNINGS)
 else(MSVC)
   list(APPEND CMAKE_CXX_FLAGS "-Wall -Wextra -Wunused-variable -Wno-long-long")
-   #-pedantic 
+  #-pedantic 
   list(APPEND CMAKE_C_FLAGS "-Wall -Wunused-variable -Wno-long-long")
 endif(MSVC)
 
@@ -41,6 +42,7 @@ include(cmake/FindPostgreSQL.cmake)
 include(cmake/FindSQLite3.cmake)
 include(cmake/FindOCILib.cmake)
 
+option(LITESQL_WITH_BACKEND_PLUGINS "build with database plugins in shared libraries" ON)
 option(LITESQL_WITH_MYSQL "build with mysql Backend" OFF)
 option(LITESQL_WITH_SQLITE3 "build with sqlite3 backend(sources integrated)" ON)
 option(LITESQL_WITH_POSTGRES "build with postgres backend" OFF)
@@ -55,6 +57,9 @@ option(CMAKE_SUPPRESS_REGENERATION "suppress rules to re-run cmake on changes (w
 if(LITESQL_WITH_TESTS)
   enable_testing()
 endif(LITESQL_WITH_TESTS)
+
+list(APPEND BACKEND_LIBRARIES ${CMAKE_DL_LIBS})
+set(BACKEND_DL_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/library)
 
 if (LITESQL_WITH_SQLITE3)
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBSQLITE3)

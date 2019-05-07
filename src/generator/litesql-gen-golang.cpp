@@ -114,20 +114,7 @@ bool GolangModuleGenerator::generate(const xml::ObjectPtr& object,
     }
 
     if (!gormtags.empty()) {
-      os << " `gorm:\"";
-
-      bool first = true;
-      for (auto tag: gormtags) {
-        if (first) {
-          first = false;
-        }
-        else {
-          os << ";";
-        }
-        os << tag;
-      }
-
-      os << "\"`";
+      os << " `gorm:\"" << Split::join(gormtags,";") << "\"`";
     }
 
     os << endl;

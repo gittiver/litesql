@@ -15,9 +15,9 @@
 namespace litesql {
   using namespace std;
 
-  void Database::openDatabase() {
+  void Database::openDatabase() throw(DatabaseError) {
     backend = Backend::getBackend(backendType,connInfo);
-    if (backend==NULL)
+    if (!backend)
       throw DatabaseError("Unknown backend: " + backendType);
   }
 
@@ -147,7 +147,7 @@ namespace litesql {
   }
 
   Database::Database(const string& backend, const string& conn)
-  : backendType(backend), connInfo(conn), backend(NULL), verbose(false) {
+  : backendType(backend), connInfo(conn), backend(), verbose(false) {
     openDatabase();
   }
   Database::Database(const Database &op)
@@ -156,8 +156,8 @@ namespace litesql {
     openDatabase();
   }
   Database::~Database() {
-    delete backend;
   }
+
   void Database::create() const {
     vector<SchemaItem> s = getSchema();
     begin();
@@ -219,20 +219,18 @@ namespace litesql {
     }
     commit();
   }
-
   Records Database::query(const string &q) const {
-    if (verbose) {
+        if (verbose)
       cerr << q << endl;
-    }
     unique_ptr<Backend::Result> r(backend->execute(q));
     return r->records();
   }
 
   void Database::insert(const string &table, const Record &r,
-                        const Split& fields) const {
+                          const Split& fields) const {
     string command = "INSERT INTO " + table;
     if (fields.size())
-      command += " (" + fields.join(",") + ")";
+            command += " (" + fields.join(",") + ")";
     command += " VALUES (";
     unsigned int i;
     for (i=0; i < r.size() -1; i++) {
@@ -251,8 +249,8 @@ namespace litesql {
       cerr << "groupInsert" << endl;
       for (size_t i = 0; i < tables.size(); i++) {
         cerr << "\t" << tables[i] << endl;
-        cerr << "\t\tfields : " << Split::join(fields[i],",") << endl;
-        cerr << "\t\tvalues : " << Split::join(values[i],"|") << endl;
+                cerr << "\t\tfields : " << Split::join(fields[i],",") << endl;
+                cerr << "\t\tvalues : " << Split::join(values[i],"|") << endl;
       }
     }
     return backend->groupInsert(tables, fields, values, sequence);

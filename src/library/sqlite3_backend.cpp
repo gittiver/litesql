@@ -102,7 +102,7 @@ SQLite3::Cursor::~Cursor() {
     }
 }
 
-SQLite3::SQLite3(const string& connInfo)
+SQLite3::SQLite3(const string& connInfo) throw(DatabaseError)
 : db(NULL)
 , transaction(false)
 , beginTrans("BEGIN")

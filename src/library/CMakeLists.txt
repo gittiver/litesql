@@ -10,6 +10,7 @@ set(litesql_util_SOURCES split.cpp
             )    
 
 add_library(litesql-util STATIC ${litesql_util_SOURCES})
+target_compile_options(litesql-util PUBLIC -fPIC)
 install(TARGETS litesql-util EXPORT litesql-util
             RUNTIME DESTINATION lib
             LIBRARY DESTINATION lib
@@ -45,8 +46,12 @@ set(litesql_SOURCES    database.cpp
             ../../include/litesql/field.hpp 
             ../../include/litesql/datasource.hpp 
             ../../include/litesql/datetime.hpp
+	    plugin.hpp plugin.cpp
+	    sharedlibrary.hpp sharedlibrary.cpp
 )
+
 add_library(  ${LIBNAME} STATIC ${litesql_SOURCES})
+target_compile_options(${LIBNAME} PUBLIC -fPIC)
 install(TARGETS ${LIBNAME} EXPORT ${LIBNAME}
             RUNTIME DESTINATION lib 
             LIBRARY DESTINATION lib
@@ -71,9 +76,9 @@ if(NOT SQLITE3_FOUND)
                 )
 endif(NOT SQLITE3_FOUND)
 
-add_library(${LIBNAME}_sqlite STATIC ${${LIBNAME}_sqlite_SRC}) 
+add_library(${LIBNAME}_sqlite STATIC ${${LIBNAME}_sqlite_SRC})
 
-install(TARGETS ${LIBNAME}_sqlite  EXPORT ${LIBNAME}_sqlite  
+install(TARGETS ${LIBNAME}_sqlite  EXPORT ${LIBNAME}_sqlite
             RUNTIME DESTINATION lib 
             LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib/static 
@@ -82,7 +87,18 @@ install(EXPORT ${LIBNAME}_sqlite DESTINATION lib)
 if (MSVC)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_sqlited.lib DESTINATION lib/static COMPONENT devel)
 endif(MSVC)
-endif (LITESQL_WITH_SQLITE3)
+
+###########################
+# backend as shared library
+###########################
+add_library(${LIBNAME}_backend_sqlite3 SHARED ${${LIBNAME}_sqlite_SRC}
+sqlite3_backend_plugin.cpp
+)
+target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE litesql PRIVATE litesql-util)
+if(SQLITE3_FOUND)
+target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE ${SQLITE3_LIBRARIES})
+endif(SQLITE3_FOUND)
+endif(LITESQL_WITH_SQLITE3)
 
 if (LITESQL_WITH_MYSQL)
   add_library(  ${LIBNAME}_mysql SHARED
