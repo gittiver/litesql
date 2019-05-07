@@ -151,7 +151,7 @@ virtual std::string getCreateSequenceSQL(const std::string& name) const override
     {
       Backend* backend = plugin->create(db_creation_parameter);
       if (!backend) {
-        delete plugin;
+	 delete plugin;
       }
       else
         lb = new LoadedBackend(plugin,backend);
@@ -179,7 +179,6 @@ static const char* getLibraryName(const char* backendType) {
       i < 5;
       i++)
   {
-    std::cerr << "libname:" << libName << endl;
     if(!strcmp(backendType, BACKEND_LIBRARYNAME[i][0])) {
       libName = BACKEND_LIBRARYNAME[i][1];
       break;
