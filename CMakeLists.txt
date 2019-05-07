@@ -42,6 +42,7 @@ include(cmake/FindPostgreSQL.cmake)
 include(cmake/FindSQLite3.cmake)
 include(cmake/FindOCILib.cmake)
 
+option(LITESQL_WITH_BACKEND_PLUGINS "build with database plugins in shared libraries" ON)
 option(LITESQL_WITH_MYSQL "build with mysql Backend" OFF)
 option(LITESQL_WITH_SQLITE3 "build with sqlite3 backend(sources integrated)" ON)
 option(LITESQL_WITH_POSTGRES "build with postgres backend" OFF)

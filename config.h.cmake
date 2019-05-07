@@ -123,7 +123,7 @@
 /* Define to empty if `const' does not conform to ANSI C. */
 #cmakedefine const
 
-
+#cmakedefine LITESQL_WITH_BACKEND_PLUGINS
 #cmakedefine CMAKE_SHARED_LIBRARY_PREFIX "@CMAKE_SHARED_LIBRARY_PREFIX@"
 #cmakedefine CMAKE_SHARED_LIBRARY_SUFFIX "@CMAKE_SHARED_LIBRARY_SUFFIX@"
   

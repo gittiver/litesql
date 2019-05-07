@@ -13,9 +13,10 @@
 
 #include "plugin.hpp"
 
-#ifdef HAVE_LIBSQLITE3
+
+#ifndef  LITESQL_WITH_BACKEND_PLUGINS
+
 #include "sqlite3.hpp"
-#endif
 
 #ifdef HAVE_LIBMYSQLCLIENT
 #include "mysql.hpp"
@@ -33,6 +34,7 @@
 #ifdef HAVE_OCILIB
 #include "ocilib_backend.hpp"
 #endif
+#endif // #ifndef  LITESQL_WITH_BACKEND_PLUGINS
 
 using namespace litesql;
 using namespace std;    
@@ -98,6 +100,7 @@ string Backend::groupInsert(const Record& tables,
     return id;
 }
 
+#ifdef  LITESQL_WITH_BACKEND_PLUGINS
 class LoadedBackend : public Backend {
 public:
   LoadedBackend(Plugin* p, Backend* pBackend)
@@ -186,11 +189,17 @@ static const char* getLibraryName(const char* backendType) {
   }
   return libName;
 }
+#endif //#ifdef  LITESQL_WITH_BACKEND_PLUGINS
 
 unique_ptr<Backend> Backend::getBackend(const string& backendType,const string& connInfo) throw(DatabaseError)
 {
   Backend* backend=nullptr;
-
+#ifdef  LITESQL_WITH_BACKEND_PLUGINS
+  backend = LoadedBackend::load(getLibraryName(backendType.c_str()),connInfo);
+    if (!backend)
+      throw DatabaseError("could not load plugin");
+#else
+  
   if (backendType == "mysql") {
 #ifdef HAVE_LIBMYSQLCLIENT
     backend = new MySQL(connInfo);
@@ -205,9 +214,7 @@ unique_ptr<Backend> Backend::getBackend(const string& backendType,const string& 
 #endif
   } else if (backendType=="sqlite3") {
 #ifdef HAVE_LIBSQLITE3
-    backend = LoadedBackend::load(getLibraryName(backendType.c_str()),connInfo);
-    if (!backend)
-      throw DatabaseError("could not load plugin");
+    backend = new SQLite3(connInfo);
 #endif
   } else if (backendType == "oracle") {
 #ifdef HAVE_OCILIB
@@ -217,5 +224,6 @@ unique_ptr<Backend> Backend::getBackend(const string& backendType,const string& 
   {
     //  backend = NULL;
   };
+#endif //#ifdef  LITESQL_WITH_BACKEND_PLUGINS
   return unique_ptr<Backend>(backend);
 }
