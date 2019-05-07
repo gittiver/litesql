@@ -9,10 +9,14 @@ set(libmodel_SOURCES
 			md5.hpp
 			xmlobjects.hpp
 			litesql-gen-graphviz.cpp litesql-gen-graphviz.hpp
-			litesql-gen-ruby-activerecord.cpp litesql-gen-ruby-activerecord.hpp
+			litesql-gen-ruby-activerecord.cpp
+			litesql-gen-ruby-activerecord.hpp
 			litesql-gen-golang.cpp litesql-gen-golang.hpp
-			litesql-gen-wxformbuilder.cpp litesql-gen-wxformbuilder.hpp
-            litesql-gen-protobuf.cpp litesql-gen-protobuf.hpp
+			litesql-gen-wxformbuilder.cpp
+			litesql-gen-wxformbuilder.hpp
+			litesql-gen-protobuf.cpp litesql-gen-protobuf.hpp
+			xmlparser.cpp xmlparser.hpp
+                        objectmodel.cpp objectmodel.hpp
 	)
 
 set(litesql-gen_SOURCES
@@ -22,20 +26,6 @@ set(litesql-gen_SOURCES
 set(ddl2litesql_SOURCES
 			ddl2litesql.cpp
 	)
-
-# for new parser
-if (LITESQL_WITH_SAX_PARSER)
-   list(APPEND libmodel_SOURCES xmlparser.cpp
-                                xmlparser.hpp
-                                objectmodel.cpp
-                                objectmodel.hpp
-)
-else (LITESQL_WITH_SAX_PARSER)
-   list(APPEND libmodel_SOURCES
-          litesql-gen-actions.cpp
-          litesql-gen.cpp
-          litesql-gen.hpp)
-endif(LITESQL_WITH_SAX_PARSER)
 
 add_library(model STATIC ${libmodel_SOURCES})
 install(TARGETS model EXPORT model

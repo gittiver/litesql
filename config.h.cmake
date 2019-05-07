@@ -119,7 +119,6 @@
 /* Version number of package */
 #cmakedefine VERSION
 
-#cmakedefine WITH_SAX_PARSER
 /* Define to empty if `const' does not conform to ANSI C. */
 #cmakedefine const
 
