@@ -14,7 +14,7 @@
 */
 using namespace litesql;
 
-int main(int argc, char *argv[]) {
+int main(int /*argc*/, char * /*argv*/[]) {
     // TC1 for DateTime
    DateTime dt;
    std::string dtstring = dt.asString();

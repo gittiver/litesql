@@ -12,7 +12,7 @@
   TC2: Simple SQL-query
 */
 using namespace litesql;
-int main(int argc, char *argv[]) {
+int main(int /* argc */, char * /* argv */ []) {
     // TC1
     SelectQuery tc1;
     tc1.distinct(true).limit(15).offset(5)

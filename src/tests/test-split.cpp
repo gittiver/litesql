@@ -19,7 +19,7 @@
  */
 using namespace litesql;
 
-int main(int argc, char *argv[]) {
+int main(int /*argc*/, char * /*argv*/[]) {
     // TC1
     Split tc1("abc def ghj iklm");
     assert(tc1.size()==4);
