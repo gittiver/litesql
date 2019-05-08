@@ -51,6 +51,7 @@ option(LITESQL_WITH_OCILIB "build with ocilib Backend" OFF)
 option(LITESQL_WITH_DOCS "generate Documentation" OFF)
 option(LITESQL_WITH_UI "build also GUI-Version of generator" OFF)
 option(LITESQL_WITH_TESTS "enable testing" ON)
+option(LITESQL_USE_SYSTEM_EXPAT "use expat lib provided by system" ON)
 option(CMAKE_SUPPRESS_REGENERATION "suppress rules to re-run cmake on changes (warning: no dependency checks!)?" OFF)
 
 if(LITESQL_WITH_TESTS)
@@ -134,20 +135,41 @@ if (LITESQL_WITH_DOCS)
   add_subdirectory(docs/doxygen)
 endif(LITESQL_WITH_DOCS)
 
+if(LITESQL_USE_SYSTEM_EXPAT)
 include (${CMAKE_ROOT}/Modules/FindEXPAT.cmake)
 mark_as_advanced(EXPAT_INCLUDE_DIRS EXPAT_LIBRARIES EXPAT_FOUND)
+endif(LITESQL_USE_SYSTEM_EXPAT)
+  
 
-if (MSVC AND NOT EXPAT_FOUND)
-  message("using internal expat lib")
-  set(EXPAT_LIBRARIES libexpatMT.lib)
-  set(EXPAT_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/win32/include/expat)
-  set (EXPAT_DEFINITIONS XML_STATIC)
-  set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS ${EXPAT_DEFINITIONS})
-endif (MSVC AND NOT EXPAT_FOUND)
+if (NOT EXPAT_FOUND)
+  set(EXPAT_BUILD_DIR  ${CMAKE_BINARY_DIR}/libexpat)
+
+  include(ExternalProject)
+  ExternalProject_Add(libexpat
+                 PREFIX ${CMAKE_SOURCE_DIR}/3rdparty/libexpat
+		 GIT_REPOSITORY https://github.com/libexpat/libexpat.git
+		 GIT_TAG R_2_2_6
+                 INSTALL_COMMAND ""
+		 CONFIGURE_COMMAND
+		   ${CMAKE_COMMAND} -S <SOURCE_DIR>/expat
+		                    -B ${EXPAT_BUILD_DIR}
+    				    -D BUILD_examples:bool=OFF
+				    -D BUILD_tools:bool=OFF
+				    -D BUILD_tests:bool=OFF
+				    -D BUILD_shared:bool=OFF
+				    -D BUILD_doc:bool=OFF
+		 BUILD_COMMAND ${CMAKE_COMMAND}
+		                  --build ${EXPAT_BUILD_DIR}
+		                  --config $<CONFIG>
+		 )
+  set(EXPAT_LIBRARIES expat)
+  set(EXPAT_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/3rdparty/libexpat/expat
+    ${EXPAT_BUILD_DIR})
+endif (NOT EXPAT_FOUND)
+
 message(EXPAT_LIBRARIES= ${EXPAT_LIBRARIES})
 message(EXPAT_INCLUDE_DIRS=${EXPAT_INCLUDE_DIRS})
 message(EXPAT_DEFINITIONS=${EXPAT_DEFINITIONS})
-
 
 if(MSVC)
   set(CMAKE_FIND_LIBRARY_PREFIXES "")
