@@ -167,7 +167,12 @@ private:
   Backend* backend;
 };
 
+#ifdef CMAKE_SHARED_LIBRARY_PREFIX
 #define LIBNAME(name) CMAKE_SHARED_LIBRARY_PREFIX #name CMAKE_SHARED_LIBRARY_SUFFIX 
+#else
+#define LIBNAME(name) #name CMAKE_SHARED_LIBRARY_SUFFIX 
+#endif 
+
 const char* BACKEND_LIBRARYNAME[5][2] = {
   {"sqlite3",LIBNAME(litesql_backend_sqlite3)},
   {"mysql",LIBNAME(litesql_backend_mysql)},

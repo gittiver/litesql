@@ -63,7 +63,11 @@ bool testPluginLoading(const char* sharedLib_filename, const char* db_creation_p
   return success;
 }
 
+#ifdef CMAKE_SHARED_LIBRARY_PREFIX
 #define LIBNAME(name) CMAKE_SHARED_LIBRARY_PREFIX #name CMAKE_SHARED_LIBRARY_SUFFIX 
+#else
+#define LIBNAME(name) #name CMAKE_SHARED_LIBRARY_SUFFIX 
+#endif
 int main(int /*argc*/, char * /*argv*/ []) {
   bool success = testPluginLoading(LIBNAME(litesql_backend_sqlite3), "param=b1");
   cout << "testPluginLoading:" << (success ? "OK" : "FAIL") << endl;
