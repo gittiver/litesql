@@ -142,29 +142,24 @@ endif(LITESQL_USE_SYSTEM_EXPAT)
   
 
 if (NOT EXPAT_FOUND)
-  set(EXPAT_BUILD_DIR  ${CMAKE_BINARY_DIR}/libexpat)
 
   include(ExternalProject)
   ExternalProject_Add(libexpat
-                 PREFIX ${CMAKE_SOURCE_DIR}/3rdparty/libexpat
-		 GIT_REPOSITORY https://github.com/libexpat/libexpat.git
+  		 GIT_REPOSITORY https://github.com/libexpat/libexpat.git
 		 GIT_TAG R_2_2_6
-                 INSTALL_COMMAND ""
+		 PREFIX 3rdparty
 		 CONFIGURE_COMMAND
-		   ${CMAKE_COMMAND} -S <SOURCE_DIR>/expat
-		                    -B ${EXPAT_BUILD_DIR}
-    				    -D BUILD_examples:bool=OFF
+		   ${CMAKE_COMMAND} -D BUILD_examples:bool=OFF
 				    -D BUILD_tools:bool=OFF
 				    -D BUILD_tests:bool=OFF
 				    -D BUILD_shared:bool=OFF
 				    -D BUILD_doc:bool=OFF
-		 BUILD_COMMAND ${CMAKE_COMMAND}
-		                  --build ${EXPAT_BUILD_DIR}
-		                  --config $<CONFIG>
+				    <SOURCE_DIR>/expat
+		 INSTALL_COMMAND ""
 		 )
-  set(EXPAT_LIBRARIES expat)
-  set(EXPAT_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/3rdparty/libexpat/expat
-    ${EXPAT_BUILD_DIR})
+
+	       set(EXPAT_LIBRARIES expat)
+  set(EXPAT_INCLUDE_DIRS ${CMAKE_BUILD_DIR}/3rdparty/src/libexpat/expat/lib ${CMAKE_BUILD_DIR}/3rdparty/src/libexpat-build/)
 endif (NOT EXPAT_FOUND)
 
 message(EXPAT_LIBRARIES= ${EXPAT_LIBRARIES})
@@ -268,7 +263,7 @@ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
-set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR}/;/docs/html;/autom4te.cache;/build/;/win32/;/.svn/;/.git/;~$;${CPACK_SOURCE_IGNORE_FILES}")
+set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR}/;/docs/html;/autom4te.cache;/build/*;/win32/;/.svn/;/.git/;~$;${CPACK_SOURCE_IGNORE_FILES}")
 
 if(WIN32 AND NOT UNIX)
   set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}\\\\${PROJECT_VERSION}")
