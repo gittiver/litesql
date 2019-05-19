@@ -28,6 +28,7 @@ else(MSVC)
 endif(MSVC)
 
 # Include all the necessary files for macros
+include(ExternalProject)
 include (${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckIncludeFile.cmake)
 include (${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake)
@@ -63,15 +64,8 @@ set(BACKEND_DL_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/library)
 
 if (LITESQL_WITH_SQLITE3)
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBSQLITE3)
+  option(LITESQL_USE_SYSTEM_SQLITE "use sqlite3 lib provided by system" ON)
   list(APPEND BACKEND_LIBRARIES litesql_sqlite)
-  if(SQLITE3_FOUND)
-    message("use sqlite3 from system: ${SQLITE3_LIBRARIES}")
-    list(APPEND BACKEND_INCLUDES ${SQLITE3_INCLUDE_DIR})
-    list(APPEND BACKEND_LIBRARIES ${SQLITE3_LIBRARIES})
-    list(APPEND BACKEND_DEFINITIONS ${SQLITE3_DEFINITIONS})
-  else(SQLITE3_FOUND)
-    message("use internal sqlite3 sources")
-  endif(SQLITE3_FOUND)
 endif (LITESQL_WITH_SQLITE3)
 
 if (LITESQL_WITH_MYSQL AND MYSQL_FOUND)
@@ -143,7 +137,6 @@ endif(LITESQL_USE_SYSTEM_EXPAT)
 
 if (NOT EXPAT_FOUND)
 
-  include(ExternalProject)
   ExternalProject_Add(libexpat
   		 GIT_REPOSITORY https://github.com/libexpat/libexpat.git
 		 GIT_TAG R_2_2_6

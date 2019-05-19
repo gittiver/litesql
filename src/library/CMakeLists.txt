@@ -64,19 +64,27 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/litesqld.lib DESTINATION lib/sta
     COMPONENT devel)
 endif(MSVC)
 
+
 if (LITESQL_WITH_SQLITE3)
   set(${LIBNAME}_sqlite_SRC
                 sqlite3_backend.cpp 
                 sqlite3.hpp )
-if(NOT SQLITE3_FOUND)
-  list(APPEND ${LIBNAME}_sqlite_SRC 
-                sqlite3.c
-                sqlite3.h
-                sqlite3ext.h
-                )
-endif(NOT SQLITE3_FOUND)
-
 add_library(${LIBNAME}_sqlite STATIC ${${LIBNAME}_sqlite_SRC})
+	      
+if(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
+    message("use sqlite3 from system: ${SQLITE3_LIBRARIES}")
+    list(APPEND BACKEND_INCLUDES ${SQLITE3_INCLUDE_DIR})
+    list(APPEND BACKEND_LIBRARIES ${SQLITE3_LIBRARIES})
+    list(APPEND BACKEND_DEFINITIONS ${SQLITE3_DEFINITIONS})
+else(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
+  ExternalProject_Add(libsqlite3
+    GIT_REPOSITORY https://github.com/gittiver/sqlite3-amalgamation.git
+    PREFIX 3rdparty
+    INSTALL_COMMAND ""
+    )
+  message("use internal sqlite3")
+
+endif(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
 
 install(TARGETS ${LIBNAME}_sqlite  EXPORT ${LIBNAME}_sqlite
             RUNTIME DESTINATION lib 
@@ -95,9 +103,12 @@ add_library(${LIBNAME}_backend_sqlite3 SHARED ${${LIBNAME}_sqlite_SRC}
 sqlite3_backend_plugin.cpp
 )
 target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE litesql PRIVATE litesql-util)
-if(SQLITE3_FOUND)
+if(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
 target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE ${SQLITE3_LIBRARIES})
-endif(SQLITE3_FOUND)
+else(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
+target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE sqlite3)
+endif(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
+
 endif(LITESQL_WITH_SQLITE3)
 
 if (LITESQL_WITH_MYSQL)
