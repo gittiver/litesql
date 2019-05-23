@@ -7,7 +7,7 @@ before_script:
  - mkdir build
  - cd build
  - cmake -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=ON -D LITESQL_WITH_SQLITE3:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=OFF ..
-	
+        
 script:
  - cmake --build . --target all 
  - cmake --build . --target test 
