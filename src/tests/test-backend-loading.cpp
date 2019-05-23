@@ -79,12 +79,12 @@ int main(int /*argc*/, char * /*argv*/ []) {
   cout << "testBackendLoadingWithValidConnectionInfo" << (success ? "OK" : "FAIL") << endl;
  
 #ifdef HAVE_LIBMYSQLCLIENT
-  success &&= testPluginLoading(LIBNAME(litesql_backend_mysql), "param=b1");
-  success &&= testBackendLoadingWithInvalidParameters("mysql");
+  success = success && testPluginLoading(LIBNAME(litesql_backend_mysql), "param=b1");
+  success = success && testBackendLoadingWithInvalidParameters("mysql");
 #endif
 
 #ifdef HAVE_LIBPQ
-  success &&= testPluginLoading(LIBNAME(litesql_backend_pq), "param=b1");
+  success = success && testPluginLoading(LIBNAME(litesql_backend_pq), "param=b1");
 #endif
 
   return success ? 0 : -1;
