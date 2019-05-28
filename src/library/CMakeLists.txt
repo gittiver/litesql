@@ -67,8 +67,8 @@ endif(MSVC)
 
 if (LITESQL_WITH_SQLITE3)
   set(${LIBNAME}_sqlite_SRC
-                sqlite3_backend.cpp 
-                sqlite3.hpp )
+                sqlite3/sqlite3_backend.cpp 
+                sqlite3/sqlite3.hpp )
 add_library(${LIBNAME}_sqlite STATIC ${${LIBNAME}_sqlite_SRC})
 	      
 if(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
@@ -100,7 +100,7 @@ endif(MSVC)
 # backend as shared library
 ###########################
 add_library(${LIBNAME}_backend_sqlite3 SHARED ${${LIBNAME}_sqlite_SRC}
-sqlite3_backend_plugin.cpp
+sqlite3/sqlite3_backend_plugin.cpp
 )
 target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE litesql PRIVATE litesql-util)
 if(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
@@ -113,7 +113,7 @@ endif(LITESQL_WITH_SQLITE3)
 
 if (LITESQL_WITH_MYSQL)
   add_library(  ${LIBNAME}_mysql SHARED
-                        mysql.cpp
+                        mysql/mysql.cpp
    
   )
   install(TARGETS ${LIBNAME}_mysql  EXPORT ${LIBNAME}_mysql 
