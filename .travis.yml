@@ -1,7 +1,4 @@
-language: C++
-before_install:
-- sudo apt-get update -qq
-- sudo apt-get install -qq libwxgtk3.0-dev
+language: cpp
 
 before_script:
  - mkdir build
@@ -14,3 +11,10 @@ script:
  - cmake --build . --target package 
  - cmake --build . --target dist
  - cmake --build . --target package_source
+
+matrix:
+  include:
+    - os: linux
+      dist: xenial      
+    - os: osx
+    - os: windows
