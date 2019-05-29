@@ -136,7 +136,6 @@ endif(LITESQL_USE_SYSTEM_EXPAT)
   
 
 if (NOT EXPAT_FOUND)
-
   ExternalProject_Add(libexpat
   		 GIT_REPOSITORY https://github.com/libexpat/libexpat.git
 		 GIT_TAG R_2_2_6
@@ -147,13 +146,25 @@ if (NOT EXPAT_FOUND)
 				    -D BUILD_tests:bool=OFF
 				    -D BUILD_shared:bool=OFF
 				    -D BUILD_doc:bool=OFF
+					-D MSVC_USE_STATIC_CRT:bool=ON
 				    <SOURCE_DIR>/expat
 		 INSTALL_COMMAND ""
-		 )
+  )
+  set(EXPAT_LIBRARIES expat)
+  set(EXPAT_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libexpat-build/ 
+                         ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libexpat/expat/lib 
+                         )
+  if(MSVC)
+    add_library(expat STATIC IMPORTED)
 
-	       set(EXPAT_LIBRARIES expat)
-  set(EXPAT_INCLUDE_DIRS ${CMAKE_BUILD_DIR}/3rdparty/src/libexpat/expat/lib ${CMAKE_BUILD_DIR}/3rdparty/src/libexpat-build/)
-endif (NOT EXPAT_FOUND)
+    set_property(TARGET expat PROPERTY IMPORTED_LOCATION_DEBUG ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libexpat-build/Debug/expatd.lib)
+    set_property(TARGET expat PROPERTY IMPORTED_LOCATION_RELEASE ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libexpat-build/Release/expat.lib)
+    set_property(TARGET expat PROPERTY IMPORTED_LOCATION_MINSIZEREL ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libexpat-build/MinSizeRel/expat.lib)
+    add_dependencies(expat libexpat)
+  endif(MSVC)
+  set(EXPAT_LIBRARIES expat)
+ 
+ endif (NOT EXPAT_FOUND)
 
 message(EXPAT_LIBRARIES= ${EXPAT_LIBRARIES})
 message(EXPAT_INCLUDE_DIRS=${EXPAT_INCLUDE_DIRS})

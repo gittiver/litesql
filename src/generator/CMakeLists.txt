@@ -16,18 +16,12 @@ set(libmodel_SOURCES
 			litesql-gen-wxformbuilder.hpp
 			litesql-gen-protobuf.cpp litesql-gen-protobuf.hpp
 			xmlparser.cpp xmlparser.hpp
-                        objectmodel.cpp objectmodel.hpp
+            objectmodel.cpp objectmodel.hpp
 	)
 
-set(litesql-gen_SOURCES
-			litesql-gen-main.cpp
-	)
-
-set(ddl2litesql_SOURCES
-			ddl2litesql.cpp
-	)
-
+include_directories(${EXPAT_INCLUDE_DIRS})
 add_library(model STATIC ${libmodel_SOURCES})
+
 install(TARGETS model EXPORT model
             RUNTIME DESTINATION lib
             LIBRARY DESTINATION lib
@@ -35,19 +29,14 @@ install(TARGETS model EXPORT model
             COMPONENT devel)
 install(EXPORT model DESTINATION lib)
 
-add_executable(litesql-gen ${litesql-gen_SOURCES})
-add_executable(ddl2litesql ${ddl2litesql_SOURCES})
+add_executable(litesql-gen litesql-gen-main.cpp)
+add_executable(ddl2litesql ddl2litesql.cpp)
 
 target_link_libraries (litesql-gen litesql litesql-util model ${EXPAT_LIBRARIES})
 target_link_libraries (ddl2litesql litesql-util model ${EXPAT_LIBRARIES})
 
 if (LITESQL_WITH_UI)
   add_subdirectory(ui)
-# old stuff which does not work
-#  if (MSVC)
-#    add_subdirectory(win32-ui)
-#  endif(MSVC)
 endif(LITESQL_WITH_UI)
 
 install(TARGETS litesql-gen RUNTIME DESTINATION bin COMPONENT generator)
-INCLUDE_DIRECTORIES(../library ${EXPAT_INCLUDE_DIRS})

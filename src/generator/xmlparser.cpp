@@ -25,61 +25,57 @@ void XMLParser_xmlSAX2EndElement(void *ctx,const XML_Char *name)
 
 }
 
-XmlParser::~XmlParser()
-{
-   XML_ParserFree(saxHandler);
-}
-
 bool XmlParser::parseFile(const std::string& filename)
 {
-  saxHandler = XML_ParserCreate("UTF-8");
-  XML_SetUserData(saxHandler,this);
-  XML_SetElementHandler(saxHandler,
-    XMLParser_xmlSAX2StartElement,
-    XMLParser_xmlSAX2EndElement);
+	XML_Parser saxHandler = XML_ParserCreate("UTF-8");
+	XML_SetUserData(saxHandler, this);
+	XML_SetElementHandler(saxHandler,
+		XMLParser_xmlSAX2StartElement,
+		XMLParser_xmlSAX2EndElement);
 
-  const size_t BUFF_SIZE = 255;
-  FILE* docfd = fopen(filename.c_str(),"r");
-  
-  bool success = (docfd !=NULL);
-  if (!success)
-  {
-    Logger::error("cant open ",filename);
-  }
-  else {
-    for (;;) {
-    int bytes_read;
-    void *buff = XML_GetBuffer(saxHandler, BUFF_SIZE);
-    /* handle error */
-    if (buff == NULL) {
-      success = false;
-      break;
-    }
+	const size_t BUFF_SIZE = 255;
+	FILE* docfd = fopen(filename.c_str(), "r");
 
-    bytes_read = fread(buff,1, BUFF_SIZE,docfd);
-    if (bytes_read < 0) {
-      /* handle error */
-      success = false;
-      break;
-    }
+	bool success = (docfd != NULL);
+	if (!success)
+	{
+		Logger::error("cant open ", filename);
+	}
+	else {
+		for (;;) {
+			int bytes_read;
+			void *buff = XML_GetBuffer(saxHandler, BUFF_SIZE);
+			/* handle error */
+			if (buff == NULL) {
+				success = false;
+				break;
+			}
 
-    if (! XML_ParseBuffer(saxHandler, bytes_read, bytes_read == 0)) {
-      /* handle parse error */
-      success = false;
-      break;
-    }
+			bytes_read = fread(buff, 1, BUFF_SIZE, docfd);
+			if (bytes_read < 0) {
+				/* handle error */
+				success = false;
+				break;
+			}
 
-    if (bytes_read == 0)
-      break;
-    }
-    fclose(docfd);
-  }
-  
-  if (!success)
-   {
-      Logger::error("error parsing ", filename);
-   }
-  return success;
+			if (!XML_ParseBuffer(saxHandler, bytes_read, bytes_read == 0)) {
+				/* handle parse error */
+				success = false;
+				break;
+			}
+
+			if (bytes_read == 0)
+				break;
+		}
+		fclose(docfd);
+	}
+
+	if (!success)
+	{
+		Logger::error("error parsing ", filename);
+	}
+	XML_ParserFree(saxHandler);
+	return success;
 }
 
 const XML_Char* XmlParser::xmlGetAttrValue(const XML_Char** attrs,const XML_Char* key)

@@ -1,4 +1,5 @@
-set PATH=%PATH%;D:\Program Files\CMake 2.8\bin
+
+set PATH=%PATH%;C:\Program Files\CMake\bin
 
 set CMAKE_BUILDDIR=build\cmake\vc
 set STARTDIR=%CD%
@@ -20,7 +21,7 @@ cd %CMAKE_BUILDDIR%
 
 del CMakeCache.txt
 
-cmake -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=ON -D LITESQL_WITH_SQLITE:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=ON -D LITESQL_MSVC_MT:BOOL=ON -D wxWidgets_ROOT_DIR=%WXDIR% -D wxWidgets_LIB_DIR=%WXDIR%\lib\vc_lib %STARTDIR%
+cmake -D LITESQL_USE_SYSTEM_EXPAT:bool=OFF -D LITESQL_USE_SYSTEM_SQLITE:bool=OFF -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=ON -D LITESQL_WITH_SQLITE:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=OFF -D LITESQL_MSVC_MT:BOOL=ON -D wxWidgets_ROOT_DIR=%WXDIR% -D wxWidgets_LIB_DIR=%WXDIR%\lib\vc_lib %STARTDIR%
 
 cmake --build . --target ALL_BUILD --config Release
 cmake --build . --target ALL_BUILD --config Debug
