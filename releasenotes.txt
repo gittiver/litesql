@@ -1,3 +1,11 @@
+Version 0.3.18
+##############
+- cleaned up sourcetree and build with cmake (can build and use sqlite3 sources and expat)
+- removed internal outdated source copies for expat and sqlite3
+- experimental codegenerators for go xorm, protobuf and others
+- database backend for sqlite3 in shared library, other database will follow
+- working cmake build on linux, osx and windows/ Visual Studio 17
+
 Version 0.3.17
 ##############
 * fix fot #45 license corrected

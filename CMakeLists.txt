@@ -36,7 +36,7 @@ include (${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake)
 include (${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 
-set(PROJECT_NAME "litesql" VERSION 0.3.17.4)
+set(PROJECT_NAME "litesql" VERSION 0.3.18)
 
 include(cmake/FindMySQL.cmake)
 include(cmake/FindPostgreSQL.cmake)
