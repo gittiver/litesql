@@ -21,11 +21,11 @@ cmake --build . --target all
 cmake --build . --target all 
 cmake --build . --target package 
 cmake --build . --target dist
-#cmake --build . --target package_source
+cmake --build . --target package_source
 cd $STARTDIR
 
-mkdir -p $AM_BUILDDIR
-cd $AM_BUILDDIR
-$STARTDIR/configure MYSQL_CONFIG=$MYSQL_CONFIG
-make distcheck
-cd $STARTDIR
+#mkdir -p $AM_BUILDDIR
+#cd $AM_BUILDDIR
+#$STARTDIR/configure MYSQL_CONFIG=$MYSQL_CONFIG
+#make distcheck
+#cd $STARTDIR
