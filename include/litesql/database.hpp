@@ -42,9 +42,9 @@ private:
     /** connection info "param=value param=value ..." */
     std::string connInfo;
     /** assignment is forbidden */
-    Database &operator=(const Database &op);
+    Database &operator=(const Database &op)=delete;
     /** opens connection to backend */
-    void openDatabase() throw(DatabaseError);
+	void openDatabase() noexcept(false); // throw(DatabaseError);
 protected:
     /** backend implementation */
     unique_ptr<Backend> backend;

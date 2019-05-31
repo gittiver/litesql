@@ -15,10 +15,12 @@
 namespace litesql {
   using namespace std;
 
-  void Database::openDatabase() throw(DatabaseError) {
+  void Database::openDatabase() noexcept(false) //throw(DatabaseError) 
+  {
     backend = Backend::getBackend(backendType,connInfo);
-    if (!backend)
-      throw DatabaseError("Unknown backend: " + backendType);
+	if (!backend) {
+		throw DatabaseError("Unknown backend: " + backendType);
+	}
   }
 
   void Database::storeSchemaItem(const SchemaItem& s) const {

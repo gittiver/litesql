@@ -7,7 +7,7 @@
  * See LICENSE for copyright information. */
 #include "compatibility.hpp"
 #include "sqlite3.hpp"
-#include <sqlite3.h>
+#include "sqlite3.h"
 
 #include <string>
 #ifdef HAVE_LIBSQLITE3
@@ -102,7 +102,7 @@ SQLite3::Cursor::~Cursor() {
     }
 }
 
-SQLite3::SQLite3(const string& connInfo) throw(DatabaseError)
+SQLite3::SQLite3(const string& connInfo) noexcept(false) //throw(DatabaseError)
 : db(NULL)
 , transaction(false)
 , beginTrans("BEGIN")

@@ -196,15 +196,15 @@ static const char* getLibraryName(const char* backendType) {
 }
 #endif //#ifdef  LITESQL_WITH_BACKEND_PLUGINS
 
-unique_ptr<Backend> Backend::getBackend(const string& backendType,const string& connInfo) throw(DatabaseError)
+unique_ptr<Backend> Backend::getBackend(const string& backendType,const string& connInfo) noexcept(false) // throw(DatabaseError)
 {
   Backend* backend=nullptr;
 #ifdef  LITESQL_WITH_BACKEND_PLUGINS
   backend = LoadedBackend::load(getLibraryName(backendType.c_str()),connInfo);
-    if (!backend)
+    if (!backend) {
       throw DatabaseError("could not load plugin");
+	}
 #else
-  
   if (backendType == "mysql") {
 #ifdef HAVE_LIBMYSQLCLIENT
     backend = new MySQL(connInfo);
@@ -225,9 +225,8 @@ unique_ptr<Backend> Backend::getBackend(const string& backendType,const string& 
 #ifdef HAVE_OCILIB
     backend = new OCILib(connInfo);
 #endif
-  } else
-  {
-    //  backend = NULL;
+  } else {
+    //  backend = nullptr;
   };
 #endif //#ifdef  LITESQL_WITH_BACKEND_PLUGINS
   return unique_ptr<Backend>(backend);
