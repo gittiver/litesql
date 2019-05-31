@@ -19,7 +19,7 @@ bool testBackendLoadingWithValidConnectionInfo(const char* backend_name) {
     shared_ptr<Backend> backend;
     try {
       backend = Backend::getBackend(backend_name, connInfo);
-    } catch(const DatabaseError& e) {
+    } catch(const DatabaseError& /*e*/) {
       success = false;
     }
     if (backend)
@@ -39,7 +39,7 @@ bool testBackendLoadingWithInvalidParameters(const char* backend_name) {
   shared_ptr<Backend> backend;
   try {
     backend = Backend::getBackend(backend_name, connInfo);
-  } catch(const DatabaseError& e) {
+  } catch(const DatabaseError& /*e*/) {
     success = true;
   }
   return success;

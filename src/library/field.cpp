@@ -99,7 +99,7 @@ double convert<int,double>(int value) {
 
 template <>
 float convert<double, float>(double value) {
-    return value;
+    return static_cast<float>(value);
 }
 
 template <>

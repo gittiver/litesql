@@ -8,7 +8,7 @@ extern "C" Backend* createBackend(const std::string& parameter)
   Backend* pBackend = nullptr;
   try {
     pBackend = new SQLite3(parameter);
-  } catch(const DatabaseError& ex) {
+  } catch(const DatabaseError& /*ex*/) {
     pBackend = nullptr;
   }
   return pBackend;

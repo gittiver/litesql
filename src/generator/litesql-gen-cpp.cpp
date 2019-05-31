@@ -87,8 +87,8 @@ public:
         params.push_back(v);
         return *this;
     }
-    Method& constructor(string params) {
-        constructorParams = params;
+    Method& constructor(string parameters) {
+        constructorParams = parameters;
         return *this;
     }
     Method& body(string line) {
@@ -111,14 +111,14 @@ public:
         isDefinition = true;
         return *this;
     }
-    Method& template_(string params) {
+    Method& template_(string parameters) {
         isTemplate = true;
-        templateParams = params;
+        templateParams = parameters;
         return *this;
     }
-    Method& templateSpec(string params) {
+    Method& templateSpec(string parameters) {
         isTemplate = isTemplateSpec = true;
-        templateParams = params;
+        templateParams = parameters;
         return *this;
     }
     Method& const_() {
@@ -422,13 +422,14 @@ void writeObjFields(Class & cl, const xml::Object & o)
       cl.variable(field);
       if (fld.values.size() > 0) {
          Class valueHolder(xml::capitalize(fld.name));
-         for (size_t i = 0; i < fld.values.size(); i++) {
-            const xml::Value& value = fld.values[i];
+         for (size_t j = 0; j < fld.values.size(); j++) {
+            const xml::Value& value = fld.values[j];
             string v;
-            if (fld.getCPPType() == "std::string")
-               v = quote(value.value);
-            else
-               v = value.value;
+			if (fld.getCPPType() == "std::string") {
+				v = quote(value.value);
+			} else {
+				v = value.value;
+			}
             Variable val(value.name, "const " + fld.getCPPType(), v);
 
             val.static_();

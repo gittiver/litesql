@@ -281,10 +281,10 @@ public:
         }
         return max;
     }
-    size_t countTypes(const string& name) const {
+    size_t countTypes(const string& name_) const {
         size_t res = 0;
         for (size_t i = 0; i < related.size(); i++)
-            if (related[i]->objectName == name)
+            if (related[i]->objectName == name_)
                 res++;
         return res;
     }
