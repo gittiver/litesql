@@ -1,4 +1,4 @@
-Examples {#examples}
+Examples
 ====================================================
 
 # Creating and Dropping Database

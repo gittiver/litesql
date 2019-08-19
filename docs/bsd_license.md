@@ -1,4 +1,4 @@
-BSD License {#bsd_license}
+BSD License
 ===========
 
 LiteSQL is distributed under the terms of BSD-license stated below:

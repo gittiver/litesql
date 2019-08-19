@@ -1,4 +1,4 @@
-How Objects Are Stored in the Database {#mapping_objects_to_database}
+How Objects Are Stored in the Database
 ======================================
 
 Please refer to [Scott Ambler's article](http://www.agiledata.org/essays/mappingObjects.html) for detailed information about object-relational mapping techniques. This document states briefly how LiteSQL does it.

@@ -1,4 +1,4 @@
-# Quick Start {#quickstart}
+# Quick Start
 
 # Step 1: Write XML-file which defines objects, fields, methods and relations in database.
 

@@ -38,7 +38,6 @@ compile time.
 \subsection optionalreqs Optional
 - automake 1.9.6
 - autoconf 2.61
-- flexml 1.61 (to generate code generator ;)
 - doxygen 1.5.1
 - dpkg-buildpackage (to generate debian packages)
 

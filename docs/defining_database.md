@@ -1,4 +1,4 @@
-Writing XML Database Definition {#defining_database}
+Writing XML Database Definition
 ====================================================
 
 Before the library can be used, an XML file has to be written. The XML file defines types, objects, fields, methods and relations between objects of the database.

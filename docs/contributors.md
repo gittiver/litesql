@@ -1,4 +1,4 @@
-Contributors {#contributors} 
+Contributors
 ============
 
 (in alphabetical order)
