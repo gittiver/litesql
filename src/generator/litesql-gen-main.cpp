@@ -65,19 +65,19 @@ int parseArgs(int argc, char **argv)
       i++;
       continue;
     } else if (litesql::startsWith(arg, "--target=")) {
-      litesql::Split lang(arg, "=");
+      vector<string> lang = split(arg, "=");
       options.targets.push_back(lang[1]);
       continue;
     }  else if (litesql::startsWith(arg, "--output-dir")) {
-      litesql::Split lang(arg, "=");
+      vector<string> lang=split(arg, "=");
       options.output_dir=lang[1];
       continue;
     } else if (litesql::startsWith(arg, "--output-sources")) {
-      litesql::Split lang(arg, "=");
+      vector<string> lang=split(arg, "=");
       options.output_sources=lang[1];
       continue;
     }  else if (litesql::startsWith(arg, "--output-include")) {
-      litesql::Split lang(arg, "=");
+      vector<string> lang=split(arg, "=");
       options.output_includes=lang[1];
       continue;
     }

@@ -7,8 +7,6 @@
 
 #ifndef __litesql_relation_hpp
 #define __litesql_relation_hpp
-#include <vector>
-#include <string>
 /** \file relation.hpp
     See \ref usage_using_relations */
 namespace litesql {
@@ -17,7 +15,7 @@ template <class T>
 class RelationHandle {
 protected:
     const T* owner;
-    RelationHandle(const T& o) : owner(&o) {}    
+    RelationHandle(const T& o) : owner(&o) {}
 };
 
 }

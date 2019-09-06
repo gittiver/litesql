@@ -6,8 +6,7 @@
 
 #ifndef litesql_expr_hpp
 #define litesql_expr_hpp
-#include <string>
-#include <utility>
+
 #include "litesql/utils.hpp"
 #include "litesql/field.hpp"
 /** \file expr.hpp 
@@ -19,7 +18,7 @@ using namespace std;
 class Expr {
 protected:
     // extra tables to be joined
-    Split extraTables;
+  std::vector<std::string> extraTables;
 public:
   /// constant for True expression
   static const char* True; 
@@ -27,7 +26,7 @@ public:
     virtual std::string asString() const { return True; }
 
 
-    Split getExtraTables() const { 
+    const std::vector<std::string>& getExtraTables() const { 
         return extraTables;
     }
     virtual ~Expr() {}

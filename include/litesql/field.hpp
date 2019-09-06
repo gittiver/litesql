@@ -6,10 +6,10 @@
 
 #ifndef litesql_field_hpp
 #define litesql_field_hpp
+
 #include <iostream>
 #include <vector>
 #include <utility>
-#include <string>
 #include "litesql/string.hpp"
 #include "litesql/commontypes.h"
 
@@ -172,7 +172,7 @@ public:
     initWithData(b.m_data,b.m_length);
   };
 
-  Blob(const void* data, size_t length) : m_data(NULL), m_length(0)
+  Blob(const void* data, size_t length=0) : m_data(NULL), m_length(0)
   {
     initWithData((u8_t*)data,length);
   };

@@ -3,11 +3,7 @@ set(LIBNAME litesql)
 ##############################################################################
 # litesql-util library
 ##############################################################################
-set(litesql_util_SOURCES split.cpp 
-            string.cpp
-               ../../include/litesql/split.hpp 
-            ../../include/litesql/string.hpp 
-            )    
+set(litesql_util_SOURCES string.cpp ../../include/litesql/string.hpp)    
 
 add_library(litesql-util STATIC ${litesql_util_SOURCES})
 set_property(TARGET litesql-util PROPERTY POSITION_INDEPENDENT_CODE ON)

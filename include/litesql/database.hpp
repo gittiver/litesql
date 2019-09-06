@@ -6,18 +6,15 @@
 
 #ifndef litesql_database_hpp
 #define litesql_database_hpp
-#include <string>
-#include <set>
-#include "litesql/types.hpp"
-#include "litesql/expr.hpp"
-#include "litesql/backend.hpp"
-#include "litesql/cursor.hpp"
 /** \file database.hpp
     Database-class
 */
 
+#include <set>
+#include "litesql/expr.hpp"
+#include "litesql/cursor.hpp"
+
 namespace litesql {
-using namespace std;
 
 class ColumnDefinition {
 public:
@@ -44,7 +41,7 @@ private:
     /** assignment is forbidden */
     Database &operator=(const Database &op)=delete;
     /** opens connection to backend */
-	void openDatabase() noexcept(false); // throw(DatabaseError);
+	void openDatabase() noexcept(false);
 protected:
     /** backend implementation */
     unique_ptr<Backend> backend;
@@ -121,7 +118,7 @@ public:
         Values are escaped using escapeSQL - function */
     
     void insert(const std::string &table, const Record &r,
-                const Split& fields=Split()) const;
+                const std::vector<std::string>& fields=std::vector<std::string>()) const;
     /** executes multiple INSERT-statements and assigns same 'row id'
         for first field of every record
         \param tables destination tables for insert operation

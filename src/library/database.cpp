@@ -64,12 +64,12 @@ namespace litesql {
     int end = schema.find(")");
     if (start == -1 || end == -1)
       return fields;
-    Split tmp(replace(schema.substr(start+1, end-start-1), ", ", ","), ",");
+    vector<string> tmp=split(replace(schema.substr(start+1, end-start-1), ", ", ","), ",");
     
     ColumnDefinition field_def;
     for (size_t i = 0; i < tmp.size(); i++)
     {
-      Split s(tmp[i]);
+      vector<string> s = split(tmp[i]);
       field_def.name = s[0];
       field_def.type = s[1];
       fields.push_back(field_def);
@@ -121,8 +121,8 @@ namespace litesql {
 
     query(newSchema);
     // oldfields as ...
-    Split cols;
-    Split colNames;
+    vector<string> cols;
+    vector<string> colNames;
     string s;
 
     for (ColumnDefinitions::iterator it = commonFields.begin();it!= commonFields.end();it++)
@@ -143,7 +143,8 @@ namespace litesql {
       colNames.push_back(it->name);
     }
 
-    query(" INSERT INTO " + name +" ("+colNames.join(",") +") SELECT "+ cols.join(",")+" FROM " + bkp_name);
+    query(" INSERT INTO " + name +" ("+ join(colNames,",")
+          +") SELECT "+ join(cols,",")+" FROM " + bkp_name);
     query(" DROP TABLE " + bkp_name);
     commit();
   }
@@ -229,10 +230,10 @@ namespace litesql {
   }
 
   void Database::insert(const string &table, const Record &r,
-                          const Split& fields) const {
+                          const vector<string>& fields) const {
     string command = "INSERT INTO " + table;
     if (fields.size())
-            command += " (" + fields.join(",") + ")";
+      command += " (" + join(fields,",") + ")";
     command += " VALUES (";
     unsigned int i;
     for (i=0; i < r.size() -1; i++) {
@@ -251,8 +252,8 @@ namespace litesql {
       cerr << "groupInsert" << endl;
       for (size_t i = 0; i < tables.size(); i++) {
         cerr << "\t" << tables[i] << endl;
-                cerr << "\t\tfields : " << Split::join(fields[i],",") << endl;
-                cerr << "\t\tvalues : " << Split::join(values[i],"|") << endl;
+                cerr << "\t\tfields : " << join(fields[i],",") << endl;
+                cerr << "\t\tvalues : " << join(values[i],"|") << endl;
       }
     }
     return backend->groupInsert(tables, fields, values, sequence);

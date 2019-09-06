@@ -7,16 +7,8 @@
 #ifndef litesql_persistent_hpp
 #define litesql_persistent_hpp
 
-#include <memory>
-#include <string>
-#include <vector>
 #include <functional>
 #include <map>
-#include "litesql/utils.hpp"
-#include "litesql/database.hpp"
-#include "litesql/cursor.hpp"
-#include "litesql/expr.hpp"
-#include "litesql/selectquery.hpp"
 #include "litesql/relation.hpp"
 #include "litesql/operations.hpp"
 
@@ -89,7 +81,7 @@ public:
     virtual ~Persistent() {}
     /** selectObjectQuery uses this to list tables used by Persistent 
         \param fdatas field information */
-    static Split getTablesFromFieldTypes(const std::vector<FieldType> & fdatas);
+  static std::vector<std::string> getTablesFromFieldTypes(const std::vector<FieldType> & fdatas);
 
     /** class adds own tables to tables 
         \param tables initially empty Split. Tables are inserted there */

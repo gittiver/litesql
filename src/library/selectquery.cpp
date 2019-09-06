@@ -64,17 +64,17 @@ SelectQuery::operator string() const {
     std::string res = "SELECT ";
     if (_distinct)
         res += "DISTINCT ";
-    res += _results.join(",");
+    res += join(_results,",");
     res += " FROM ";
-    res += _sources.join(",");
+    res += join(_sources,",");
     if (_where != "True")
         res += " WHERE " + _where;
     if (_groupBy.size() > 0)
-        res += " GROUP BY " + _groupBy.join(",");
+        res += " GROUP BY " + join(_groupBy,",");
     if (!_having.empty())
         res += " HAVING " + _having;
     if (_orderBy.size() > 0)
-        res += " ORDER BY " + _orderBy.join(",");
+        res += " ORDER BY " + join(_orderBy,",");
     if (_limit) 
         res += " LIMIT " + toString(_limit);
     if (_offset) 

@@ -8,27 +8,26 @@
  * selectObjectQuery<T> and DataSource<T> */
 #ifndef litesql_datasource_hpp
 #define litesql_datasource_hpp
-#include <set>
-#include <string>
+
 #include "litesql/database.hpp"
 #include "litesql/selectquery.hpp"
-#include "litesql/expr.hpp"
+
 namespace litesql {
-using namespace std;
-/** returns SelectQuery which selects objects of type T 
- *  \param fdatas fields of class T
-    \param e optional filter expression */
-SelectQuery selectObjectQuery(const std::vector<FieldType>& fdatas, 
-                               const Expr & e=Expr());
-   
-/** returns SelectQuery which selects objects of type T 
-    \param e optional filter expression */
-template <class T>
-SelectQuery selectObjectQuery(const Expr & e=Expr()) {
+
+  /** returns SelectQuery which selects objects of type T
+   *  \param fdatas fields of class T
+   \param e optional filter expression */
+  SelectQuery selectObjectQuery(const std::vector<FieldType>& fdatas,
+                                const Expr & e=Expr());
+
+  /** returns SelectQuery which selects objects of type T
+   \param e optional filter expression */
+  template <class T>
+  SelectQuery selectObjectQuery(const Expr & e=Expr()) {
     std::vector<FieldType> fdatas;
     T::getFieldTypes(fdatas);
     return selectObjectQuery(fdatas, e);
-}
+  }
 /** template class which holds SelectQuery for selecting objects of type T */
 template <class T>
 class DataSource {

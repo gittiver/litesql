@@ -15,7 +15,7 @@ const litesql::FieldType PersonPersonRelationMother::Person1("Person1_",A_field_
 const litesql::FieldType PersonPersonRelationMother::Person2("Person2_",A_field_type_integer,table__);
 void PersonPersonRelationMother::link(const litesql::Database& db, const example::Person& o0, const example::Person& o1) {
     Record values;
-    Split fields;
+    Record fields;
     fields.push_back(Person1.name());
     values.push_back(o0.id);
     fields.push_back(Person2.name());
@@ -64,7 +64,7 @@ const litesql::FieldType PersonPersonRelationFather::Person1("Person1_",A_field_
 const litesql::FieldType PersonPersonRelationFather::Person2("Person2_",A_field_type_integer,table__);
 void PersonPersonRelationFather::link(const litesql::Database& db, const example::Person& o0, const example::Person& o1) {
     Record values;
-    Split fields;
+    Record fields;
     fields.push_back(Person1.name());
     values.push_back(o0.id);
     fields.push_back(Person2.name());
@@ -113,7 +113,7 @@ const litesql::FieldType PersonPersonRelationSiblings::Person1("Person1_",A_fiel
 const litesql::FieldType PersonPersonRelationSiblings::Person2("Person2_",A_field_type_integer,table__);
 void PersonPersonRelationSiblings::link(const litesql::Database& db, const example::Person& o0, const example::Person& o1) {
     Record values;
-    Split fields;
+    Record fields;
     fields.push_back(Person1.name());
     values.push_back(o0.id);
     fields.push_back(Person2.name());
@@ -170,7 +170,7 @@ const litesql::FieldType PersonPersonRelationChildren::Person1("Person1_",A_fiel
 const litesql::FieldType PersonPersonRelationChildren::Person2("Person2_",A_field_type_integer,table__);
 void PersonPersonRelationChildren::link(const litesql::Database& db, const example::Person& o0, const example::Person& o1) {
     Record values;
-    Split fields;
+    Record fields;
     fields.push_back(Person1.name());
     values.push_back(o0.id);
     fields.push_back(Person2.name());
@@ -219,7 +219,7 @@ const litesql::FieldType RoleRelation::Person("Person1_",A_field_type_integer,ta
 const litesql::FieldType RoleRelation::Role("Role2_",A_field_type_integer,table__);
 void RoleRelation::link(const litesql::Database& db, const example::Person& o0, const example::Role& o1) {
     Record values;
-    Split fields;
+    Record fields;
     fields.push_back(Person.name());
     values.push_back(o0.id);
     fields.push_back(Role.name());
@@ -268,7 +268,7 @@ const litesql::FieldType SchoolStudentRelation::School("School1_",A_field_type_i
 const litesql::FieldType SchoolStudentRelation::Student("Student2_",A_field_type_integer,table__);
 void SchoolStudentRelation::link(const litesql::Database& db, const example::School& o0, const example::Student& o1) {
     Record values;
-    Split fields;
+    Record fields;
     fields.push_back(School.name());
     values.push_back(o0.id);
     fields.push_back(Student.name());
@@ -317,7 +317,7 @@ const litesql::FieldType EmployeeOfficeRelation::Employee("Employee1_",A_field_t
 const litesql::FieldType EmployeeOfficeRelation::Office("Office2_",A_field_type_integer,table__);
 void EmployeeOfficeRelation::link(const litesql::Database& db, const example::Employee& o0, const example::Office& o1) {
     Record values;
-    Split fields;
+    Record fields;
     fields.push_back(Employee.name());
     values.push_back(o0.id);
     fields.push_back(Office.name());

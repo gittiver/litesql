@@ -183,7 +183,7 @@ bool GolangModuleGenerator::generate(const xml::ObjectPtr& object,
     }
 
     if (!gormtags.empty()) {
-      os << " `gorm:\"" << Split::join(gormtags,";") << "\"`";
+      os << " `gorm:\"" << join(gormtags,";") << "\"`";
     }
 
     os << endl;

@@ -6,15 +6,16 @@
 
 #ifndef _litesql_except_hpp
 #define _litesql_except_hpp
+
 #include <iostream>
-#include <string>
 #include <exception>
 #include "litesql/utils.hpp"
+
 /** \file except.hpp
     contains litesql's exception classes */
 namespace litesql {
 /** base class for exceptions */
-	class Except : public std::exception  {
+class Except : public std::exception  {
 private:
     std::string msg;
 public: 

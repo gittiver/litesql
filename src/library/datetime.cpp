@@ -4,7 +4,6 @@
  *
  * See LICENSE for copyright information. */
 #include "litesql/datetime.hpp"
-#include "litesql/split.hpp"
 #include "compatibility.hpp"
 #include <time.h>
 #include <cstdio>
@@ -122,7 +121,7 @@ string Date::asString(string format) const {
         snprintf(buf, 32, "%lu", value);
         return buf;
     }
-    Split data(format, "%");
+    vector<string> data = split(format, "%");
     TimeStruct ts(value);
     string res = data[0];
     for (size_t i = 1; i < data.size(); i++) {
@@ -179,7 +178,7 @@ string Time::asString(string format) const {
         snprintf(buf, 32, "%d", value);
         return buf;
     }
-    Split data(format, "%");
+    vector<string> data= split(format, "%");
     string res = data[0];
     for (size_t i = 1; i < data.size(); i++) {
         string rest = data[i].substr(1, data[i].size());
@@ -248,7 +247,7 @@ string DateTime::asString(string format) const {
         snprintf(buf, 32, "%lu", value);
         return buf;
     }
-    Split data(format, "%");
+    vector<string> data = split(format, "%");
     TimeStruct ts(value);
     string res = data[0];
     for (size_t i = 1; i < data.size(); i++) {

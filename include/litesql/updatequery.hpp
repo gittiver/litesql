@@ -18,8 +18,8 @@ using namespace std;
 class UpdateQuery {
     string table;
     string _where;
-    Split fields;
-    Split values;
+    std::vector<std::string> fields;
+    std::vector<std::string> values;
 public:
     UpdateQuery(const string& t) : table(t), _where("True") {}
     UpdateQuery& where(const Expr& e);

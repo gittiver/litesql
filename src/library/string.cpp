@@ -77,9 +77,20 @@ string lstrip(const string& s) {
     return s.substr(pos, s.size());
 }
 string replace(const string& s, const string& what, const string& with) {
-    Split parts(s, what);
-    return parts.join(with);
+  string data = s;
+  size_t pos = data.find(what);
+
+  // Repeat till end is reached
+  while( pos != std::string::npos)
+  {
+    // Replace this occurrence of Sub String
+    data.replace(pos, what.size(), with);
+    // Get the next occurrence from the current position
+    pos = data.find(what, pos + with.size());
+  }
+  return data;
 }
+
 int hexToInt(const string& s) {
     int res = 0;
 	
@@ -118,7 +129,57 @@ string escapeSQL(const string &str)
     
     tmp = replace(str, "'NULL'", "NULL");
     return "'" + replace(tmp, "'", "''") + "'";
-} 
+}
+
+  string join(const vector<string>& strings,const string& delim){
+    string res;
+    for (vector<string>::const_iterator it = strings.begin(); it != strings.end(); it++) {
+      if (it != strings.begin())
+        res.append(delim);
+      res.append(*it);
+    }
+    return res;
+  }
+
+  vector<string> split(const string& s, const string& delim) {
+    vector<string> split;
+    char * buf = strdup((char*) s.c_str());
+    char * ptr = buf;
+    int len = delim.size();
+    vector<char*> pointers;
+    pointers.push_back(ptr);
+    while((ptr = strstr(ptr, delim.c_str()))) {
+      *ptr = '\0';
+      ptr += len;
+      pointers.push_back(ptr);
+    }
+    for (vector<char*>::iterator i = pointers.begin();
+         i != pointers.end();
+         ++i)
+      split.push_back(string(*i));
+
+    free(buf);
+
+    return split;
+  }
+
+  std::vector<std::string> slice(const std::vector<std::string>& strings,int start, int end) {
+    std::vector<std::string> data;
+    if (start < 0)
+      start = start+strings.size();
+    if (end < 0)
+      end = end+strings.size();
+    if (start >= static_cast<int>(strings.size()))
+      start = strings.size()-1;
+    if (end >= static_cast<int>(strings.size()))
+      end = strings.size()-1;
+    if (start >= end)
+      return data;
+    for (int i = start; i < end; i++)
+      data.push_back(strings[i]);
+    return data;
+  }
+
 }
 
 

@@ -1,4 +1,3 @@
-#include "litesql/split.hpp"
 #include "litesql/types.hpp"
 #include "litesql-gen-cpp.hpp"
 #include "xmlobjects.hpp"
@@ -460,13 +459,13 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
     string consParams = o.inherits + "(db)";
     string cons2Params = o.inherits + "(db, rec)";
     if (o.fields.size() > 0) {
-        Split fieldInst;
+        vector<string> fieldInst;
         for (size_t i = 0; i < o.fields.size(); i++) {
             const xml::Field& f = *o.fields[i];
             fieldInst.push_back(f.name + brackets(f.fieldTypeName));
         }
-        consParams += ", " + fieldInst.join(", ");
-        cons2Params += ", " + fieldInst.join(", ");
+      consParams += ", " + join(fieldInst,", ");
+      cons2Params += ", " + join(fieldInst,", ");
 
     }
 
@@ -504,12 +503,12 @@ void writeObjConstructors(Class& cl, const xml::Object& o) {
     gen::Method cons3(o.name); // Object(const Object& obj);
     string consParams3 = o.inherits + "(obj)";
     if (o.fields.size() > 0) {
-        Split fieldCopy;
+        vector<string> fieldCopy;
         for (size_t i = 0; i < o.fields.size(); i++) {
             const xml::Field& f = *o.fields[i];
             fieldCopy.push_back(f.name + brackets("obj." + f.name));
         }
-        consParams3 += ", " + fieldCopy.join(", ");
+      consParams3 += ", " + join(fieldCopy, ", ");
     }
     cons3.param(Variable("obj", "const " + o.name + "&"))
         .constructor(consParams3);
@@ -546,7 +545,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
 
         gen::Method link("link", "void");
         gen::Method unlink("unlink", "void");
-        Split params;
+        vector<string> params;
         params.push_back("owner->getDatabase()");
         params.resize(1 + rel->related.size());
         params[1 + handle.relate->paramPos] = "*owner";
@@ -570,8 +569,8 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
             unlink.param(Variable(field.name, field.getCPPType()));
             params.push_back(field.name);
         }
-        link.body(rel->getName() + "::link(" + params.join(", ") + ");");
-        unlink.body(rel->getName() + "::unlink(" + params.join(", ") + ");");
+        link.body(rel->getName() + "::link(" + join(params,", ") + ");");
+        unlink.body(rel->getName() + "::unlink(" + join(params,", ") + ");");
         Variable exprParam("expr", "const litesql::Expr&", "litesql::Expr()");
         Variable srcExprParam("srcExpr", "const litesql::Expr&", "litesql::Expr()");
         gen::Method del("del", "void");
@@ -579,7 +578,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
         params.push_back("owner->getDatabase()");
         params.push_back("expr && " + rel->getName()
                 + "::" + handle.relate->fieldTypeName + " == owner->id");
-        del.param(exprParam).body(rel->getName() + "::del(" + params.join(", ") + ");");
+        del.param(exprParam).body(rel->getName() + "::del(" + join(params,", ") + ");");
 
 
         hcl.method(cons).method(link).method(unlink).method(del);
@@ -598,7 +597,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
 
             get
                 .body("return " + rel->getName() + "::" + relate->getMethodName
-                      + brackets(params.join(", ")) + ";");
+                      + brackets(join(params,", ")) + ";");
 
             hcl.method(get);
         } else {
@@ -619,7 +618,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
                     params.push_back("(" + rel->getName() + "::" + handle.relate->fieldTypeName + " == owner->id)"
                                      + extraExpr);
                     get.body("return " + rel->getName() + "::" + relate->getMethodName
-                              + brackets(params.join(", ")) + ";");
+                              + brackets(join(params,", ")) + ";");
                     hcl.method(get);
                 }
             } else {
@@ -636,7 +635,7 @@ void writeObjRelationHandles(Class& cl, xml::Object& o) {
                     params.push_back("(" + rel->getName() + "::" + handle.relate->fieldTypeName + " == owner->id)"
                                      + extraExpr);
                     get.body("return " + rel->getName() + "::" + relate->getMethodName
-                              + brackets(params.join(", ")) + ";");
+                              + brackets(join(params,", ")) + ";");
                     hcl.method(get);
                 }
             }
@@ -759,11 +758,11 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
              o.relations.begin(); i != o.relations.end(); i++) {
                const xml::Relation::Ptr &rel = i->first;
         const xml::Relate::sequence relates = i->second;
-        Split params;
+        vector<string> params;
         for (size_t i2 = 0; i2 < relates.size(); i2++)
             params.push_back("(" + rel->getName() + "::" + relates[i2]->fieldTypeName
                              + " == id)");
-        delRelations.body(rel->getName() + "::del(*db, " + params.join(" || ") + ");");
+        delRelations.body(rel->getName() + "::del(*db, " + join(params, " || ") + ");");
     }
 
 
@@ -792,7 +791,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
 
     gen::Method upcastCopy("upcastCopy", "std::unique_ptr<" + o.name + ">");
     upcastCopy.isConst = true;
-    Split childrenNames;
+    vector<string> childrenNames;
     o.getChildrenNames(childrenNames);
 
     if (!childrenNames.empty())
@@ -919,7 +918,7 @@ void writeStaticRelData(Class& cl, const xml::Relation& r) {
     rowcons.param(Variable("db", "const litesql::Database&"))
         .param(Variable("rec", "const litesql::Record&", "litesql::Record()"));
 //        .constructor("litesql::Record(db, rec)");
-    Split consParams;
+    vector<string> consParams;
     int fieldNum = r.related.size() + r.fields.size();
     rowcons.body("switch(rec.size()) {");
     for (int i = r.fields.size()-1; i >= 0; i--) {
@@ -949,7 +948,7 @@ void writeStaticRelData(Class& cl, const xml::Relation& r) {
         fieldNum--;
     }
     rowcons.body("}");
-    rowcons.constructor(consParams.join(", "));
+    rowcons.constructor(join(consParams,", "));
     rowcl.method(rowcons);
     cl.class_(rowcl);
 
@@ -969,7 +968,7 @@ void writeRelMethods(const xml::DatabasePtr& database,
 
     link.static_().param(dbparam);
     link.body("Record values;")
-        .body("Split fields;");
+        .body("Record fields;");
     for (size_t i = 0; i < r.related.size(); i++) {
         xml::Relate& rel = *r.related[i];
         link.body("fields.push_back(" + rel.fieldTypeName + ".name());");
@@ -1007,7 +1006,7 @@ void writeRelMethods(const xml::DatabasePtr& database,
     }
 
     unlink.static_().param(dbparam);
-    Split unlinks;
+    vector<string> unlinks;
     for (size_t i = 0; i < r.related.size(); i++) {
         xml::Relate& rel = *r.related[i];
         unlinks.push_back(rel.fieldTypeName + " == o"
@@ -1018,7 +1017,7 @@ void writeRelMethods(const xml::DatabasePtr& database,
         unlinks.push_back("(" + fld.fieldTypeName + " == " + fld.name + ")");
     }
 
-    unlink.body("db.delete_(table__, (" + unlinks.join(" && ") + "));");
+    unlink.body("db.delete_(table__, (" + join(unlinks," && ") + "));");
     if (r.isUnidir()==false && r.related.size() == 2 && r.sameTypes() == 2) {
         unlinks.clear();
         for (size_t i = 0; i < r.related.size(); i++) {
@@ -1030,7 +1029,7 @@ void writeRelMethods(const xml::DatabasePtr& database,
             xml::Field& fld = *r.fields[i];
             unlinks.push_back("(" + fld.fieldTypeName + " == " + fld.name + ")");
         }
-        unlink.body("db.delete_(table__, (" + unlinks.join(" && ") + "));");
+        unlink.body("db.delete_(table__, (" + join(unlinks," && ") + "));");
     }
 
     del.static_().param(dbparam).param(destExpr);
@@ -1121,7 +1120,7 @@ void writeRelMethods(const xml::DatabasePtr& database,
 
 void getSchema(const xml::DatabasePtr& db, gen::Method& mtd) {
 //    Records recs;
-    Split rec;
+    vector<string> rec;
     mtd.body("vector<Database::SchemaItem> res;");
 
     mtd.body("string TEXT = backend->getSQLType(A_field_type_string);");
@@ -1129,36 +1128,36 @@ void getSchema(const xml::DatabasePtr& db, gen::Method& mtd) {
 
     rec.push_back(quote("schema_"));
     rec.push_back(quote("table"));
-   Split r2;
+   vector<string> r2;
    r2.push_back(quote("CREATE TABLE schema_ (name_ "));r2.push_back("TEXT");
    r2.push_back(quote(", type_ "));r2.push_back("TEXT");
    r2.push_back(quote(", sql_ "));r2.push_back("TEXT");
    r2.push_back(quote(")"));
-   rec.push_back(r2.join("+"));
+   rec.push_back(join(r2,"+"));
 //    recs.push_back(rec);
-    mtd.body("res.push_back(Database::SchemaItem(" + rec.join(",") + "));");
+    mtd.body("res.push_back(Database::SchemaItem(" + join(rec,",") + "));");
     mtd.body("if (backend->supportsSequences()) {");
     for (size_t i = 0; i < db->sequences.size(); i++) {
-        Split rec(3);
+        vector<string> rec;
         rec.push_back(quote(db->sequences[i]->name));
         rec.push_back(quote("sequence"));
         rec.push_back("backend->getCreateSequenceSQL(" + quote(db->sequences[i]->name) + ")");
-        mtd.body("    res.push_back(Database::SchemaItem(" + rec.join(",") + "));");
+        mtd.body("    res.push_back(Database::SchemaItem(" + join(rec,",") + "));");
     }
     mtd.body("}");
     for (size_t i = 0; i < db->tables.size(); i++) {
-        Split rec;
+        vector<string> rec;
         rec.push_back(quote(db->tables[i]->name));
         rec.push_back(quote("table"));
         rec.push_back(quote(db->tables[i]->getSQL("\" + rowIdType + \"")));
-        mtd.body("res.push_back(Database::SchemaItem(" + rec.join(",") + "));");
+        mtd.body("res.push_back(Database::SchemaItem(" + join(rec,",") + "));");
     }
     for (size_t i = 0; i < db->indices.size(); i++) {
-        Split rec;
+        vector<string> rec;
         rec.push_back(quote(db->indices[i]->name));
         rec.push_back(quote("index"));
         rec.push_back(quote(db->indices[i]->getSQL()));
-        mtd.body("res.push_back(Database::SchemaItem(" + rec.join(",") + "));");
+        mtd.body("res.push_back(Database::SchemaItem(" + join(rec,",") + "));");
     }
     Logger::report(toString(db->tables.size()) + " tables\n");
     Logger::report(toString(db->sequences.size()) + " sequences\n");

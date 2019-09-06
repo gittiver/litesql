@@ -35,7 +35,7 @@ int parseArgs(int argc, char **argv)
       Logger::verbose(true);
       continue;
     } else if (litesql::startsWith(arg, "--output-dir")) {
-      litesql::Split param(arg, "=");
+      vector<string> param = split(arg, "=");
       options.output_dir=param[1];
       continue;
     } else if (arg == "--help") {

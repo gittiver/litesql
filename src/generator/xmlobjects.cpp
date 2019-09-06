@@ -195,7 +195,7 @@ static void initSchema(DatabasePtr& db,
         for (size_t i2 = 0; i2 < o.indices.size(); i2++) {
             const Index& idx = *o.indices[i2];
 
-            litesql::Split fldNames;
+            vector<string> fldNames;
             Database::DBIndex::Ptr index(new Database::DBIndex);
             for (size_t i3 = 0; i3 < idx.fields.size(); i3++) {
                 if (fldMap.find(idx.fields[i3].name) == fldMap.end())
@@ -204,7 +204,7 @@ static void initSchema(DatabasePtr& db,
                 fldNames.push_back(idx.fields[i3].name);
             }
 
-            index->name = makeDBName(tbl->name + "_" + fldNames.join("_") + "_idx");
+            index->name = makeDBName(tbl->name + "_" + join(fldNames,"_") + "_idx");
             index->table = tbl->name;
             
             string unique = "";
@@ -285,7 +285,7 @@ static void initSchema(DatabasePtr& db,
         for (size_t i2 = 0; i2 < r.indices.size(); i2++) {
             const Index& idx = *r.indices[i2];
 
-            litesql::Split fldNames(idx.fields.size());
+            vector<string> fldNames;
             Database::DBIndex::Ptr index(new Database::DBIndex);
             for (size_t i3 = 0; i3 < idx.fields.size(); i3++) {
 //                Database::DBField* fld = new Database::DBField;
@@ -295,7 +295,7 @@ static void initSchema(DatabasePtr& db,
                 fldNames.push_back(idx.fields[i3].name);
             }
 
-            index->name = makeDBName(tbl->name + "_" + fldNames.join("_") + "_idx");
+            index->name = makeDBName(tbl->name + "_" + join(fldNames,"_") + "_idx");
             string unique = "";
             if (idx.isUnique())
                 index->unique = true;

@@ -8,8 +8,8 @@
 #ifndef litesql_selectquery_hpp
 #define litesql_selectquery_hpp
 
-#include "litesql/utils.hpp"
 #include "litesql/expr.hpp"
+
 /** \file selectquery.hpp
     contains SelectQuery-class. See \ref usage_selecting_persistents */
 namespace litesql {
@@ -18,12 +18,12 @@ namespace litesql {
 class SelectQuery {
     bool _distinct;
     int _limit, _offset;
-    Split _results;
-    Split _sources;
+  std::vector<std::string> _results;
+    std::vector<std::string> _sources;
     std::string _where; 
-    Split _groupBy;
+    std::vector<std::string> _groupBy;
     std::string _having;
-    Split _orderBy;
+    std::vector<std::string> _orderBy;
 public:
     SelectQuery() : _distinct(false), _limit(0), _offset(0), _where("True") {}
     SelectQuery & distinct(bool d) ;

@@ -6,7 +6,6 @@
 #include <stdexcept>
 #include <algorithm>
 #include <map>
-#include "litesql/split.hpp"
 #include "litesql/string.hpp"
 #include "litesql/types.hpp"
 
@@ -289,12 +288,12 @@ public:
         return res;
     }
     string getTable() const {
-        Split res(related.size());
+        vector<string> res;
         for (size_t i = 0; i < related.size(); i++)
             res.push_back(related[i]->objectName);
         res.push_back(id);
 
-        return makeDBName(res.join("_"));
+      return makeDBName(join(res,"_"));
     }
 };
 
@@ -372,7 +371,7 @@ public:
         for (size_t i = 0; i < fields.size(); i++)
             flds.push_back(fields[i]);
     }
-    void getChildrenNames(Split & names) const {
+  void getChildrenNames(std::vector<std::string> & names) const {
         for (size_t i = 0; i < children.size(); i++) {
             names.push_back(children[i]->name);
             children[i]->getChildrenNames(names);
@@ -430,13 +429,13 @@ public:
         DBField::sequence fields;
         DBIndex() : unique(false) {}
         string getSQL() {
-            litesql::Split flds;
+            vector<string> flds;
             for (size_t i = 0; i < fields.size(); i++)
                 flds.push_back(fields[i]->name());
             string uniqueS;
             if (unique)
                 uniqueS = " UNIQUE";
-            return "CREATE" + uniqueS + " INDEX " + name + " ON " + table + " (" + flds.join(",") + ")";
+          return "CREATE" + uniqueS + " INDEX " + name + " ON " + table + " (" + join(flds,",") + ")";
         }
     };
     
@@ -448,7 +447,7 @@ public:
       string name;
         DBField::sequence fields;
         string getSQL(const string& rowIDType) {
-            litesql::Split flds;
+            vector<string> flds;
             for (size_t i = 0; i < fields.size(); i++)
             {
               if (fields[i]->primaryKey)
@@ -459,7 +458,7 @@ public:
                               +(fields[i]->field->isUnique() ? " UNIQUE" : "") + + "\" +"
                               +"\"");
              }
-             return "CREATE TABLE " + name + " (" + flds.join(",") + ")";
+          return "CREATE TABLE " + name + " (" + join(flds,",") + ")";
         }
 
     };

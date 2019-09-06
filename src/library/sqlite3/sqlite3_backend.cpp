@@ -107,10 +107,10 @@ SQLite3::SQLite3(const string& connInfo) noexcept(false) //throw(DatabaseError)
 , transaction(false)
 , beginTrans("BEGIN")
 {
-  Split params(connInfo,";");
+  vector<string> params = split(connInfo,";");
   string database;
   for (size_t i = 0; i < params.size(); i++) {
-    Split param(params[i], "=");
+    vector<string> param = split(params[i], "=");
     if (param.size() == 1)
       continue;
     if (param[0] == "database")

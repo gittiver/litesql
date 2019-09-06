@@ -29,7 +29,7 @@ void NodeNodeRelationEdges::initValues() {
 }
 void NodeNodeRelationEdges::link(const litesql::Database& db, const graph::Node& o0, const graph::Node& o1, int color) {
     Record values;
-    Split fields;
+    Record fields;
     fields.push_back(Node1.name());
     values.push_back(o0.id);
     fields.push_back(Node2.name());

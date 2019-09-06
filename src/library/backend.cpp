@@ -82,14 +82,14 @@ string Backend::groupInsert(const Record& tables,
       delete r;
     } 
     for (int i = tables.size()-1; i >= 0; i--) {
-      string fieldString = Split::join(fields[i],",");
+      string fieldString = join(fields[i],",");
         string valueString;
         if (!insertValues[i].empty())
             insertValues[i][0] = id;
-        Split valueSplit(insertValues[i]);
+      vector<string> valueSplit = insertValues[i];
         for (size_t i2 = 0; i2 < valueSplit.size(); i2++)
             valueSplit[i2] = escapeSQL(valueSplit[i2]);
-        valueString = valueSplit.join(",");
+        valueString = join(valueSplit,",");
         string query = "INSERT INTO " + tables[i] + " (" + fieldString
             + ") VALUES (" + valueString + ")";
         delete execute(query);

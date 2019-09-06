@@ -18,10 +18,10 @@ UpdateQuery& UpdateQuery::set(const FieldType& f, const string& value) {
 }
 UpdateQuery::operator string() const {
     string q = "UPDATE " + table + " SET ";
-    Split sets;
+    vector<string> sets;
     for (size_t i = 0; i < fields.size(); i++)
         sets.push_back(fields[i] + "=" + values[i]);
-    q += sets.join(",");
+    q += join(sets,",");
     if (_where.size())
         q += " WHERE " + _where;
     return q;

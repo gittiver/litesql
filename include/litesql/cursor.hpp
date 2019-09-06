@@ -7,13 +7,10 @@
 #ifndef _litesql_cursor_hpp
 #define _litesql_cursor_hpp
 
-#include <stdio.h>
-#include "litesql/types.hpp"
 #include "litesql/backend.hpp"
 /** \file cursor.hpp
     Contains class Cursor */
 namespace litesql {
-using namespace std;
 class Database;
 /** used to iterate results of SQL statement, creates 
     objects of type T from retrieved records. 

@@ -10,7 +10,7 @@ using namespace std;
 SelectQuery selectObjectQuery(const vector<FieldType>& fdatas,
                               const Expr& e) {
     SelectQuery sel;
-    Split tables;       
+    vector<string> tables;
     set<string> tableSet;
 
     for (size_t i = 0; i < fdatas.size(); i++)
@@ -19,7 +19,7 @@ SelectQuery selectObjectQuery(const vector<FieldType>& fdatas,
             tableSet.insert(fdatas[i].table());
         }
 
-    Split tableFilters;
+    vector<string> tableFilters;
     tableFilters.resize(tables.size()-1);
     for (size_t i = 1; i < tables.size(); i++)
         tableFilters[i-1] = tables[i-1] + ".id_ = " + tables[i] + ".id_";
@@ -29,7 +29,7 @@ SelectQuery selectObjectQuery(const vector<FieldType>& fdatas,
         tableSet.insert(tables[i]);
     }
     if (tables.size() > 1)
-        sel.where((e && RawExpr(tableFilters.join(" AND "))).asString()); 
+      sel.where((e && RawExpr(join(tableFilters," AND "))).asString());
     else
         sel.where(e.asString());
     
