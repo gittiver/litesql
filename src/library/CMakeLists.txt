@@ -40,8 +40,9 @@ set(litesql_SOURCES    database.cpp
             ../../include/litesql/persistent.hpp 
             ../../include/litesql/backend.hpp 
             ../../include/litesql/updatequery.hpp 
-            ../../include/litesql/field.hpp 
-            ../../include/litesql/datasource.hpp 
+../../include/litesql/field.hpp
+../../include/litesql/cursor.hpp
+            ../../include/litesql/datasource.hpp
             ../../include/litesql/datetime.hpp
 	    plugin.hpp plugin.cpp
 	    sharedlibrary.hpp sharedlibrary.cpp
@@ -78,6 +79,7 @@ endif(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
 if (NOT SQLITE3_FOUND)
   ExternalProject_Add(libsqlite3
     GIT_REPOSITORY https://github.com/gittiver/sqlite3-amalgamation.git
+	GIT_TAG v3_29_0
     PREFIX 3rdparty
 	CMAKE_ARGS -D SQLITE3_USE_SHARED_CRT:bool=OFF
     INSTALL_COMMAND ""

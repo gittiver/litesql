@@ -138,7 +138,7 @@ endif(LITESQL_USE_SYSTEM_EXPAT)
 if (NOT EXPAT_FOUND)
   ExternalProject_Add(libexpat
   		 GIT_REPOSITORY https://github.com/libexpat/libexpat.git
-		 GIT_TAG R_2_2_6
+		 GIT_TAG R_2_2_8
 		 PREFIX 3rdparty
 		 CONFIGURE_COMMAND
 		   ${CMAKE_COMMAND} -D BUILD_examples:bool=OFF
