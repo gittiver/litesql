@@ -42,7 +42,7 @@ namespace litesql {
     Records recs;
     try {
       recs = query(sel);
-    } catch (Except e) {
+    } catch (Except& e) {
       return vector<Database::SchemaItem>();
     }
     for (size_t i = 0; i < recs.size(); i++) {
@@ -181,7 +181,7 @@ namespace litesql {
         else if (s[i].type == "sequence")
           query("DROP SEQUENCE " + s[i].name);
         commit();
-      } catch (Except e) {
+      } catch (Except& e) {
         rollback();
       }
     }

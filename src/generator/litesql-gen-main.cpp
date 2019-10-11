@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
       return generateCode(model); 
     }
   } 
-  catch (Except e) {
+  catch (Except& e) {
       Logger::error(e);
       return -1;
   }

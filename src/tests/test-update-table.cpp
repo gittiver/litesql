@@ -83,7 +83,7 @@ int main(int /*argc*/, char * /*argv*/ []) {
     success &= Updater::testUpgradeTable(odbc_db);
 #endif
 
-  } catch (Except e) {
+  } catch (Except& e) {
       cerr << e << endl;
       return -1;
   }
