@@ -37,12 +37,22 @@ before_build:
     mkdir build
     cd build
     cmake --version
-    cmake ..   -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=ON -D LITESQL_WITH_SQLITE3:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=OFF -G %generator%
+    cmake ..   -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_SQLITE3:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=OFF -G %generator%
 
-build:
-  project: c:\projects\litesql\build\litesql.sln
-  verbosity: minimal
-  parallel: true
+build_script:
+ - cmake --build . --target all 
+ - cmake --build . --target package 
+ - cmake --build . --target dist
+ - cmake --build . --target package_source
+
+test_script:
+ - cmake --build . --target test
+
+#build:
+#  project: c:\projects\litesql\build\litesql.sln
+#  verbosity: minimal
+#  parallel: true
+  
 only_commits:
   files:
     - CMakeLists.txt
