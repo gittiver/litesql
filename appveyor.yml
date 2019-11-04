@@ -18,7 +18,7 @@ environment:
   - arch: Win64
   # - arch: #does not work, Release|x64 not a valid target
 matrix:
-  fast_finish: true
+  fast_finish: false
 
 # skip unsupported combinations
 init:
@@ -37,7 +37,7 @@ before_build:
     mkdir build
     cd build
     cmake --version
-    cmake .. -G %generator%
+    cmake ..   -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=ON -D LITESQL_WITH_SQLITE3:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=OFF -G %generator%
 
 build:
   project: c:\projects\litesql\build\litesql.sln
