@@ -40,10 +40,10 @@ before_build:
     cmake ..   -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_SQLITE3:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=OFF -G %generator%
 
 build_script:
- - cmake --build build --target all 
- - cmake --build build --target package 
- - cmake --build build --target dist
- - cmake --build build --target package_source
+ - cmake --build --target all 
+ - cmake --build --target package 
+ - cmake --build --target dist
+ - cmake --build --target package_source
 
 test_script:
  - cmake --build build --target test
