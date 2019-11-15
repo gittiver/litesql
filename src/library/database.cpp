@@ -9,6 +9,7 @@
 #include "litesql/except.hpp"
 #include "litesql/selectquery.hpp"
 #include <map>
+#include <algorithm>
 
 using namespace litesql;
 

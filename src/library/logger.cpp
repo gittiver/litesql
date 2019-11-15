@@ -20,7 +20,7 @@ void Logger::verbose(bool verbose)
 void Logger::report(const string& msg,const string& msg2)
 {
   if (logger_verbose)
-    cout  << msg  << msg2 << endl;
+    cout  << msg.c_str()  << msg2.c_str() << endl;
 }
 
 void Logger::report(const string& msg)
@@ -33,12 +33,12 @@ void Logger::report(const string& msg)
 
 void Logger::error(const std::string& msg)
 {
-    cerr  << msg << endl;
+    cerr  << msg.c_str() << endl;
 }
 
 void Logger::error(const std::string& msg,const std::string& msg2)
 {
-    cerr  << msg << msg2 << endl;
+    cerr  << msg.c_str() << msg2.c_str() << endl;
 }
 
 void Logger::error(const Except& ex)
