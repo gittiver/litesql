@@ -19,6 +19,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using std::unique_ptr;
+using std::find_if;
 
 typedef vector<ColumnDefinition> ColumnDefinitions;
 

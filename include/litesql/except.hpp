@@ -19,13 +19,13 @@ class Except : public std::exception  {
 private:
     std::string msg;
 public: 
-    Except(std::string m) throw()  : msg(m) {}
+    Except(const std::string& m) throw()  : msg(m) {}
     virtual ~Except(void) throw() {}
 	virtual const char* what() const throw() {
 		return msg.c_str();
 	}
     friend std::ostream &operator<<(std::ostream &os, const Except &e) {
-        os << e.msg;
+        os << e.msg.c_str();
         return os;
     }
 };

@@ -44,6 +44,7 @@ set(litesql_SOURCES    database.cpp
 ../../include/litesql/cursor.hpp
             ../../include/litesql/datasource.hpp
             ../../include/litesql/datetime.hpp
+        ../../include/litesql/except.hpp
 	    plugin.hpp plugin.cpp
 	    sharedlibrary.hpp sharedlibrary.cpp
 )
