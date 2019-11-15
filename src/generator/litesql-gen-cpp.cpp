@@ -1,8 +1,9 @@
 #include "litesql/types.hpp"
+#include "litesql/logger.hpp"
+
 #include "litesql-gen-cpp.hpp"
 #include "xmlobjects.hpp"
 
-#include "logger.hpp"
 
 using namespace litesql;
 

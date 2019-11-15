@@ -1,7 +1,7 @@
 #include "litesql.hpp"
 #include "generator.hpp"
 #include "litesql-gen-cpp.hpp"
-#include "logger.hpp"
+#include "litesql/logger.hpp"
 #include "objectmodel.hpp"
 
 using namespace litesql;

@@ -4,7 +4,7 @@
 #include <cstdio>
 
 #include "xmlparser.hpp"
-#include "logger.hpp"
+#include "litesql/logger.hpp"
 
 using std::string;
 using xml::XmlParser;

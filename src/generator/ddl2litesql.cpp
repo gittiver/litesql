@@ -1,7 +1,7 @@
 #include <fstream>
 #include "litesql.hpp"
 
-#include "logger.hpp"
+#include "litesql/logger.hpp"
 #include "objectmodel.hpp"
 
 using namespace litesql;

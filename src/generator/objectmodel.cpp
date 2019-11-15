@@ -1,8 +1,7 @@
 // include LiteSQL's header file and generated header file
 #include "xmlparser.hpp"
 #include "objectmodel.hpp"
-//#include <string.h>
-#include "logger.hpp"
+#include "litesql/logger.hpp"
 
 using std::string;
 using std::vector;

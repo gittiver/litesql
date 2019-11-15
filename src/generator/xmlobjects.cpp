@@ -1,7 +1,7 @@
 #include "xmlobjects.hpp"
 #include "md5.hpp"
 #include "litesql.hpp"
-#include "logger.hpp"
+#include "litesql/logger.hpp"
 
 #include <algorithm>
 
