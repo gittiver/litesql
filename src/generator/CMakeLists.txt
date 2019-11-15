@@ -2,7 +2,6 @@ set(libmodel_SOURCES
 			generator.cpp generator.hpp
 		 	litesql-gen-xml.cpp litesql-gen-xml.hpp
 			litesql-gen-cpp.cpp litesql-gen-cpp.hpp
-			logger.cpp logger.hpp
 			xmlobjects.cpp
 			md5.cpp
 			xmlobjects.hpp
