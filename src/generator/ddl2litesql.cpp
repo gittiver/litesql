@@ -1,10 +1,12 @@
 #include "litesql.hpp"
+
 #include "logger.hpp"
 #include "objectmodel.hpp"
-#include <fstream>
 
-using namespace std;
 using namespace litesql;
+
+using std::string;
+using std::vector;
 
 const char* help = 
 "Usage: ddl2litesql [options] <my-database.xml>\n\n"

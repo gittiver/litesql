@@ -1,10 +1,17 @@
-#include "litesql-gen-wxformbuilder.hpp"
-
 #include <fstream>
 
-using namespace std;
-using namespace xml;
+#include "litesql-gen-wxformbuilder.hpp"
+
 using namespace litesql;
+
+using std::string;
+using std::ostream;
+using std::ofstream;
+using std::endl;
+
+using xml::Field;
+using xml::Relation;
+using xml::RelationHandle;
 
 const char* wxFormBuilderGenerator::NAME = "wxFormBuilder";
 

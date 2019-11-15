@@ -22,9 +22,9 @@ protected:
          void* fDestroy );
 private:
 
-  void* m_fCreate;
-  void* m_fDestroy;
-  SharedLibrary* m_sharedLib;
+  void* m_fCreate = nullptr;
+  void* m_fDestroy = nullptr;
+  SharedLibrary* m_sharedLib = nullptr;
 };
 }
 #endif // #ifndef PLUGIN_HPP

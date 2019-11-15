@@ -1,18 +1,28 @@
-#include "litesql-gen-xml.hpp"
-
 #include <fstream>
 
-using namespace std;
-using namespace xml;
+#include "litesql-gen-xml.hpp"
+
 using namespace litesql;
+
+using std::string;
+using std::ostream;
+using std::ofstream;
+using std::endl;
+
+using xml::Database;
+using xml::Field;
+using xml::Method;
+using xml::Relation;
+using xml::Relate;
+using xml::attribute;
+using xml::endtag;
 
 void XmlGenerator::setOutputFilename(const std::string& filename)
 {
   m_outputFilename=filename;
 }
 
-
-bool generate(Field::Ptr const field, ostream& os,size_t indent)
+static bool generate(Field::Ptr const field, ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
        
@@ -45,7 +55,7 @@ bool generate(Field::Ptr const field, ostream& os,size_t indent)
   return true;
 }
 
-void generate(const xml::Method::Ptr& pMethod,ostream& os,size_t indent)
+static void generate(const xml::Method::Ptr& pMethod,ostream& os,size_t indent)
 {
   string indent_string(indent,' ');
   
@@ -186,7 +196,7 @@ bool XmlGenerator::generate(const Relation::Ptr &  relation,ostream& os,size_t i
 
 bool XmlGenerator::generateDatabase(ostream& os,const ObjectModel* model)
 {
-  os << "<" << xml::Database::TAG << " " 
+  os << "<" << Database::TAG << " "
      << attribute("name",model->db->name) 
      << attribute("namespace", model->db->nspace) 
      << ">" << endl;

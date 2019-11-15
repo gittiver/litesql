@@ -6,9 +6,10 @@
 #include "xmlparser.hpp"
 #include "logger.hpp"
 
-using namespace std;
+using std::string;
+using xml::XmlParser;
+
 using namespace litesql;
-using namespace xml;
 
 namespace xml {
 void XMLParser_xmlSAX2StartElement		(void *ctx,

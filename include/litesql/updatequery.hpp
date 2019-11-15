@@ -12,18 +12,18 @@
 /** \file updatequery.hpp
     contains UpdateQuery-class. */
 namespace litesql {
-/** a class that helps creating UPDATE-SQL statements. methods are 
+
+/** a class that helps creating UPDATE-SQL statements. methods are
     self-explanatory. */
-using namespace std;    
 class UpdateQuery {
-    string table;
-    string _where;
+    std::string table;
+    std::string _where;
     std::vector<std::string> fields;
     std::vector<std::string> values;
 public:
-    UpdateQuery(const string& t) : table(t), _where("True") {}
+    UpdateQuery(const std::string& t) : table(t), _where("True") {}
     UpdateQuery& where(const Expr& e);
-    UpdateQuery& set(const FieldType& f, const string& value);
+    UpdateQuery& set(const FieldType& f, const std::string& value);
     operator std::string() const;
     std::string asString() const { return this->operator std::string(); }
 };

@@ -6,6 +6,7 @@
 #include <ostream>
 #include <memory>
 
+#include "litesql/utils.hpp"
 #include "objectmodel.hpp"
 
 
@@ -98,7 +99,7 @@ namespace litesql {
     const char* m_target;
     generation_mode_t m_generationMode;
     std::string m_directory;
-    CodeGenerator* m_pParentGenerator;
+    CodeGenerator* m_pParentGenerator = nullptr;
   };
 
   class CompositeGenerator : public CodeGenerator {

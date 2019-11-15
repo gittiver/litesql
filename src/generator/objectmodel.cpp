@@ -1,11 +1,16 @@
 // include LiteSQL's header file and generated header file
 #include "xmlparser.hpp"
 #include "objectmodel.hpp"
-#include <string.h>
+//#include <string.h>
 #include "logger.hpp"
 
-using namespace std;
-using namespace xml;
+using std::string;
+using std::vector;
+
+using litesql::Logger;
+using litesql::ObjectModel;
+
+using xml::ObjectSequence;
 
 #define xmlStrcasecmp(s1,s2)  ((s1==NULL) ? (s2!=NULL) : strcmp(s1,s2))
 #define xmlStrEqual(s1,s2)   (!strcmp(s1,s2))
@@ -210,61 +215,76 @@ static AT_relate_limit relate_limit(const XML_Char* value)
 
 }
 
-namespace xml {
-  class LitesqlParser : public XmlParser {
-  public:
-    LitesqlParser(ObjectModel* model)
-      : m_pObjectModel(model),
-      m_parseState(ROOT) {};
+using xml::XmlParser;
+using xml::Object;
+using xml::ObjectPtr;
 
-  protected:
+using xml::Relation;
+using xml::safe;
+using xml::Field;
+using xml::Index;
+using xml::IndexField;
+using xml::Method;
+using xml::Param;
+using xml::Relate;
+using xml::Database;
+using xml::DatabasePtr;
+using xml::Value;
+
+
+
+class LitesqlParser : public XmlParser {
+public:
+    LitesqlParser(litesql::ObjectModel* model)
+    : m_pObjectModel(model),
+    m_parseState(ROOT) {};
+    
+protected:
     void onStartElement(const XML_Char *fullname,
-      const XML_Char **atts);
-
+                        const XML_Char **atts);
+    
     void onEndElement(const XML_Char *fullname);
-    /** ROOT->DATABASE; 
-    *
-    *    DATABASE->OBJECT;
-    *      OBJECT->FIELD;
-    *      OBJECT->METHOD;
-    *      FIELD->OBJECT;
-    *      METHOD->OBJECT;
-    *
-    *    DATABASE->RELATION;
-    *    RELATION->DATABASE;
-    *
-    *  DATABASE->ROOT;
-    * ERROR;
-    */
+    /** ROOT->DATABASE;
+     *
+     *    DATABASE->OBJECT;
+     *      OBJECT->FIELD;
+     *      OBJECT->METHOD;
+     *      FIELD->OBJECT;
+     *      METHOD->OBJECT;
+     *
+     *    DATABASE->RELATION;
+     *    RELATION->DATABASE;
+     *
+     *  DATABASE->ROOT;
+     * ERROR;
+     */
     enum ParseState { ROOT,
-      DATABASE,
-      OBJECT,
-      FIELD,
-      METHOD,
-      PARAM,
-      RELATION,
-      INDEX,
-      INDEXFIELD,
-      INCLUDE,
-      UNKNOWN,
-      ERROR
+        DATABASE,
+        OBJECT,
+        FIELD,
+        METHOD,
+        PARAM,
+        RELATION,
+        INDEX,
+        INDEXFIELD,
+        INCLUDE,
+        UNKNOWN,
+        ERROR
     };
-
-  private:
-    ObjectModel* m_pObjectModel;
-
+    
+private:
+    litesql::ObjectModel* m_pObjectModel;
+    
     Object * obj;
     Relation * rel;
     Field * fld;
     Field * rel_fld;
     Method * mtd;
     Index::Ptr idx;
- 
+    
     ParseState m_parseState;
     vector<ParseState> history;
-  };
-
-}
+};
 
 void LitesqlParser::onStartElement(const XML_Char *fullname,
                                    const XML_Char **atts)
@@ -289,7 +309,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       pDb->nspace = safe((char*)xmlGetAttrValue(atts,"namespace"));
       
       m_pObjectModel->db = pDb;
-      Logger::report("database = " , m_pObjectModel->db->name);
+      litesql::Logger::report("database = " , m_pObjectModel->db->name);
     }
   } 
   else if (xmlStrEqual(fullname,(XML_Char*)Object::TAG))
@@ -303,7 +323,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
       ObjectPtr pObj(obj = new Object(    (char*)xmlGetAttrValue(atts,"name"), 
         safe((char*)xmlGetAttrValue(atts,"inherits")))); 
       m_pObjectModel->objects.push_back(pObj);
-      Logger::report("object = ",obj->name);
+      litesql::Logger::report("object = ",obj->name);
       m_parseState = OBJECT; 
 
     }
@@ -311,7 +331,7 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
   else if (xmlStrEqual(fullname,(XML_Char*)Field::TAG))
   {
     Field* pNewField = new Field(   (char*)xmlGetAttrValue(atts,"name"), 
-      field_type(xmlGetAttrValue(atts,"type")),
+      litesql::field_type(xmlGetAttrValue(atts,"type")),
       safe(  (char*)xmlGetAttrValue(atts,"default")),
       field_indexed(xmlGetAttrValue(atts,"indexed")),
       field_unique(xmlGetAttrValue(atts,"unique")),

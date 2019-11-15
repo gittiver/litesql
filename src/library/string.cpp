@@ -4,25 +4,24 @@
  * 
  * See LICENSE for copyright information. */
 
-#include "litesql/utils.hpp"
-
-#include <ctype.h>
+#include <string>
+#include <vector>
 #include <cstdlib>
 #include <cstring>
 
+#include "litesql/string.hpp"
+#include "litesql/utils.hpp"
+
+
+using std::string;
+using std::vector;
+
 namespace litesql {
-using namespace std; 
 
 bool startsWith(const string& what, const string& with) {
     if (what.size() < with.size())
         return false;
     return (what.substr(0, with.size()) == with);
-}
-
-bool endsWith(const string& what, const string& with) {
-    if (what.size() < with.size())
-        return false;
-    return (what.substr(what.size()-with.size(), what.size()) == with);
 }
 
 string toLower(const string& s) {
@@ -55,28 +54,6 @@ string decapitalize(const string& s) {
    return result;
 }
 
-string rstrip(const string& s) {
-    if (s.empty())
-        return s;
-    int pos = s.size()-1;
-    while (1) {
-        if (isspace(s[pos]) && pos > 0)
-            pos--;
-        else
-            break;
-    }
-    return s.substr(0, pos+1);
-}
-string lstrip(const string& s) {
-    unsigned int pos = 0;
-    while (1) {
-        if (isspace(s[pos]) && pos < s.size()-1)
-            pos++;
-        else
-            break;
-    }
-    return s.substr(pos, s.size());
-}
 string replace(const string& s, const string& what, const string& with) {
   string data = s;
   size_t pos = data.find(what);
@@ -180,7 +157,29 @@ string escapeSQL(const string &str)
       data.push_back(strings[i]);
     return data;
   }
+    //static string rstrip(const string& s) {
+    //    if (s.empty())
+    //        return s;
+    //    int pos = s.size()-1;
+    //    while (1) {
+    //        if (isspace(s[pos]) && pos > 0)
+    //            pos--;
+    //        else
+    //            break;
+    //    }
+    //    return s.substr(0, pos+1);
+    //}
+    //static string lstrip(const string& s) {
+    //    unsigned int pos = 0;
+    //    while (1) {
+    //        if (isspace(s[pos]) && pos < s.size()-1)
+    //            pos++;
+    //        else
+    //            break;
+    //    }
+    //    return s.substr(pos, s.size());
+    //}
 
-}
+} // end:: namespace litesql
 
 

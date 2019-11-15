@@ -9,6 +9,7 @@
 */
 #ifndef litesql_backend_hpp
 #define litesql_backend_hpp
+
 #include <memory>
 #include "litesql/types.hpp"
 #include "litesql/commontypes.h"
@@ -99,7 +100,7 @@ namespace litesql {
       \param connInfo database connection specific parameters (parameters are separated by semicolon)
        @throw DatabaseError if no backend is found
       */
-			static std::unique_ptr<Backend> getBackend(const std::string& type, const std::string& connInfo) noexcept(false);// DatabaseError);
+      static std::unique_ptr<Backend> getBackend(const std::string& type, const std::string& connInfo) noexcept(false);// DatabaseError);
       
     };
 }

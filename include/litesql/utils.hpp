@@ -6,11 +6,8 @@
 
 /** \file utils.hpp
     includes string.hpp and split.hpp */
-#ifndef _litesql_utils_hpp
-#define _litesql_utils_hpp
-
-#include <assert.h>
-#include "litesql/string.hpp"
+#ifndef litesql_utils_hpp
+#define litesql_utils_hpp
 
 #define UNUSED_ARG(arg) /*arg*/
 

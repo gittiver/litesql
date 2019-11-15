@@ -9,7 +9,7 @@
 #include <iostream>
 
 namespace litesql {
-using namespace std;
+using std::string;
 
 const Persistent & Persistent::operator=(const Persistent & p) {
     if (this != &p) { 

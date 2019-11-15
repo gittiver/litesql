@@ -1,4 +1,3 @@
-#include <stdio.h>
 
 #include "generator.hpp"
 #include "litesql-gen-cpp.hpp"
@@ -8,9 +7,15 @@
 #include "litesql-gen-protobuf.hpp"
 #include "litesql-gen-golang.hpp"
 
-using namespace std;
 using namespace litesql;
-using namespace xml;
+
+using std::string;
+using std::pair;
+using std::ostream;
+using std::vector;
+
+using xml::Relation;
+using xml::ObjectSequence;
 
 CodeGenerator::FactoryMap::FactoryMap()
 {

@@ -1,7 +1,6 @@
 #ifndef SHAREDLIBRARY_HPP
 #define SHAREDLIBRARY_HPP
 
-#include <map>
 #include <string>
 
 #ifdef WIN32
@@ -14,7 +13,7 @@
 
 /** contains the ability to load symbols from shared Libraries on *NIX and OSX
  * or dynamic link Libraries on windows.
- * The loaded symbols cann be used to call functions or access data
+ * The loaded symbols can be used to call functions or access data
  * of the loaded libraries.
  * @TODO implement windows dynamic linking functionality
  */

@@ -10,6 +10,9 @@
 */
 using namespace litesql;
 
+using std::cerr;
+using std::endl;
+
 namespace litesql {
 class Updater {
 
