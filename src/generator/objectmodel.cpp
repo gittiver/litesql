@@ -1,4 +1,5 @@
 // include LiteSQL's header file and generated header file
+#include <cstring>
 #include "xmlparser.hpp"
 #include "objectmodel.hpp"
 #include "litesql/logger.hpp"
