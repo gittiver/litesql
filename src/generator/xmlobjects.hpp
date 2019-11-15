@@ -15,7 +15,7 @@
 #include "litesql/counted_ptr.hpp"
 #undef NO_MEMBER_TEMPLATES
 
-typedef const char* AT_param_type;
+typedef std::string AT_param_type;
 
 namespace xml {
 
@@ -155,7 +155,7 @@ public:
 
   std::string name;
     AT_param_type type;
-    Param(const std::string& n, AT_param_type t) : name(n), type(t) {}
+    Param(const std::string& n, const AT_param_type& t) : name(n), type(t) {}
     
 };
 

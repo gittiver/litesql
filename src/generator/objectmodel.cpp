@@ -5,13 +5,14 @@
 
 using std::string;
 using std::vector;
+using std::strcmp;
 
 using litesql::Logger;
 using litesql::ObjectModel;
 
 using xml::ObjectSequence;
 
-#define xmlStrcasecmp(s1,s2)  ((s1==NULL) ? (s2!=NULL) : strcmp(s1,s2))
+#define xmlStrcasecmp(s1,s2)  ((s1==nullptr) ? (s2!=nullptr) : strcmp(s1,s2))
 #define xmlStrEqual(s1,s2)   (!strcmp(s1,s2))
 
 const char* toAttributeString(AT_field_type t)
@@ -458,8 +459,8 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     else
     {
       char* pszName = (char*)xmlGetAttrValue(atts,"name");	
-
-      mtd->param(Param(pszName,strdup((char*)xmlGetAttrValue(atts,"type"))));
+      std::string type((char*)xmlGetAttrValue(atts,"type"));
+      mtd->param(Param(pszName,type));
       m_parseState= PARAM;
       Logger::report("param = ",pszName);
     }
