@@ -4,10 +4,12 @@
  * 
  * See LICENSE for copyright information. */
 
-#ifndef _litesql_cursor_hpp
-#define _litesql_cursor_hpp
+#ifndef litesql_cursor_hpp
+#define litesql_cursor_hpp
 
 #include "litesql/backend.hpp"
+#include "litesql/except.hpp"
+
 /** \file cursor.hpp
     Contains class Cursor */
 namespace litesql {
@@ -87,4 +89,5 @@ T Cursor<T>::operator*() {
 
 }
 
-#endif
+#endif  // #ifndef litesql_cursor_hpp
+

@@ -3,10 +3,16 @@
  * The list of contributors at http://litesql.sf.net/ 
  * 
  * See LICENSE for copyright information. */
-#include "compatibility.hpp"
+
+#include <set>
+
+//#include "compatibility.hpp"
 #include "litesql/datasource.hpp"
 namespace litesql {
-using namespace std;
+using std::string;
+using std::vector;
+using std::set;
+
 SelectQuery selectObjectQuery(const vector<FieldType>& fdatas,
                               const Expr& e) {
     SelectQuery sel;

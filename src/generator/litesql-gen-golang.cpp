@@ -1,9 +1,17 @@
-#include "litesql-gen-golang.hpp"
 #include <fstream>
 #include <set>
 
-using namespace std;
-using namespace xml;
+#include "litesql-gen-golang.hpp"
+
+using namespace litesql;
+
+using std::string;
+using std::vector;
+using std::ofstream;
+using std::endl;
+
+using xml::ObjectSequence;
+using xml::Field;
 
 const char* GolangGenerator::NAME = "golang";
 const char* GolangModuleGenerator::NAME = "golang-modulegenerator";
@@ -90,7 +98,7 @@ GolangModuleGenerator::GolangModuleGenerator()
   : CodeGenerator(NAME)
 {}
 
-std::set<AT_field_type> get_types(const ObjectModel* model)
+static std::set<AT_field_type> get_types(const ObjectModel* model)
 {
   std::set<AT_field_type> result;
   for (auto object: model->objects)
@@ -102,6 +110,7 @@ std::set<AT_field_type> get_types(const ObjectModel* model)
   }
   return result;
 }
+
 bool GolangModuleGenerator::generateCode(const ObjectModel* model)
 {
   string nspace = toLower(model->db->nspace);
@@ -133,7 +142,7 @@ bool GolangModuleGenerator::generateCode(const ObjectModel* model)
   return true;
 }
 
-bool isGormModelColumn(const counted_ptr<Field>& f) {
+static bool isGormModelColumn(const counted_ptr<Field>& f) {
   return
      f->name == gorm_model_keywords[0]
   || f->name == gorm_model_keywords[1]

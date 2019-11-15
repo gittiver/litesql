@@ -17,8 +17,11 @@
   TC6: slice with negative values
   TC7: join 
  */
-using namespace std;
 using namespace litesql;
+
+using std::string;
+using std::vector;
+
 
 int main(int /*argc*/, char * /*argv*/[]) {
     // TC1

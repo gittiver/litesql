@@ -6,11 +6,10 @@
 
 #ifndef litesql_database_hpp
 #define litesql_database_hpp
+
 /** \file database.hpp
     Database-class
 */
-
-#include <set>
 #include "litesql/expr.hpp"
 #include "litesql/cursor.hpp"
 
@@ -44,7 +43,7 @@ private:
 	void openDatabase() noexcept(false);
 protected:
     /** backend implementation */
-    unique_ptr<Backend> backend;
+    std::unique_ptr<Backend> backend;
     /** intermediate representation of single entity in relational database,
         table, index or sequence */
     class SchemaItem {
@@ -107,7 +106,7 @@ public:
     template <class T> 
         Cursor<T> cursor(const std::string& query) const {
         if (verbose)
-            cerr << query << endl;
+            std::cerr << query << std::endl;
         return Cursor<T>(*this, backend->cursor(query));
     }
 

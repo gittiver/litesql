@@ -4,8 +4,9 @@
 #include "logger.hpp"
 #include "objectmodel.hpp"
 
-using namespace std;
 using namespace litesql;
+
+using std::string;
 
 const char* help = 
 "Usage: litesql-gen [options] <my-database.xml>\n\n"
@@ -46,7 +47,7 @@ struct options_t {
 
 options_t options = {"","","",true,false,vector<string>()};
 
-int parseArgs(int argc, char **argv) 
+static int parseArgs(int argc, char **argv)
 {
   if(argc==1)
     return -1;
@@ -93,7 +94,7 @@ int parseArgs(int argc, char **argv)
 }
 
 
-int generateCode(ObjectModel& model)
+static int generateCode(ObjectModel& model)
 {
     CompositeGenerator generator;
     

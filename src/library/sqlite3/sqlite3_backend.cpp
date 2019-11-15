@@ -21,7 +21,9 @@
 #endif
 
 using namespace litesql;
-using namespace std;
+using std::string;
+using std::vector;
+
 
 /** SQLite3 - result */
 class SQLite3::Result : public Backend::Result {

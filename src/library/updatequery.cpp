@@ -6,7 +6,10 @@
 #include "compatibility.hpp"
 #include "litesql/updatequery.hpp"
 namespace litesql {
-using namespace std;
+
+using std::string;
+using std::vector;
+
 UpdateQuery& UpdateQuery::where(const Expr& e) {
     _where = (RawExpr(_where) && e).asString();
     return *this;

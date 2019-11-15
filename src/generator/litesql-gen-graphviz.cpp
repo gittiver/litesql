@@ -1,8 +1,19 @@
-#include "litesql-gen-graphviz.hpp"
 #include <fstream>
 
-using namespace std;
-using namespace xml;
+#include "litesql-gen-graphviz.hpp"
+
+using namespace litesql;
+
+using std::string;
+using std::ostream;
+using std::ofstream;
+using std::endl;
+
+using xml::ObjectPtr;
+using xml::ObjectSequence;
+using xml::Relation;
+using xml::Relate;
+using xml::Field;
 
 const char* GraphvizGenerator::NAME="graphviz";
 

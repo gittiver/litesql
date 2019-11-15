@@ -1,13 +1,20 @@
-#include "litesql-gen-protobuf.hpp"
 #include <fstream>
-#include <string.h>
 
-using namespace std;
-using namespace xml;
+#include "litesql-gen-protobuf.hpp"
+
+using namespace litesql;
+
+using std::string;
+using std::ostream;
+using std::ofstream;
+using std::endl;
+
+using xml::Field;
+using xml::ObjectSequence;
 
 const char* ProtoBufClassGenerator::NAME = "protobuf";
 
-string toProtoBufType(AT_field_type field_type)
+static string toProtoBufType(AT_field_type field_type)
 {
     switch (field_type)
     {
@@ -34,7 +41,7 @@ string toProtoBufType(AT_field_type field_type)
     }
 }
 
-void generateMessage(const ObjectModel* model, ostream& os)
+static void generateMessage(const ObjectModel* model, ostream& os)
 {
     os << "package ss.db;" << endl << endl;
 

@@ -8,7 +8,10 @@
 #include <time.h>
 #include <cstdio>
 
-using namespace std;
+using std::string;
+using std::vector;
+using std::ostream;
+
 
 namespace litesql {
 

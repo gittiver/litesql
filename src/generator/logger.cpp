@@ -1,9 +1,14 @@
-#include "logger.hpp"
-#
-#include <iostream>
 
-using namespace std; 
-using namespace litesql; 
+#include <iostream>
+#include "logger.hpp"
+
+using namespace litesql;
+
+using std::string;
+
+using std::cout;
+using std::cerr;
+using std::endl;
 
 static bool logger_verbose = false;
 

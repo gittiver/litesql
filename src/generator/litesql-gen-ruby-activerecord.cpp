@@ -1,14 +1,22 @@
-#include "litesql-gen-ruby-activerecord.hpp"
 #include <fstream>
+#include "litesql-gen-ruby-activerecord.hpp"
 
-using namespace std;
-using namespace xml;
+using namespace litesql;
+
+using std::string;
+using std::ostream;
+using std::ofstream;
+using std::endl;
+
+using xml::ObjectSequence;
+using xml::RelationHandle;
+using xml::Field;
 
 const char* RubyActiveRecordGenerator ::NAME = "ruby-activerecord";
 const char* ActiveRecordClassGenerator::NAME = "ruby-activerecord-class";
 const char* RubyMigrationsGenerator :: NAME ="ruby-activerecord-migrations";
 
-string toActiveRecordType(AT_field_type field_type) {
+static string toActiveRecordType(AT_field_type field_type) {
   switch(field_type) {
        case A_field_type_integer:  return "int";
        case A_field_type_float:    return "float";
@@ -36,7 +44,6 @@ bool ActiveRecordClassGenerator::generate(const xml::ObjectPtr& object)
 
   ofstream os(fname.c_str());
   
-  
   string baseClass = object->parentObject.get() ? object->inherits : "ActiveRecord::Base"; 
   os << "class " << object->name << " < " << baseClass << endl;
   
@@ -63,7 +70,7 @@ bool ActiveRecordClassGenerator::generateCode(const ObjectModel* model)
   return true;
 }
 
-void generateSelfUp(const ObjectModel* model,ostream& os)
+static void generateSelfUp(const ObjectModel* model,ostream& os)
 {
   string indent("  ");
   os << "def self.up" << endl;
@@ -88,7 +95,7 @@ void generateSelfUp(const ObjectModel* model,ostream& os)
   os << "end" << endl;
 }
 
-void generateSelfDown(const ObjectModel* model,ostream& os)
+static void generateSelfDown(const ObjectModel* model,ostream& os)
 {
   string indent("  ");
   os << "def self.down" << endl;

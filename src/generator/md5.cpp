@@ -36,7 +36,7 @@
 #include "md5.hpp"
 #include <cstdio>
 
-using namespace std;
+using std::string;
 /* forward declaration */
 static void Transform (UINT4 *buf, UINT4 *in);
 

@@ -11,6 +11,11 @@
 /*
 */
 using namespace litesql;
+using std::shared_ptr;
+using std::cout;
+using std::endl;
+using std::string;
+
 
 bool testBackendLoadingWithValidConnectionInfo(const char* backend_name) {
   const char* connInfo = "database=test-backend-loading.db";

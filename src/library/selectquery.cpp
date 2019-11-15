@@ -5,7 +5,7 @@
  * See LICENSE for copyright information. */
 #include "compatibility.hpp"
 #include "litesql/selectquery.hpp"
-using namespace std;
+using std::string;
 namespace litesql {
 SelectQuery & SelectQuery::distinct(bool d) { 
     _distinct = d; 

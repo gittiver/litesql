@@ -9,9 +9,9 @@
 /** \file datetime.hpp
     constains Date, Time and DateTime - classes */
 #include "field.hpp"
-#include <time.h>
+#include <ctime>
 namespace litesql {
-using namespace std;
+
 /* holds struct tm */
 class TimeStruct {
     struct tm mytm;
@@ -53,7 +53,7 @@ public:
     Date& setMonth(int m);
     Date& setYear(int y);
     Date& setTimeStamp(time_t t);
-    string asString(string format="%u") const;
+    std::string asString(std::string format="%u") const;
 };
 /** holds time of day */
 class Time {
@@ -66,7 +66,7 @@ public:
     int min() const;
     int sec() const;
     int secs() const;
-    string asString(string format="%u") const;
+    std::string asString(std::string format="%u") const;
 
     Time& setHour(int d);
     Time& setMin(int m);
@@ -86,7 +86,7 @@ public:
     int sec() const;
     time_t timeStamp() const;
     TimeStruct timeStruct() const;
-    string asString(string format="%u") const;
+    std::string asString(std::string format="%u") const;
 
     DateTime& setDay(int d);
     DateTime& setMonth(int m);
@@ -97,11 +97,11 @@ public:
     Date& setTimeStamp(time_t t);
 };
 template <>
-Date convert<const string&, Date>(const string& value);
+Date convert<const std::string&, Date>(const std::string& value);
 template <>
-Time convert<const string&, Time>(const string& value);
+Time convert<const std::string&, Time>(const std::string& value);
 template <>
-DateTime convert<const string&, DateTime>(const string& value);
+DateTime convert<const std::string&, DateTime>(const std::string& value);
 
 template <>
 std::string convert<const Date&, std::string>(const Date& value);

@@ -12,31 +12,33 @@
 /** \file expr.hpp 
     Contains Expr-class hierarchy and operator overloadings for them.*/
 namespace litesql {
-using namespace std;
+
 /** A base class for expression in WHERE - clause. 
     See \ref usage_selecting_persistents */
 class Expr {
-protected:
-    // extra tables to be joined
-  std::vector<std::string> extraTables;
 public:
-  /// constant for True expression
-  static const char* True; 
+    /// constant for True expression
+    static const char* True;
     // default expression is true
     virtual std::string asString() const { return True; }
-
-
-    const std::vector<std::string>& getExtraTables() const { 
+    
+    const std::vector<std::string>& getExtraTables() const {
         return extraTables;
     }
     virtual ~Expr() {}
+protected:
+    // extra tables to be joined
+    std::vector<std::string> extraTables;
 };
+
 /** used to inject custom expression into WHERE-clause */
 class RawExpr : public Expr {
-    std::string expr;
+
 public:
-    RawExpr(std::string  e) : expr(e) {}
+    RawExpr(const std::string&  e) : expr(e) {}
     virtual std::string  asString() const { return expr; }
+private:
+    std::string expr;
 };
 /** used to connect two expressions */
 class Connective : public Expr {
@@ -45,7 +47,7 @@ private:
 protected:
     const Expr &e1, &e2;
     
-    Connective(std::string o, const Expr & e1_, const Expr & e2_)
+    Connective(const std::string& o, const Expr & e1_, const Expr & e2_)
         : op(o), e1(e1_), e2(e2_) { }
     
 public:        
@@ -178,7 +180,7 @@ public:
     Like(const FieldType & fld, const std::string& d)
         : Oper(fld, "like", d) {}
 };
-class SelectQuery;
+
 /** in operator */
 class In : public Oper {
 public:

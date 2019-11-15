@@ -4,15 +4,13 @@
  * 
  * See LICENSE for copyright information. */
 
-#include <map>
-
 #include "compatibility.hpp"
 #include "litesql/backend.hpp"
 #include "litesql/string.hpp"
-#include "litesql/types.hpp"
 
 #include "plugin.hpp"
-
+#include "litesql/utils.hpp"
+#include "litesql/except.hpp"
 
 #ifndef  LITESQL_WITH_BACKEND_PLUGINS
 
@@ -34,10 +32,14 @@
 #ifdef HAVE_OCILIB
 #include "ocilib_backend.hpp"
 #endif
-#endif // #ifndef  LITESQL_WITH_BACKEND_PLUGINS
+#endif
 
 using namespace litesql;
-using namespace std;    
+
+using std::shared_ptr;
+using std::unique_ptr;
+using std::string;
+using std::vector;
 
 string Backend::getSQLType(AT_field_type fieldType,
                            const string& UNUSED_ARG(length)) const
@@ -196,7 +198,8 @@ static const char* getLibraryName(const char* backendType) {
 }
 #endif //#ifdef  LITESQL_WITH_BACKEND_PLUGINS
 
-unique_ptr<Backend> Backend::getBackend(const string& backendType,const string& connInfo) noexcept(false) // throw(DatabaseError)
+unique_ptr<Backend> Backend::getBackend(const string& backendType,
+                                        const string& connInfo) noexcept(false)
 {
   Backend* backend=nullptr;
 #ifdef  LITESQL_WITH_BACKEND_PLUGINS

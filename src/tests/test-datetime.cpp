@@ -13,6 +13,7 @@
   TC1: test for equality on load/ save (see ticket #13)
 */
 using namespace litesql;
+using std::string;
 
 int main(int /*argc*/, char * /*argv*/[]) {
     // TC1 for DateTime

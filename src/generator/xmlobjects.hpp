@@ -1,16 +1,16 @@
 #ifndef litesql_xmlobjects_hpp
 #define litesql_xmlobjects_hpp
 
+#include "litesql/string.hpp"
+
 #include <string>
-#include <vector>
 #include <stdexcept>
 #include <algorithm>
 #include <map>
-#include "litesql/string.hpp"
-#include "litesql/types.hpp"
+
 
 #include "litesql/commontypes.h"
-
+#include "litesql/except.hpp"
 #define NO_MEMBER_TEMPLATES
 #include "litesql/counted_ptr.hpp"
 #undef NO_MEMBER_TEMPLATES
@@ -18,29 +18,28 @@
 typedef const char* AT_param_type;
 
 namespace xml {
-using namespace std;
-using namespace litesql;
-string safe(const char *s);
-string attribute(const string& name, const string& value);
-string endtag(const string& name);
-string makeDBName(const string& s);
+
+std::string safe(const char *s);
+std::string attribute(const std::string& name, const std::string& value);
+std::string endtag(const std::string& name);
+std::string makeDBName(const std::string& s);
 
 class Value {
 public:
     static const char* TAG;
 
-    string name;
-    string value;
+    std::string name;
+    std::string value;
     
-    Value(const string& n, const string& v) : name(n), value(v) {}
+    Value(const std::string& n, const std::string& v) : name(n), value(v) {}
 };
 
 class IndexField {
 public:
     static const char* TAG;
 
-    string name;
-    IndexField(const string& n) : name(n) {}
+    std::string name;
+    IndexField(const std::string& n) : name(n) {}
 };
 
 class Index {
@@ -67,16 +66,16 @@ public:
   
   static const char* TAG;
 
-    string name;
-    string fieldTypeName;
+    std::string name;
+    std::string fieldTypeName;
     AT_field_type type;
-    string default_;
+    std::string default_;
     AT_field_indexed indexed;
     AT_field_unique unique;
-    vector<Value> values;
-	string length;
-    Field(const string& n, AT_field_type t, const string& d, AT_field_indexed i, AT_field_unique u, const string& l="") 
-        : name(n), fieldTypeName(capitalize(n)), type(t), default_(d), indexed(i), unique(u),length(l) {
+    std::vector<Value> values;
+	std::string length;
+    Field(const std::string& n, AT_field_type t, const std::string& d, AT_field_indexed i, AT_field_unique u, const std::string& l="")
+        : name(n), fieldTypeName(litesql::capitalize(n)), type(t), default_(d), indexed(i), unique(u),length(l) {
     }
     void value(const Value& v) {
         values.push_back(v);
@@ -110,7 +109,7 @@ public:
          return true;
        }
     }
-    string getQuotedDefaultValue() const {
+    std::string getQuotedDefaultValue() const {
         if (hasQuotedValues())
             return "\"" + default_ + "\"";
         if (default_.size() == 0)
@@ -128,7 +127,7 @@ public:
         return default_;
     }
 
-    string getCPPType() const {
+    std::string getCPPType() const {
        switch(type) {
            case A_field_type_integer : return "int";
 		   case A_field_type_bigint  : return "litesql::bigint";
@@ -154,9 +153,9 @@ class Param {
 public:
     static const char* TAG;
 
-  string name;
+  std::string name;
     AT_param_type type;
-    Param(const string& n, AT_param_type t) : name(n), type(t) {}
+    Param(const std::string& n, AT_param_type t) : name(n), type(t) {}
     
 };
 
@@ -167,10 +166,10 @@ public:
 
   static const char* TAG;
 
-    string name;
-    string returnType;
-    vector<Param> params;
-    Method(const string& n, const string& rt) 
+    std::string name;
+    std::string returnType;
+    std::vector<Param> params;
+    Method(const std::string& n, const std::string& rt)
         : name(n), returnType(rt) {}
     void param(const Param& p) {
         params.push_back(p);
@@ -201,18 +200,18 @@ public:
 
     static const char* TAG;
   
-    string objectName;
-    string fieldTypeName;
-    string fieldName;
-    string getMethodName;
+    std::string objectName;
+    std::string fieldTypeName;
+    std::string fieldName;
+    std::string getMethodName;
     size_t paramPos;
     AT_relate_limit limit;
     AT_relate_unique unique;
-    string handle;
-    Relate(const string& on, AT_relate_limit l, AT_relate_unique u, const string& h) 
+    std::string handle;
+    Relate(const std::string& on, AT_relate_limit l, AT_relate_unique u, const std::string& h)
         : objectName(on), limit(l), unique(u), handle(h) {
         if (hasLimit() && isUnique())
-            throw logic_error("both limit and unique specified in relate: line " /*+ 
+            throw std::logic_error("both limit and unique specified in relate: line " /*+
                               toString(yylineno)*/);
     }
 
@@ -229,7 +228,7 @@ public:
     }
     
   struct CompareByObjectName
-		: public binary_function<Ptr, Ptr, bool>
+		: public std::binary_function<Ptr, Ptr, bool>
 	{	// functor for operator<
 	bool operator()(const Ptr& _Left, const Ptr& _Right) const
 		{	// apply operator< to operands
@@ -248,17 +247,17 @@ public:
 
     static const char* TAG;
 
-    string id, name;
-    string table;
+    std::string id, name;
+    std::string table;
     AT_relation_unidir unidir;
     Relate::sequence related;
     Field::sequence fields;
     Index::sequence indices;
-    Relation(const string& i, const string& n, AT_relation_unidir ud) 
+    Relation(const std::string& i, const std::string& n, AT_relation_unidir ud)
         : id(i), name(n), unidir(ud) {}
-    string getName() const {
+    std::string getName() const {
         if (name.size() == 0) {
-            string result;
+            std::string result;
             for (size_t i = 0; i < related.size(); i++) 
                 result += related[i]->objectName;
             return result + "Relation" + id;
@@ -269,7 +268,7 @@ public:
         return unidir == A_relation_unidir_true;
     }
     int sameTypes() const {
-        map<string, int> names;
+        std::map<std::string, int> names;
         int max = 0;
         for (size_t i = 0; i < related.size(); i++) {
             if (names.find(related[i]->objectName) == names.end()) 
@@ -280,20 +279,20 @@ public:
         }
         return max;
     }
-    size_t countTypes(const string& name_) const {
+    size_t countTypes(const std::string& name_) const {
         size_t res = 0;
         for (size_t i = 0; i < related.size(); i++)
             if (related[i]->objectName == name_)
                 res++;
         return res;
     }
-    string getTable() const {
-        vector<string> res;
+    std::string getTable() const {
+        std::vector<std::string> res;
         for (size_t i = 0; i < related.size(); i++)
             res.push_back(related[i]->objectName);
         res.push_back(id);
 
-      return makeDBName(join(res,"_"));
+      return makeDBName(litesql::join(res,"_"));
     }
 };
 
@@ -312,13 +311,13 @@ public:
   typedef counted_ptr<RelationHandle> Ptr;
   typedef std::vector<Ptr> sequence;
 
-  string name;
+  std::string name;
   Relation::Ptr relation;
   Relate::Ptr relate;
   ObjectPtr object;
-  std::vector< pair< ObjectPtr,Relate::Ptr > > destObjects;
+  std::vector< std::pair< ObjectPtr,Relate::Ptr > > destObjects;
 
-  RelationHandle(const string& n, Relation::Ptr& r, Relate::Ptr& rel, ObjectPtr& o) 
+  RelationHandle(const std::string& n, Relation::Ptr& r, Relate::Ptr& rel, ObjectPtr& o)
     : name(n), relation(r), relate(rel), object(o) {}
 };
 
@@ -335,16 +334,16 @@ public:
 
     static const char* TAG;
 
-    string name, inherits;
+    std::string name, inherits;
     Field::sequence fields;
     Method::sequence methods;
     Index::sequence indices;
     RelationHandle::sequence handles;
-    map<Relation::Ptr, Relate::sequence > relations;
+    std::map<Relation::Ptr, Relate::sequence > relations;
     ObjectPtr parentObject;
     ObjectSequence children;
 
-    Object(const string& n, const string& i) 
+    Object(const std::string& n, const std::string& i)
       : name(n), 
         inherits(i),
         parentObject(NULL) {
@@ -383,10 +382,10 @@ public:
         else
             return parentObject->getBaseObject();
     }
-    string getTable() const {
+    std::string getTable() const {
         return makeDBName(name + "_");
     }
-    string getSequence() const {
+    std::string getSequence() const {
         return makeDBName(name + "_seq");
     }
 };
@@ -401,8 +400,8 @@ public:
       typedef counted_ptr<Sequence> Ptr;
       typedef std::vector<Ptr> sequence;
     
-      string name;
-      string table;
+      std::string name;
+      std::string table;
     };
     
     class DBField {
@@ -410,8 +409,8 @@ public:
       typedef counted_ptr<DBField> Ptr;
       typedef std::vector<Ptr> sequence;
 
-      string name() const {return field->name +"_"; };
-      void name(const string& fieldname) {field->name=fieldname;};
+      std::string name() const {return field->name +"_"; };
+      void name(const std::string& fieldname) {field->name=fieldname;};
         bool primaryKey;
         Field::Ptr field;
         sequence references;
@@ -423,19 +422,20 @@ public:
         typedef counted_ptr<DBIndex> Ptr;
         typedef std::vector<Ptr> sequence;
 
-        string name;
-        string table;
+        std::string name;
+        std::string table;
         bool unique;
         DBField::sequence fields;
         DBIndex() : unique(false) {}
-        string getSQL() {
-            vector<string> flds;
+        std::string getSQL() {
+            std::vector<std::string> flds;
             for (size_t i = 0; i < fields.size(); i++)
                 flds.push_back(fields[i]->name());
-            string uniqueS;
+            std::string uniqueS;
             if (unique)
                 uniqueS = " UNIQUE";
-          return "CREATE" + uniqueS + " INDEX " + name + " ON " + table + " (" + join(flds,",") + ")";
+          return "CREATE" + uniqueS + " INDEX " + name + " ON "
+            + table + " (" + litesql::join(flds,",") + ")";
         }
     };
     
@@ -444,10 +444,10 @@ public:
       typedef counted_ptr<Table> Ptr;
       typedef std::vector<Ptr> sequence;
 
-      string name;
+      std::string name;
         DBField::sequence fields;
-        string getSQL(const string& rowIDType) {
-            vector<string> flds;
+        std::string getSQL(const std::string& rowIDType) {
+            std::vector<std::string> flds;
             for (size_t i = 0; i < fields.size(); i++)
             {
               if (fields[i]->primaryKey)
@@ -458,7 +458,7 @@ public:
                               +(fields[i]->field->isUnique() ? " UNIQUE" : "") + + "\" +"
                               +"\"");
              }
-          return "CREATE TABLE " + name + " (" + join(flds,",") + ")";
+          return "CREATE TABLE " + name + " (" + litesql::join(flds,",") + ")";
         }
 
     };
@@ -466,9 +466,9 @@ public:
     Sequence::sequence sequences;
     DBIndex::sequence indices;
     Table::sequence tables;
-    string name;
-    string include;
-    string nspace;
+    std::string name;
+    std::string include;
+    std::string nspace;
 
     bool hasNamespace() const { return !nspace.empty(); }
 };

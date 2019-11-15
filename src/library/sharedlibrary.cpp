@@ -1,7 +1,9 @@
 #include "sharedlibrary.hpp"
 #include <iostream>
 
-using namespace std;
+using std::string;
+using std::cout;
+using std::endl;
 
 SharedLibrary::SharedLibrary(HSHAREDLIBRARY handle)
 : dlHandle(handle)

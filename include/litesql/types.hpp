@@ -6,9 +6,11 @@
 #ifndef _litesql_types_hpp
 #define _litesql_types_hpp
 
-#include "litesql/except.hpp"
 /** \file types.hpp
     contains class Record and typedef Records */
+
+#include <vector>
+#include <string>
 
 namespace litesql
 {

@@ -6,11 +6,15 @@
 #include <cstdlib>
 #include <algorithm>
 #include "compatibility.hpp"
-#include "litesql.hpp"
 #include "litesql/field.hpp"
+#include "litesql/expr.hpp"
 
 namespace litesql {
-using namespace std;
+
+using std::string;
+using std::min;
+using std::ostream;
+
 
 In FieldType::in(const string& set) const {
     return In(*this, set);
@@ -148,7 +152,7 @@ string Blob::toHex(const u8_t *data, size_t length)
   return result;
 }
 
-u8_t hex(char c)
+static u8_t hex(char c)
 {
   switch(c)
   {

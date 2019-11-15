@@ -1,10 +1,15 @@
 #include <iostream>
+
 #include "plugin.hpp"
 #include "sharedlibrary.hpp"
 #include "litesql/backend.hpp"
 
-using namespace std;
 using namespace litesql;
+
+using std::string;
+using std::cerr;
+using std::endl;
+
 
 Plugin::Plugin( SharedLibrary* sharedLib,
                 void* fCreate,

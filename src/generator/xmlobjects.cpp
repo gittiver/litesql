@@ -5,7 +5,17 @@
 
 #include <algorithm>
 
-namespace xml {
+using std::string;
+using std::map;
+using std::vector;
+using std::make_pair;
+
+using litesql::Except;
+using litesql::join;
+using litesql::Logger;
+using litesql::toString;
+
+using namespace xml;
 
 const char* Database::TAG="database";
 const char* Object::TAG="object";
@@ -24,7 +34,7 @@ Field::Ptr Object::ID_FIELD(new Field("id", A_field_type_integer, "", A_field_in
 Field::Ptr Object::TYPE_FIELD(new Field("type", A_field_type_string, "", A_field_indexed_false, A_field_unique_false));
 
    
-string validID(const string& s, const string& type="field") {
+static string validID(const string& s, const string& type="field") {
   string result="";  
   
   if (s.empty()) 
@@ -50,25 +60,26 @@ string validID(const string& s, const string& type="field") {
   return result;
 }
 
-string makeDBName(const string& s) {
-if(true)
+string xml::makeDBName(const string& s)
 {
-	//ORACLE allows only 30 chars and leading alphabet is a must
-	if (s.size() > 30)
-		return "O" + md5HexDigest(s).substr(0,29);
-    return s;
+    if(true)
+    {
+        //ORACLE allows only 30 chars and leading alphabet is a must
+        if (s.size() > 30)
+            return "O" + md5HexDigest(s).substr(0,29);
+        return s;
+    }
+    else
+    {
+        if (s.size() > 31)
+            return "_" + md5HexDigest(s);
+        return s;
+    }
 }
-else
-{
-	if (s.size() > 31)
-        return "_" + md5HexDigest(s);
-    return s;
-}
-}
+
 static void sanityCheck(DatabasePtr& db,
                         const ObjectSequence& objects,
                         const Relation::sequence& relations) {
-    using namespace litesql;
     map<string, bool> usedID;
     map<string, bool> objectName;
     string err;
@@ -302,9 +313,9 @@ static void initSchema(DatabasePtr& db,
             db->indices.push_back(index);
         }
     }
-
 }
-void init(DatabasePtr& db,
+
+void xml::init(DatabasePtr& db,
           ObjectSequence& objects,
           Relation::sequence& relations) {
     map<string, ObjectPtr> objMap;
@@ -376,25 +387,9 @@ void init(DatabasePtr& db,
     initSchema(db, objects, relations);
 
 }
-string safe(const char * s) {
+
+string xml::safe(const char * s) {
     if (s)
         return s;
     return "";
-}
-
-string attribute(const string& name, const string& value)
-{
-  string a;
-  a.append(name).append("=").append("\"").append(value).append("\" ");
-  return a;
-}
-
-string endtag(const string& name)
-{
-  string a;
-  a.append("</").append(name).append(">");
-  return a;
-}
-
-
 }
