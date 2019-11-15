@@ -25,8 +25,10 @@ void Logger::report(const string& msg,const string& msg2)
 
 void Logger::report(const string& msg)
 {
-  if (logger_verbose)
-    cout  << msg << endl;
+    if (logger_verbose)
+    {
+        cout  << msg.c_str() << endl;
+    }
 }
 
 void Logger::error(const std::string& msg)
