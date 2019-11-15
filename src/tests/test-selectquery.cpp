@@ -3,7 +3,7 @@
  * The list of contributors at http://litesql.sf.net/ 
  * 
  * See LICENSE for copyright information. */
-
+#include <cassert>
 #include "litesql/selectquery.hpp"
 /*
   SelectQuery unit tester

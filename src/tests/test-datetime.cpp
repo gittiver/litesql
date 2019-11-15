@@ -4,8 +4,7 @@
  * 
  * See LICENSE for copyright information. */
 
-#include <assert.h>
-
+#include <cassert>
 #include "litesql/datetime.hpp"
 /*
   Datetime unit tester

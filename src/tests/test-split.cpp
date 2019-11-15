@@ -4,9 +4,8 @@
  * 
  * See LICENSE for copyright information. */
 
-#include "litesql/string.hpp"
-
 #include <cassert>
+#include "litesql/string.hpp"
 /*
   Split unit tester
   
