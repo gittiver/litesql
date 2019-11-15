@@ -57,8 +57,9 @@ static void generateMessage(const ObjectModel* model, ostream& os)
         for (Field::sequence::const_iterator fit = (*it)->fields.begin();
                 fit != (*it)->fields.end(); fit++)
         {
-            if (strcmp((*fit)->name.c_str(), "id") != 0
-                    && strcmp((*fit)->name.c_str(), "type") != 0)
+            if (    ((*fit)->name!="id")
+                 && ((*fit)->name!= "type")
+            )
             {
                 os << indent << "optional "
                         << toProtoBufType((*fit)->type) << ' '
