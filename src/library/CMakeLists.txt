@@ -5,7 +5,7 @@ set(LIBNAME litesql)
 ##############################################################################
 set(litesql_util_SOURCES
          string.cpp ../../include/litesql/string.hpp
-         logger.cpp logger.hpp
+         logger.cpp ../../include/litesql/logger.hpp
 )    
 
 add_library(litesql-util STATIC ${litesql_util_SOURCES})
