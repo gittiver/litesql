@@ -256,7 +256,7 @@ std::ostream & operator<<(std::ostream& os, Node o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-GraphDatabase::GraphDatabase(std::string backendType, std::string connInfo)
+GraphDatabase::GraphDatabase( const std::string& backendType, const std::string& connInfo)
      : litesql::Database(backendType, connInfo) {
     initialize();
 }

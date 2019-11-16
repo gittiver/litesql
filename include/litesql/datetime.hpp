@@ -53,7 +53,7 @@ public:
     Date& setMonth(int m);
     Date& setYear(int y);
     Date& setTimeStamp(time_t t);
-    std::string asString(std::string format="%u") const;
+    std::string asString(const std::string& format="%u") const;
 };
 /** holds time of day */
 class Time {
@@ -66,7 +66,7 @@ public:
     int min() const;
     int sec() const;
     int secs() const;
-    std::string asString(std::string format="%u") const;
+    std::string asString(const std::string& format="%u") const;
 
     Time& setHour(int d);
     Time& setMin(int m);
@@ -86,7 +86,7 @@ public:
     int sec() const;
     time_t timeStamp() const;
     TimeStruct timeStruct() const;
-    std::string asString(std::string format="%u") const;
+    std::string asString(const std::string& format="%u") const;
 
     DateTime& setDay(int d);
     DateTime& setMonth(int m);

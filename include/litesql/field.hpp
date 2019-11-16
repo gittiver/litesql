@@ -129,7 +129,7 @@ public:
     const FieldType & fieldType() const { return *field; } 
     bool modified() const { return _modified; }
     void setModified(bool state) { _modified = state; }
-    const Field & operator=(std::string v) { 
+    const Field & operator=(const std::string& v) {
         _value = v;
         _modified = true;
         return *this;
@@ -250,11 +250,11 @@ const Field& operator=(const char * v) {
 };
 
 template <class T>
-std::string operator+(std::string a, litesql::Field<T> f) {
+std::string operator+(const std::string& a, const litesql::Field<T>& f) {
     return a + std::string(f);
 }
 template <class T>
-std::string operator+(litesql::Field<T> f, std::string a) {
+std::string operator+(const litesql::Field<T>& f, const std::string& a) {
     return std::string(f) + a;    
 }
 template <class T>

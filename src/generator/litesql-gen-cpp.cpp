@@ -22,7 +22,7 @@ public:
     string name, type, value;
     bool isStatic, isProtected;
 
-    Variable(string n, string t, string v="")
+    Variable(const string& n, const string& t, const string& v="")
         : name(n), type(t), value(v), isStatic(false), isProtected(false) {}
     Variable& static_() {
         isStatic = true;
@@ -60,7 +60,7 @@ public:
         buf.append(val);
         return buf;
     }
-    string staticDefinition(string context) {
+    string staticDefinition(const string& context) {
         string val = quotedValue();
         string params;
         if (value.size() > 0) {
@@ -92,11 +92,11 @@ public:
         params.push_back(v);
         return *this;
     }
-    Method& constructor(string parameters) {
+    Method& constructor(const string& parameters) {
         constructorParams = parameters;
         return *this;
     }
-    Method& body(string line) {
+    Method& body(const string& line) {
         bodyLines.push_back(line);
         return *this;
     }
@@ -116,12 +116,12 @@ public:
         isDefinition = true;
         return *this;
     }
-    Method& template_(string parameters) {
+    Method& template_(const string& parameters) {
         isTemplate = true;
         templateParams = parameters;
         return *this;
     }
-    Method& templateSpec(string parameters) {
+    Method& templateSpec(const string& parameters) {
         isTemplate = isTemplateSpec = true;
         templateParams = parameters;
         return *this;
@@ -202,7 +202,7 @@ class Class {
     vector<Variable> variables;
     vector<Class> classes;
 public:
-    Class(string n, string i="") : name(n), inherits(i) {}
+    Class(const string& n, string i="") : name(n), inherits(i) {}
     Class& method(const Method& m) {
         methods.push_back(m);
         return *this;
@@ -263,13 +263,13 @@ public:
     }
 };
 
-static string quote(string s) {
+static string quote(const string& s) {
     return "\"" + s + "\"";
 }
-static string brackets(string s) {
+static string brackets(const string& s) {
     return "(" + s + ")";
 }
-static bool validID(string s) {
+static bool validID(const string& s) {
     static const char* words[] =
         {"asm","break","case","catch",
          "char","class","const","continue","default",
@@ -1164,8 +1164,8 @@ static void writeDatabaseClass(FILE* hpp, FILE* cpp,
     Class db(dbInfo->name, "litesql::Database");
     Method cons(dbInfo->name);
 
-    cons.param(Variable("backendType", "std::string"))
-        .param(Variable("connInfo", "std::string"))
+    cons.param(Variable("backendType", " const std::string&"))
+        .param(Variable("connInfo", "const std::string&"))
         .constructor("litesql::Database(backendType, connInfo)");
     cons.body("initialize();");
     db.method(cons);

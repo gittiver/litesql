@@ -65,7 +65,7 @@ bool operator ==(const ColumnDefinition& c1,const ColumnDefinition& c2)
     return (c1.name == c2.name) && (c1.type==c2.type);
 }
 
-static ColumnDefinitions getFields(string schema) {
+static ColumnDefinitions getFields(const string& schema) {
     ColumnDefinitions fields;
     int start = schema.find("(");
     int end = schema.find(")");
@@ -91,8 +91,8 @@ bool Database::addColumn(const string & name,const ColumnDefinition & column_def
     return true;
 }
 
-void Database::upgradeTable(string name,
-                            string oldSchema, string newSchema) const {
+void Database::upgradeTable(const string& name,
+                            const string& oldSchema, const string& newSchema) const {
     ColumnDefinitions oldFields = getFields(oldSchema);
     ColumnDefinitions newFields = getFields(newSchema);
     
@@ -157,16 +157,24 @@ void Database::upgradeTable(string name,
 }
 
 Database::Database(const string& backend, const string& conn)
-: backendType(backend), connInfo(conn), backend(), verbose(false) {
+: backendType(backend)
+, connInfo(conn)
+, backend()
+, verbose(false)
+{
     openDatabase();
 }
+
 Database::Database(const Database &op)
-: backendType(op.backendType), connInfo(op.connInfo),
-verbose(op.verbose) {
+: backendType(op.backendType)
+, connInfo(op.connInfo)
+, verbose(op.verbose)
+{
     openDatabase();
 }
-Database::~Database() {
-}
+
+Database::~Database()
+{}
 
 void Database::create() const {
     vector<SchemaItem> s = getSchema();

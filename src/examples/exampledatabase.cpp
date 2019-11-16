@@ -1619,7 +1619,7 @@ std::ostream & operator<<(std::ostream& os, ThingWithMethods o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-ExampleDatabase::ExampleDatabase(std::string backendType, std::string connInfo)
+ExampleDatabase::ExampleDatabase( const std::string& backendType, const std::string& connInfo)
      : litesql::Database(backendType, connInfo) {
     initialize();
 }

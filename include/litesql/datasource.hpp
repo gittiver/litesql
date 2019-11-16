@@ -15,13 +15,15 @@
 namespace litesql {
 
   /** returns SelectQuery which selects objects of type T
-   *  \param fdatas fields of class T
-   \param e optional filter expression */
+   * \param fdatas fields of class T
+   * \param e optional filter expression
+   */
   SelectQuery selectObjectQuery(const std::vector<FieldType>& fdatas,
                                 const Expr & e=Expr());
 
   /** returns SelectQuery which selects objects of type T
-   \param e optional filter expression */
+   * \param e optional filter expression
+   */
   template <class T>
   SelectQuery selectObjectQuery(const Expr & e=Expr()) {
     std::vector<FieldType> fdatas;

@@ -102,7 +102,7 @@ public:
 std::ostream & operator<<(std::ostream& os, Node o);
 class GraphDatabase : public litesql::Database {
 public:
-    GraphDatabase(std::string backendType, std::string connInfo);
+    GraphDatabase( const std::string& backendType, const std::string& connInfo);
 protected:
     virtual std::vector<litesql::Database::SchemaItem> getSchema() const;
     static void initialize();

@@ -70,7 +70,7 @@ protected:
     \param name table name
     \param oldSchema current schema of table 
     \param newSchema upgraded schema of table */
-    void upgradeTable(std::string name, std::string oldSchema, std::string newSchema) const;
+    void upgradeTable(const std::string& name, const std::string& oldSchema, const std::string& newSchema) const;
 
     bool addColumn(const std::string & name,const ColumnDefinition & column_def) const;
 

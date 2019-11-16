@@ -118,7 +118,7 @@ Date& Date::setTimeStamp(time_t t) {
     value = t;
     return *this;
 }
-string Date::asString(string format) const {
+string Date::asString(const string& format) const {
     if (format == "%u") {
         char buf[32];
         snprintf(buf, 32, "%lu", value);
@@ -175,7 +175,7 @@ Time& Time::setSecs(int secs) {
     value = secs;
     return *this;
 }
-string Time::asString(string format) const {
+string Time::asString(const string& format) const {
     if (format == "%u") {
         char buf[32];
         snprintf(buf, 32, "%d", value);
@@ -244,7 +244,7 @@ DateTime& DateTime::setSec(int s) {
     value = TimeStruct(value).setSec(s).timeStamp();
     return *this;
 }
-string DateTime::asString(string format) const {
+string DateTime::asString(const string& format) const {
     if (format == "%u") {
         char buf[32];
         snprintf(buf, 32, "%lu", value);

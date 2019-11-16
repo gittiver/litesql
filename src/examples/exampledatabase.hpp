@@ -568,7 +568,7 @@ public:
 std::ostream & operator<<(std::ostream& os, ThingWithMethods o);
 class ExampleDatabase : public litesql::Database {
 public:
-    ExampleDatabase(std::string backendType, std::string connInfo);
+    ExampleDatabase( const std::string& backendType, const std::string& connInfo);
 protected:
     virtual std::vector<litesql::Database::SchemaItem> getSchema() const;
     static void initialize();

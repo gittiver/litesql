@@ -32,44 +32,44 @@ public:
 /** exception thrown when a record is not found */    
 class NotFound : public Except {
 public:
-    NotFound(std::string s="") : Except("NotFound: "+s) {}
+    NotFound(const std::string& s="") : Except("NotFound: "+s) {}
 };
 /** exception thrown when database cannot be accessed */
 class DatabaseError : public Except {
 public:
-    DatabaseError(std::string m) : Except("DatabaseError: "+m) {}
+    DatabaseError(const std::string& m) : Except("DatabaseError: "+m) {}
 };
 /** exception thrown when SQL statement cannot be executed */
 class SQLError : public Except {
 public:
-    SQLError(std::string m) : Except("SQLError: "+m) {}
+    SQLError(const std::string& m) : Except("SQLError: "+m) {}
 };
 /** exception thrown when backend produces internal error */
 class InternalError : public Except {
 public:
-    InternalError(std::string m) : Except("InternalError: " +m) {}
+    InternalError(const std::string& m) : Except("InternalError: " +m) {}
 };
 /** exception thrown when backend cannot allocate memory */
 class MemoryError : public Except {
 public:
-    MemoryError(std::string m) : Except("Allocation failed: "+m){}
+    MemoryError(const std::string& m) : Except("Allocation failed: "+m){}
 };
 /** exception thrown when database (disk) is full */
 class InsertionError : public Except {
 public:
-    InsertionError(std::string m) : Except("Database full: "+m){}
+    InsertionError(const std::string& m) : Except("Database full: "+m){}
 };
 
 class ConstraintError : public Except {
 public:
-    ConstraintError(std::string m) : Except("Contraint error: "+m){}
+    ConstraintError(const std::string& m) : Except("Contraint error: "+m){}
 };
 
 /** exception thrown when none of other exceptions match */
 class UnknownError : public Except {
     // handles the rest
 public:
-    UnknownError(std::string m) : Except("UnknownError: "+m){}
+    UnknownError(const std::string& m) : Except("UnknownError: "+m){}
 };
 
 

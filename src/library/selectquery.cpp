@@ -5,8 +5,10 @@
  * See LICENSE for copyright information. */
 #include "compatibility.hpp"
 #include "litesql/selectquery.hpp"
+
 using std::string;
-namespace litesql {
+
+using namespace litesql;
 SelectQuery & SelectQuery::distinct(bool d) { 
     _distinct = d; 
     return *this;
@@ -19,7 +21,7 @@ SelectQuery & SelectQuery::offset(int value) {
     _offset = value; 
     return *this;
 }
-SelectQuery & SelectQuery::result(std::string r) { 
+SelectQuery & SelectQuery::result(const std::string& r) { 
     _results.push_back(r); 
     return *this;
 }
@@ -27,21 +29,22 @@ SelectQuery & SelectQuery::clearResults() {
     _results.clear();
     return *this;
 }
-SelectQuery & SelectQuery::source(std::string s, std::string alias) {
+SelectQuery & SelectQuery::source(const std::string& s, const std::string& alias) {
+    string a(s);
     if (!alias.empty())
-        s += " AS " + alias;
-    _sources.push_back(s);
+        a += " AS " + alias;
+    _sources.push_back(a);
     return *this;
 }
 SelectQuery & SelectQuery::where(const Expr & w) { 
     _where = (RawExpr(_where) && w).asString();	
     return *this;
 }
-SelectQuery & SelectQuery::where(std::string w) { 
+SelectQuery & SelectQuery::where(const std::string& w) {
     _where = (RawExpr(_where) && RawExpr(w)).asString();
     return *this;
 }
-SelectQuery & SelectQuery::groupBy(std::string gb) { 
+SelectQuery & SelectQuery::groupBy(const std::string& gb) {
     _groupBy.push_back(gb);	
     return *this;
 }
@@ -49,11 +52,11 @@ SelectQuery & SelectQuery::having(const Expr & h) {
     _having = h.asString(); 
     return *this;
 }
-SelectQuery & SelectQuery::having(std::string h) { 
+SelectQuery & SelectQuery::having(const std::string& h) {
     _having = h;
     return *this;
 }
-SelectQuery & SelectQuery::orderBy(std::string ob, bool ascending) { 
+SelectQuery & SelectQuery::orderBy(const std::string& ob, bool ascending) {
     std::string value = ob;
     if (!ascending)
         value += " DESC";
@@ -80,5 +83,4 @@ SelectQuery::operator string() const {
     if (_offset) 
             res += " OFFSET " + toString(_offset);
     return res;
-}
 }
