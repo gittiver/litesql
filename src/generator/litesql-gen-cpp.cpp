@@ -77,6 +77,42 @@ public:
     }
 };
 
+
+struct Parameter
+{
+    enum class Direction : uint8_t
+    {
+        IN,
+        OUT,
+        INOUT
+    };
+    string name;
+    string type;
+    string default_value;
+    Direction direction = Direction::IN;
+    
+    string quotedValue() {
+        if (type == "string")
+            return "\"" + default_value + "\"";
+        return default_value;
+    }
+
+    string paramDefinition(bool defaults=true) {
+
+        string val;
+        if (defaults && default_value.size() > 0) {
+            val = "=" + quotedValue();
+        
+        }
+        string buf(type);
+        buf.append(" ");
+        buf.append(name);
+        buf.append(val);
+        return buf;
+    }
+
+};
+
 class Method {
 public:
     string name, returnType, templateParams, constructorParams;
@@ -1191,6 +1227,7 @@ static void writeDatabaseClass(FILE* hpp, FILE* cpp,
         .body("    return;")
         .body("initialized = true;");
 
+    
     for (size_t i = 0; i < objects.size(); i++) {
         xml::Object& o = *objects[i];
         for (size_t i2 = 0; i2 < o.fields.size(); i2++)
