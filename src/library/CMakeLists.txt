@@ -123,6 +123,7 @@ target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE litesql PRIVATE litesql
 if(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
 target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE ${SQLITE3_LIBRARIES})
 else(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
+add_dependency(${LIBNAME}_backend_sqlite3 sqlite3)
 target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE sqlite3)
 endif(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
 
