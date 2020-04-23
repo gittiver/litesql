@@ -1,20 +1,42 @@
 <?xml version="1.0"?>
 <!DOCTYPE database SYSTEM "litesql.dtd"> 
 <database name="GraphDatabase" namespace="graph">
+
   <object name="Node">
     <field name="name" type="string" length="512"/>
+  </object>
+
+  <object name="Tag">
+    <field name="name" type="string" length="512"/>
+  </object>
+
+  <object name="Property">
+    <field name="name" type="string" length="512"/>
+    <field name="value" type="string"/>
+  </object>
+
+  <relation id="NodeProperties">
+    <relate object="Node" handle="properties"/>
+    <relate object="Property" handle="nodes"/>
+  </relation>
+
+  <relation id="NodeTags">
+    <relate object="Node" handle="tags"/>
+    <relate object="Tag" handle="nodes"/>
+    <field name="type" type="integer"/>
+  </relation>
+
+  <relation id="Edges">
+    <relate object="Node" handle="edges"/>
+    <relate object="Node"/>
+    <field name="type" type="integer"/>
+  </relation>
+
+  <object name="ColoredNode" inherits="Node">
     <field name="nodecolor" type="integer">
       <value name="Red" value="0"/>
       <value name="Blue" value="1"/>
     </field>
   </object>
 
-  <relation id="Edges">
-    <relate object="Node" handle="edges"/>
-    <relate object="Node" name="y"/>
-    <field name="color" type="integer">
-      <value name="Red" value="0"/>
-      <value name="Blue" value="1"/>
-    </field>
-  </relation>
 </database>

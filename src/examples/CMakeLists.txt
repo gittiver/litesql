@@ -48,7 +48,14 @@ add_custom_command(
    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
    DEPENDS litesql-gen graph.xml
    )
-add_executable(graph graph.cpp graphdatabase.hpp graphdatabase.cpp)
+add_custom_command(
+OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/graphdatabase.dot
+COMMAND litesql-gen -t graphviz graph.xml
+MAIN_DEPENDENCY graph.xml
+WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+DEPENDS litesql-gen graph.xml
+)
+add_executable(graph graph.cpp graphdatabase.hpp graphdatabase.cpp graphdatabase.dot)
 
 target_link_libraries (graph litesql litesql-util ${BACKEND_LIBRARIES})
 
