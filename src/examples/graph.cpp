@@ -26,18 +26,24 @@ int main(int UNUSED_ARG(argc), char ** UNUSED_ARG(argv)) {
     // Create Some Nodes for the graph
     Node n1(db);
     n1.name = "n1";
-//    n1.nodecolor = Node::Nodecolor::Red;
     n1.update();
 
     Node n2(db);
     n2.name = "n2";
-//    n2.nodecolor = Node::Nodecolor::Red;
     n2.update();
+
+    // create a ColoredNode ...
+
+    ColoredNode cn1(db);
+    cn1.name = "colorado1";
+    cn1.nodecolor = ColoredNode::Nodecolor::Red;
+    cn1.update();
 
     // link the created nodes
     n1.edges().link(n2,0);
     n2.edges().link(n1,1);
 
+    cn1.edges().link(n2);
     // count Nodes
     cout << "There are " << select<Node>(db).count()
     << " nodes." << endl;
@@ -56,6 +62,14 @@ int main(int UNUSED_ARG(argc), char ** UNUSED_ARG(argv)) {
     for (vector<Node>::iterator i = nodes.begin(); i != nodes.end(); i++)
       cout << toString(*i) << endl;
 
+    vector<Tag> tags = select<Tag>(db).orderBy(Tag::Name).all();
+    for (auto tag:tags)
+      cout << toString(tag) << endl;
+
+    vector<Property> properties = select<Property>(db).orderBy(Property::Name).all();
+    for (auto prop:properties)
+      cout << toString(prop) << endl;
+
     // select intersection of n1 and n2's edges and
     // iterate results with cursor
     Cursor<Node> cursor = intersect(n1.edges().get(),
@@ -64,14 +78,14 @@ int main(int UNUSED_ARG(argc), char ** UNUSED_ARG(argv)) {
     // select a non-existing Node
     try {
       select<Node>(db, Node::Name == "n3").one();
-    } catch (NotFound e) {
+    } catch (NotFound& e) {
       cout << "No Node with name n3" << endl;
     }
     // commit transaction
     db.commit();
     // clean up
     //        db.drop();
-  } catch (Except e) {
+  } catch (Except& e) {
     cerr << e << endl;
     return -1;
   }
