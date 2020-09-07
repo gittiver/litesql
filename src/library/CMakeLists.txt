@@ -8,21 +8,21 @@ if(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
 endif(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
 
 if (NOT SQLITE3_FOUND)
-  ExternalProject_Add(libsqlite3
+  ExternalProject_Add(internal_sqlite3
     GIT_REPOSITORY https://github.com/gittiver/sqlite3-amalgamation.git
-	GIT_TAG v3_29_00
+#	GIT_TAG v3_29_00
     PREFIX 3rdparty
 	CMAKE_ARGS -D SQLITE3_USE_SHARED_CRT:bool=OFF
     INSTALL_COMMAND ""
   )
   if (MSVC)
     add_library(sqlite3 STATIC IMPORTED)
-    set_property(TARGET sqlite3 PROPERTY IMPORTED_LOCATION_DEBUG ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libsqlite3-build/Debug/sqlite3.lib)
-    set_property(TARGET sqlite3 PROPERTY IMPORTED_LOCATION_RELEASE ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libsqlite3-build/Release/sqlite3.lib)
-    set_property(TARGET sqlite3 PROPERTY IMPORTED_LOCATION_MINSIZEREL ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libsqlite3-build/MinSizeRel/sqlite3.lib)
-    add_dependencies(sqlite3 libsqlite3)
-	set(SQLITE3_INCLUDE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libsqlite3-build/3rdparty/src/sqlite3-src)
-    include_directories(${SQLITE3_INCLUDE_DIR})
+    set_property(TARGET sqlite3 PROPERTY IMPORTED_LOCATION_DEBUG ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/internal_sqlite3-build/Debug/sqlite3.lib)
+    set_property(TARGET sqlite3 PROPERTY IMPORTED_LOCATION_RELEASE ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/internal_sqlite3-build/Release/sqlite3.lib)
+    set_property(TARGET sqlite3 PROPERTY IMPORTED_LOCATION_MINSIZEREL ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/internal_sqlite3-build/MinSizeRel/sqlite3.lib)
+    add_dependencies(sqlite3 internal_sqlite3)
+	set(SQLITE3_INCLUDE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/internal_sqlite3/3rdparty/src/sqlite3-src)
+    target_include_directories(sqlite3 PUBLIC ${SQLITE3_INCLUDE_DIR})
   endif(MSVC)
   message("use internal sqlite3")
   set (SQLITE3_LIBRARIES sqlite3)
