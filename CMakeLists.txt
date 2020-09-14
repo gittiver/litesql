@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 cmake_policy(SET CMP0048 NEW)
 cmake_policy(SET CMP0042 NEW)
+cmake_policy(SET CMP0028 NEW)
+cmake_policy(SET CMP0077 NEW)
 
 enable_language(C)
 enable_language(CXX)
@@ -10,15 +12,14 @@ if (MSVC)
   option(LITESQL_MSVC_MT "link with /MT instead of /MD (use dlls versus static linked, change also wxWidgets_LIB_DIR)" ON) 
   # see http://msdn.microsoft.com/en-us/library/2kzt1wy3%28VS.71%29.aspx   
   if (LITESQL_MSVC_MT)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+   else(LITESQL_MSVC_MT)
+     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL$<$<CONFIG:Debug>:Debug>")
   endif (LITESQL_MSVC_MT)
   
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /INCREMENTAL:NO")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4")
-  set(CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4")
+ # set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4")
+ # set(CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4")
   
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS   _CRT_SECURE_NO_WARNINGS)
 else(MSVC)
@@ -28,7 +29,7 @@ else(MSVC)
 endif(MSVC)
 
 # Include all the necessary files for macros
-include(ExternalProject)
+include(FetchContent)
 include (${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckIncludeFile.cmake)
 include (${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake)
@@ -136,35 +137,29 @@ endif(LITESQL_USE_SYSTEM_EXPAT)
   
 
 if (NOT EXPAT_FOUND)
-  ExternalProject_Add(libexpat
+  FetchContent_Declare(expat
   		 GIT_REPOSITORY https://github.com/libexpat/libexpat.git
-		 GIT_TAG R_2_2_8
-		 PREFIX 3rdparty
-		 CONFIGURE_COMMAND
-		   ${CMAKE_COMMAND} -D BUILD_examples:bool=OFF
-				    -D BUILD_tools:bool=OFF
-				    -D BUILD_tests:bool=OFF
-				    -D BUILD_shared:bool=OFF
-				    -D BUILD_doc:bool=OFF
-					-D MSVC_USE_STATIC_CRT:bool=ON
-				    <SOURCE_DIR>/expat
-		 INSTALL_COMMAND ""
-  )
-  set(EXPAT_LIBRARIES expat)
-  set(EXPAT_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libexpat-build/ 
-                         ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libexpat/expat/lib 
-                         )
-  if(MSVC)
-    add_library(expat STATIC IMPORTED)
+		 GIT_TAG R_2_2_9)
+  if(NOT expat_POPULATED)
 
-    set_property(TARGET expat PROPERTY IMPORTED_LOCATION_DEBUG ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libexpat-build/Debug/expatd.lib)
-    set_property(TARGET expat PROPERTY IMPORTED_LOCATION_RELEASE ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libexpat-build/Release/expat.lib)
-    set_property(TARGET expat PROPERTY IMPORTED_LOCATION_MINSIZEREL ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libexpat-build/MinSizeRel/expat.lib)
-    add_dependencies(expat libexpat)
-  endif(MSVC)
-  set(EXPAT_LIBRARIES expat)
- 
- endif (NOT EXPAT_FOUND)
+    set(EXPAT_SHARED_LIBS Off)
+    set(EXPAT_BUILD_TOOLS Off)
+    set(EXPAT_BUILD_EXAMPLES Off)
+    set(EXPAT_BUILD_TESTS Off)
+    set(EXPAT_SHARED_LIBS Off)
+    set(EXPAT_BUILD_DOCS Off)
+    set(EXPAT_BUILD_FUZZERS Off)
+    set(EXPAT_WITH_LIBBSD Off)
+    set(EXPAT_ENABLE_INSTALL On)
+    FetchContent_Populate(expat)
+
+    add_subdirectory(${expat_SOURCE_DIR}/expat ${expat_BINARY_DIR})
+  endif()
+
+  set(EXPAT_LIBRARIES libexpat)
+  set(EXPAT_INCLUDE_DIRS  ${expat_SOURCE_DIR}/expat/lib ${expat_BIN_DIR})
+  
+endif (NOT EXPAT_FOUND)
 
 message(EXPAT_LIBRARIES= ${EXPAT_LIBRARIES})
 message(EXPAT_INCLUDE_DIRS=${EXPAT_INCLUDE_DIRS})
