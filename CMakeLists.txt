@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.13)
 cmake_policy(SET CMP0048 NEW)
 cmake_policy(SET CMP0042 NEW)
 cmake_policy(SET CMP0028 NEW)
@@ -23,9 +23,9 @@ if (MSVC)
   
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS   _CRT_SECURE_NO_WARNINGS)
 else(MSVC)
-  list(APPEND CMAKE_CXX_FLAGS "-Wall -Wextra -Wunused-variable -Wno-long-long -Wpedantic")
+#  list(APPEND CMAKE_CXX_FLAGS "-Wall -Wextra -Wunused-variable -Wno-long-long -Wpedantic")
   #-pedantic 
-  list(APPEND CMAKE_C_FLAGS "-Wall -Wunused-variable -Wno-long-long")
+#  list(APPEND CMAKE_C_FLAGS "-Wall -Wunused-variable -Wno-long-long")
 endif(MSVC)
 
 # Include all the necessary files for macros
