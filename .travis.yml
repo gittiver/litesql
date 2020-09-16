@@ -15,6 +15,6 @@ script:
 matrix:
   include:
     - os: linux
-      dist: bionic      
+      dist: focal      
     - os: osx
     - os: windows
