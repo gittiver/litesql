@@ -138,8 +138,8 @@ endif(LITESQL_USE_SYSTEM_EXPAT)
 
 if (NOT EXPAT_FOUND)
   FetchContent_Declare(expat
-  		 GIT_REPOSITORY https://github.com/libexpat/libexpat.git
-		 GIT_TAG R_2_2_9)
+  		 GIT_REPOSITORY https://github.com/gittiver/libexpat.git
+		 GIT_TAG master)
   if(NOT expat_POPULATED)
 
     set(EXPAT_SHARED_LIBS Off)
@@ -156,7 +156,7 @@ if (NOT EXPAT_FOUND)
     add_subdirectory(${expat_SOURCE_DIR}/expat ${expat_BINARY_DIR})
   endif()
 
-  set(EXPAT_LIBRARIES libexpat)
+  set(EXPAT_LIBRARIES expat)
   set(EXPAT_INCLUDE_DIRS  ${expat_SOURCE_DIR}/expat/lib ${expat_BIN_DIR})
   
 endif (NOT EXPAT_FOUND)
