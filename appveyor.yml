@@ -44,11 +44,11 @@ build_script:
  - cmake --build . --target package 
  - cpack --config CPackSourceConfig.cmake
 
-test_script:
+#test_script:
 # - cd build
-  - set CTEST_OUTPUT_ON_FAILURE=1
-  - ctest -C %configuration% 
-  - cd ..
+#  - set CTEST_OUTPUT_ON_FAILURE=1
+#  - ctest -C %configuration% 
+#  - cd ..
 
 #build:
 #  project: c:\projects\litesql\build\litesql.sln
