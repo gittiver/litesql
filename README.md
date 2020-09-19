@@ -1,5 +1,6 @@
 LiteSQL - C++ Object-Relational Persistence Framework
 ===========================================================================
+![C/C++ CI](https://github.com/gittiver/litesql/workflows/C/C++%20CI/badge.svg)
 
 LiteSQL is a C++ library that integrates C++ objects tightly to relational database and thus provides an object persistence layer. LiteSQL supports SQLite3, PostgreSQL and MySQL as backends. LiteSQL creates tables, indexes and sequences to database and upgrades schema when needed. In addition to object persistence, LiteSQL provides object relations which can be used to model basic OO building blocks (aggregation, composition, association). Objects can be selected, filtered and ordered using template- and class-based API with type checking at compile time. 
 

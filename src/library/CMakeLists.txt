@@ -67,64 +67,46 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/litesqld.lib DESTINATION lib/sta
 endif(MSVC)
 
 
+if(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
+  message("use sqlite3 from system: ${SQLITE3_LIBRARIES}")
+  list(APPEND BACKEND_INCLUDES ${SQLITE3_INCLUDE_DIR})
+  list(APPEND BACKEND_LIBRARIES ${SQLITE3_LIBRARIES})
+  list(APPEND BACKEND_DEFINITIONS ${SQLITE3_DEFINITIONS})
+else(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
+  FetchContent_Declare(libsqlite3
+    GIT_REPOSITORY https://github.com/gittiver/sqlite3-amalgamation.git
+	GIT_TAG origin/master 
+  )
+  FetchContent_MakeAvailable(libsqlite3)
+  set(SQLITE3_LIBRARIES sqlite3)  
+  message("use internal sqlite3")
+  message("- use sqlite3 from: ${SQLITE3_LIBRARIES}")
+endif(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
+
 if (LITESQL_WITH_SQLITE3)
   set(${LIBNAME}_sqlite_SRC
                 sqlite3/sqlite3_backend.cpp 
                 sqlite3/sqlite3.hpp )
-add_library(${LIBNAME}_sqlite STATIC ${${LIBNAME}_sqlite_SRC})
-	      
-if(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
-    message("use sqlite3 from system: ${SQLITE3_LIBRARIES}")
-    list(APPEND BACKEND_INCLUDES ${SQLITE3_INCLUDE_DIR})
-    list(APPEND BACKEND_LIBRARIES ${SQLITE3_LIBRARIES})
-    list(APPEND BACKEND_DEFINITIONS ${SQLITE3_DEFINITIONS})
-endif(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
-
-if (NOT SQLITE3_FOUND)
-  ExternalProject_Add(libsqlite3
-    GIT_REPOSITORY https://github.com/gittiver/sqlite3-amalgamation.git
-	GIT_TAG v3_29_00
-    PREFIX 3rdparty
-	CMAKE_ARGS -D SQLITE3_USE_SHARED_CRT:bool=OFF
-    INSTALL_COMMAND ""
-  )
-  if (MSVC)
-    add_library(sqlite3 STATIC IMPORTED)
-    set_property(TARGET sqlite3 PROPERTY IMPORTED_LOCATION_DEBUG ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libsqlite3-build/Debug/sqlite3.lib)
-    set_property(TARGET sqlite3 PROPERTY IMPORTED_LOCATION_RELEASE ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libsqlite3-build/Release/sqlite3.lib)
-    set_property(TARGET sqlite3 PROPERTY IMPORTED_LOCATION_MINSIZEREL ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libsqlite3-build/MinSizeRel/sqlite3.lib)
-    add_dependencies(sqlite3 libsqlite3)
-	set(SQLITE3_INCLUDE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/src/libsqlite3-build/3rdparty/src/sqlite3-src)
-    include_directories(${SQLITE3_INCLUDE_DIR})
-  endif(MSVC)
-  message("use internal sqlite3")
-  set (SQLITE3_LIBRARIES sqlite3)
-  message("- use sqlite3 from: ${SQLITE3_LIBRARIES}")
- endif(NOT SQLITE3_FOUND)
-
-
-install(TARGETS ${LIBNAME}_sqlite  EXPORT ${LIBNAME}_sqlite
+  add_library(${LIBNAME}_sqlite STATIC ${${LIBNAME}_sqlite_SRC})
+  target_link_libraries(${LIBNAME}_sqlite PRIVATE sqlite3)
+  install(TARGETS ${LIBNAME}_sqlite  EXPORT ${LIBNAME}_sqlite
             RUNTIME DESTINATION lib 
             LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib/static 
             COMPONENT devel)
-install(EXPORT ${LIBNAME}_sqlite DESTINATION lib)
-if (MSVC)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_sqlited.lib DESTINATION lib/static COMPONENT devel)
-endif(MSVC)
+  #install(EXPORT ${LIBNAME}_sqlite DESTINATION lib)
+  if (MSVC)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_sqlited.lib DESTINATION lib/static COMPONENT devel)
+  endif(MSVC)
 
-###########################
-# backend as shared library
-###########################
-add_library(${LIBNAME}_backend_sqlite3 SHARED ${${LIBNAME}_sqlite_SRC}
-sqlite3/sqlite3_backend_plugin.cpp
-)
-target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE litesql PRIVATE litesql-util)
-if(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
-target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE ${SQLITE3_LIBRARIES})
-else(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
-target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE sqlite3)
-endif(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
+  ###########################
+  # backend as shared library
+  ###########################
+  add_library(${LIBNAME}_backend_sqlite3 SHARED 
+    sqlite3/sqlite3_backend.cpp 
+    sqlite3/sqlite3.hpp sqlite3/sqlite3_backend_plugin.cpp
+  )
+  target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE litesql PRIVATE litesql-util PRIVATE ${SQLITE3_LIBRARIES})
 
 endif(LITESQL_WITH_SQLITE3)
 

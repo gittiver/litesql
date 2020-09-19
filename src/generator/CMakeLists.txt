@@ -18,8 +18,9 @@ set(libmodel_SOURCES
             objectmodel.cpp objectmodel.hpp
 	)
 
-include_directories(${EXPAT_INCLUDE_DIRS})
 add_library(model STATIC ${libmodel_SOURCES})
+target_include_directories(model PRIVATE ${EXPAT_INCLUDE_DIRS})
+target_link_libraries(model PRIVATE ${EXPAT_LIBRARIES})
 
 install(TARGETS model EXPORT model
             RUNTIME DESTINATION lib
@@ -31,8 +32,8 @@ install(EXPORT model DESTINATION lib)
 add_executable(litesql-gen litesql-gen-main.cpp)
 add_executable(ddl2litesql ddl2litesql.cpp)
 
-target_link_libraries (litesql-gen litesql litesql-util model ${EXPAT_LIBRARIES})
-target_link_libraries (ddl2litesql litesql-util model ${EXPAT_LIBRARIES})
+target_link_libraries (litesql-gen litesql litesql-util model)
+target_link_libraries (ddl2litesql litesql-util model)
 
 if (LITESQL_WITH_UI)
   add_subdirectory(ui)

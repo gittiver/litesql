@@ -26,7 +26,7 @@ init:
 - if "%arch%"=="Win64" ( set arch= Win64)
 - echo %arch%
 - echo %APPVEYOR_BUILD_WORKER_IMAGE%
-- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2019" ( set generator="Visual Studio 16 2019%arch%" )
+- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2019" ( set generator="Visual Studio 16 2019" )
 - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator="Visual Studio 15 2017%arch%" )
 #- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" ( set generator="Visual Studio 14 2015%arch%" )
 #- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2013" ( set generator="Visual Studio 12 2013%arch%" )
@@ -44,8 +44,11 @@ build_script:
  - cmake --build . --target package 
  - cpack --config CPackSourceConfig.cmake
 
-test_script:
- - cmake --build . --target RUN_TESTS
+#test_script:
+# - cd build
+#  - set CTEST_OUTPUT_ON_FAILURE=1
+#  - ctest -C %configuration% 
+#  - cd ..
 
 #build:
 #  project: c:\projects\litesql\build\litesql.sln
