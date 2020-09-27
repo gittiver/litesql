@@ -6,9 +6,9 @@ addons:
       - graphviz
       - doxygen
 homebrew:
-    packages: 
-      - graphviz
-      - doxygen
+  packages: 
+    - graphviz
+    - doxygen
 
 before_script:
  - mkdir build
