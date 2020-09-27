@@ -8,6 +8,7 @@ before_script:
 script:
  - cmake --build . --target all 
  - cmake --build . --target test 
+ - cmake --build . --target doc 
  - cmake --build . --target package 
  - cmake --build . --target dist
  - cmake --build . --target package_source
