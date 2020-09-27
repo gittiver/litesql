@@ -1,10 +1,14 @@
 language: cpp
 
+before_install:
+    - sudo apt-get update
+    - sudo apt-get install doxygen
+
 before_script:
  - mkdir build
  - cd build
  - cmake -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=OFF -D LITESQL_WITH_SQLITE3:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=OFF ..
-        
+
 script:
  - cmake --build . --target all 
  - cmake --build . --target test 
@@ -16,7 +20,7 @@ script:
 matrix:
   include:
     - os: linux
-      dist: focal      
+      dist: focal
     - os: osx
     - os: windows
   allow_failures:
