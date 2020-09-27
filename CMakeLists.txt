@@ -9,23 +9,20 @@ enable_language(CXX)
 set(CMAKE_CXX_STANDARD 11)
 
 if (MSVC)
-  option(LITESQL_MSVC_MT "link with /MT instead of /MD (use dlls versus static linked, change also wxWidgets_LIB_DIR)" ON) 
+  option(LITESQL_MSVC_MT "link with /MT instead of /MD (use dlls versus static linked)" ON) 
   # see http://msdn.microsoft.com/en-us/library/2kzt1wy3%28VS.71%29.aspx   
   if (LITESQL_MSVC_MT)
-     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-   else(LITESQL_MSVC_MT)
-     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL$<$<CONFIG:Debug>:Debug>")
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+  else(LITESQL_MSVC_MT)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL$<$<CONFIG:Debug>:Debug>")
   endif (LITESQL_MSVC_MT)
   
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /INCREMENTAL:NO")
- # set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4")
- # set(CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4")
-  
-  set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS   _CRT_SECURE_NO_WARNINGS)
+  add_compile_options(/W4 /WX)
+  set_property(DIRECTORY APPEND PROPERTY
+               COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS)
 else(MSVC)
-#  list(APPEND CMAKE_CXX_FLAGS "-Wall -Wextra -Wunused-variable -Wno-long-long -Wpedantic")
-  #-pedantic 
-#  list(APPEND CMAKE_C_FLAGS "-Wall -Wunused-variable -Wno-long-long")
+  add_compile_options(-Wall -Wextra -Wpedantic -Wunused-variable -Wno-long-long)
 endif(MSVC)
 
 # Include all the necessary files for macros
@@ -37,7 +34,7 @@ include (${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake)
 include (${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 
-set(PROJECT_NAME "litesql" VERSION 0.3.18)
+set(PROJECT_NAME "litesql" VERSION 0.3.19)
 
 include(cmake/FindMySQL.cmake)
 include(cmake/FindPostgreSQL.cmake)
@@ -55,10 +52,6 @@ option(LITESQL_WITH_UI "build also GUI-Version of generator" OFF)
 option(LITESQL_WITH_TESTS "enable testing" ON)
 option(LITESQL_USE_SYSTEM_EXPAT "use expat lib provided by system" ON)
 option(CMAKE_SUPPRESS_REGENERATION "suppress rules to re-run cmake on changes (warning: no dependency checks!)?" OFF)
-
-if(LITESQL_WITH_TESTS)
-  enable_testing()
-endif(LITESQL_WITH_TESTS)
 
 list(APPEND BACKEND_LIBRARIES ${CMAKE_DL_LIBS})
 set(BACKEND_DL_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/library)
@@ -130,41 +123,6 @@ if (LITESQL_WITH_DOCS)
   add_subdirectory(docs/doxygen)
 endif(LITESQL_WITH_DOCS)
 
-if(LITESQL_USE_SYSTEM_EXPAT)
-include (${CMAKE_ROOT}/Modules/FindEXPAT.cmake)
-mark_as_advanced(EXPAT_INCLUDE_DIRS EXPAT_LIBRARIES EXPAT_FOUND)
-endif(LITESQL_USE_SYSTEM_EXPAT)
-  
-
-if (NOT EXPAT_FOUND)
-  FetchContent_Declare(expat
-  		 GIT_REPOSITORY https://github.com/gittiver/libexpat.git
-		 GIT_TAG master)
-  if(NOT expat_POPULATED)
-
-    set(EXPAT_SHARED_LIBS Off)
-    set(EXPAT_BUILD_TOOLS Off)
-    set(EXPAT_BUILD_EXAMPLES Off)
-    set(EXPAT_BUILD_TESTS Off)
-    set(EXPAT_SHARED_LIBS Off)
-    set(EXPAT_BUILD_DOCS Off)
-    set(EXPAT_BUILD_FUZZERS Off)
-    set(EXPAT_WITH_LIBBSD Off)
-    set(EXPAT_ENABLE_INSTALL On)
-    FetchContent_Populate(expat)
-
-    add_subdirectory(${expat_SOURCE_DIR}/expat ${expat_BINARY_DIR})
-  endif()
-
-  set(EXPAT_LIBRARIES expat)
-  set(EXPAT_INCLUDE_DIRS  ${expat_SOURCE_DIR}/expat/lib ${expat_BIN_DIR})
-  
-endif (NOT EXPAT_FOUND)
-
-message(EXPAT_LIBRARIES= ${EXPAT_LIBRARIES})
-message(EXPAT_INCLUDE_DIRS=${EXPAT_INCLUDE_DIRS})
-message(EXPAT_DEFINITIONS=${EXPAT_DEFINITIONS})
-
 if(MSVC)
   set(CMAKE_FIND_LIBRARY_PREFIXES "")
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
@@ -207,7 +165,7 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
 
 # set include directories
 get_filename_component(CONFIG_INCLUDE ${CMAKE_CURRENT_BINARY_DIR}/config.h PATH)
-include_directories(include ${CONFIG_INCLUDE} ${BACKEND_INCLUDES})
+include_directories(include ${CONFIG_INCLUDE})
 
 install(DIRECTORY include/ DESTINATION include 
                           COMPONENT devel 
@@ -221,16 +179,18 @@ install(DIRECTORY include/ DESTINATION include
                           PATTERN .svn EXCLUDE 
 )
 
-install(DIRECTORY src/generator/ DESTINATION include/litesql 
-                          COMPONENT devel 
-                          FILES_MATCHING PATTERN "*.hpp"
-                          PATTERN .svn EXCLUDE 
-)
-
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/litesql
           COMPONENT devel)
 
-add_subdirectory(src)
+add_subdirectory(src/library)
+add_subdirectory(src/generator)
+
+add_subdirectory(src/examples)
+
+if(LITESQL_WITH_TESTS)
+  enable_testing()
+  add_subdirectory(src/tests)
+endif(LITESQL_WITH_TESTS)
  
 project( ${PROJECT_NAME} )
 

@@ -6,7 +6,6 @@
 
 #include <set>
 
-//#include "compatibility.hpp"
 #include "litesql/datasource.hpp"
 namespace litesql {
 using std::string;
