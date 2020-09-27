@@ -3,27 +3,28 @@ language: cpp
 addons:
   apt:
     packages:
-      - graphviz
-      - doxygen
+    - graphviz
+    - doxygen
   homebrew:
     packages: 
-      - graphviz
-      - doxygen
+    - graphviz
+    - doxygen
+    update: true
 
 before_script:
- - mkdir build
- - cd build
- - cmake -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=OFF -D LITESQL_WITH_SQLITE3:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=OFF ..
+- mkdir build
+- cd build
+- cmake -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=OFF -D LITESQL_WITH_SQLITE3:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=OFF ..
 
 script:
- - cmake --build . --target all 
- - cmake --build . --target test 
- - cmake --build . --target doc 
- - cmake --build . --target package 
- - cmake --build . --target dist
- - cmake --build . --target package_source
+- cmake --build . --target all
+- cmake --build . --target test
+- cmake --build . --target doc
+- cmake --build . --target package
+- cmake --build . --target dist
+- cmake --build . --target package_source
 
-matrix:
+jobs:
   include:
     - os: linux
       dist: focal
