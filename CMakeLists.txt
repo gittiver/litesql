@@ -18,7 +18,7 @@ if (MSVC)
   endif (LITESQL_MSVC_MT)
   
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /INCREMENTAL:NO")
-  add_compile_options(/W4 /WX)
+  add_compile_options(/W4) # for now disabled /WX
   set_property(DIRECTORY APPEND PROPERTY
                COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS)
 else(MSVC)
