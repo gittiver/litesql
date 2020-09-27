@@ -1,8 +1,10 @@
 language: cpp
 
-before_install:
-    - sudo apt-get update
-    - sudo apt-get install doxygen
+addons:
+  apt:
+    packages:
+      - graphviz
+      - doxygen
 
 before_script:
  - mkdir build
