@@ -172,7 +172,11 @@ private:
 #ifdef CMAKE_SHARED_LIBRARY_PREFIX
 #define LIBNAME(name) CMAKE_SHARED_LIBRARY_PREFIX #name CMAKE_SHARED_LIBRARY_SUFFIX 
 #else
+#ifdef _DEBUG
+#define LIBNAME(name) #name "d" CMAKE_SHARED_LIBRARY_SUFFIX 
+#else
 #define LIBNAME(name) #name CMAKE_SHARED_LIBRARY_SUFFIX 
+#endif
 #endif 
 
 const char* BACKEND_LIBRARYNAME[5][2] = {

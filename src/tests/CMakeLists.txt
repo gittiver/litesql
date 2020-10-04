@@ -14,9 +14,11 @@ add_executable(test-update-table test-update-table.cpp)
 target_link_libraries (test-update-table litesql litesql-util ${BACKEND_LIBRARIES})
 add_test(test-update-table ${EXECUTABLE_OUTPUT_PATH}/test-update-table update-table)
 
-if(WIN32 AND NOT CYGWIN)
+if(WIN32 AND NOT CYGWIN) 
+file(TO_NATIVE_PATH ${BACKEND_DL_DIRECTORY} backend_dir)
+message("set env for test to:PATH=${backend_dir}")
 set_tests_properties(test-update-table PROPERTIES
-  ENVIRONMENT "PATH=${PATH};${BACKEND_DL_DIRECTORY}"
+   ENVIRONMENT "PATH=${backend_dir} "
 )
 endif(WIN32 AND NOT CYGWIN)
 if(APPLE)
