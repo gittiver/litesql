@@ -5,8 +5,8 @@ endif(LITESQL_USE_SYSTEM_EXPAT)
   
 if (NOT EXPAT_FOUND)
   FetchContent_Declare(expat
-  		 GIT_REPOSITORY https://github.com/gittiver/libexpat.git
-		 GIT_TAG master)
+  		 GIT_REPOSITORY https://github.com/libexpat/libexpat.git
+		 GIT_TAG R_2_2_10)
   if(NOT expat_POPULATED)
 
     set(EXPAT_SHARED_LIBS Off)
