@@ -14,10 +14,10 @@
 
 #ifndef  LITESQL_WITH_BACKEND_PLUGINS
 
-#include "sqlite3.hpp"
+#include "sqlite3/sqlite3.hpp"
 
 #ifdef HAVE_LIBMYSQLCLIENT
-#include "mysql.hpp"
+#include "mysql/mysql.hpp"
 #endif
 
 #ifdef HAVE_LIBPQ
