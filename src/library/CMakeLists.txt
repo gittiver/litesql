@@ -106,22 +106,23 @@ if (LITESQL_WITH_SQLITE3)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_sqlited.lib DESTINATION lib/static COMPONENT devel)
   endif(MSVC)
 
-  ###########################
-  # backend as shared library
-  ###########################
-  add_library(${LIBNAME}_backend_sqlite3 SHARED 
-    sqlite3/sqlite3_backend.cpp 
-    sqlite3/sqlite3.hpp sqlite3/sqlite3_backend_plugin.cpp
-  )
-  target_include_directories(${LIBNAME}_backend_sqlite3 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-  target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE litesql PRIVATE litesql-util PRIVATE ${SQLITE3_LIBRARIES})
-
+  if (LITESQL_WITH_BACKEND_PLUGINS)
+    ###########################
+    # backend as shared library
+    ###########################
+    add_library(${LIBNAME}_backend_sqlite3 SHARED 
+      sqlite3/sqlite3_backend.cpp 
+      sqlite3/sqlite3.hpp sqlite3/sqlite3_backend_plugin.cpp
+    )
+    target_include_directories(${LIBNAME}_backend_sqlite3 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+    target_link_libraries(${LIBNAME}_backend_sqlite3 PRIVATE litesql PRIVATE litesql-util PRIVATE ${SQLITE3_LIBRARIES})
+  endif()
 endif(LITESQL_WITH_SQLITE3)
 
 ##############################################################################
 # litesql mysql library
 ##############################################################################
-if (LITESQL_WITH_MYSQL)
+if (LITESQL_WITH_MYSQL AND LITESQL_WITH_BACKEND_PLUGINS)
   add_library(  ${LIBNAME}_mysql SHARED
                         mysql/mysql.cpp
    
@@ -141,7 +142,7 @@ endif (LITESQL_WITH_MYSQL)
 ##############################################################################
 # litesql oracle library
 ##############################################################################
-if (LITESQL_WITH_OCILIB)
+if (LITESQL_WITH_OCILIB AND LITESQL_WITH_BACKEND_PLUGINS)
   add_library(  ${LIBNAME}_ocilib SHARED
                         ocilib_backend.cpp
                         ocilib_backend.hpp
@@ -162,7 +163,7 @@ endif (LITESQL_WITH_OCILIB)
 ##############################################################################
 # litesql postgres library
 ##############################################################################
-if (LITESQL_WITH_POSTGRES)
+if (LITESQL_WITH_POSTGRES AND LITESQL_WITH_BACKEND_PLUGINS)
   add_library(  ${LIBNAME}_postgresql SHARED
                 postgresql.cpp 
   )
@@ -179,7 +180,7 @@ endif (LITESQL_WITH_POSTGRES)
 ##############################################################################
 # litesql odbc library
 ##############################################################################
-if (LITESQL_WITH_ODBC)
+if (LITESQL_WITH_ODBC AND LITESQL_WITH_BACKEND_PLUGINS)
   add_library(  ${LIBNAME}_odbc SHARED
                       odbc_backend.cpp 
                       odbc_backend.hpp 
