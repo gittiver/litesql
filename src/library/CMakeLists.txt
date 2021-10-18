@@ -91,6 +91,10 @@ else(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
 endif(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
 
 if (LITESQL_WITH_SQLITE3)
+  target_sources(${LIBNAME} 
+    PRIVATE  
+      sqlite3/sqlite3_backend.cpp)
+
   add_library(${LIBNAME}_sqlite STATIC
               sqlite3/sqlite3_backend.cpp
               sqlite3/sqlite3.hpp)
@@ -122,6 +126,19 @@ endif(LITESQL_WITH_SQLITE3)
 ##############################################################################
 # litesql mysql library
 ##############################################################################
+if (LITESQL_WITH_MYSQL)
+  target_sources(${LIBNAME} 
+  PRIVATE  
+    mysql/mysql.cpp)
+  target_include_directories(${LIBNAME}
+  PRIVATE
+    ${MYSQL_INCLUDE_DIR}
+  )
+  target_link_directories(${LIBNAME}
+  PRIVATE
+    ${MYSQL_LIBRARIES}
+  )
+endif()
 if (LITESQL_WITH_MYSQL AND LITESQL_WITH_BACKEND_PLUGINS)
   add_library(  ${LIBNAME}_mysql SHARED
                         mysql/mysql.cpp
@@ -142,6 +159,11 @@ endif (LITESQL_WITH_MYSQL)
 ##############################################################################
 # litesql oracle library
 ##############################################################################
+if (LITESQL_WITH_OCILIB)
+  target_sources(${LIBNAME} 
+  PRIVATE  
+    ocilib_backend.cpp)
+endif()
 if (LITESQL_WITH_OCILIB AND LITESQL_WITH_BACKEND_PLUGINS)
   add_library(  ${LIBNAME}_ocilib SHARED
                         ocilib_backend.cpp
@@ -163,6 +185,11 @@ endif (LITESQL_WITH_OCILIB)
 ##############################################################################
 # litesql postgres library
 ##############################################################################
+if (LITESQL_WITH_POSTGRES)
+  target_sources(${LIBNAME} 
+  PRIVATE  
+    postgresql.cpp)
+endif()
 if (LITESQL_WITH_POSTGRES AND LITESQL_WITH_BACKEND_PLUGINS)
   add_library(  ${LIBNAME}_postgresql SHARED
                 postgresql.cpp 

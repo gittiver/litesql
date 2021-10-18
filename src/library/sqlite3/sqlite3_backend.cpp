@@ -5,7 +5,7 @@
  * Few windows specific bugs fixed by Axel Schmidt.
  * 
  * See LICENSE for copyright information. */
-#include "compatibility.hpp"
+#include "../compatibility.hpp"
 #include "sqlite3.hpp"
 #include "sqlite3.h"
 
