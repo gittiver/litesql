@@ -18,7 +18,8 @@
 
 using namespace litesql;
 using namespace std;
-
+using std::string;
+using std::vector;
 
 /** MySQL - result */
 class MySQL::Result : public Backend::Result {
@@ -80,11 +81,11 @@ Records MySQL::Result::records() const {
 }
 
 MySQL::MySQL(const std::string& connInfo) {
-    Split params(connInfo,";");
+    vector<string> params = split(connInfo,";");
     host = "localhost";
     int port = 0;
     for (size_t i = 0; i < params.size(); i++) {
-        Split param(params[i], "=");
+        vector<string> param = split(params[i], "=");
         if (param.size() == 1)
             continue;
         if (param[0] == "host")
