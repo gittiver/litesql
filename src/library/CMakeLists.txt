@@ -94,6 +94,7 @@ if (LITESQL_WITH_SQLITE3)
   target_sources(${LIBNAME} 
     PRIVATE  
       sqlite3/sqlite3_backend.cpp)
+  target_link_libraries(${LIBNAME} PRIVATE ${SQLITE3_LIBRARIES})
 
   add_library(${LIBNAME}_sqlite STATIC
               sqlite3/sqlite3_backend.cpp
