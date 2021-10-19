@@ -110,7 +110,7 @@ SQLite3::SQLite3(const string& connInfo) noexcept(false) //throw(DatabaseError)
 , beginTrans("BEGIN")
 {
   vector<string> params = split(connInfo,";");
-  string database;
+  string database = ":memory:";
   for (size_t i = 0; i < params.size(); i++) {
     vector<string> param = split(params[i], "=");
     if (param.size() == 1)
@@ -124,8 +124,7 @@ SQLite3::SQLite3(const string& connInfo) noexcept(false) //throw(DatabaseError)
     }
   }
   if (database.empty()) {
-      database = ":memory:";
-    // throw DatabaseError("no database-param specified");
+    throw DatabaseError("no database-param specified");
   }
   else if (sqlite3_open(database.c_str(), &db)) {
     throw DatabaseError(sqlite3_errmsg(db));
