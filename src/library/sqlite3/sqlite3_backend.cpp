@@ -124,7 +124,8 @@ SQLite3::SQLite3(const string& connInfo) noexcept(false) //throw(DatabaseError)
     }
   }
   if (database.empty()) {
-    throw DatabaseError("no database-param specified");
+      database = ":memory:";
+    // throw DatabaseError("no database-param specified");
   }
   else if (sqlite3_open(database.c_str(), &db)) {
     throw DatabaseError(sqlite3_errmsg(db));
