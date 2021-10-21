@@ -11,6 +11,7 @@
 #include "plugin.hpp"
 #include "litesql/utils.hpp"
 #include "litesql/except.hpp"
+#include <iostream>
 
 #ifndef  LITESQL_WITH_BACKEND_PLUGINS
 
@@ -42,12 +43,17 @@ using std::string;
 using std::vector;
 
 string Backend::getSQLType(AT_field_type fieldType,
-                           const string& UNUSED_ARG(length)) const
+                           const string& length) const
 {
+  std::ostringstream oss;
   switch(fieldType) {
     case A_field_type_integer: return "INTEGER";
     case A_field_type_bigint: return "BIGINT";
-    case A_field_type_string: return "TEXT";
+    case A_field_type_string: 
+      oss << "VARCHAR(";
+      (length.size()>0)?(oss << length):(oss << "191");
+      oss << ")";
+      return oss.str();
     case A_field_type_float: return "FLOAT";
     case A_field_type_double: return "DOUBLE";
     case A_field_type_boolean: return "INTEGER";
