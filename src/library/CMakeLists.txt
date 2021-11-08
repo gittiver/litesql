@@ -135,7 +135,7 @@ if (LITESQL_WITH_MYSQL)
   PRIVATE
     ${MYSQL_INCLUDE_DIR}
   )
-  target_link_directories(${LIBNAME}
+  target_link_libraries(${LIBNAME}
   PRIVATE
     ${MYSQL_LIBRARIES}
   )
