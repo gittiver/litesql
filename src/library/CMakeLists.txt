@@ -155,7 +155,7 @@ if (MSVC)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_mysqld.lib DESTINATION lib/static COMPONENT devel)
 endif(MSVC)
 
-endif (LITESQL_WITH_MYSQL)
+endif (LITESQL_WITH_MYSQL AND LITESQL_WITH_BACKEND_PLUGINS)
 
 ##############################################################################
 # litesql oracle library
@@ -181,7 +181,7 @@ if (MSVC)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_ocilibd.lib DESTINATION lib/static COMPONENT devel)
 endif(MSVC)
 
-endif (LITESQL_WITH_OCILIB)
+endif (LITESQL_WITH_OCILIB AND LITESQL_WITH_BACKEND_PLUGINS)
 
 ##############################################################################
 # litesql postgres library
@@ -203,7 +203,7 @@ if (LITESQL_WITH_POSTGRES AND LITESQL_WITH_BACKEND_PLUGINS)
 if (MSVC)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_postgresqld.lib DESTINATION lib/static COMPONENT devel)
 endif(MSVC)
-endif (LITESQL_WITH_POSTGRES)
+endif (LITESQL_WITH_POSTGRES AND LITESQL_WITH_BACKEND_PLUGINS)
 
 ##############################################################################
 # litesql odbc library
@@ -222,5 +222,5 @@ if (MSVC)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_odbcd.lib DESTINATION lib/static COMPONENT devel)
 endif(MSVC)
 
-endif (LITESQL_WITH_ODBC)
+endif (LITESQL_WITH_ODBC AND LITESQL_WITH_BACKEND_PLUGINS)
 
