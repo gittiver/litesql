@@ -92,15 +92,23 @@ endif(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
 
 if (LITESQL_WITH_SQLITE3)
   target_sources(${LIBNAME} 
-    PRIVATE  
-      sqlite3/sqlite3_backend.cpp)
-  target_link_libraries(${LIBNAME} PRIVATE ${SQLITE3_LIBRARIES})
+  PRIVATE  
+    sqlite3/sqlite3_backend.cpp)
+  target_include_directories(${LIBNAME}
+  PRIVATE
+  ${SQLITE3_INCLUDE_DIR}
+  )
+  target_link_directories(${LIBNAME}
+  PUBLIC
+  ${SQLITE3_LIBRARIY_DIR}
+  )
+  target_link_libraries(${LIBNAME} PUBLIC ${SQLITE3_LIBRARIES})
 
-  add_library(${LIBNAME}_sqlite STATIC
-              sqlite3/sqlite3_backend.cpp
-              sqlite3/sqlite3.hpp)
-  target_link_libraries(${LIBNAME}_sqlite PRIVATE ${SQLITE3_LIBRARIES} litesql-util)
-  target_include_directories(${LIBNAME}_sqlite PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  # add_library(${LIBNAME}_sqlite STATIC
+  #             sqlite3/sqlite3_backend.cpp
+  #             sqlite3/sqlite3.hpp)
+  # target_link_libraries(${LIBNAME}_sqlite PRIVATE ${SQLITE3_LIBRARIES} litesql-util)
+  # target_include_directories(${LIBNAME}_sqlite PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 #  install(TARGETS ${LIBNAME}_sqlite  EXPORT ${LIBNAME}_sqlite
 #            RUNTIME DESTINATION lib
 #            LIBRARY DESTINATION lib
@@ -135,8 +143,12 @@ if (LITESQL_WITH_MYSQL)
   PRIVATE
     ${MYSQL_INCLUDE_DIR}
   )
+  target_link_directories(${LIBNAME}
+  PUBLIC
+    ${MYSQL_LIBRARY_DIR}
+  )
   target_link_libraries(${LIBNAME}
-  PRIVATE
+  PUBLIC
     ${MYSQL_LIBRARIES}
   )
 endif()
