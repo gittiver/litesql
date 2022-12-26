@@ -1,0 +1,12 @@
+<map id="litesql::Except" name="litesql::Except">
+<area shape="rect" id="node1" title="base class for exceptions" alt="" coords="168,183,283,209"/>
+<area shape="rect" id="node3" href="$classlitesql_1_1ConstraintError.html" title=" " alt="" coords="331,5,499,32"/>
+<area shape="rect" id="node4" href="$classlitesql_1_1DatabaseError.html" title="exception thrown when database cannot be accessed" alt="" coords="333,56,496,83"/>
+<area shape="rect" id="node5" href="$classlitesql_1_1InsertionError.html" title="exception thrown when database (disk) is full" alt="" coords="335,107,494,133"/>
+<area shape="rect" id="node6" href="$classlitesql_1_1InternalError.html" title="exception thrown when backend produces internal error" alt="" coords="339,157,490,184"/>
+<area shape="rect" id="node7" href="$classlitesql_1_1MemoryError.html" title="exception thrown when backend cannot allocate memory" alt="" coords="337,208,492,235"/>
+<area shape="rect" id="node8" href="$classlitesql_1_1NotFound.html" title="exception thrown when a record is not found" alt="" coords="349,259,481,285"/>
+<area shape="rect" id="node9" href="$classlitesql_1_1SQLError.html" title="exception thrown when SQL statement cannot be executed" alt="" coords="351,309,478,336"/>
+<area shape="rect" id="node10" href="$classlitesql_1_1UnknownError.html" title="exception thrown when none of other exceptions match" alt="" coords="333,360,496,387"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,183,120,209"/>
+</map>

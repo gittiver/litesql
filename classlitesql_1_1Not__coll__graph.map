@@ -1,0 +1,4 @@
+<map id="litesql::Not" name="litesql::Not">
+<area shape="rect" id="node1" title="negates expression" alt="" coords="8,80,101,107"/>
+<area shape="rect" id="node2" href="$classlitesql_1_1Expr.html" title="A base class for expression in WHERE &#45; clause." alt="" coords="5,5,104,32"/>
+</map>

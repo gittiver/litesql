@@ -1,0 +1,13 @@
+<map id="cursor.hpp" name="cursor.hpp">
+<area shape="rect" id="node1" title="Contains class Cursor." alt="" coords="338,5,427,32"/>
+<area shape="rect" id="node2" href="$backend_8hpp.html" title="Classes Backend, Backend::Cursor and Backend::Result." alt="" coords="225,80,373,107"/>
+<area shape="rect" id="node8" href="$except_8hpp.html" title="contains litesql&#39;s exception classes" alt="" coords="475,80,613,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,155,83,181"/>
+<area shape="rect" id="node4" href="$types_8hpp.html" title="contains class Record and typedef Records" alt="" coords="107,155,237,181"/>
+<area shape="rect" id="node7" title=" " alt="" coords="261,155,432,181"/>
+<area shape="rect" id="node5" title=" " alt="" coords="98,229,161,256"/>
+<area shape="rect" id="node6" title=" " alt="" coords="185,229,244,256"/>
+<area shape="rect" id="node9" title=" " alt="" coords="456,155,536,181"/>
+<area shape="rect" id="node10" title=" " alt="" coords="561,155,647,181"/>
+<area shape="rect" id="node11" href="$utils_8hpp.html" title="includes string.hpp and split.hpp" alt="" coords="672,155,795,181"/>
+</map>

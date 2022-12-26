@@ -1,0 +1,5 @@
+<map id="litesql::NotEq" name="litesql::NotEq">
+<area shape="rect" id="node1" title="inequality operator" alt="" coords="5,155,115,181"/>
+<area shape="rect" id="node2" href="$classlitesql_1_1Oper.html" title="base class of operators in expressions" alt="" coords="9,80,111,107"/>
+<area shape="rect" id="node3" href="$classlitesql_1_1Expr.html" title="A base class for expression in WHERE &#45; clause." alt="" coords="11,5,109,32"/>
+</map>

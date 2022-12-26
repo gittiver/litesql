@@ -1,0 +1,5 @@
+<map id="litesql::MemoryError" name="litesql::MemoryError">
+<area shape="rect" id="node1" title="exception thrown when backend cannot allocate memory" alt="" coords="5,155,160,181"/>
+<area shape="rect" id="node2" href="$classlitesql_1_1Except.html" title="base class for exceptions" alt="" coords="25,80,140,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="25,5,140,32"/>
+</map>

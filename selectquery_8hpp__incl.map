@@ -1,0 +1,13 @@
+<map id="selectquery.hpp" name="selectquery.hpp">
+<area shape="rect" id="node1" title="contains SelectQuery&#45;class." alt="" coords="78,5,202,32"/>
+<area shape="rect" id="node2" href="$expr_8hpp.html" title="Contains Expr&#45;class hierarchy and operator overloadings for them." alt="" coords="79,80,201,107"/>
+<area shape="rect" id="node3" href="$utils_8hpp.html" title="includes string.hpp and split.hpp" alt="" coords="5,155,128,181"/>
+<area shape="rect" id="node4" href="$field_8hpp.html" title="contains FieldType&#45; and Field&#45;classes" alt="" coords="152,155,275,181"/>
+<area shape="rect" id="node5" title=" " alt="" coords="28,229,108,256"/>
+<area shape="rect" id="node6" title=" " alt="" coords="166,304,229,331"/>
+<area shape="rect" id="node7" title=" " alt="" coords="183,229,243,256"/>
+<area shape="rect" id="node8" href="$string_8hpp.html" title="helpful string utils" alt="" coords="268,229,399,256"/>
+<area shape="rect" id="node11" title=" " alt="" coords="423,229,593,256"/>
+<area shape="rect" id="node9" title=" " alt="" coords="259,304,317,331"/>
+<area shape="rect" id="node10" title=" " alt="" coords="341,304,416,331"/>
+</map>

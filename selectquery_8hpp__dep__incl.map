@@ -1,0 +1,7 @@
+<map id="selectquery.hpp" name="selectquery.hpp">
+<area shape="rect" id="node1" title="contains SelectQuery&#45;class." alt="" coords="5,5,129,32"/>
+<area shape="rect" id="node2" href="$litesql_8hpp.html" title="include this from your project" alt="" coords="23,304,114,331"/>
+<area shape="rect" id="node3" href="$datasource_8hpp.html" title="selectObjectQuery&lt;T&gt; and DataSource&lt;T&gt;" alt="" coords="55,80,178,107"/>
+<area shape="rect" id="node4" href="$operations_8hpp.html" title="select&lt;T&gt;, intersect&lt;T&gt;, union_&lt;T&gt;, except&lt;T&gt;" alt="" coords="107,155,225,181"/>
+<area shape="rect" id="node5" href="$persistent_8hpp.html" title="Persistent." alt="" coords="107,229,222,256"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="litesql::Connective" name="litesql::Connective">
+<area shape="rect" id="node1" title="used to connect two expressions" alt="" coords="5,109,148,136"/>
+<area shape="rect" id="node2" href="$classlitesql_1_1Expr.html" title="A base class for expression in WHERE &#45; clause." alt="" coords="27,5,126,32"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="database.hpp" name="database.hpp">
+<area shape="rect" id="node1" title="Database&#45;class." alt="" coords="5,5,116,32"/>
+<area shape="rect" id="node2" href="$litesql_8hpp.html" title="include this from your project" alt="" coords="17,304,107,331"/>
+<area shape="rect" id="node3" href="$datasource_8hpp.html" title="selectObjectQuery&lt;T&gt; and DataSource&lt;T&gt;" alt="" coords="49,80,171,107"/>
+<area shape="rect" id="node4" href="$operations_8hpp.html" title="select&lt;T&gt;, intersect&lt;T&gt;, union_&lt;T&gt;, except&lt;T&gt;" alt="" coords="100,155,219,181"/>
+<area shape="rect" id="node5" href="$persistent_8hpp.html" title="Persistent." alt="" coords="101,229,215,256"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="operations.hpp" name="operations.hpp">
+<area shape="rect" id="node1" title="select&lt;T&gt;, intersect&lt;T&gt;, union_&lt;T&gt;, except&lt;T&gt;" alt="" coords="5,5,124,32"/>
+<area shape="rect" id="node2" href="$persistent_8hpp.html" title="Persistent." alt="" coords="7,80,122,107"/>
+<area shape="rect" id="node3" href="$litesql_8hpp.html" title="include this from your project" alt="" coords="19,155,110,181"/>
+</map>
