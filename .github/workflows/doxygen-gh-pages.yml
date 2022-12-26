@@ -1,0 +1,29 @@
+name: Deploy Doxygen results to Github Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+jobs:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+      - name: Prepare dependencies
+        run: sudo apt-get update && sudo apt-get install -yq cmake graphviz doxygen
+      - name: configure
+        run: cmake -B build -S . -D LITESQL_USE_SYSTEM_EXPAT:bool=OFF -D LITESQL_USE_SYSTEM_SQLITE:bool=OFF -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=OFF -D LITESQL_WITH_SQLITE:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=OFF -D LITESQL_MSVC_MT:BOOL=ON
+      - name: clean generated docs dir
+        run: rm -rf build/html
+      - name: build
+        run: cmake --build build --target doc
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build/html # The folder the action should deploy.

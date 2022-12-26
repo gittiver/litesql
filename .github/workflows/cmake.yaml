@@ -1,0 +1,65 @@
+name: Build and test (cmake based build)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Prepare dependencies
+      run:   |
+         if [ "$RUNNER_OS" == "Linux" ]; then
+              sudo apt-get update && \
+              sudo apt-get install -yq \
+                libboost-system-dev \
+                libboost-date-time-dev \
+                cmake \
+                graphviz doxygen
+         elif [ "$RUNNER_OS" == "Windows" ]; then
+              choco install boost-msvc-14.3 graphviz doxygen.install
+         elif [ "$RUNNER_OS" == "macOS" ]; then
+              brew install boost graphviz doxygen
+         else
+              echo "$RUNNER_OS not supported"
+              exit 1
+         fi
+      shell: bash      
+
+    - name: Configure CMake
+      run: cmake -B build -D LITESQL_USE_SYSTEM_EXPAT:bool=OFF -D LITESQL_USE_SYSTEM_SQLITE:bool=OFF -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=OFF -D LITESQL_WITH_SQLITE:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=OFF -D LITESQL_MSVC_MT:BOOL=ON
+      shell: bash      
+    - name: Build
+      # Build your program with the given configuration
+      run: cmake --build build --config ${{env.BUILD_TYPE}}
+      shell: bash      
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      # Execute tests defined by the CMake configuration.
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      run: ctest -C ${{env.BUILD_TYPE}}
+
+    - name: Package
+      working-directory: ${{github.workspace}}/build
+      run:
+        - cmake --build . --target ALL_BUILD 
+        - cmake --build . --target doc
+        - cmake --build . --target package 
+        - cpack --config CPackSourceConfig.cmake
