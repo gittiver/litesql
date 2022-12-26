@@ -3,7 +3,7 @@ name: Deploy Doxygen results to Github Pages
 on:
   push:
     branches:
-      - main
+      - master
 
 permissions:
   contents: write
@@ -19,11 +19,11 @@ jobs:
       - name: configure
         run: cmake -B build -S . -D LITESQL_USE_SYSTEM_EXPAT:bool=OFF -D LITESQL_USE_SYSTEM_SQLITE:bool=OFF -D LITESQL_WITH_DOCS:bool=ON -D LITESQL_WITH_MYSQL:bool=OFF -D LITESQL_WITH_SQLITE:bool=ON -D LITESQL_WITH_TESTS:bool=ON -D LITESQL_WITH_UI:bool=OFF -D LITESQL_MSVC_MT:BOOL=ON
       - name: clean generated docs dir
-        run: rm -rf build/html
+        run: rm -rf docs/html
       - name: build
         run: cmake --build build --target doc
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: build/html # The folder the action should deploy.
+          folder: docs/html # The folder the action should deploy.
