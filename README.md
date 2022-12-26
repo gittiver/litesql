@@ -1,6 +1,7 @@
 LiteSQL - C++ Object-Relational Persistence Framework
 ===========================================================================
-![github actions C/C++ CI](https://github.com/gittiver/litesql/workflows/C/C++%20CI/badge.svg)
+[![Build and test (cmake based build)](https://github.com/gittiver/litesql/actions/workflows/cmake.yaml/badge.svg)](https://github.com/gittiver/litesql/actions/workflows/cmake.yaml)
+[![Documentation](https://github.com/gittiver/litesql/actions/workflows/doxygen-gh-pages.yml/badge.svg)](https://github.com/gittiver/litesql/actions/workflows/doxygen-gh-pages.yml)
 ![travis CI](https://travis-ci.org/gittiver/litesql.svg?branch=master)
 [![Appveyour Build status](https://ci.appveyor.com/api/projects/status/8np80uth6p3sul40?svg=true)](https://ci.appveyor.com/project/gittiver/litesql)
 
