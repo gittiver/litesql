@@ -314,7 +314,7 @@ Step 3: Write Application Code</h2>
 <div class="line">    <span class="comment">// select a non-existing Person</span></div>
 <div class="line">    <span class="keywordflow">try</span> {</div>
 <div class="line">      select&lt;Person&gt;(db, Person::Id == 100).one();</div>
-<div class="line">    } <span class="keywordflow">catch</span> (NotFound e) {</div>
+<div class="line">    } <span class="keywordflow">catch</span> (NotFound&amp; e) {</div>
 <div class="line">      cout &lt;&lt; <span class="stringliteral">&quot;No Person with id 100&quot;</span> &lt;&lt; endl;</div>
 <div class="line">    }</div>
 <div class="line">    <span class="comment">// commit transaction</span></div>
