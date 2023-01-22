@@ -28,14 +28,12 @@ jobs:
          if [ "$RUNNER_OS" == "Linux" ]; then
               sudo apt-get update && \
               sudo apt-get install -yq \
-                libboost-system-dev \
-                libboost-date-time-dev \
                 cmake \
                 graphviz doxygen
          elif [ "$RUNNER_OS" == "Windows" ]; then
-              choco install boost-msvc-14.3 graphviz doxygen.install
+              choco install graphviz doxygen.install
          elif [ "$RUNNER_OS" == "macOS" ]; then
-              brew install boost graphviz doxygen
+              brew install graphviz doxygen
          else
               echo "$RUNNER_OS not supported"
               exit 1
@@ -59,7 +57,7 @@ jobs:
     - name: Package
       working-directory: ${{github.workspace}}/build
       run: 
-        cmake --build . --target ALL_BUILD 
-        cmake --build . --target doc
-        cmake --build . --target package 
-        cpack --config CPackSourceConfig.cmake
+        cmake --build . --target doc;
+        cmake --build . --target package; 
+        cpack --config CPackSourceConfig.cmake;
+      shell: bash      
