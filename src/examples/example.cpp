@@ -116,7 +116,7 @@ int main(int UNUSED_ARG(argc), char ** UNUSED_ARG(argv)) {
     // select a non-existing Person
     try {
       select<Person>(db, Person::Id == 100).one();
-    } catch (NotFound e) {
+    } catch (NotFound& e) {
       cout << "No Person with id 100" << endl;
     }
     // commit transaction

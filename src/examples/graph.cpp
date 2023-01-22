@@ -53,14 +53,14 @@ int main(int UNUSED_ARG(argc), char ** UNUSED_ARG(argv)) {
         // select a non-existing Person
         try {
            select<Node>(db, Node::Name == "n3").one();
-        } catch (NotFound e) {
+        } catch (NotFound& e) {
             cout << "No Node with name n3" << endl;
         }
         // commit transaction
         db.commit();
         // clean up 
 //        db.drop();
-    } catch (Except e) {
+    } catch (Except& e) {
         cerr << e << endl;
         return -1;
     }
