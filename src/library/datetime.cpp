@@ -206,13 +206,13 @@ DateTime::DateTime(time_t t) {
     value =  (t==0) ? time(NULL) : t;
 }
 int DateTime::day() const {
-    return TimeStruct(value).day();
+    return timeStruct().day();
 }
 int DateTime::month() const {
-    return TimeStruct(value).month();
+    return timeStruct().month();
 }
 int DateTime::year() const {
-    return TimeStruct(value).year();
+    return timeStruct().year();
 }
 int DateTime::hour() const {
     return TimeStruct(value).hour();
