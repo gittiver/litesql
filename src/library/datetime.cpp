@@ -114,6 +114,7 @@ string Date::asString(const string &format) const {
 }
 DateTime::DateTime(time_t t) { value = (t == 0) ? time(NULL) : t; }
 
+
 int DateTime::day() const { return timeStruct().day(); }
   
 int DateTime::month() const { return timeStruct().month(); }
