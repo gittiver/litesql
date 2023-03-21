@@ -91,17 +91,9 @@ else(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
 endif(LITESQL_USE_SYSTEM_SQLITE AND SQLITE3_FOUND)
 
 if (LITESQL_WITH_SQLITE3)
-  target_sources(${LIBNAME} 
-  PRIVATE  
-    sqlite3/sqlite3_backend.cpp)
-  target_include_directories(${LIBNAME}
-  PRIVATE
-  ${SQLITE3_INCLUDE_DIR}
-  )
-  target_link_directories(${LIBNAME}
-  PUBLIC
-  ${SQLITE3_LIBRARIY_DIR}
-  )
+  target_sources(${LIBNAME} PRIVATE sqlite3/sqlite3_backend.cpp)
+  target_include_directories(${LIBNAME} PRIVATE ${SQLITE3_INCLUDE_DIR})
+  target_link_directories(${LIBNAME} PUBLIC ${SQLITE3_LIBRARY_DIR})
   target_link_libraries(${LIBNAME} PUBLIC ${SQLITE3_LIBRARIES})
 
   # add_library(${LIBNAME}_sqlite STATIC
