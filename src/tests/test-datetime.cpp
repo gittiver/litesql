@@ -31,15 +31,5 @@ int main(int /*argc*/, char * /*argv*/[]) {
    
    assert(d.timeStamp() == d2.timeStamp()); 
 
-   // TC1 for Time
-   Time t;
-   std::string tstring = t.asString();
-
-   Time t2 = convert<const string&, Time>(tstring);
-   
-   assert(t.secs() == t2.secs()); 
-
-
-
    return 0;
 }

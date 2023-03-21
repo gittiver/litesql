@@ -7,7 +7,7 @@
 #ifndef litesql_datetime_hpp
 #define litesql_datetime_hpp
 /** \file datetime.hpp
-    constains Date, Time and DateTime - classes */
+    contains classes for handling date and time data. */
 #include "field.hpp"
 #include <ctime>
 namespace litesql {
@@ -55,24 +55,7 @@ public:
     Date& setTimeStamp(time_t t);
     std::string asString(const std::string& format="%u") const;
 };
-/** holds time of day */
-class Time {
-    /** secs after midnight */
-    int value;
-public:
-    Time(int secs=0);
-    Time(int hour, int min, int sec);
-    int hour() const;
-    int min() const;
-    int sec() const;
-    int secs() const;
-    std::string asString(const std::string& format="%u") const;
-
-    Time& setHour(int d);
-    Time& setMin(int m);
-    Time& setSec(int y);
-    Time& setSecs(int secs);
-};
+  
 /** holds date and time of day */
 class DateTime {
     time_t value;
@@ -99,19 +82,14 @@ public:
 template <>
 Date convert<const std::string&, Date>(const std::string& value);
 template <>
-Time convert<const std::string&, Time>(const std::string& value);
-template <>
 DateTime convert<const std::string&, DateTime>(const std::string& value);
 
 template <>
 std::string convert<const Date&, std::string>(const Date& value);
 template <>
-std::string convert<const Time&, std::string>(const Time& value);
-template <>
 std::string convert<const DateTime&, std::string>(const DateTime& value);
 
 std::ostream& operator << (std::ostream& os, const Date& d);
-std::ostream& operator << (std::ostream& os, const Time& d);
 std::ostream& operator << (std::ostream& os, const DateTime& d);
 }
 
