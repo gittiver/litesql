@@ -1,4 +1,4 @@
 <map id="datetime.hpp" name="datetime.hpp">
-<area shape="rect" id="node1" title="constains Date, Time and DateTime &#45; classes" alt="" coords="5,5,115,32"/>
+<area shape="rect" id="node1" title="contains classes for handling date and time data." alt="" coords="5,5,115,32"/>
 <area shape="rect" id="node2" href="$litesql_8hpp.html" title="include this from your project" alt="" coords="15,80,105,107"/>
 </map>

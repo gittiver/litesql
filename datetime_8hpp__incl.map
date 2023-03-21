@@ -1,5 +1,5 @@
 <map id="datetime.hpp" name="datetime.hpp">
-<area shape="rect" id="node1" title="constains Date, Time and DateTime &#45; classes" alt="" coords="183,5,292,32"/>
+<area shape="rect" id="node1" title="contains classes for handling date and time data." alt="" coords="183,5,292,32"/>
 <area shape="rect" id="node2" href="$field_8hpp.html" title="contains FieldType&#45; and Field&#45;classes" alt="" coords="151,80,230,107"/>
 <area shape="rect" id="node10" title=" " alt="" coords="255,80,313,107"/>
 <area shape="rect" id="node3" title=" " alt="" coords="5,155,85,181"/>
