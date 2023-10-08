@@ -32,8 +32,12 @@ set_tests_properties(test-update-table PROPERTIES
 )
 endif (UNIX AND NOT APPLE AND NOT WIN32)
 
+
+# backend plugin related tests
+if(LITESQL_WITH_BACKEND_PLUGINS)
 add_executable(test-backend-loading test-backend-loading.cpp)
 target_link_libraries (test-backend-loading litesql litesql-util ${BACKEND_LIBRARIES})
+target_include_directories(test-backend-loading PRIVATE ../library)
 add_dependencies(test-backend-loading litesql_backend_sqlite3)
 
 add_test(test-backend-loading ${EXECUTABLE_OUTPUT_PATH}/test-backend-loading backend-loading)
@@ -53,5 +57,5 @@ set_tests_properties(test-backend-loading PROPERTIES
   ENVIRONMENT "LD_LIBRARY_PATH=${BACKEND_DL_DIRECTORY}"
 )
 endif (UNIX AND NOT APPLE AND NOT WIN32)
+endif (LITESQL_WITH_BACKEND_PLUGINS)
 
-INCLUDE_DIRECTORIES(../library)

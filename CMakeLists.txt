@@ -59,7 +59,7 @@ set(BACKEND_DL_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/library)
 if (LITESQL_WITH_SQLITE3)
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBSQLITE3)
   option(LITESQL_USE_SYSTEM_SQLITE "use sqlite3 lib provided by system" ON)
-  list(APPEND BACKEND_LIBRARIES litesql_sqlite)
+#  list(APPEND BACKEND_LIBRARIES litesql_sqlite3)
 endif (LITESQL_WITH_SQLITE3)
 
 if (LITESQL_WITH_MYSQL AND MYSQL_FOUND)
@@ -185,9 +185,9 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/litesql
 add_subdirectory(src/library)
 add_subdirectory(src/generator)
 
-add_subdirectory(src/examples)
-
 if(LITESQL_WITH_TESTS)
+  add_subdirectory(src/examples)
+
   enable_testing()
   add_subdirectory(src/tests)
 endif(LITESQL_WITH_TESTS)
