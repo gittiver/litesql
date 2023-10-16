@@ -5,7 +5,7 @@
  * Few windows specific bugs fixed by Axel Schmidt.
  * 
  * See LICENSE for copyright information. */
-#include "compatibility.hpp"
+#include "../compatibility.hpp"
 #include "sqlite3.hpp"
 #include "sqlite3.h"
 
@@ -110,7 +110,7 @@ SQLite3::SQLite3(const string& connInfo) noexcept(false) //throw(DatabaseError)
 , beginTrans("BEGIN")
 {
   vector<string> params = split(connInfo,";");
-  string database;
+  string database = ":memory:";
   for (size_t i = 0; i < params.size(); i++) {
     vector<string> param = split(params[i], "=");
     if (param.size() == 1)

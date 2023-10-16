@@ -185,9 +185,9 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/litesql
 add_subdirectory(src/library)
 add_subdirectory(src/generator)
 
-add_subdirectory(src/examples)
-
 if(LITESQL_WITH_TESTS)
+  add_subdirectory(src/examples)
+
   enable_testing()
   add_subdirectory(src/tests)
 endif(LITESQL_WITH_TESTS)
